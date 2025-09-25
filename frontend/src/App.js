@@ -1016,8 +1016,10 @@ const HIRAForm = ({ onBack, onSave, editingEntry = null }) => {
     business_financial_impact: 0,
     psychosocial_impact: 0,
     change_in_frequency: [false, false, false, false],
-    change_in_vulnerability: [false, false, false]
+    change_in_vulnerability: [false, false, false],
+    hazard_image: null
   });
+  const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const disasterTypes = [

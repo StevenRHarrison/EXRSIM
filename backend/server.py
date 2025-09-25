@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -6,9 +6,10 @@ import os
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
+from enum import Enum
 
 
 ROOT_DIR = Path(__file__).parent
@@ -25,32 +26,264 @@ app = FastAPI()
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
+# Enums
+class ThreatLevel(str, Enum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    CRITICAL = "critical"
 
-# Define Models
-class StatusCheck(BaseModel):
+class ExerciseStatus(str, Enum):
+    DRAFT = "draft"
+    PLANNED = "planned"
+    ACTIVE = "active"
+    COMPLETED = "completed"
+    CANCELLED = "cancelled"
+
+class ParticipantRole(str, Enum):
+    INCIDENT_COMMANDER = "incident_commander"
+    OPERATIONS_CHIEF = "operations_chief"
+    PLANNING_CHIEF = "planning_chief"
+    LOGISTICS_CHIEF = "logistics_chief"
+    FINANCE_CHIEF = "finance_chief"
+    SAFETY_OFFICER = "safety_officer"
+    LIAISON_OFFICER = "liaison_officer"
+    PUBLIC_INFO_OFFICER = "public_info_officer"
+    OBSERVER = "observer"
+    EVALUATOR = "evaluator"
+
+# Exercise Models
+class Exercise(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    name: str
+    description: str
+    start_date: datetime
+    end_date: datetime
+    status: ExerciseStatus = ExerciseStatus.DRAFT
+    scenarios: List[str] = []
+    goals: List[str] = []
+    objectives: List[str] = []
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-class StatusCheckCreate(BaseModel):
-    client_name: str
+class ExerciseCreate(BaseModel):
+    name: str
+    description: str
+    start_date: datetime
+    end_date: datetime
+    scenarios: List[str] = []
+    goals: List[str] = []
+    objectives: List[str] = []
 
-# Add your routes to the router instead of directly to app
+class ExerciseUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    status: Optional[ExerciseStatus] = None
+    scenarios: Optional[List[str]] = None
+    goals: Optional[List[str]] = None
+    objectives: Optional[List[str]] = None
+
+# MSEL Models
+class MSELEvent(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    exercise_id: str
+    event_number: int
+    time_offset: int  # minutes from exercise start
+    event_description: str
+    expected_actions: List[str] = []
+    notes: str = ""
+    completed: bool = False
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class MSELEventCreate(BaseModel):
+    exercise_id: str
+    event_number: int
+    time_offset: int
+    event_description: str
+    expected_actions: List[str] = []
+    notes: str = ""
+
+# HIRA Models
+class HIRAEntry(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    hazard_name: str
+    description: str
+    threat_level: ThreatLevel
+    probability: int  # 1-10 scale
+    impact: int  # 1-10 scale
+    risk_score: int = Field(default=0)  # probability * impact
+    mitigation_strategies: List[str] = []
+    geographic_area: str = ""
+    seasonal_factors: str = ""
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class HIRAEntryCreate(BaseModel):
+    hazard_name: str
+    description: str
+    threat_level: ThreatLevel
+    probability: int
+    impact: int
+    mitigation_strategies: List[str] = []
+    geographic_area: str = ""
+    seasonal_factors: str = ""
+
+# Participant Models
+class Participant(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    email: str
+    phone: str
+    address: str = ""
+    organization: str = ""
+    role: ParticipantRole
+    experience_level: str = ""
+    certifications: List[str] = []
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ParticipantCreate(BaseModel):
+    name: str
+    email: str
+    phone: str
+    address: str = ""
+    organization: str = ""
+    role: ParticipantRole
+    experience_level: str = ""
+    certifications: List[str] = []
+
+# Helper functions
+def prepare_for_mongo(data):
+    if isinstance(data, dict):
+        for key, value in data.items():
+            if isinstance(value, datetime):
+                data[key] = value.isoformat()
+    return data
+
+def parse_from_mongo(item):
+    if isinstance(item, dict):
+        for key, value in item.items():
+            if isinstance(value, str) and 'T' in value:
+                try:
+                    item[key] = datetime.fromisoformat(value.replace('Z', '+00:00'))
+                except:
+                    pass
+    return item
+
+# Exercise Routes
+@api_router.get("/exercises", response_model=List[Exercise])
+async def get_exercises():
+    exercises = await db.exercises.find().to_list(1000)
+    return [Exercise(**parse_from_mongo(exercise)) for exercise in exercises]
+
+@api_router.get("/exercises/{exercise_id}", response_model=Exercise)
+async def get_exercise(exercise_id: str):
+    exercise = await db.exercises.find_one({"id": exercise_id})
+    if not exercise:
+        raise HTTPException(status_code=404, detail="Exercise not found")
+    return Exercise(**parse_from_mongo(exercise))
+
+@api_router.post("/exercises", response_model=Exercise)
+async def create_exercise(exercise_data: ExerciseCreate):
+    exercise_dict = exercise_data.dict()
+    exercise = Exercise(**exercise_dict)
+    exercise_mongo = prepare_for_mongo(exercise.dict())
+    await db.exercises.insert_one(exercise_mongo)
+    return exercise
+
+@api_router.put("/exercises/{exercise_id}", response_model=Exercise)
+async def update_exercise(exercise_id: str, exercise_data: ExerciseUpdate):
+    update_dict = {k: v for k, v in exercise_data.dict().items() if v is not None}
+    update_dict["updated_at"] = datetime.now(timezone.utc)
+    update_mongo = prepare_for_mongo(update_dict)
+    
+    result = await db.exercises.update_one(
+        {"id": exercise_id},
+        {"$set": update_mongo}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Exercise not found")
+    
+    return await get_exercise(exercise_id)
+
+@api_router.delete("/exercises/{exercise_id}")
+async def delete_exercise(exercise_id: str):
+    result = await db.exercises.delete_one({"id": exercise_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Exercise not found")
+    return {"message": "Exercise deleted successfully"}
+
+# MSEL Routes
+@api_router.get("/msel/{exercise_id}", response_model=List[MSELEvent])
+async def get_msel_events(exercise_id: str):
+    events = await db.msel_events.find({"exercise_id": exercise_id}).to_list(1000)
+    return [MSELEvent(**parse_from_mongo(event)) for event in events]
+
+@api_router.post("/msel", response_model=MSELEvent)
+async def create_msel_event(event_data: MSELEventCreate):
+    event = MSELEvent(**event_data.dict())
+    event_mongo = prepare_for_mongo(event.dict())
+    await db.msel_events.insert_one(event_mongo)
+    return event
+
+# HIRA Routes
+@api_router.get("/hira", response_model=List[HIRAEntry])
+async def get_hira_entries():
+    entries = await db.hira_entries.find().to_list(1000)
+    return [HIRAEntry(**parse_from_mongo(entry)) for entry in entries]
+
+@api_router.post("/hira", response_model=HIRAEntry)
+async def create_hira_entry(entry_data: HIRAEntryCreate):
+    entry_dict = entry_data.dict()
+    # Calculate risk score
+    entry_dict["risk_score"] = entry_dict["probability"] * entry_dict["impact"]
+    entry = HIRAEntry(**entry_dict)
+    entry_mongo = prepare_for_mongo(entry.dict())
+    await db.hira_entries.insert_one(entry_mongo)
+    return entry
+
+# Participant Routes
+@api_router.get("/participants", response_model=List[Participant])
+async def get_participants():
+    participants = await db.participants.find().to_list(1000)
+    return [Participant(**parse_from_mongo(participant)) for participant in participants]
+
+@api_router.post("/participants", response_model=Participant)
+async def create_participant(participant_data: ParticipantCreate):
+    participant = Participant(**participant_data.dict())
+    participant_mongo = prepare_for_mongo(participant.dict())
+    await db.participants.insert_one(participant_mongo)
+    return participant
+
+@api_router.get("/participants/{participant_id}", response_model=Participant)
+async def get_participant(participant_id: str):
+    participant = await db.participants.find_one({"id": participant_id})
+    if not participant:
+        raise HTTPException(status_code=404, detail="Participant not found")
+    return Participant(**parse_from_mongo(participant))
+
+@api_router.put("/participants/{participant_id}", response_model=Participant)
+async def update_participant(participant_id: str, participant_data: ParticipantCreate):
+    update_mongo = prepare_for_mongo(participant_data.dict())
+    result = await db.participants.update_one(
+        {"id": participant_id},
+        {"$set": update_mongo}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Participant not found")
+    return await get_participant(participant_id)
+
+@api_router.delete("/participants/{participant_id}")
+async def delete_participant(participant_id: str):
+    result = await db.participants.delete_one({"id": participant_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Participant not found")
+    return {"message": "Participant deleted successfully"}
+
+# Health check
 @api_router.get("/")
 async def root():
-    return {"message": "Hello World"}
-
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.dict()
-    status_obj = StatusCheck(**status_dict)
-    _ = await db.status_checks.insert_one(status_obj.dict())
-    return status_obj
-
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    status_checks = await db.status_checks.find().to_list(1000)
-    return [StatusCheck(**status_check) for status_check in status_checks]
+    return {"message": "EXRSIM API is running"}
 
 # Include the router in the main app
 app.include_router(api_router)

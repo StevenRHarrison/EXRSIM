@@ -735,14 +735,37 @@ const ParticipantsList = ({ onAddNew, onEdit }) => {
           <h1 className="text-3xl font-bold text-orange-500 mb-2">Exercise Participants</h1>
           <p className="text-gray-400">Manage emergency exercise team members</p>
         </div>
-        <Button 
-          onClick={onAddNew}
-          className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
-          data-testid="add-participant-btn"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Add Participant
-        </Button>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <Label htmlFor="participant-filter" className="text-gray-300 text-sm">
+              Filter:
+            </Label>
+            <Select value={filter} onValueChange={setFilter}>
+              <SelectTrigger 
+                id="participant-filter"
+                className="w-40 bg-gray-700 border-gray-600 text-white"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-gray-700 border-gray-600">
+                <SelectItem value="all" className="text-white focus:bg-gray-600">
+                  Show All ({participants.length})
+                </SelectItem>
+                <SelectItem value="participating" className="text-white focus:bg-gray-600">
+                  Show Participating ({participants.filter(p => p.involvedInExercise).length})
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Button 
+            onClick={onAddNew}
+            className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
+            data-testid="add-participant-btn"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Participant
+          </Button>
+        </div>
       </div>
 
       {loading ? (

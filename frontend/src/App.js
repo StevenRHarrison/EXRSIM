@@ -40,23 +40,36 @@ const API = `${BACKEND_URL}/api`;
 
 // Navigation Component
 const Navigation = () => {
+  const [logoError, setLogoError] = useState(false);
+  
   return (
     <nav className="bg-black border-b border-orange-500/20 px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-8">
           <Link to="/" className="flex items-center">
-            <img 
-              src="https://customer-assets.emergentagent.com/job_emergency-drill-2/artifacts/rcx6bwsz_EXRSIM_Small.tiff" 
-              alt="EXRSIM Logo" 
-              className="h-8 w-auto max-w-32 object-contain"
-              onError={(e) => {
-                e.target.style.display = 'none';
-                e.target.nextSibling.style.display = 'inline';
-              }}
-            />
-            <span className="text-orange-500 text-2xl font-bold tracking-wider hidden">
-              EXRSIM
-            </span>
+            {!logoError ? (
+              <img 
+                src="https://customer-assets.emergentagent.com/job_emergency-drill-2/artifacts/rcx6bwsz_EXRSIM_Small.tiff" 
+                alt="EXRSIM Logo" 
+                className="h-8 w-auto max-w-40 object-contain"
+                onError={() => setLogoError(true)}
+                onLoad={(e) => {
+                  // If image loads but appears broken, show fallback
+                  if (e.target.naturalWidth === 0 || e.target.naturalHeight === 0) {
+                    setLogoError(true);
+                  }
+                }}
+              />
+            ) : (
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-orange-500 rounded flex items-center justify-center mr-2">
+                  <span className="text-black font-bold text-sm">EX</span>
+                </div>
+                <span className="text-orange-500 text-xl font-bold tracking-wider">
+                  EXRSIM
+                </span>
+              </div>
+            )}
           </Link>
           <div className="hidden md:flex items-center space-x-6">
             <Link 

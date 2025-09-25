@@ -784,7 +784,24 @@ const ParticipantsList = ({ onAddNew, onEdit }) => {
             </Card>
           ))}
         </div>
-      ) : participants.length === 0 ? (
+      ) : filteredParticipants.length === 0 && filter === 'participating' ? (
+        <Card className="bg-gray-800 border-gray-700 border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <Users className="h-12 w-12 text-gray-500 mb-4" />
+            <h3 className="text-lg font-semibold text-gray-300 mb-2">No Active Participants</h3>
+            <p className="text-gray-500 text-center mb-4">
+              No participants are currently marked as involved in the exercise.
+            </p>
+            <Button 
+              onClick={() => setFilter('all')}
+              variant="outline"
+              className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10"
+            >
+              Show All Participants
+            </Button>
+          </CardContent>
+        </Card>
+      ) : filteredParticipants.length === 0 ? (
         <Card className="bg-gray-800 border-gray-700 border-dashed">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Users className="h-12 w-12 text-gray-500 mb-4" />
@@ -803,7 +820,7 @@ const ParticipantsList = ({ onAddNew, onEdit }) => {
         </Card>
       ) : (
         <div className="space-y-3">
-          {participants.map((participant) => (
+          {filteredParticipants.map((participant) => (
             <Card 
               key={participant.id} 
               className="bg-gray-800 border-gray-700 hover:border-orange-500/50 transition-colors"

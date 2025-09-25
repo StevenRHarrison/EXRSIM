@@ -284,10 +284,22 @@ async def delete_exercise(exercise_id: str):
     return {"message": "Exercise deleted successfully"}
 
 # MSEL Routes
+@api_router.get("/msel", response_model=List[MSELEvent])
+async def get_msel_events():
+    events = await db.msel_events.find().to_list(1000)
+    return [MSELEvent(**parse_from_mongo(event)) for event in events]
+
 @api_router.get("/msel/{exercise_id}", response_model=List[MSELEvent])
-async def get_msel_events(exercise_id: str):
+async def get_msel_events_by_exercise(exercise_id: str):
     events = await db.msel_events.find({"exercise_id": exercise_id}).to_list(1000)
     return [MSELEvent(**parse_from_mongo(event)) for event in events]
+
+@api_router.get("/msel/event/{event_id}", response_model=MSELEvent)
+async def get_msel_event(event_id: str):
+    event = await db.msel_events.find_one({"id": event_id})
+    if not event:
+        raise HTTPException(status_code=404, detail="MSEL event not found")
+    return MSELEvent(**parse_from_mongo(event))
 
 @api_router.post("/msel", response_model=MSELEvent)
 async def create_msel_event(event_data: MSELEventCreate):
@@ -295,6 +307,28 @@ async def create_msel_event(event_data: MSELEventCreate):
     event_mongo = prepare_for_mongo(event.dict())
     await db.msel_events.insert_one(event_mongo)
     return event
+
+@api_router.put("/msel/event/{event_id}", response_model=MSELEvent)
+async def update_msel_event(event_id: str, event_data: MSELEventUpdate):
+    update_dict = {k: v for k, v in event_data.dict().items() if v is not None}
+    update_dict["updated_at"] = datetime.now(timezone.utc)
+    update_mongo = prepare_for_mongo(update_dict)
+    
+    result = await db.msel_events.update_one(
+        {"id": event_id},
+        {"$set": update_mongo}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="MSEL event not found")
+    
+    return await get_msel_event(event_id)
+
+@api_router.delete("/msel/event/{event_id}")
+async def delete_msel_event(event_id: str):
+    result = await db.msel_events.delete_one({"id": event_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="MSEL event not found")
+    return {"message": "MSEL event deleted successfully"}
 
 # HIRA Routes
 @api_router.get("/hira", response_model=List[HIRAEntry])

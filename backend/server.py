@@ -127,6 +127,8 @@ class HIRAEntry(BaseModel):
     # Change factors (checkboxes as boolean lists)
     change_in_frequency: List[bool] = [False, False, False, False]  # 4 checkboxes
     change_in_vulnerability: List[bool] = [False, False, False]  # 3 checkboxes
+    # Image upload
+    hazard_image: Optional[str] = None  # Base64 encoded image
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class HIRAEntryCreate(BaseModel):
@@ -147,6 +149,7 @@ class HIRAEntryCreate(BaseModel):
     psychosocial_impact: int
     change_in_frequency: List[bool] = [False, False, False, False]
     change_in_vulnerability: List[bool] = [False, False, False]
+    hazard_image: Optional[str] = None
 
 # Participant Models
 class Participant(BaseModel):

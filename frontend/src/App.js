@@ -44,8 +44,13 @@ const Navigation = () => {
     <nav className="bg-black border-b border-orange-500/20 px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-8">
-          <Link to="/" className="text-orange-500 text-2xl font-bold tracking-wider">
-            EXRSIM
+          <Link to="/" className="flex items-center">
+            <img 
+              src="https://customer-assets.emergentagent.com/job_emergency-drill-2/artifacts/rcx6bwsz_EXRSIM_Small.tiff" 
+              alt="EXRSIM Logo" 
+              className="h-10 w-auto"
+              style={{ filter: 'brightness(0) saturate(100%) invert(68%) sepia(67%) saturate(2873%) hue-rotate(8deg) brightness(102%) contrast(102%)' }}
+            />
           </Link>
           <div className="hidden md:flex items-center space-x-6">
             <Link 

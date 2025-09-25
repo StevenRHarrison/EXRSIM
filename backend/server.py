@@ -140,6 +140,17 @@ class Participant(BaseModel):
     role: ParticipantRole
     experience_level: str = ""
     certifications: List[str] = []
+    # Enhanced fields
+    firstName: str = ""
+    lastName: str = ""
+    position: str = ""
+    city: str = ""
+    provinceState: str = ""
+    country: str = "Canada"
+    homePhone: str = ""
+    cellPhone: str = ""
+    involvedInExercise: bool = False
+    profileImage: Optional[str] = None  # Base64 encoded image
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class ParticipantCreate(BaseModel):
@@ -151,6 +162,17 @@ class ParticipantCreate(BaseModel):
     role: ParticipantRole
     experience_level: str = ""
     certifications: List[str] = []
+    # Enhanced fields
+    firstName: str = ""
+    lastName: str = ""
+    position: str = ""
+    city: str = ""
+    provinceState: str = ""
+    country: str = "Canada"
+    homePhone: str = ""
+    cellPhone: str = ""
+    involvedInExercise: bool = False
+    profileImage: Optional[str] = None
 
 # Helper functions
 def prepare_for_mongo(data):

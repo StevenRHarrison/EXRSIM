@@ -1568,10 +1568,23 @@ const HIRAList = ({ onAddNew, onEdit }) => {
 
   const getRiskLevel = (frequency, impact) => {
     const riskScore = frequency * impact;
-    if (riskScore >= 15) return { level: 'Critical', color: 'bg-red-500/20 text-red-300 border-red-500/30' };
-    if (riskScore >= 10) return { level: 'High', color: 'bg-orange-500/20 text-orange-300 border-orange-500/30' };
-    if (riskScore >= 5) return { level: 'Medium', color: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30' };
-    return { level: 'Low', color: 'bg-green-500/20 text-green-300 border-green-500/30' };
+    if (riskScore >= 15) return { level: 'Critical', color: 'bg-red-500/20 text-red-300 border-red-500/30', score: riskScore };
+    if (riskScore >= 10) return { level: 'High', color: 'bg-orange-500/20 text-orange-300 border-orange-500/30', score: riskScore };
+    if (riskScore >= 5) return { level: 'Medium', color: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30', score: riskScore };
+    return { level: 'Low', color: 'bg-green-500/20 text-green-300 border-green-500/30', score: riskScore };
+  };
+
+  // Sort entries by risk score (highest risk first)
+  const sortedEntries = [...entries].sort((a, b) => {
+    const maxImpactA = Math.max(a.fatalities, a.injuries, a.evacuation, a.property_damage);
+    const maxImpactB = Math.max(b.fatalities, b.injuries, b.evacuation, b.property_damage);
+    const riskScoreA = a.frequency * maxImpactA;
+    const riskScoreB = b.frequency * maxImpactB;
+    return riskScoreB - riskScoreA; // Descending order (highest risk first)
+  });
+
+  const getInitials = (name) => {
+    return name.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
   };
 
   return (

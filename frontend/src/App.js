@@ -990,12 +990,617 @@ const ExerciseView = () => (
   </div>
 );
 
-const MSELView = () => (
-  <div className="p-6">
-    <h1 className="text-3xl font-bold text-orange-500 mb-4">MSEL</h1>
-    <p className="text-gray-400">Master Sequence Event List interface coming soon...</p>
-  </div>
-);
+// MSEL Management Components
+const MSELForm = ({ onBack, onSave, editingEvent = null }) => {
+  const [formData, setFormData] = useState({
+    exercise_id: '',
+    event_number: 1,
+    scenario_time: '',
+    event_type: '',
+    inject_mode: '',
+    from_entity: '',
+    to_entity: '',
+    message: '',
+    expected_response: '',
+    objective_capability_task: '',
+    notes: ''
+  });
+  const [loading, setLoading] = useState(false);
+
+  const eventTypes = [
+    'Player Inject',
+    'Media Inject',
+    'Discussion Question',
+    'Information Update',
+    'Decision Point',
+    'Time Advance',
+    'Scenario Development',
+    'Resource Request',
+    'Communication Test',
+    'Evaluation Checkpoint'
+  ];
+
+  const injectModes = [
+    'Phone Call',
+    'Radio Communication',
+    'Email/Message',
+    'Face-to-Face',
+    'Written Document',
+    'Media Broadcast',
+    'Social Media',
+    'Emergency Alert System',
+    'Controller Briefing',
+    'Automated System'
+  ];
+
+  const controllerRoles = [
+    'Exercise Controller',
+    'Lead Controller',
+    'Safety Officer',
+    'Evaluator',
+    'SIMCELL Controller',
+    'Communications Controller',
+    'Media Controller',
+    'Logistics Controller',
+    'Technical Controller',
+    'Observer Controller'
+  ];
+
+  const playerRoles = [
+    'Incident Commander',
+    'Operations Section',
+    'Planning Section',
+    'Logistics Section',
+    'Finance/Administration Section',
+    'Safety Officer',
+    'Public Information Officer',
+    'Liaison Officer',
+    'All Players',
+    'Emergency Operations Center',
+    'Field Teams',
+    'Media Representatives'
+  ];
+
+  useEffect(() => {
+    if (editingEvent) {
+      setFormData({
+        exercise_id: editingEvent.exercise_id || '',
+        event_number: editingEvent.event_number || 1,
+        scenario_time: editingEvent.scenario_time || '',
+        event_type: editingEvent.event_type || '',
+        inject_mode: editingEvent.inject_mode || '',
+        from_entity: editingEvent.from_entity || '',
+        to_entity: editingEvent.to_entity || '',
+        message: editingEvent.message || '',
+        expected_response: editingEvent.expected_response || '',
+        objective_capability_task: editingEvent.objective_capability_task || '',
+        notes: editingEvent.notes || ''
+      });
+    }
+  }, [editingEvent]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      if (editingEvent) {
+        await axios.put(`${API}/msel/event/${editingEvent.id}`, formData);
+      } else {
+        await axios.post(`${API}/msel`, formData);
+      }
+      onSave();
+    } catch (error) {
+      console.error('Error saving MSEL event:', error);
+      alert('Error saving MSEL event. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="p-6 max-w-4xl mx-auto">
+      <div className="mb-6">
+        <Button 
+          variant="ghost" 
+          onClick={onBack}
+          className="text-gray-400 hover:text-orange-500 mb-4"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to MSEL List
+        </Button>
+        <h1 className="text-3xl font-bold text-orange-500 mb-2">
+          {editingEvent ? 'Edit MSEL Event' : 'Add New MSEL Event'}
+        </h1>
+        <p className="text-gray-400">Master Sequence Event List - Exercise event planning and tracking</p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Event Identification */}
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Event Identification</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="event_number" className="text-gray-300">Event Number *</Label>
+                <Input
+                  id="event_number"
+                  type="number"
+                  min="1"
+                  value={formData.event_number}
+                  onChange={(e) => setFormData(prev => ({ ...prev, event_number: parseInt(e.target.value) || 1 }))}
+                  className="bg-gray-700 border-gray-600 text-white"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="scenario_time" className="text-gray-300">Designated Scenario Time *</Label>
+                <Input
+                  id="scenario_time"
+                  value={formData.scenario_time}
+                  onChange={(e) => setFormData(prev => ({ ...prev, scenario_time: e.target.value }))}
+                  className="bg-gray-700 border-gray-600 text-white"
+                  placeholder="e.g., 09:30, T+15 minutes, Day 1 - 14:00"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="exercise_id" className="text-gray-300">Exercise ID (Optional)</Label>
+              <Input
+                id="exercise_id"
+                value={formData.exercise_id}
+                onChange={(e) => setFormData(prev => ({ ...prev, exercise_id: e.target.value }))}
+                className="bg-gray-700 border-gray-600 text-white"
+                placeholder="Link to specific exercise"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Event Classification */}
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Event Classification</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="event_type" className="text-gray-300">Event Type *</Label>
+              <Select value={formData.event_type} onValueChange={(value) => setFormData(prev => ({ ...prev, event_type: value }))}>
+                <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                  <SelectValue placeholder="Select event type" />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-700 border-gray-600">
+                  {eventTypes.map((type) => (
+                    <SelectItem key={type} value={type} className="text-white focus:bg-gray-600">
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="inject_mode" className="text-gray-300">Inject Mode *</Label>
+              <Select value={formData.inject_mode} onValueChange={(value) => setFormData(prev => ({ ...prev, inject_mode: value }))}>
+                <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                  <SelectValue placeholder="Select inject mode" />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-700 border-gray-600">
+                  {injectModes.map((mode) => (
+                    <SelectItem key={mode} value={mode} className="text-white focus:bg-gray-600">
+                      {mode}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Communication Details */}
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Communication Details</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="from_entity" className="text-gray-300">From (Controller/Entity) *</Label>
+              <Select value={formData.from_entity} onValueChange={(value) => setFormData(prev => ({ ...prev, from_entity: value }))}>
+                <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                  <SelectValue placeholder="Select controller role or type custom" />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-700 border-gray-600">
+                  {controllerRoles.map((role) => (
+                    <SelectItem key={role} value={role} className="text-white focus:bg-gray-600">
+                      {role}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Input
+                value={formData.from_entity}
+                onChange={(e) => setFormData(prev => ({ ...prev, from_entity: e.target.value }))}
+                className="bg-gray-700 border-gray-600 text-white mt-2"
+                placeholder="Or type custom controller/entity name"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="to_entity" className="text-gray-300">To (Player/Group) *</Label>
+              <Select value={formData.to_entity} onValueChange={(value) => setFormData(prev => ({ ...prev, to_entity: value }))}>
+                <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                  <SelectValue placeholder="Select player role or type custom" />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-700 border-gray-600">
+                  {playerRoles.map((role) => (
+                    <SelectItem key={role} value={role} className="text-white focus:bg-gray-600">
+                      {role}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Input
+                value={formData.to_entity}
+                onChange={(e) => setFormData(prev => ({ ...prev, to_entity: e.target.value }))}
+                className="bg-gray-700 border-gray-600 text-white mt-2"
+                placeholder="Or type custom player/group name"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Event Content */}
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Event Content & Objectives</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="message" className="text-gray-300">Message *</Label>
+              <Textarea
+                id="message"
+                value={formData.message}
+                onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                className="bg-gray-700 border-gray-600 text-white"
+                rows={4}
+                placeholder="The core content of the inject - information, request, or call to action"
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="expected_response" className="text-gray-300">Expected Participant Response *</Label>
+              <Textarea
+                id="expected_response"
+                value={formData.expected_response}
+                onChange={(e) => setFormData(prev => ({ ...prev, expected_response: e.target.value }))}
+                className="bg-gray-700 border-gray-600 text-white"
+                rows={3}
+                placeholder="The anticipated action or reaction from the player"
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="objective_capability_task" className="text-gray-300">Objective, Capability, and/or Critical Task *</Label>
+              <Textarea
+                id="objective_capability_task"
+                value={formData.objective_capability_task}
+                onChange={(e) => setFormData(prev => ({ ...prev, objective_capability_task: e.target.value }))}
+                className="bg-gray-700 border-gray-600 text-white"
+                rows={3}
+                placeholder="The specific exercise objective or critical task this event tests"
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="notes" className="text-gray-300">Notes</Label>
+              <Textarea
+                id="notes"
+                value={formData.notes}
+                onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                className="bg-gray-700 border-gray-600 text-white"
+                rows={2}
+                placeholder="Additional controller information or details"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="flex justify-end space-x-4 pt-6">
+          <Button type="button" variant="outline" onClick={onBack} disabled={loading}>
+            Cancel
+          </Button>
+          <Button 
+            type="submit" 
+            className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
+            disabled={loading}
+          >
+            {loading ? 'Saving...' : (
+              <>
+                <Save className="h-4 w-4 mr-2" />
+                {editingEvent ? 'Update Event' : 'Save Event'}
+              </>
+            )}
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+const MSELList = ({ onAddNew, onEdit }) => {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.get(`${API}/msel`);
+      setEvents(response.data);
+    } catch (error) {
+      console.error('Error fetching MSEL events:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteEvent = async (eventId) => {
+    if (window.confirm('Are you sure you want to delete this MSEL event?')) {
+      try {
+        await axios.delete(`${API}/msel/event/${eventId}`);
+        setEvents(prev => prev.filter(e => e.id !== eventId));
+      } catch (error) {
+        console.error('Error deleting MSEL event:', error);
+        alert('Error deleting MSEL event. Please try again.');
+      }
+    }
+  };
+
+  const toggleCompletion = async (event) => {
+    try {
+      const updatedEvent = {
+        ...event,
+        completed: !event.completed,
+        actual_time: !event.completed ? new Date().toLocaleTimeString() : null
+      };
+      await axios.put(`${API}/msel/event/${event.id}`, updatedEvent);
+      setEvents(prev => prev.map(e => e.id === event.id ? updatedEvent : e));
+    } catch (error) {
+      console.error('Error updating event completion:', error);
+    }
+  };
+
+  const getEventTypeColor = (eventType) => {
+    const colors = {
+      'Player Inject': 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+      'Media Inject': 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+      'Discussion Question': 'bg-green-500/20 text-green-300 border-green-500/30',
+      'Information Update': 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+      'Decision Point': 'bg-red-500/20 text-red-300 border-red-500/30'
+    };
+    return colors[eventType] || 'bg-gray-500/20 text-gray-300 border-gray-500/30';
+  };
+
+  // Sort events by event number
+  const sortedEvents = [...events].sort((a, b) => a.event_number - b.event_number);
+
+  return (
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-3xl font-bold text-orange-500 mb-2">MSEL - Master Sequence Event List</h1>
+          <p className="text-gray-400">Manage exercise event timeline and inject sequences</p>
+        </div>
+        <Button 
+          onClick={onAddNew}
+          className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
+          data-testid="add-msel-btn"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Add MSEL Event
+        </Button>
+      </div>
+
+      {loading ? (
+        <div className="space-y-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Card key={i} className="bg-gray-800 border-gray-700">
+              <CardContent className="p-4">
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-700 rounded animate-pulse w-1/4"></div>
+                  <div className="h-3 bg-gray-700 rounded animate-pulse w-2/3"></div>
+                  <div className="h-3 bg-gray-700 rounded animate-pulse w-1/2"></div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : events.length === 0 ? (
+        <Card className="bg-gray-800 border-gray-700 border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <ClipboardList className="h-12 w-12 text-gray-500 mb-4" />
+            <h3 className="text-lg font-semibold text-gray-300 mb-2">No MSEL Events Yet</h3>
+            <p className="text-gray-500 text-center mb-4">
+              Start planning your exercise by creating sequence events and inject timelines.
+            </p>
+            <Button 
+              onClick={onAddNew}
+              className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Create First MSEL Event
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-sm text-gray-400">
+              Showing {sortedEvents.length} event{sortedEvents.length !== 1 ? 's' : ''} (sorted by event number)
+            </p>
+          </div>
+          {sortedEvents.map((event) => (
+            <Card key={event.id} className={`bg-gray-800 border-gray-700 hover:border-orange-500/50 transition-colors ${event.completed ? 'opacity-75' : ''}`}>
+              <CardContent className="p-6">
+                <div className="flex items-start space-x-4">
+                  {/* Event Number Badge */}
+                  <div className="flex-shrink-0">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${
+                      event.completed ? 'bg-green-500/20 text-green-300' : 'bg-orange-500/20 text-orange-300'
+                    }`}>
+                      #{event.event_number}
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <h3 className="text-lg font-semibold text-white">Event #{event.event_number}</h3>
+                      <Badge className={getEventTypeColor(event.event_type)}>
+                        {event.event_type}
+                      </Badge>
+                      <Badge className="bg-gray-600/20 text-gray-300 border-gray-600/30">
+                        {event.inject_mode}
+                      </Badge>
+                      {event.completed && (
+                        <Badge className="bg-green-500/20 text-green-300 border-green-500/30">
+                          Completed
+                        </Badge>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                      <div>
+                        <span className="text-orange-400 font-medium text-sm">Scenario Time:</span>
+                        <span className="text-gray-300 ml-2">{event.scenario_time}</span>
+                      </div>
+                      <div>
+                        <span className="text-blue-400 font-medium text-sm">From → To:</span>
+                        <span className="text-gray-300 ml-2">{event.from_entity} → {event.to_entity}</span>
+                      </div>
+                    </div>
+
+                    <div className="mb-3">
+                      <span className="text-green-400 font-medium text-sm">Message:</span>
+                      <p className="text-gray-300 text-sm mt-1">{event.message}</p>
+                    </div>
+
+                    <div className="mb-3">
+                      <span className="text-purple-400 font-medium text-sm">Expected Response:</span>
+                      <p className="text-gray-300 text-sm mt-1">{event.expected_response}</p>
+                    </div>
+
+                    <div className="mb-3">
+                      <span className="text-yellow-400 font-medium text-sm">Objective/Task:</span>
+                      <p className="text-gray-300 text-sm mt-1">{event.objective_capability_task}</p>
+                    </div>
+
+                    {event.notes && (
+                      <div className="mb-3 p-3 bg-gray-700/50 rounded">
+                        <span className="text-cyan-400 font-medium text-sm">Controller Notes:</span>
+                        <p className="text-gray-300 text-sm mt-1">{event.notes}</p>
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between text-xs text-gray-500">
+                      <span>Created: {new Date(event.created_at).toLocaleString()}</span>
+                      {event.completed && event.actual_time && (
+                        <span>Completed at: {event.actual_time}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-col space-y-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => toggleCompletion(event)}
+                      className={event.completed 
+                        ? "border-green-600 text-green-300 hover:text-green-200 hover:border-green-500/50"
+                        : "border-orange-600 text-orange-300 hover:text-orange-200 hover:border-orange-500/50"
+                      }
+                    >
+                      {event.completed ? 'Mark Pending' : 'Mark Complete'}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onEdit(event)}
+                      className="border-gray-600 text-gray-300 hover:text-orange-500 hover:border-orange-500/50"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => deleteEvent(event.id)}
+                      className="border-red-600 text-red-400 hover:text-red-300 hover:border-red-500/50"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const MSELView = () => {
+  const [view, setView] = useState('list'); // 'list', 'add', 'edit'
+  const [editingEvent, setEditingEvent] = useState(null);
+
+  const handleAddNew = () => {
+    setEditingEvent(null);
+    setView('add');
+  };
+
+  const handleEdit = (event) => {
+    setEditingEvent(event);
+    setView('edit');
+  };
+
+  const handleBack = () => {
+    setView('list');
+    setEditingEvent(null);
+  };
+
+  const handleSave = () => {
+    setView('list');
+    setEditingEvent(null);
+    // The list will automatically refresh via useEffect
+  };
+
+  if (view === 'add' || view === 'edit') {
+    return (
+      <MSELForm
+        onBack={handleBack}
+        onSave={handleSave}
+        editingEvent={editingEvent}
+      />
+    );
+  }
+
+  return (
+    <MSELList
+      onAddNew={handleAddNew}
+      onEdit={handleEdit}
+    />
+  );
+};
 
 // HIRA Management Components
 const HIRAForm = ({ onBack, onSave, editingEntry = null }) => {

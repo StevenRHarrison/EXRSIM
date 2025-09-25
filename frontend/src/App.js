@@ -688,6 +688,7 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
 const ParticipantsList = ({ onAddNew, onEdit }) => {
   const [participants, setParticipants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all'); // 'all' or 'participating'
 
   useEffect(() => {
     fetchParticipants();
@@ -703,6 +704,13 @@ const ParticipantsList = ({ onAddNew, onEdit }) => {
       setLoading(false);
     }
   };
+
+  const filteredParticipants = participants.filter(participant => {
+    if (filter === 'participating') {
+      return participant.involvedInExercise === true;
+    }
+    return true; // 'all' - show all participants
+  });
 
   const deleteParticipant = async (participantId) => {
     if (window.confirm('Are you sure you want to delete this participant?')) {

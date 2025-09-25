@@ -14,6 +14,8 @@ import { Label } from './components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './components/ui/select';
 import { Checkbox } from './components/ui/checkbox';
 import { Avatar, AvatarFallback, AvatarImage } from './components/ui/avatar';
+import { Textarea } from './components/ui/textarea';
+import { RadioGroup, RadioGroupItem } from './components/ui/radio-group';
 import { 
   CalendarDays, 
   Users, 
@@ -32,7 +34,9 @@ import {
   Mail,
   MapPin,
   Edit,
-  Trash2
+  Trash2,
+  Save,
+  Info
 } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;

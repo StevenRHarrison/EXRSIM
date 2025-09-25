@@ -9,6 +9,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './com
 import { Badge } from './components/ui/badge';
 import { Separator } from './components/ui/separator';
 import { ScrollArea } from './components/ui/scroll-area';
+import { Input } from './components/ui/input';
+import { Label } from './components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './components/ui/select';
+import { Checkbox } from './components/ui/checkbox';
+import { Avatar, AvatarFallback, AvatarImage } from './components/ui/avatar';
 import { 
   CalendarDays, 
   Users, 
@@ -19,7 +24,15 @@ import {
   Home,
   BookOpen,
   Target,
-  Shield
+  Shield,
+  ArrowLeft,
+  Camera,
+  Upload,
+  Phone,
+  Mail,
+  MapPin,
+  Edit,
+  Trash2
 } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;

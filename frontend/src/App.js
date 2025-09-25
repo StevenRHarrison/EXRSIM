@@ -1254,6 +1254,57 @@ const HIRAForm = ({ onBack, onSave, editingEntry = null }) => {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Hazard Image Upload */}
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Hazard Image</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center space-x-6">
+              <div className="w-32 h-32 rounded-lg bg-gray-700 border-2 border-dashed border-gray-600 flex items-center justify-center overflow-hidden">
+                {imagePreview ? (
+                  <img src={imagePreview} alt="Hazard" className="w-full h-full object-cover rounded-lg" />
+                ) : (
+                  <div className="text-center">
+                    <AlertTriangle className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                    <span className="text-sm text-gray-400">No image</span>
+                  </div>
+                )}
+              </div>
+              <div className="space-y-3">
+                <div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="hazard-image-upload"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => document.getElementById('hazard-image-upload').click()}
+                    className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10 mr-3"
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload Photo
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleCameraCapture}
+                    className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10"
+                  >
+                    <Camera className="h-4 w-4 mr-2" />
+                    Take Photo
+                  </Button>
+                </div>
+                <p className="text-sm text-gray-400">Upload image of hazard area or related documentation</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Basic Information */}
         <Card className="bg-gray-800 border-gray-700">
           <CardHeader>

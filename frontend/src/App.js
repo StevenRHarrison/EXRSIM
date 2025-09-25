@@ -768,6 +768,22 @@ const ParticipantsList = ({ onAddNew, onEdit }) => {
         </div>
       </div>
 
+      {/* Filter Status Indicator */}
+      {!loading && participants.length > 0 && (
+        <div className="mb-4">
+          <div className="flex items-center space-x-2 text-sm text-gray-400">
+            <span>
+              Showing {filteredParticipants.length} of {participants.length} participants
+            </span>
+            {filter === 'participating' && (
+              <Badge className="bg-green-500/20 text-green-300 border-green-500/30">
+                Active Exercise Filter
+              </Badge>
+            )}
+          </div>
+        </div>
+      )}
+
       {loading ? (
         <div className="space-y-4">
           {Array.from({ length: 3 }).map((_, i) => (

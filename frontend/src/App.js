@@ -48,9 +48,15 @@ const Navigation = () => {
             <img 
               src="https://customer-assets.emergentagent.com/job_emergency-drill-2/artifacts/rcx6bwsz_EXRSIM_Small.tiff" 
               alt="EXRSIM Logo" 
-              className="h-10 w-auto"
-              style={{ filter: 'brightness(0) saturate(100%) invert(68%) sepia(67%) saturate(2873%) hue-rotate(8deg) brightness(102%) contrast(102%)' }}
+              className="h-8 w-auto max-w-32 object-contain"
+              onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'inline';
+              }}
             />
+            <span className="text-orange-500 text-2xl font-bold tracking-wider hidden">
+              EXRSIM
+            </span>
           </Link>
           <div className="hidden md:flex items-center space-x-6">
             <Link 

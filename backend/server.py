@@ -108,26 +108,45 @@ class MSELEventCreate(BaseModel):
 # HIRA Models
 class HIRAEntry(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    hazard_name: str
+    name: str
     description: str
-    threat_level: ThreatLevel
-    probability: int  # 1-10 scale
-    impact: int  # 1-10 scale
-    risk_score: int = Field(default=0)  # probability * impact
-    mitigation_strategies: List[str] = []
-    geographic_area: str = ""
-    seasonal_factors: str = ""
+    notes: str = ""
+    disaster_type: str
+    latitude: float = 0.0
+    longitude: float = 0.0
+    # Risk Assessment Categories
+    frequency: int  # 1-6
+    fatalities: int  # 0-4
+    injuries: int  # 0-3
+    evacuation: int  # 0-3
+    property_damage: int  # 0-3
+    critical_infrastructure: int  # 0-3
+    environmental_damage: int  # 0-3
+    business_financial_impact: int  # 0-2
+    psychosocial_impact: int  # 0-2
+    # Change factors (checkboxes as boolean lists)
+    change_in_frequency: List[bool] = [False, False, False, False]  # 4 checkboxes
+    change_in_vulnerability: List[bool] = [False, False, False]  # 3 checkboxes
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class HIRAEntryCreate(BaseModel):
-    hazard_name: str
+    name: str
     description: str
-    threat_level: ThreatLevel
-    probability: int
-    impact: int
-    mitigation_strategies: List[str] = []
-    geographic_area: str = ""
-    seasonal_factors: str = ""
+    notes: str = ""
+    disaster_type: str
+    latitude: float = 0.0
+    longitude: float = 0.0
+    frequency: int
+    fatalities: int
+    injuries: int
+    evacuation: int
+    property_damage: int
+    critical_infrastructure: int
+    environmental_damage: int
+    business_financial_impact: int
+    psychosocial_impact: int
+    change_in_frequency: List[bool] = [False, False, False, False]
+    change_in_vulnerability: List[bool] = [False, False, False]
 
 # Participant Models
 class Participant(BaseModel):

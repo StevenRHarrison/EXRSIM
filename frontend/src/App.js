@@ -1637,15 +1637,31 @@ const HIRAList = ({ onAddNew, onEdit }) => {
         </Card>
       ) : (
         <div className="space-y-4">
-          {entries.map((entry) => {
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-sm text-gray-400">
+              Showing {sortedEntries.length} hazard{sortedEntries.length !== 1 ? 's' : ''} (sorted by risk level)
+            </p>
+          </div>
+          {sortedEntries.map((entry) => {
             const maxImpact = Math.max(entry.fatalities, entry.injuries, entry.evacuation, entry.property_damage);
             const riskLevel = getRiskLevel(entry.frequency, maxImpact);
             
             return (
               <Card key={entry.id} className="bg-gray-800 border-gray-700 hover:border-orange-500/50 transition-colors">
                 <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
+                  <div className="flex items-start space-x-4">
+                    {/* Hazard Image */}
+                    <div className="flex-shrink-0">
+                      <Avatar className="w-16 h-16">
+                        <AvatarImage src={entry.hazard_image} alt={entry.name} />
+                        <AvatarFallback className="bg-gray-600 text-orange-500 text-lg font-semibold">
+                          <AlertTriangle className="h-8 w-8" />
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
+                    
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-3 mb-2">
                         <h3 className="text-xl font-semibold text-white">{entry.name}</h3>
                         <Badge className={riskLevel.color}>
@@ -1654,6 +1670,7 @@ const HIRAList = ({ onAddNew, onEdit }) => {
                         <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">
                           {entry.disaster_type}
                         </Badge>
+                        <span className="text-xs text-gray-500">Risk Score: {riskLevel.score}</span>
                       </div>
                       
                       <p className="text-gray-400 mb-4">{entry.description}</p>
@@ -1678,9 +1695,17 @@ const HIRAList = ({ onAddNew, onEdit }) => {
                           <span className="text-gray-300 ml-2">{new Date(entry.created_at).toLocaleDateString()}</span>
                         </div>
                       </div>
+                      
+                      {entry.notes && (
+                        <div className="mt-3 p-3 bg-gray-700/50 rounded">
+                          <span className="text-blue-400 font-medium text-sm">Notes: </span>
+                          <span className="text-gray-300 text-sm">{entry.notes}</span>
+                        </div>
+                      )}
                     </div>
                     
-                    <div className="flex space-x-2 ml-4">
+                    {/* Action Buttons */}
+                    <div className="flex space-x-2">
                       <Button
                         variant="outline"
                         size="sm"

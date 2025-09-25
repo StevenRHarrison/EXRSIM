@@ -273,15 +273,37 @@ async def get_hira_entries():
     entries = await db.hira_entries.find().to_list(1000)
     return [HIRAEntry(**parse_from_mongo(entry)) for entry in entries]
 
+@api_router.get("/hira/{entry_id}", response_model=HIRAEntry)
+async def get_hira_entry(entry_id: str):
+    entry = await db.hira_entries.find_one({"id": entry_id})
+    if not entry:
+        raise HTTPException(status_code=404, detail="HIRA entry not found")
+    return HIRAEntry(**parse_from_mongo(entry))
+
 @api_router.post("/hira", response_model=HIRAEntry)
 async def create_hira_entry(entry_data: HIRAEntryCreate):
-    entry_dict = entry_data.dict()
-    # Calculate risk score
-    entry_dict["risk_score"] = entry_dict["probability"] * entry_dict["impact"]
-    entry = HIRAEntry(**entry_dict)
+    entry = HIRAEntry(**entry_data.dict())
     entry_mongo = prepare_for_mongo(entry.dict())
     await db.hira_entries.insert_one(entry_mongo)
     return entry
+
+@api_router.put("/hira/{entry_id}", response_model=HIRAEntry)
+async def update_hira_entry(entry_id: str, entry_data: HIRAEntryCreate):
+    update_mongo = prepare_for_mongo(entry_data.dict())
+    result = await db.hira_entries.update_one(
+        {"id": entry_id},
+        {"$set": update_mongo}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="HIRA entry not found")
+    return await get_hira_entry(entry_id)
+
+@api_router.delete("/hira/{entry_id}")
+async def delete_hira_entry(entry_id: str):
+    result = await db.hira_entries.delete_one({"id": entry_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="HIRA entry not found")
+    return {"message": "HIRA entry deleted successfully"}
 
 # Participant Routes
 @api_router.get("/participants", response_model=List[Participant])

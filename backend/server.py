@@ -88,22 +88,48 @@ class ExerciseUpdate(BaseModel):
 # MSEL Models
 class MSELEvent(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    exercise_id: str
+    exercise_id: str = ""  # Optional - link to specific exercise
     event_number: int
-    time_offset: int  # minutes from exercise start
-    event_description: str
-    expected_actions: List[str] = []
+    scenario_time: str  # Time format: "HH:MM" or descriptive like "T+30 minutes"
+    event_type: str
+    inject_mode: str
+    from_entity: str
+    to_entity: str
+    message: str
+    expected_response: str
+    objective_capability_task: str
     notes: str = ""
     completed: bool = False
+    actual_time: Optional[str] = None  # When event actually occurred
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class MSELEventCreate(BaseModel):
-    exercise_id: str
+    exercise_id: str = ""
     event_number: int
-    time_offset: int
-    event_description: str
-    expected_actions: List[str] = []
+    scenario_time: str
+    event_type: str
+    inject_mode: str
+    from_entity: str
+    to_entity: str
+    message: str
+    expected_response: str
+    objective_capability_task: str
     notes: str = ""
+
+class MSELEventUpdate(BaseModel):
+    event_number: Optional[int] = None
+    scenario_time: Optional[str] = None
+    event_type: Optional[str] = None
+    inject_mode: Optional[str] = None
+    from_entity: Optional[str] = None
+    to_entity: Optional[str] = None
+    message: Optional[str] = None
+    expected_response: Optional[str] = None
+    objective_capability_task: Optional[str] = None
+    notes: Optional[str] = None
+    completed: Optional[bool] = None
+    actual_time: Optional[str] = None
 
 # HIRA Models
 class HIRAEntry(BaseModel):

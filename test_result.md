@@ -120,6 +120,18 @@
         -agent: "testing"
         -comment: "✅ COMPREHENSIVE TESTING COMPLETED - All Exercise Builder API endpoints working perfectly. Tested: GET /api/exercise-builder (retrieve all), POST /api/exercise-builder (create with comprehensive test data), GET /api/exercise-builder/{id} (retrieve specific), PUT /api/exercise-builder/{id} (update), DELETE /api/exercise-builder/{id} (delete). All CRUD operations successful. Data persistence verified in MongoDB. Proper error handling confirmed (404 for non-existent, 422 for invalid data). Date/time handling working correctly with ISO format. All required fields present in responses. Created exercises appear in GET requests as expected. Backend logs show no errors."
 
+  - task: "Exercise Builder Dynamic Collections (Goals, Objectives, Events, etc.)"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "unknown"
+        -agent: "testing"
+        -comment: "COMPREHENSIVE DYNAMIC COLLECTIONS TESTING COMPLETED - All 13 dynamic collection fields working perfectly! ✅ VERIFIED: Create Exercise with Dynamic Data - Successfully created exercise with goals, objectives, events, functions, injections, organizations, coordinators, codeWords, callsigns, frequencies, assumptions, artificialities, safetyConcerns. All collections saved correctly with test data. ✅ Retrieve Exercise with Dynamic Data - All dynamic collections returned correctly, data matches original input exactly. ✅ Update Exercise with Dynamic Data - Successfully added new items to existing collections (goals: 1→2, objectives: 1→2, events: 1→2), existing data preserved, new data added correctly. ✅ Validation and Error Handling - Empty collections default to empty lists [], proper 422 error for invalid data, proper 404 for non-existent exercises. ✅ Data Persistence - All dynamic data persists correctly in MongoDB across create/read/update operations. All 10 test scenarios passed including comprehensive data verification, collection updates, error handling, and cleanup. Backend models (ExerciseBuilder, ExerciseBuilderCreate, ExerciseBuilderUpdate) properly handle all dynamic fields as List[dict] with default empty lists."
+
 ## frontend:
   - task: "Exercise Builder Save Draft Button"
     implemented: true

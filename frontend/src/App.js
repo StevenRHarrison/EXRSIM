@@ -4337,6 +4337,32 @@ const ExerciseBuilder = () => {
 function App() {
   const [activeMenu, setActiveMenu] = useState('dashboard');
 
+  // Handle URL-based navigation for editing exercises
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.substring(1); // Remove the #
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      if (hash === 'builder' || urlParams.get('exercise')) {
+        setActiveMenu('builder');
+      } else if (hash && ['dashboard', 'exercises', 'msel', 'hira', 'participants'].includes(hash)) {
+        setActiveMenu(hash);
+      }
+    };
+
+    // Handle initial load
+    handleHashChange();
+    
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handleHashChange);
+    
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handleHashChange);
+    };
+  }, []);
+
   const renderContent = () => {
     switch (activeMenu) {
       case 'dashboard':

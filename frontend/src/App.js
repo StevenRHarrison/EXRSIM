@@ -2868,11 +2868,34 @@ const ExerciseBuilderWizard = ({ onBack }) => {
   const saveExercise = async () => {
     setLoading(true);
     try {
-      // Convert date strings to proper datetime format
+      // Validate and convert date strings to proper datetime format
+      let startDate, endDate;
+      
+      if (exerciseData.start_date) {
+        startDate = new Date(exerciseData.start_date + 'T' + (exerciseData.start_time || '00:00'));
+        if (isNaN(startDate.getTime())) {
+          throw new Error('Invalid start date');
+        }
+      } else {
+        // Use current date if no start date provided
+        startDate = new Date();
+      }
+      
+      if (exerciseData.end_date) {
+        endDate = new Date(exerciseData.end_date + 'T' + (exerciseData.end_time || '23:59'));
+        if (isNaN(endDate.getTime())) {
+          throw new Error('Invalid end date');
+        }
+      } else {
+        // Use start date + 1 day if no end date provided
+        endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 1);
+      }
+      
       const exercisePayload = {
         ...exerciseData,
-        start_date: new Date(exerciseData.start_date + 'T' + (exerciseData.start_time || '00:00')).toISOString(),
-        end_date: new Date(exerciseData.end_date + 'T' + (exerciseData.end_time || '23:59')).toISOString(),
+        start_date: startDate.toISOString(),
+        end_date: endDate.toISOString(),
         scope_exercise_type: exerciseData.exercise_type
       };
       

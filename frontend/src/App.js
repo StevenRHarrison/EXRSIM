@@ -4349,12 +4349,23 @@ function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.substring(1); // Remove the #
-      const urlParams = new URLSearchParams(window.location.search);
       
-      if (hash === 'builder' || urlParams.get('exercise')) {
+      // Check for parameters in hash format: #builder?exercise=<id>
+      const queryStart = hash.indexOf('?');
+      let hashBase = hash;
+      let hasExerciseParam = false;
+      
+      if (queryStart !== -1) {
+        hashBase = hash.substring(0, queryStart);
+        const queryString = hash.substring(queryStart + 1);
+        const urlParams = new URLSearchParams(queryString);
+        hasExerciseParam = urlParams.get('exercise') !== null;
+      }
+      
+      if (hashBase === 'builder' || hasExerciseParam) {
         setActiveMenu('builder');
-      } else if (hash && ['dashboard', 'exercises', 'msel', 'hira', 'participants'].includes(hash)) {
-        setActiveMenu(hash);
+      } else if (hashBase && ['dashboard', 'exercises', 'msel', 'hira', 'participants'].includes(hashBase)) {
+        setActiveMenu(hashBase);
       }
     };
 

@@ -149,7 +149,7 @@ const Dashboard = () => {
 
   const fetchExercises = async () => {
     try {
-      const response = await axios.get(`${API}/exercises`);
+      const response = await axios.get(`${API}/exercise-builder`);
       setExercises(response.data);
     } catch (error) {
       console.error('Error fetching exercises:', error);
@@ -162,21 +162,16 @@ const Dashboard = () => {
     return new Date(dateString).toLocaleDateString('en-CA', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      day: 'numeric'
     });
   };
 
-  const getStatusColor = (status) => {
-    const colors = {
-      draft: 'bg-gray-500/20 text-gray-300 border-gray-500/30',
-      planned: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-      active: 'bg-orange-500/20 text-orange-300 border-orange-500/30',
-      completed: 'bg-green-500/20 text-green-300 border-green-500/30',
-      cancelled: 'bg-red-500/20 text-red-300 border-red-500/30'
-    };
-    return colors[status] || colors.draft;
+  const formatTime = (timeString) => {
+    // Handle both time formats
+    if (timeString && timeString.includes(':')) {
+      return timeString;
+    }
+    return timeString || 'Not set';
   };
 
   return (
@@ -186,7 +181,11 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold text-orange-500 mb-2">Exercise Dashboard</h1>
           <p className="text-gray-400">Manage your emergency training exercises</p>
         </div>
-        <Button className="bg-orange-500 hover:bg-orange-600 text-black font-semibold">
+        <Button 
+          className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
+          onClick={() => window.location.href = '#builder'}
+          data-testid="new-exercise-btn"
+        >
           <Plus className="h-4 w-4 mr-2" />
           New Exercise
         </Button>
@@ -215,11 +214,14 @@ const Dashboard = () => {
                 <Shield className="h-12 w-12 text-gray-500 mb-4" />
                 <h3 className="text-lg font-semibold text-gray-300 mb-2">No Exercises Yet</h3>
                 <p className="text-gray-500 text-center mb-4">
-                  Create your first emergency training exercise to get started with EXRSIM.
+                  Create your first emergency training exercise using the Exercise Builder.
                 </p>
-                <Button className="bg-orange-500 hover:bg-orange-600 text-black font-semibold">
+                <Button 
+                  className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
+                  onClick={() => window.location.href = '#builder'}
+                >
                   <Plus className="h-4 w-4 mr-2" />
-                  Create Exercise
+                  Start Exercise Builder
                 </Button>
               </CardContent>
             </Card>
@@ -234,32 +236,35 @@ const Dashboard = () => {
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <CardTitle className="text-white text-lg mb-1">{exercise.name}</CardTitle>
-                    <Badge className={getStatusColor(exercise.status)}>
-                      {exercise.status.charAt(0).toUpperCase() + exercise.status.slice(1)}
+                    <CardTitle className="text-white text-lg mb-1">{exercise.exercise_name}</CardTitle>
+                    <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">
+                      {exercise.exercise_type}
                     </Badge>
                   </div>
+                  {exercise.exercise_image && (
+                    <div className="w-12 h-12 rounded bg-gray-700 overflow-hidden ml-3">
+                      <img src={exercise.exercise_image} alt={exercise.exercise_name} className="w-full h-full object-cover" />
+                    </div>
+                  )}
                 </div>
                 <CardDescription className="text-gray-400 mt-2">
-                  {exercise.description}
+                  {exercise.exercise_description}
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="space-y-2 text-sm text-gray-400">
                   <div className="flex items-center space-x-2">
-                    <CalendarDays className="h-4 w-4" />
-                    <span>Start: {formatDate(exercise.start_date)}</span>
+                    <MapPin className="h-4 w-4" />
+                    <span>{exercise.location || 'Location not set'}</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <CalendarDays className="h-4 w-4" />
-                    <span>End: {formatDate(exercise.end_date)}</span>
+                    <span>Start: {formatDate(exercise.start_date)} at {formatTime(exercise.start_time)}</span>
                   </div>
-                  {exercise.goals.length > 0 && (
-                    <div className="flex items-center space-x-2">
-                      <Target className="h-4 w-4" />
-                      <span>{exercise.goals.length} Goal{exercise.goals.length > 1 ? 's' : ''}</span>
-                    </div>
-                  )}
+                  <div className="flex items-center space-x-2">
+                    <CalendarDays className="h-4 w-4" />
+                    <span>End: {formatDate(exercise.end_date)} at {formatTime(exercise.end_time)}</span>
+                  </div>
                 </div>
               </CardContent>
             </Card>

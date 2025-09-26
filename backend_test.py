@@ -19,7 +19,7 @@ def test_exercise_builder_api():
     print("TESTING EXERCISE BUILDER API ENDPOINTS")
     print("=" * 60)
     
-    # Test data as specified in the review request
+    # Test data as specified in the review request - with dynamic collections
     test_exercise_data = {
         "exercise_name": "Emergency Flood Response Test",
         "exercise_type": "Table Top",
@@ -40,7 +40,21 @@ def test_exercise_builder_api():
         "scenario_name": "Metropolitan Flood Emergency",
         "scenario_description": "Heavy rainfall causes river overflow affecting 10,000+ residents",
         "scenario_latitude": 45.4215,
-        "scenario_longitude": -75.6972
+        "scenario_longitude": -75.6972,
+        # Dynamic collections as specified in review request
+        "goals": [{"id": 1, "name": "Test Goal 1", "description": "Test goal description", "achieved": "Partial"}],
+        "objectives": [{"id": 2, "name": "Test Objective 1", "description": "Test objective description", "achieved": "Yes"}],
+        "events": [{"id": 3, "name": "Emergency Alert", "description": "Initial emergency notification", "actions": "Notify all personnel"}],
+        "functions": [{"id": 4, "name": "Emergency Response", "description": "Primary response function", "achieved": "No"}],
+        "injections": [{"id": 5, "name": "Flood Warning", "description": "Initial flood warning injection", "time": "T+0"}],
+        "organizations": [{"id": 6, "name": "Fire Department", "description": "Primary emergency response", "contact": "Chief Johnson"}],
+        "coordinators": [{"id": 7, "name": "John Smith", "role": "Incident Commander", "contact": "555-0123"}],
+        "codeWords": [{"id": 8, "word": "FLOODGATE", "definition": "Major flood event activation"}],
+        "callsigns": [{"id": 9, "callsign": "COMMAND-1", "definition": "Emergency Operations Center"}],
+        "frequencies": [{"id": 10, "name": "Emergency Channel", "frequency": "155.340", "description": "Primary emergency frequency"}],
+        "assumptions": [{"id": 11, "name": "Weather Conditions", "assumption": "Heavy rain continues for 24 hours"}],
+        "artificialities": [{"id": 12, "name": "Simulated Damage", "artificiality": "Infrastructure damage will be simulated"}],
+        "safetyConcerns": [{"id": 13, "name": "Water Safety", "concern": "Risk of drowning in flood waters"}]
     }
     
     created_exercise_id = None

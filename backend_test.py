@@ -11,7 +11,7 @@ import sys
 import os
 
 # Get backend URL from frontend .env
-BACKEND_URL = "https://exrsim-command.preview.emergentagent.com/api"
+BACKEND_URL = "https://crisis-simulator-2.preview.emergentagent.com/api"
 
 def test_exercise_builder_api():
     """Test Exercise Builder API endpoints comprehensively"""

@@ -4182,7 +4182,9 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
               Back to Dashboard
             </Button>
             
-            <h2 className="text-orange-500 font-bold text-lg mb-6">Exercise Builder</h2>
+            <h2 className="text-orange-500 font-bold text-lg mb-6">
+              {isEditing ? 'Edit Exercise' : 'Exercise Builder'}
+            </h2>
             
             <ScrollArea className="h-[calc(100vh-200px)]">
               <div className="space-y-2">

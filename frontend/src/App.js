@@ -2947,8 +2947,24 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
         scope_exercise_type: exerciseData.exercise_type
       };
       
-      await axios.post(`${API}/exercise-builder`, exercisePayload);
-      alert('Exercise saved successfully!');
+      // Remove id from payload for create operations, but keep it for updates
+      const payloadForAPI = { ...exercisePayload };
+      delete payloadForAPI.id;
+      
+      if (isEditing && exerciseData.id) {
+        // Update existing exercise
+        await axios.put(`${API}/exercise-builder/${exerciseData.id}`, payloadForAPI);
+        alert('Exercise updated successfully!');
+      } else {
+        // Create new exercise
+        await axios.post(`${API}/exercise-builder`, payloadForAPI);
+        alert('Exercise saved successfully!');
+      }
+      
+      // Clear URL parameters after saving and go back
+      if (isEditing) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
       onBack();
     } catch (error) {
       console.error('Error saving exercise:', error);

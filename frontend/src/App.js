@@ -4222,7 +4222,49 @@ const ExerciseBuilderWizard = ({ onBack }) => {
 };
 
 const ExerciseBuilder = () => {
-  return <ExerciseBuilderWizard onBack={() => window.history.back()} />;
+  const [editingExercise, setEditingExercise] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Check URL parameters for exercise ID to edit
+    const urlParams = new URLSearchParams(window.location.search);
+    const exerciseId = urlParams.get('exercise');
+    
+    if (exerciseId) {
+      setLoading(true);
+      fetchExerciseForEdit(exerciseId);
+    }
+  }, []);
+
+  const fetchExerciseForEdit = async (exerciseId) => {
+    try {
+      const response = await axios.get(`${API}/exercise-builder/${exerciseId}`);
+      setEditingExercise(response.data);
+    } catch (error) {
+      console.error('Error fetching exercise for edit:', error);
+      alert('Error loading exercise for editing. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-6 flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading exercise for editing...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <ExerciseBuilderWizard 
+      onBack={() => window.history.back()} 
+      editingExercise={editingExercise}
+    />
+  );
 };
 
 // Main App Component

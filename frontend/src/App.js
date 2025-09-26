@@ -325,6 +325,29 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
     'Visitor'
   ];
 
+  const assignedToOptions = [
+    'Operations Center EOC',
+    'Command Post',
+    'Airbase',
+    'Base',
+    'Camp',
+    'Exercise',
+    'Fire Hall',
+    'Heliport',
+    'Helispot',
+    'Hospital',
+    'Incident',
+    'Medical',
+    'Police',
+    'Public Works',
+    'Staging Areas',
+    'Mobile Unit',
+    'Stationary Unit',
+    'Assistant',
+    'Assembly Place',
+    'Muster Point'
+  ];
+
   const countries = [
     'Canada',
     'USA',

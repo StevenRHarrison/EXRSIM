@@ -296,8 +296,67 @@ def test_exercise_builder_api():
         else:
             print(f"⚠️  Expected 404, got {response.status_code}")
             
-        # Test 8: Test invalid data handling
-        print(f"\n8. Testing invalid data handling - POST with missing required fields")
+        # Test 8: Test empty dynamic collections (should default to empty lists)
+        print(f"\n8. Testing empty dynamic collections - POST with minimal data")
+        minimal_data = {
+            "exercise_name": "Minimal Test Exercise",
+            "exercise_type": "Drill",
+            "exercise_description": "Testing with minimal data",
+            "location": "Test Location",
+            "start_date": "2024-12-16T10:00:00Z",
+            "start_time": "10:00",
+            "end_date": "2024-12-16T12:00:00Z",
+            "end_time": "12:00"
+            # No dynamic collections provided - should default to empty lists
+        }
+        
+        response = requests.post(
+            f"{BACKEND_URL}/exercise-builder",
+            json=minimal_data,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            minimal_exercise = response.json()
+            minimal_exercise_id = minimal_exercise.get("id")
+            print("✅ Successfully created exercise with minimal data")
+            
+            # Verify dynamic collections default to empty lists
+            dynamic_fields = ['goals', 'objectives', 'events', 'functions', 'injections', 
+                            'organizations', 'coordinators', 'codeWords', 'callsigns', 
+                            'frequencies', 'assumptions', 'artificialities', 'safetyConcerns']
+            
+            all_empty = True
+            for field in dynamic_fields:
+                field_value = minimal_exercise.get(field, None)
+                if field_value is None:
+                    print(f"   ❌ {field} is None (should be empty list)")
+                    all_empty = False
+                elif not isinstance(field_value, list):
+                    print(f"   ❌ {field} is not a list: {type(field_value)}")
+                    all_empty = False
+                elif len(field_value) != 0:
+                    print(f"   ❌ {field} is not empty: {field_value}")
+                    all_empty = False
+                else:
+                    print(f"   ✅ {field}: empty list []")
+            
+            if all_empty:
+                print("✅ All dynamic collections properly default to empty lists")
+            else:
+                print("❌ Some dynamic collections do not default to empty lists")
+                return False
+                
+            # Clean up minimal exercise
+            requests.delete(f"{BACKEND_URL}/exercise-builder/{minimal_exercise_id}")
+            print("   🧹 Cleaned up minimal test exercise")
+        else:
+            print(f"❌ Failed to create exercise with minimal data: {response.text}")
+            return False
+            
+        # Test 9: Test invalid data handling
+        print(f"\n9. Testing invalid data handling - POST with missing required fields")
         invalid_data = {"exercise_name": "Test"}  # Missing required fields
         response = requests.post(
             f"{BACKEND_URL}/exercise-builder",

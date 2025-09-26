@@ -4293,8 +4293,16 @@ const ExerciseBuilder = () => {
 
   useEffect(() => {
     // Check URL parameters for exercise ID to edit
-    const urlParams = new URLSearchParams(window.location.search);
-    const exerciseId = urlParams.get('exercise');
+    // Handle parameters in hash format: #builder?exercise=<id>
+    const hash = window.location.hash;
+    const queryStart = hash.indexOf('?');
+    let exerciseId = null;
+    
+    if (queryStart !== -1) {
+      const queryString = hash.substring(queryStart + 1);
+      const urlParams = new URLSearchParams(queryString);
+      exerciseId = urlParams.get('exercise');
+    }
     
     if (exerciseId) {
       setLoading(true);

@@ -481,6 +481,7 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
         firstName: formData.firstName,
         lastName: formData.lastName,
         position: formData.position,
+        assignedTo: formData.assignedTo,
         city: formData.city,
         provinceState: formData.provinceState,
         country: formData.country,

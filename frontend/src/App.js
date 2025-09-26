@@ -2950,6 +2950,108 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
     }
   };
 
+  // Add handlers for dynamic items
+  const addGoal = () => {
+    if (currentGoal.name.trim()) {
+      setGoals(prev => [...prev, { ...currentGoal, id: Date.now() }]);
+      setCurrentGoal({ name: '', description: '', achieved: 'No' });
+    }
+  };
+
+  const addObjective = () => {
+    if (currentObjective.name.trim()) {
+      setObjectives(prev => [...prev, { ...currentObjective, id: Date.now() }]);
+      setCurrentObjective({ name: '', description: '', achieved: 'No' });
+    }
+  };
+
+  const addEvent = () => {
+    if (currentEvent.name.trim()) {
+      setEvents(prev => [...prev, { ...currentEvent, id: Date.now() }]);
+      setCurrentEvent({ 
+        name: '', description: '', actions: '', latitude: 0, longitude: 0, 
+        start_date: '', start_time: '', end_date: '', end_time: '', 
+        tier_scale: '', escalation_value: 'none' 
+      });
+    }
+  };
+
+  const addFunction = () => {
+    if (currentFunction.name.trim()) {
+      setFunctions(prev => [...prev, { ...currentFunction, id: Date.now() }]);
+      setCurrentFunction({ name: '', description: '', achieved: 'No' });
+    }
+  };
+
+  const addOrganization = () => {
+    if (currentOrganization.name.trim()) {
+      setOrganizations(prev => [...prev, { ...currentOrganization, id: Date.now() }]);
+      setCurrentOrganization({ 
+        name: '', description: '', home_base: '', contact_first_name: '', 
+        contact_last_name: '', contact_phone: '', contact_email: '' 
+      });
+    }
+  };
+
+  const addCodeWord = () => {
+    if (currentCodeWord.word.trim()) {
+      setCodeWords(prev => [...prev, { ...currentCodeWord, id: Date.now() }]);
+      setCurrentCodeWord({ word: '', meaning: '' });
+    }
+  };
+
+  const addCallsign = () => {
+    if (currentCallsign.callsign.trim()) {
+      setCallsigns(prev => [...prev, { ...currentCallsign, id: Date.now() }]);
+      setCurrentCallsign({ callsign: '', description: '' });
+    }
+  };
+
+  const addFrequency = () => {
+    if (currentFrequency.frequency.trim()) {
+      setFrequencies(prev => [...prev, { ...currentFrequency, id: Date.now() }]);
+      setCurrentFrequency({ 
+        frequency: '', type: '', description: '', primary_backup: 'Primary' 
+      });
+    }
+  };
+
+  const addAssumption = () => {
+    if (currentAssumption.assumption.trim()) {
+      setAssumptions(prev => [...prev, { ...currentAssumption, id: Date.now() }]);
+      setCurrentAssumption({ assumption: '', description: '' });
+    }
+  };
+
+  const addArtificiality = () => {
+    if (currentArtificiality.artificiality.trim()) {
+      setArtificialities(prev => [...prev, { ...currentArtificiality, id: Date.now() }]);
+      setCurrentArtificiality({ artificiality: '', description: '' });
+    }
+  };
+
+  const addSafetyConcern = () => {
+    if (currentSafetyConcern.concern.trim()) {
+      setSafetyConcerns(prev => [...prev, { ...currentSafetyConcern, id: Date.now() }]);
+      setSafetyConcern({ 
+        concern: '', safety_officer: '', phone: '', description: '' 
+      });
+    }
+  };
+
+  // Remove handlers
+  const removeGoal = (id) => setGoals(prev => prev.filter(item => item.id !== id));
+  const removeObjective = (id) => setObjectives(prev => prev.filter(item => item.id !== id));
+  const removeEvent = (id) => setEvents(prev => prev.filter(item => item.id !== id));
+  const removeFunction = (id) => setFunctions(prev => prev.filter(item => item.id !== id));
+  const removeOrganization = (id) => setOrganizations(prev => prev.filter(item => item.id !== id));
+  const removeCodeWord = (id) => setCodeWords(prev => prev.filter(item => item.id !== id));
+  const removeCallsign = (id) => setCallsigns(prev => prev.filter(item => item.id !== id));
+  const removeFrequency = (id) => setFrequencies(prev => prev.filter(item => item.id !== id));
+  const removeAssumption = (id) => setAssumptions(prev => prev.filter(item => item.id !== id));
+  const removeArtificiality = (id) => setArtificialities(prev => prev.filter(item => item.id !== id));
+  const removeSafetyConcern = (id) => setSafetyConcerns(prev => prev.filter(item => item.id !== id));
+
   const saveExercise = async () => {
     setLoading(true);
     try {

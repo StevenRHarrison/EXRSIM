@@ -243,9 +243,9 @@
 
   - task: "Edit Exercise Button Functionality"
     implemented: true
-    working: "unknown"
+    working: false
     file: "/app/frontend/src/App.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: true
     status_history:
@@ -255,6 +255,9 @@
         -working: "unknown"
         -agent: "main"
         -comment: "IMPLEMENTATION COMPLETED: Added comprehensive edit functionality including URL parameter handling (line 4294-4303), exercise data loading via fetchExerciseForEdit, ExerciseBuilderWizard modifications to support editingExercise prop (line 2755), form data population from existing exercise (line 2790-2823), PUT vs POST API handling in saveExercise function (line 2954-2962), header updates to show Edit vs Create mode (line 4185-4187), and main App URL parameter navigation handling (line 4340-4358). Ready for testing."
+        -working: false
+        -agent: "testing"
+        -comment: "❌ CRITICAL ISSUE IDENTIFIED: Edit Exercise button works and navigates to correct URL (#builder?exercise=<id>), but URL parameter parsing is broken. The code uses window.location.search which only gets parameters before the hash, but the URL format is #builder?exercise=<id> (parameters after hash). This causes direct navigation to fail and redirects back to dashboard. Backend API works correctly (tested with curl). NEEDS FIX: URL parameter parsing logic in ExerciseBuilder component (line 4296) must parse parameters from hash portion instead of search portion."
 
 ## metadata:
   created_by: "main_agent"

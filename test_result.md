@@ -267,14 +267,9 @@
 
 ## test_plan:
   current_focus:
-    - "Exercise Builder Save Draft Button"
-    - "Exercise Builder Complete Exercise Button"
-    - "Add Goal Button (Step 5)"
-    - "Add Objective Button (Step 6)"
-    - "Add Event Button (Step 7)"
-    - "Add Function Button (Step 8)"
-    - "Add Organization Button (Step 10)"
-  stuck_tasks: []
+    - "Edit Exercise Button Functionality"
+  stuck_tasks:
+    - "Edit Exercise Button Functionality"
   test_all: false
   test_priority: "high_first"
 

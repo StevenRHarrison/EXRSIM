@@ -2786,6 +2786,43 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
+  // Dynamic lists for add functionality
+  const [goals, setGoals] = useState([]);
+  const [objectives, setObjectives] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [functions, setFunctions] = useState([]);
+  const [organizations, setOrganizations] = useState([]);
+  const [codeWords, setCodeWords] = useState([]);
+  const [callsigns, setCallsigns] = useState([]);
+  const [frequencies, setFrequencies] = useState([]);
+  const [assumptions, setAssumptions] = useState([]);
+  const [artificialities, setArtificialities] = useState([]);
+  const [safetyConcerns, setSafetyConcerns] = useState([]);
+
+  // Current form states for adding items
+  const [currentGoal, setCurrentGoal] = useState({ name: '', description: '', achieved: 'No' });
+  const [currentObjective, setCurrentObjective] = useState({ name: '', description: '', achieved: 'No' });
+  const [currentEvent, setCurrentEvent] = useState({ 
+    name: '', description: '', actions: '', latitude: 0, longitude: 0, 
+    start_date: '', start_time: '', end_date: '', end_time: '', 
+    tier_scale: '', escalation_value: 'none' 
+  });
+  const [currentFunction, setCurrentFunction] = useState({ name: '', description: '', achieved: 'No' });
+  const [currentOrganization, setCurrentOrganization] = useState({ 
+    name: '', description: '', home_base: '', contact_first_name: '', 
+    contact_last_name: '', contact_phone: '', contact_email: '' 
+  });
+  const [currentCodeWord, setCurrentCodeWord] = useState({ word: '', meaning: '' });
+  const [currentCallsign, setCurrentCallsign] = useState({ callsign: '', description: '' });
+  const [currentFrequency, setCurrentFrequency] = useState({ 
+    frequency: '', type: '', description: '', primary_backup: 'Primary' 
+  });
+  const [currentAssumption, setCurrentAssumption] = useState({ assumption: '', description: '' });
+  const [currentArtificiality, setCurrentArtificiality] = useState({ artificiality: '', description: '' });
+  const [currentSafetyConcern, setSafetyConcern] = useState({ 
+    concern: '', safety_officer: '', phone: '', description: '' 
+  });
+
   // Load existing exercise data when editing
   useEffect(() => {
     if (editingExercise) {

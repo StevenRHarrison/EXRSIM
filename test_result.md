@@ -393,7 +393,7 @@
 
 ## test_plan:
   current_focus:
-    - "Edit Exercise Data Persistence - Data Loss Investigation"
+    - "Individual Save Step Buttons - All 17 Steps Comprehensive Testing"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"

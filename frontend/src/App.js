@@ -2387,12 +2387,611 @@ const HIRAView = () => {
   );
 };
 
-const ExerciseBuilder = () => (
-  <div className="p-6">
-    <h1 className="text-3xl font-bold text-orange-500 mb-4">Exercise Builder</h1>
-    <p className="text-gray-400">Step-by-step exercise builder coming soon...</p>
-  </div>
-);
+// Exercise Builder Step-by-Step Wizard
+const ExerciseBuilderWizard = ({ onBack }) => {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [exerciseData, setExerciseData] = useState({
+    // Step 1: Exercise
+    exercise_image: null,
+    exercise_name: '',
+    exercise_type: '',
+    exercise_description: '',
+    location: '',
+    start_date: '',
+    start_time: '',
+    end_date: '',
+    end_time: '',
+    // Step 2: Scope
+    scope_description: '',
+    scope_hazards: '',
+    scope_geographic_area: '',
+    scope_functions: '',
+    scope_organizations: '',
+    scope_personnel: '',
+    scope_exercise_type: '',
+    // Step 3: Purpose
+    purpose_description: '',
+    // Step 4: Scenario
+    scenario_image: null,
+    scenario_name: '',
+    scenario_description: '',
+    scenario_latitude: 0,
+    scenario_longitude: 0
+  });
+  const [imagePreview, setImagePreview] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const exerciseTypes = [
+    'Table Top',
+    'Drill', 
+    'Functional',
+    'Full Scale Exercise',
+    'No-Notice Exercise',
+    'Real World Event'
+  ];
+
+  const steps = [
+    { number: 1, title: 'Exercise', description: 'Basic exercise information' },
+    { number: 2, title: 'Scope', description: 'Define exercise scope and boundaries' },
+    { number: 3, title: 'Purpose', description: 'Exercise purpose and intent' },
+    { number: 4, title: 'Scenario', description: 'Exercise scenario details' },
+    { number: 5, title: 'Goals', description: 'Exercise goals and outcomes' },
+    { number: 6, title: 'Objectives', description: 'Specific objectives to test' },
+    { number: 7, title: 'Events', description: 'Exercise events and timeline' },
+    { number: 8, title: 'Functions', description: 'Functions to be exercised' },
+    { number: 9, title: 'Injections', description: 'MSEL integration' },
+    { number: 10, title: 'Organizations', description: 'Participating organizations' },
+    { number: 11, title: 'Team Coordinators', description: 'Exercise coordination team' },
+    { number: 12, title: 'Code Words', description: 'Exercise code words' },
+    { number: 13, title: 'Callsigns', description: 'Communication callsigns' },
+    { number: 14, title: 'Comm Frequencies', description: 'Radio frequencies' },
+    { number: 15, title: 'Assumptions', description: 'Exercise assumptions' },
+    { number: 16, title: 'Artificialities', description: 'Artificial constraints' },
+    { number: 17, title: 'Safety', description: 'Safety considerations' }
+  ];
+
+  const handleImageUpload = (event, imageType) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageData = e.target.result;
+        setImagePreview(prev => ({ ...prev, [imageType]: imageData }));
+        setExerciseData(prev => ({ ...prev, [imageType]: imageData }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCameraCapture = async (imageType) => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.play();
+      
+      video.addEventListener('loadedmetadata', () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0);
+        
+        const imageData = canvas.toDataURL('image/jpeg');
+        setImagePreview(prev => ({ ...prev, [imageType]: imageData }));
+        setExerciseData(prev => ({ ...prev, [imageType]: imageData }));
+        
+        stream.getTracks().forEach(track => track.stop());
+      });
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      alert('Unable to access camera. Please use file upload instead.');
+    }
+  };
+
+  const nextStep = () => {
+    if (currentStep < steps.length) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const saveExercise = async () => {
+    setLoading(true);
+    try {
+      // Convert date strings to proper datetime format
+      const exercisePayload = {
+        ...exerciseData,
+        start_date: new Date(exerciseData.start_date + 'T' + (exerciseData.start_time || '00:00')).toISOString(),
+        end_date: new Date(exerciseData.end_date + 'T' + (exerciseData.end_time || '23:59')).toISOString(),
+        scope_exercise_type: exerciseData.exercise_type
+      };
+      
+      await axios.post(`${API}/exercise-builder`, exercisePayload);
+      alert('Exercise saved successfully!');
+      onBack();
+    } catch (error) {
+      console.error('Error saving exercise:', error);
+      alert('Error saving exercise. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const ImageUploadComponent = ({ imageType, title }) => (
+    <div className="flex items-center space-x-6">
+      <div className="w-32 h-32 rounded-lg bg-gray-700 border-2 border-dashed border-gray-600 flex items-center justify-center overflow-hidden">
+        {imagePreview[imageType] ? (
+          <img src={imagePreview[imageType]} alt={title} className="w-full h-full object-cover rounded-lg" />
+        ) : (
+          <div className="text-center">
+            <Camera className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+            <span className="text-sm text-gray-400">No image</span>
+          </div>
+        )}
+      </div>
+      <div className="space-y-3">
+        <div>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => handleImageUpload(e, imageType)}
+            className="hidden"
+            id={`${imageType}-upload`}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => document.getElementById(`${imageType}-upload`).click()}
+            className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10 mr-3"
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            Upload Photo
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => handleCameraCapture(imageType)}
+            className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10"
+          >
+            <Camera className="h-4 w-4 mr-2" />
+            Take Photo
+          </Button>
+        </div>
+        <p className="text-sm text-gray-400">Upload image or capture with camera</p>
+      </div>
+    </div>
+  );
+
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 1: // Exercise
+        return (
+          <div className="space-y-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Exercise Image</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ImageUploadComponent imageType="exercise_image" title="Exercise" />
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Exercise Details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label className="text-gray-300">Exercise Name *</Label>
+                  <Input
+                    value={exerciseData.exercise_name}
+                    onChange={(e) => setExerciseData(prev => ({ ...prev, exercise_name: e.target.value }))}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-gray-300">Exercise Type *</Label>
+                  <Select 
+                    value={exerciseData.exercise_type} 
+                    onValueChange={(value) => setExerciseData(prev => ({ ...prev, exercise_type: value }))}
+                  >
+                    <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                      <SelectValue placeholder="Select exercise type" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-700 border-gray-600">
+                      {exerciseTypes.map((type) => (
+                        <SelectItem key={type} value={type} className="text-white focus:bg-gray-600">
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-gray-300">Description *</Label>
+                  <Textarea
+                    value={exerciseData.exercise_description}
+                    onChange={(e) => setExerciseData(prev => ({ ...prev, exercise_description: e.target.value }))}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={3}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-gray-300">Location *</Label>
+                  <Input
+                    value={exerciseData.location}
+                    onChange={(e) => setExerciseData(prev => ({ ...prev, location: e.target.value }))}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-300">Start Date *</Label>
+                    <Input
+                      type="date"
+                      value={exerciseData.start_date}
+                      onChange={(e) => setExerciseData(prev => ({ ...prev, start_date: e.target.value }))}
+                      className="bg-gray-700 border-gray-600 text-white"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-gray-300">Start Time</Label>
+                    <Input
+                      type="time"
+                      value={exerciseData.start_time}
+                      onChange={(e) => setExerciseData(prev => ({ ...prev, start_time: e.target.value }))}
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-300">End Date *</Label>
+                    <Input
+                      type="date"
+                      value={exerciseData.end_date}
+                      onChange={(e) => setExerciseData(prev => ({ ...prev, end_date: e.target.value }))}
+                      className="bg-gray-700 border-gray-600 text-white"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-gray-300">End Time</Label>
+                    <Input
+                      type="time"
+                      value={exerciseData.end_time}
+                      onChange={(e) => setExerciseData(prev => ({ ...prev, end_time: e.target.value }))}
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 2: // Scope
+        return (
+          <div className="space-y-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Exercise Scope</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label className="text-gray-300">Scope Description</Label>
+                  <Textarea
+                    value={exerciseData.scope_description}
+                    onChange={(e) => setExerciseData(prev => ({ ...prev, scope_description: e.target.value }))}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={3}
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-gray-300">Hazards</Label>
+                  <Textarea
+                    value={exerciseData.scope_hazards}
+                    onChange={(e) => setExerciseData(prev => ({ ...prev, scope_hazards: e.target.value }))}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={2}
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-gray-300">Geographic Area</Label>
+                  <Textarea
+                    value={exerciseData.scope_geographic_area}
+                    onChange={(e) => setExerciseData(prev => ({ ...prev, scope_geographic_area: e.target.value }))}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={2}
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-gray-300">Functions</Label>
+                  <Textarea
+                    value={exerciseData.scope_functions}
+                    onChange={(e) => setExerciseData(prev => ({ ...prev, scope_functions: e.target.value }))}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={2}
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-gray-300">Organizations</Label>
+                  <Textarea
+                    value={exerciseData.scope_organizations}
+                    onChange={(e) => setExerciseData(prev => ({ ...prev, scope_organizations: e.target.value }))}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={2}
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-gray-300">Personnel</Label>
+                  <Textarea
+                    value={exerciseData.scope_personnel}
+                    onChange={(e) => setExerciseData(prev => ({ ...prev, scope_personnel: e.target.value }))}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={2}
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-gray-300">Exercise Type (Copied from Step 1)</Label>
+                  <Input
+                    value={exerciseData.exercise_type}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    disabled
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 3: // Purpose
+        return (
+          <div className="space-y-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Exercise Purpose</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div>
+                  <Label className="text-gray-300">Purpose Description</Label>
+                  <Textarea
+                    value={exerciseData.purpose_description}
+                    onChange={(e) => setExerciseData(prev => ({ ...prev, purpose_description: e.target.value }))}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={4}
+                    placeholder="Describe the overall purpose and intent of this exercise..."
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 4: // Scenario
+        return (
+          <div className="space-y-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Scenario Image</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ImageUploadComponent imageType="scenario_image" title="Scenario" />
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Scenario Details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label className="text-gray-300">Scenario Name</Label>
+                  <Input
+                    value={exerciseData.scenario_name}
+                    onChange={(e) => setExerciseData(prev => ({ ...prev, scenario_name: e.target.value }))}
+                    className="bg-gray-700 border-gray-600 text-white"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-gray-300">Scenario Description</Label>
+                  <Textarea
+                    value={exerciseData.scenario_description}
+                    onChange={(e) => setExerciseData(prev => ({ ...prev, scenario_description: e.target.value }))}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={4}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-300">Latitude</Label>
+                    <Input
+                      type="number"
+                      step="any"
+                      value={exerciseData.scenario_latitude}
+                      onChange={(e) => setExerciseData(prev => ({ ...prev, scenario_latitude: parseFloat(e.target.value) || 0 }))}
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-gray-300">Longitude</Label>
+                    <Input
+                      type="number"
+                      step="any"
+                      value={exerciseData.scenario_longitude}
+                      onChange={(e) => setExerciseData(prev => ({ ...prev, scenario_longitude: parseFloat(e.target.value) || 0 }))}
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      default:
+        return (
+          <div className="space-y-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <BookOpen className="h-12 w-12 text-orange-500 mb-4" />
+                <h3 className="text-lg font-semibold text-gray-300 mb-2">
+                  Step {currentStep}: {steps[currentStep - 1]?.title}
+                </h3>
+                <p className="text-gray-500 text-center">
+                  {steps[currentStep - 1]?.description} - Coming soon in next update
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-black">
+      <div className="flex">
+        {/* Sidebar Progress */}
+        <div className="w-80 bg-gray-900 border-r border-orange-500/20 h-screen sticky top-0">
+          <div className="p-4">
+            <Button 
+              variant="ghost" 
+              onClick={onBack}
+              className="text-gray-400 hover:text-orange-500 mb-6 w-full justify-start"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Dashboard
+            </Button>
+            
+            <h2 className="text-orange-500 font-bold text-lg mb-6">Exercise Builder</h2>
+            
+            <ScrollArea className="h-[calc(100vh-200px)]">
+              <div className="space-y-2">
+                {steps.map((step) => (
+                  <div
+                    key={step.number}
+                    className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                      currentStep === step.number
+                        ? 'bg-orange-500/20 text-orange-500 border border-orange-500/30'
+                        : currentStep > step.number
+                        ? 'bg-green-500/20 text-green-300 border border-green-500/30'
+                        : 'text-gray-400 hover:text-gray-300 hover:bg-gray-800'
+                    }`}
+                    onClick={() => setCurrentStep(step.number)}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
+                        currentStep === step.number
+                          ? 'bg-orange-500 text-black'
+                          : currentStep > step.number
+                          ? 'bg-green-500 text-black'
+                          : 'bg-gray-700 text-gray-400'
+                      }`}>
+                        {currentStep > step.number ? '✓' : step.number}
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium">{step.title}</div>
+                        <div className="text-xs opacity-75">{step.description}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1">
+          <div className="p-6 max-w-4xl mx-auto">
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-orange-500 mb-2">
+                Step {currentStep}: {steps[currentStep - 1]?.title}
+              </h1>
+              <p className="text-gray-400">{steps[currentStep - 1]?.description}</p>
+            </div>
+
+            {renderStepContent()}
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-700">
+              <Button
+                variant="outline"
+                onClick={prevStep}
+                disabled={currentStep === 1}
+                className="border-gray-600 text-gray-300"
+              >
+                Previous
+              </Button>
+
+              <div className="text-center">
+                <span className="text-gray-400 text-sm">
+                  Step {currentStep} of {steps.length}
+                </span>
+              </div>
+
+              <div className="space-x-3">
+                {currentStep === steps.length ? (
+                  <Button
+                    onClick={saveExercise}
+                    disabled={loading}
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                  >
+                    {loading ? 'Saving...' : 'Complete Exercise'}
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      variant="outline"
+                      onClick={saveExercise}
+                      disabled={loading}
+                      className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10"
+                    >
+                      Save Draft
+                    </Button>
+                    <Button
+                      onClick={nextStep}
+                      className="bg-orange-500 hover:bg-orange-600 text-black"
+                    >
+                      Next
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ExerciseBuilder = () => {
+  return <ExerciseBuilderWizard onBack={() => window.history.back()} />;
+};
 
 // Main App Component
 function App() {

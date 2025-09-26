@@ -2887,17 +2887,27 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
       setImagePreview(previews);
 
       // Load dynamic collections if they exist
-      if (editingExercise.goals) setGoals(editingExercise.goals);
-      if (editingExercise.objectives) setObjectives(editingExercise.objectives);
-      if (editingExercise.events) setEvents(editingExercise.events);
-      if (editingExercise.functions) setFunctions(editingExercise.functions);
-      if (editingExercise.organizations) setOrganizations(editingExercise.organizations);
-      if (editingExercise.codeWords) setCodeWords(editingExercise.codeWords);
-      if (editingExercise.callsigns) setCallsigns(editingExercise.callsigns);
-      if (editingExercise.frequencies) setFrequencies(editingExercise.frequencies);
-      if (editingExercise.assumptions) setAssumptions(editingExercise.assumptions);
-      if (editingExercise.artificialities) setArtificialities(editingExercise.artificialities);
-      if (editingExercise.safetyConcerns) setSafetyConcerns(editingExercise.safetyConcerns);
+      console.log('Loading dynamic collections from editingExercise:', editingExercise);
+      console.log('Goals data:', editingExercise.goals);
+      console.log('Objectives data:', editingExercise.objectives);
+      
+      if (editingExercise.goals && editingExercise.goals.length > 0) {
+        console.log('Setting goals:', editingExercise.goals);
+        setGoals(editingExercise.goals);
+      }
+      if (editingExercise.objectives && editingExercise.objectives.length > 0) {
+        console.log('Setting objectives:', editingExercise.objectives);
+        setObjectives(editingExercise.objectives);
+      }
+      if (editingExercise.events && editingExercise.events.length > 0) setEvents(editingExercise.events);
+      if (editingExercise.functions && editingExercise.functions.length > 0) setFunctions(editingExercise.functions);
+      if (editingExercise.organizations && editingExercise.organizations.length > 0) setOrganizations(editingExercise.organizations);
+      if (editingExercise.codeWords && editingExercise.codeWords.length > 0) setCodeWords(editingExercise.codeWords);
+      if (editingExercise.callsigns && editingExercise.callsigns.length > 0) setCallsigns(editingExercise.callsigns);
+      if (editingExercise.frequencies && editingExercise.frequencies.length > 0) setFrequencies(editingExercise.frequencies);
+      if (editingExercise.assumptions && editingExercise.assumptions.length > 0) setAssumptions(editingExercise.assumptions);
+      if (editingExercise.artificialities && editingExercise.artificialities.length > 0) setArtificialities(editingExercise.artificialities);
+      if (editingExercise.safetyConcerns && editingExercise.safetyConcerns.length > 0) setSafetyConcerns(editingExercise.safetyConcerns);
     }
   }, [editingExercise]);
 

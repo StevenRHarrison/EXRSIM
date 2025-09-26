@@ -696,22 +696,17 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
         </Card>
         
         {/* Save Step Button */}
-        <Card className="bg-gray-800 border-gray-700">
-          <CardContent className="pt-6">
-            <Button 
-              onClick={() => {
-                // Save step functionality would go here
-                console.log('Save step clicked');
-              }}
-              disabled={loading}
-              variant="outline"
-              className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10"
-            >
-              <Save className="h-4 w-4 mr-2" />
-              {loading ? 'Saving...' : 'Save Step'}
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="flex justify-end">
+          <Button 
+            onClick={saveStepDraft}
+            disabled={loading}
+            variant="outline"
+            className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10"
+          >
+            <Save className="h-4 w-4 mr-2" />
+            {loading ? 'Saving...' : 'Save Step'}
+          </Button>
+        </div>
 
         <div className="flex justify-end space-x-4 pt-6">
           <Button type="button" variant="outline" onClick={onBack} disabled={loading}>

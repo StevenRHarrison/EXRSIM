@@ -4349,7 +4349,6 @@ function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.substring(1); // Remove the #
-      console.log('Hash change detected:', hash);
       
       // Check for parameters in hash format: #builder?exercise=<id>
       const queryStart = hash.indexOf('?');
@@ -4361,17 +4360,13 @@ function App() {
         const queryString = hash.substring(queryStart + 1);
         const urlParams = new URLSearchParams(queryString);
         hasExerciseParam = urlParams.get('exercise') !== null;
-        console.log('Hash base:', hashBase, 'Has exercise param:', hasExerciseParam);
       }
       
       if (hashBase === 'builder' || hasExerciseParam) {
-        console.log('Setting active menu to builder');
         setActiveMenu('builder');
       } else if (hashBase && ['dashboard', 'exercises', 'msel', 'hira', 'participants'].includes(hashBase)) {
-        console.log('Setting active menu to:', hashBase);
         setActiveMenu(hashBase);
       } else if (!hashBase) {
-        console.log('Setting active menu to dashboard (default)');
         setActiveMenu('dashboard');
       }
     };

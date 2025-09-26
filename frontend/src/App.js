@@ -2885,6 +2885,19 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
         previews.scenario_image = editingExercise.scenario_image;
       }
       setImagePreview(previews);
+
+      // Load dynamic collections if they exist
+      if (editingExercise.goals) setGoals(editingExercise.goals);
+      if (editingExercise.objectives) setObjectives(editingExercise.objectives);
+      if (editingExercise.events) setEvents(editingExercise.events);
+      if (editingExercise.functions) setFunctions(editingExercise.functions);
+      if (editingExercise.organizations) setOrganizations(editingExercise.organizations);
+      if (editingExercise.codeWords) setCodeWords(editingExercise.codeWords);
+      if (editingExercise.callsigns) setCallsigns(editingExercise.callsigns);
+      if (editingExercise.frequencies) setFrequencies(editingExercise.frequencies);
+      if (editingExercise.assumptions) setAssumptions(editingExercise.assumptions);
+      if (editingExercise.artificialities) setArtificialities(editingExercise.artificialities);
+      if (editingExercise.safetyConcerns) setSafetyConcerns(editingExercise.safetyConcerns);
     }
   }, [editingExercise]);
 

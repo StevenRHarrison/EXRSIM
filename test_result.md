@@ -344,12 +344,7 @@
   run_ui: false
 
 ## test_plan:
-  current_focus:
-    - "Dynamic Add Goal Button (Step 5) - New Implementation"
-    - "Dynamic Add Objective Button (Step 6) - New Implementation"
-    - "Save Step Functionality - Individual Step Saving"
-    - "Dynamic State Management - Goals and Objectives Lists"
-    - "Remove Functionality - Goal and Objective Removal"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"

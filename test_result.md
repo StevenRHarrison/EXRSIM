@@ -241,6 +241,81 @@
         -agent: "testing"
         -comment: "✅ WORKING - Add Safety Concern button tested in Step 17 and confirmed working. All add buttons follow the same implementation pattern and are clickable without errors. Exercise Builder wizard navigation works correctly through all 17 steps."
 
+  - task: "Dynamic Add Goal Button (Step 5) - New Implementation"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "unknown"
+        -agent: "main"
+        -comment: "NEW IMPLEMENTATION: Enhanced Exercise Builder with dynamic state management for goals. Added working 'Add Goal' button that actually adds items to lists, individual 'Save Step' button that saves drafts to database, display of added items with remove functionality, and form state management for current items being added."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ COMPREHENSIVE TESTING COMPLETED - Dynamic Add Goal functionality fully working! VERIFIED: ✅ Goal form with name, description, and radio buttons (Yes/Partial/No) ✅ Add Goal button successfully adds items to 'Added Goals' list ✅ Goals display with proper styling, badges, and trash buttons ✅ Goal count updates correctly (Added Goals (1)) ✅ Form fields clear after successful addition ✅ Save Step button functional with loading states ✅ Navigation between steps preserves data ✅ Exercise data persists (header shows 'Edit Exercise'). The new dynamic state management is working perfectly - goals are added to state, displayed in cards with proper badges, and can be removed with trash buttons."
+
+  - task: "Dynamic Add Objective Button (Step 6) - New Implementation"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "unknown"
+        -agent: "main"
+        -comment: "NEW IMPLEMENTATION: Enhanced Exercise Builder with dynamic state management for objectives. Added working 'Add Objective' button that actually adds items to lists, individual 'Save Step' button that saves drafts to database, display of added items with remove functionality, and form state management for current items being added."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ COMPREHENSIVE TESTING COMPLETED - Dynamic Add Objective functionality fully working! VERIFIED: ✅ Objective form with name, description, and radio buttons (Yes/Partial/No) ✅ Add Objective button successfully adds items to 'Added Objectives' list ✅ Objectives display with proper styling, badges, and trash buttons ✅ Objective count updates correctly ✅ Form fields clear after successful addition ✅ Save Step button functional with loading states ✅ Navigation between steps preserves data ✅ Exercise data persists. The new dynamic state management is working perfectly - objectives are added to state, displayed in cards with proper badges, and can be removed with trash buttons."
+
+  - task: "Save Step Functionality - Individual Step Saving"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "unknown"
+        -agent: "main"
+        -comment: "NEW IMPLEMENTATION: Added individual 'Save Step' buttons on each step that save drafts to database using saveStepDraft function (line 3074-3143). Combines all current data including goals, objectives, events, functions, organizations, etc. and saves to backend API."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ COMPREHENSIVE TESTING COMPLETED - Save Step functionality fully working! VERIFIED: ✅ Save Step buttons present on both Goals and Objectives steps ✅ Loading states shown during save ('Saving...' text) ✅ Successful save operations (header changes to 'Edit Exercise' indicating persistence) ✅ Data persistence confirmed - exercise data is saved to database ✅ No JavaScript errors during save operations. The saveStepDraft function is working correctly and saving exercise data including dynamic collections to the backend API."
+
+  - task: "Dynamic State Management - Goals and Objectives Lists"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "unknown"
+        -agent: "main"
+        -comment: "NEW IMPLEMENTATION: Added dynamic state management using useState hooks for goals, objectives, events, functions, organizations, etc. (lines 2808-2818). Added current form states for adding items (lines 2821-2842). Added add handlers (lines 2972-3058) and remove handlers (lines 3061-3071)."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ COMPREHENSIVE TESTING COMPLETED - Dynamic state management fully working! VERIFIED: ✅ Goals and objectives arrays properly managed with useState ✅ Add functions successfully append items with unique IDs ✅ Remove functions successfully filter out items by ID ✅ Current form states properly managed and cleared after additions ✅ State updates trigger UI re-renders correctly ✅ Item counts update dynamically (Added Goals (1), Added Objectives (2), etc.) ✅ State persistence across navigation. The dynamic state management implementation is robust and handles all CRUD operations correctly."
+
+  - task: "Remove Functionality - Goal and Objective Removal"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "unknown"
+        -agent: "main"
+        -comment: "NEW IMPLEMENTATION: Added remove handlers for goals and objectives (lines 3061-3071). Each added item displays with a trash button that calls the appropriate remove function to filter out the item by ID."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ COMPREHENSIVE TESTING COMPLETED - Remove functionality fully working! VERIFIED: ✅ Trash buttons visible on all added goal and objective cards ✅ Remove functions successfully filter items by ID ✅ Item counts update correctly after removal ✅ UI updates immediately after removal ✅ No JavaScript errors during removal operations. The remove functionality is working perfectly - users can successfully remove goals and objectives from their lists using the trash buttons."
+
   - task: "Edit Exercise Button Functionality"
     implemented: true
     working: true

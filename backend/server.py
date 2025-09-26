@@ -443,6 +443,7 @@ class ParticipantCreate(BaseModel):
     firstName: str = ""
     lastName: str = ""
     position: str = ""
+    assignedTo: str = ""
     city: str = ""
     provinceState: str = ""
     country: str = "Canada"

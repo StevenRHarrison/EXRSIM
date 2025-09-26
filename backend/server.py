@@ -150,6 +150,19 @@ class ExerciseBuilderCreate(BaseModel):
     scenario_description: str = ""
     scenario_latitude: float = 0.0
     scenario_longitude: float = 0.0
+    goals: List[dict] = Field(default_factory=list)
+    objectives: List[dict] = Field(default_factory=list)
+    events: List[dict] = Field(default_factory=list)
+    functions: List[dict] = Field(default_factory=list)
+    injections: List[dict] = Field(default_factory=list)
+    organizations: List[dict] = Field(default_factory=list)
+    coordinators: List[dict] = Field(default_factory=list)
+    codeWords: List[dict] = Field(default_factory=list)
+    callsigns: List[dict] = Field(default_factory=list)
+    frequencies: List[dict] = Field(default_factory=list)
+    assumptions: List[dict] = Field(default_factory=list)
+    artificialities: List[dict] = Field(default_factory=list)
+    safetyConcerns: List[dict] = Field(default_factory=list)
 
 class ExerciseBuilderUpdate(BaseModel):
     exercise_image: Optional[str] = None

@@ -220,10 +220,51 @@ def test_exercise_builder_api():
             
             # Verify update worked
             if updated_exercise.get('exercise_name') == "Updated Emergency Flood Response Test":
-                print("✅ Exercise update verified")
+                print("✅ Exercise name update verified")
             else:
-                print("❌ Exercise update not reflected in response")
+                print("❌ Exercise name update not reflected in response")
                 return False
+                
+            # Verify dynamic collections were updated
+            print("\n   Verifying dynamic collections updates:")
+            updated_goals = updated_exercise.get('goals', [])
+            updated_objectives = updated_exercise.get('objectives', [])
+            updated_events = updated_exercise.get('events', [])
+            
+            if len(updated_goals) == 2:
+                print("   ✅ Goals collection updated correctly (2 items)")
+                if any(goal.get('name') == 'Test Goal 2' for goal in updated_goals):
+                    print("   ✅ New goal found in updated collection")
+                else:
+                    print("   ❌ New goal not found in updated collection")
+                    return False
+            else:
+                print(f"   ❌ Goals collection count incorrect. Expected: 2, Got: {len(updated_goals)}")
+                return False
+                
+            if len(updated_objectives) == 2:
+                print("   ✅ Objectives collection updated correctly (2 items)")
+                if any(obj.get('name') == 'Test Objective 2' for obj in updated_objectives):
+                    print("   ✅ New objective found in updated collection")
+                else:
+                    print("   ❌ New objective not found in updated collection")
+                    return False
+            else:
+                print(f"   ❌ Objectives collection count incorrect. Expected: 2, Got: {len(updated_objectives)}")
+                return False
+                
+            if len(updated_events) == 2:
+                print("   ✅ Events collection updated correctly (2 items)")
+                if any(event.get('name') == 'Evacuation Order' for event in updated_events):
+                    print("   ✅ New event found in updated collection")
+                else:
+                    print("   ❌ New event not found in updated collection")
+                    return False
+            else:
+                print(f"   ❌ Events collection count incorrect. Expected: 2, Got: {len(updated_events)}")
+                return False
+                
+            print("   ✅ All dynamic collections updated successfully")
         else:
             print(f"❌ Failed to update exercise: {response.text}")
             return False

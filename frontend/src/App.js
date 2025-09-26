@@ -3640,6 +3640,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Objective Name</Label>
                   <Input
+                    value={currentObjective.name}
+                    onChange={(e) => setCurrentObjective(prev => ({ ...prev, name: e.target.value }))}
                     placeholder="e.g., Activate EOC within 30 minutes"
                     className="bg-gray-700 border-gray-600 text-white"
                   />
@@ -3647,6 +3649,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Objective Description</Label>
                   <Textarea
+                    value={currentObjective.description}
+                    onChange={(e) => setCurrentObjective(prev => ({ ...prev, description: e.target.value }))}
                     placeholder="Describe the specific objective to be measured..."
                     className="bg-gray-700 border-gray-600 text-white"
                     rows={3}
@@ -3654,7 +3658,11 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 </div>
                 <div>
                   <Label className="text-gray-300">Objective Achieved</Label>
-                  <RadioGroup defaultValue="No" className="flex space-x-6">
+                  <RadioGroup 
+                    value={currentObjective.achieved} 
+                    onValueChange={(value) => setCurrentObjective(prev => ({ ...prev, achieved: value }))}
+                    className="flex space-x-6"
+                  >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="Yes" id="obj-yes" />
                       <Label htmlFor="obj-yes" className="text-green-400">Yes</Label>
@@ -3669,12 +3677,64 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                     </div>
                   </RadioGroup>
                 </div>
-                <Button className="bg-blue-600 hover:bg-blue-700">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Objective
-                </Button>
+                <div className="flex space-x-3">
+                  <Button 
+                    onClick={addObjective}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Objective
+                  </Button>
+                  <Button 
+                    onClick={saveStepDraft}
+                    disabled={loading}
+                    variant="outline"
+                    className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10"
+                  >
+                    <Save className="h-4 w-4 mr-2" />
+                    {loading ? 'Saving...' : 'Save Step'}
+                  </Button>
+                </div>
               </CardContent>
             </Card>
+
+            {/* Display added objectives */}
+            {objectives.length > 0 && (
+              <Card className="bg-gray-800 border-gray-700">
+                <CardHeader>
+                  <CardTitle className="text-orange-500">Added Objectives ({objectives.length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {objectives.map((objective) => (
+                      <div key={objective.id} className="bg-gray-700 p-4 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="text-white font-semibold">{objective.name}</h4>
+                          <div className="flex items-center space-x-2">
+                            <Badge className={
+                              objective.achieved === 'Yes' ? 'bg-green-500/20 text-green-300 border-green-500/30' :
+                              objective.achieved === 'Partial' ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30' :
+                              'bg-red-500/20 text-red-300 border-red-500/30'
+                            }>
+                              {objective.achieved}
+                            </Badge>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => removeObjective(objective.id)}
+                              className="border-red-600 text-red-400 hover:text-red-300 hover:border-red-500/50"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                        <p className="text-gray-300 text-sm">{objective.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         );
 

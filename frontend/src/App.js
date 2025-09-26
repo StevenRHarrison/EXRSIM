@@ -411,6 +411,7 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
         firstName: editingParticipant.firstName || '',
         lastName: editingParticipant.lastName || '',
         position: editingParticipant.position || '',
+        assignedTo: editingParticipant.assignedTo || '',
         address: editingParticipant.address || '',
         city: editingParticipant.city || '',
         provinceState: editingParticipant.provinceState || '',

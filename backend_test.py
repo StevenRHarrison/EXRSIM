@@ -92,14 +92,51 @@ def test_exercise_builder_api():
             print(f"Start Date: {created_exercise.get('start_date')}")
             print(f"End Date: {created_exercise.get('end_date')}")
             
-            # Verify all fields are present
+            # Verify all fields are present including dynamic collections
             required_fields = ['id', 'exercise_name', 'exercise_type', 'exercise_description', 
                              'location', 'start_date', 'end_date', 'created_at']
+            dynamic_fields = ['goals', 'objectives', 'events', 'functions', 'injections', 
+                            'organizations', 'coordinators', 'codeWords', 'callsigns', 
+                            'frequencies', 'assumptions', 'artificialities', 'safetyConcerns']
+            
             missing_fields = [field for field in required_fields if field not in created_exercise]
+            missing_dynamic = [field for field in dynamic_fields if field not in created_exercise]
+            
             if missing_fields:
-                print(f"⚠️  Missing fields in response: {missing_fields}")
+                print(f"⚠️  Missing required fields in response: {missing_fields}")
             else:
                 print("✅ All required fields present in created exercise")
+                
+            if missing_dynamic:
+                print(f"⚠️  Missing dynamic fields in response: {missing_dynamic}")
+            else:
+                print("✅ All dynamic collection fields present in created exercise")
+                
+            # Verify dynamic collections have correct data
+            print("\n   Verifying dynamic collections data:")
+            if created_exercise.get('goals') == test_exercise_data['goals']:
+                print("   ✅ Goals data matches")
+            else:
+                print(f"   ❌ Goals data mismatch. Expected: {test_exercise_data['goals']}, Got: {created_exercise.get('goals')}")
+                
+            if created_exercise.get('objectives') == test_exercise_data['objectives']:
+                print("   ✅ Objectives data matches")
+            else:
+                print(f"   ❌ Objectives data mismatch. Expected: {test_exercise_data['objectives']}, Got: {created_exercise.get('objectives')}")
+                
+            if created_exercise.get('events') == test_exercise_data['events']:
+                print("   ✅ Events data matches")
+            else:
+                print(f"   ❌ Events data mismatch. Expected: {test_exercise_data['events']}, Got: {created_exercise.get('events')}")
+                
+            print(f"   📊 Dynamic collections summary:")
+            for field in dynamic_fields:
+                field_data = created_exercise.get(field, [])
+                print(f"   - {field}: {len(field_data)} items")
+                if field_data and isinstance(field_data, list) and len(field_data) > 0:
+                    print(f"     First item: {field_data[0]}")
+                    
+            print("   ✅ Dynamic collections verification completed")
         else:
             print(f"❌ Failed to create exercise: {response.text}")
             return False

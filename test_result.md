@@ -241,6 +241,21 @@
         -agent: "testing"
         -comment: "✅ WORKING - Add Safety Concern button tested in Step 17 and confirmed working. All add buttons follow the same implementation pattern and are clickable without errors. Exercise Builder wizard navigation works correctly through all 17 steps."
 
+  - task: "Edit Exercise Button Functionality"
+    implemented: true
+    working: "unknown"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: false
+        -agent: "main"
+        -comment: "User reported Edit Exercise button in Exercise list doesn't function - should bring user back to editing the step-by-step wizard with existing data"
+        -working: "unknown"
+        -agent: "main"
+        -comment: "IMPLEMENTATION COMPLETED: Added comprehensive edit functionality including URL parameter handling (line 4294-4303), exercise data loading via fetchExerciseForEdit, ExerciseBuilderWizard modifications to support editingExercise prop (line 2755), form data population from existing exercise (line 2790-2823), PUT vs POST API handling in saveExercise function (line 2954-2962), header updates to show Edit vs Create mode (line 4185-4187), and main App URL parameter navigation handling (line 4340-4358). Ready for testing."
+
 ## metadata:
   created_by: "main_agent"
   version: "1.0"

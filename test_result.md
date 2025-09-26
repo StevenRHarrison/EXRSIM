@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-## user_problem_statement: Debug and fix Exercise Builder functionality - specifically "save draft" and "Complete Exercise" buttons not working, and test all "add" buttons within the Exercise Builder steps
+## user_problem_statement: Test the Edit Exercise workflow to identify where existing data is being lost when opening saved exercises for editing in the EXRSIM Exercise Builder
 
 ## backend:
   - task: "Exercise Builder API endpoints"

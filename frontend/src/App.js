@@ -3052,6 +3052,78 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
   const removeArtificiality = (id) => setArtificialities(prev => prev.filter(item => item.id !== id));
   const removeSafetyConcern = (id) => setSafetyConcerns(prev => prev.filter(item => item.id !== id));
 
+  // Save current step as draft
+  const saveStepDraft = async () => {
+    setLoading(true);
+    try {
+      // Combine all current data
+      const allData = {
+        ...exerciseData,
+        goals,
+        objectives,
+        events,
+        functions,
+        organizations,
+        codeWords,
+        callsigns,
+        frequencies,
+        assumptions,
+        artificialities,
+        safetyConcerns
+      };
+
+      // Use the same save logic as the main save function
+      let startDate, endDate;
+      
+      if (allData.start_date) {
+        startDate = new Date(allData.start_date + 'T' + (allData.start_time || '00:00'));
+        if (isNaN(startDate.getTime())) {
+          throw new Error('Invalid start date');
+        }
+      } else {
+        startDate = new Date();
+      }
+      
+      if (allData.end_date) {
+        endDate = new Date(allData.end_date + 'T' + (allData.end_time || '23:59'));
+        if (isNaN(endDate.getTime())) {
+          throw new Error('Invalid end date');
+        }
+      } else {
+        endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 1);
+      }
+      
+      const exercisePayload = {
+        ...allData,
+        start_date: startDate.toISOString(),
+        end_date: endDate.toISOString(),
+        scope_exercise_type: allData.exercise_type
+      };
+      
+      const payloadForAPI = { ...exercisePayload };
+      delete payloadForAPI.id;
+      
+      if (isEditing && exerciseData.id) {
+        await axios.put(`${API}/exercise-builder/${exerciseData.id}`, payloadForAPI);
+        alert(`Step ${currentStep} saved successfully!`);
+      } else {
+        const response = await axios.post(`${API}/exercise-builder`, payloadForAPI);
+        // Update the exercise ID for future saves
+        if (response.data.id) {
+          setExerciseData(prev => ({ ...prev, id: response.data.id }));
+          setIsEditing(true);
+        }
+        alert(`Step ${currentStep} saved as draft!`);
+      }
+    } catch (error) {
+      console.error('Error saving step:', error);
+      alert('Error saving step. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const saveExercise = async () => {
     setLoading(true);
     try {

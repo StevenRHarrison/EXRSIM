@@ -349,6 +349,18 @@
         -agent: "testing"
         -comment: "✅ EDIT EXERCISE FUNCTIONALITY WORKING! Fixed URL parameter parsing issues in both ExerciseBuilder component (line 4296-4310) and main App hash change handler (line 4353-4369). COMPREHENSIVE TESTING RESULTS: ✅ Edit Exercise button accessible and clickable in exercise detail view, ✅ URL navigation works (#builder?exercise=<id>), ✅ Hash parameter parsing fixed (console logs confirm 'Hash base: builder Has exercise param: true'), ✅ Edit mode loads correctly (header shows 'Edit Exercise'), ✅ Form pre-population working (at least 1 textarea field populated with existing data), ✅ Save Draft button available. Minor: Some input field selectors may need adjustment but core functionality works. User can now successfully edit existing exercises through the step-by-step wizard."
 
+  - task: "Edit Exercise Data Persistence - Data Loss Investigation"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "NEW ISSUE REPORTED: User reports that when opening a saved exercise to edit, all previously saved data from steps and fields gets removed or not loaded properly. This suggests a data loading/persistence issue in edit mode. Need to test complete workflow: Create Exercise with Complete Data → Edit Exercise → Verify Data Loading → Identify Data Loss Points → Check State Initialization Conflicts. Focus areas: ExerciseBuilder fetchExerciseForEdit function, ExerciseBuilderWizard useEffect for editingExercise, State management conflicts between basic and dynamic data, Timing issues in data loading sequence."
+
 ## metadata:
   created_by: "main_agent"
   version: "1.0"

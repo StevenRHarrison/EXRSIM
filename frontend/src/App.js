@@ -2888,26 +2888,50 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
 
       // Load dynamic collections if they exist
       console.log('Loading dynamic collections from editingExercise:', editingExercise);
+      console.log('Full editingExercise object:', JSON.stringify(editingExercise, null, 2));
       console.log('Goals data:', editingExercise.goals);
+      console.log('Goals type:', typeof editingExercise.goals);
+      console.log('Goals is array:', Array.isArray(editingExercise.goals));
       console.log('Objectives data:', editingExercise.objectives);
+      console.log('Objectives type:', typeof editingExercise.objectives);
+      console.log('Objectives is array:', Array.isArray(editingExercise.objectives));
       
-      if (editingExercise.goals && editingExercise.goals.length > 0) {
-        console.log('Setting goals:', editingExercise.goals);
-        setGoals(editingExercise.goals);
+      // Always set the collections, even if they're empty arrays
+      if (editingExercise.goals !== undefined) {
+        console.log('Setting goals with data:', editingExercise.goals);
+        setGoals(Array.isArray(editingExercise.goals) ? editingExercise.goals : []);
       }
-      if (editingExercise.objectives && editingExercise.objectives.length > 0) {
-        console.log('Setting objectives:', editingExercise.objectives);
-        setObjectives(editingExercise.objectives);
+      if (editingExercise.objectives !== undefined) {
+        console.log('Setting objectives with data:', editingExercise.objectives);
+        setObjectives(Array.isArray(editingExercise.objectives) ? editingExercise.objectives : []);
       }
-      if (editingExercise.events && editingExercise.events.length > 0) setEvents(editingExercise.events);
-      if (editingExercise.functions && editingExercise.functions.length > 0) setFunctions(editingExercise.functions);
-      if (editingExercise.organizations && editingExercise.organizations.length > 0) setOrganizations(editingExercise.organizations);
-      if (editingExercise.codeWords && editingExercise.codeWords.length > 0) setCodeWords(editingExercise.codeWords);
-      if (editingExercise.callsigns && editingExercise.callsigns.length > 0) setCallsigns(editingExercise.callsigns);
-      if (editingExercise.frequencies && editingExercise.frequencies.length > 0) setFrequencies(editingExercise.frequencies);
-      if (editingExercise.assumptions && editingExercise.assumptions.length > 0) setAssumptions(editingExercise.assumptions);
-      if (editingExercise.artificialities && editingExercise.artificialities.length > 0) setArtificialities(editingExercise.artificialities);
-      if (editingExercise.safetyConcerns && editingExercise.safetyConcerns.length > 0) setSafetyConcerns(editingExercise.safetyConcerns);
+      if (editingExercise.events !== undefined) {
+        setEvents(Array.isArray(editingExercise.events) ? editingExercise.events : []);
+      }
+      if (editingExercise.functions !== undefined) {
+        setFunctions(Array.isArray(editingExercise.functions) ? editingExercise.functions : []);
+      }
+      if (editingExercise.organizations !== undefined) {
+        setOrganizations(Array.isArray(editingExercise.organizations) ? editingExercise.organizations : []);
+      }
+      if (editingExercise.codeWords !== undefined) {
+        setCodeWords(Array.isArray(editingExercise.codeWords) ? editingExercise.codeWords : []);
+      }
+      if (editingExercise.callsigns !== undefined) {
+        setCallsigns(Array.isArray(editingExercise.callsigns) ? editingExercise.callsigns : []);
+      }
+      if (editingExercise.frequencies !== undefined) {
+        setFrequencies(Array.isArray(editingExercise.frequencies) ? editingExercise.frequencies : []);
+      }
+      if (editingExercise.assumptions !== undefined) {
+        setAssumptions(Array.isArray(editingExercise.assumptions) ? editingExercise.assumptions : []);
+      }
+      if (editingExercise.artificialities !== undefined) {
+        setArtificialities(Array.isArray(editingExercise.artificialities) ? editingExercise.artificialities : []);
+      }
+      if (editingExercise.safetyConcerns !== undefined) {
+        setSafetyConcerns(Array.isArray(editingExercise.safetyConcerns) ? editingExercise.safetyConcerns : []);
+      }
     }
   }, [editingExercise]);
 

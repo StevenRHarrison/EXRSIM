@@ -351,15 +351,18 @@
 
   - task: "Edit Exercise Data Persistence - Data Loss Investigation"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/src/App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: "NA"
         -agent: "testing"
         -comment: "NEW ISSUE REPORTED: User reports that when opening a saved exercise to edit, all previously saved data from steps and fields gets removed or not loaded properly. This suggests a data loading/persistence issue in edit mode. Need to test complete workflow: Create Exercise with Complete Data → Edit Exercise → Verify Data Loading → Identify Data Loss Points → Check State Initialization Conflicts. Focus areas: ExerciseBuilder fetchExerciseForEdit function, ExerciseBuilderWizard useEffect for editingExercise, State management conflicts between basic and dynamic data, Timing issues in data loading sequence."
+        -working: false
+        -agent: "testing"
+        -comment: "🚨 CRITICAL ISSUE CONFIRMED: Edit Exercise data persistence partially broken. ✅ WORKING: Basic exercise data (Steps 1-4) loads correctly - Exercise name, type, description, location, dates, times, and images all populate properly in edit mode. Edit Exercise button accessible via Exercises menu → Exercise detail view. URL navigation and form pre-population working for basic fields. ❌ BROKEN: Dynamic collections (Goals, Objectives) NOT loading in edit mode. In Step 5 (Goals), no 'Added Goals' section visible, only empty form for adding new goals. Previously saved goals/objectives are missing. ROOT CAUSE: Issue likely in useEffect that loads dynamic collections (lines 2890-2900 in App.js). The fetchExerciseForEdit function retrieves data correctly, but dynamic collections state is not being populated from editingExercise data. USER IMPACT: Users lose all previously saved goals, objectives, events, functions, organizations, etc. when editing exercises."
 
 ## metadata:
   created_by: "main_agent"

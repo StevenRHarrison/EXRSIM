@@ -269,10 +269,8 @@
   run_ui: false
 
 ## test_plan:
-  current_focus:
-    - "Edit Exercise Button Functionality"
-  stuck_tasks:
-    - "Edit Exercise Button Functionality"
+  current_focus: []
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 

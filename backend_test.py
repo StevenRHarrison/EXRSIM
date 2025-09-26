@@ -370,8 +370,8 @@ def test_exercise_builder_api():
         else:
             print(f"⚠️  Expected 400/422 for invalid data, got {response.status_code}")
             
-        # Test 9: DELETE /api/exercise-builder/{exercise_id} (Clean up)
-        print(f"\n9. Testing DELETE /api/exercise-builder/{created_exercise_id}")
+        # Test 10: DELETE /api/exercise-builder/{exercise_id} (Clean up)
+        print(f"\n10. Testing DELETE /api/exercise-builder/{created_exercise_id}")
         response = requests.delete(f"{BACKEND_URL}/exercise-builder/{created_exercise_id}")
         print(f"Status Code: {response.status_code}")
         

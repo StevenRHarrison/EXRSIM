@@ -2852,18 +2852,863 @@ const ExerciseBuilderWizard = ({ onBack }) => {
           </div>
         );
 
-      default:
+      case 5: // Goals
         return (
           <div className="space-y-6">
             <Card className="bg-gray-800 border-gray-700">
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <BookOpen className="h-12 w-12 text-orange-500 mb-4" />
-                <h3 className="text-lg font-semibold text-gray-300 mb-2">
-                  Step {currentStep}: {steps[currentStep - 1]?.title}
-                </h3>
-                <p className="text-gray-500 text-center">
-                  {steps[currentStep - 1]?.description} - Coming soon in next update
-                </p>
+              <CardHeader>
+                <CardTitle className="text-orange-500">Exercise Goals</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Define the high-level goals for this exercise
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label className="text-gray-300">Goal Name</Label>
+                  <Input
+                    placeholder="e.g., Test emergency notification systems"
+                    className="bg-gray-700 border-gray-600 text-white"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-300">Goal Description</Label>
+                  <Textarea
+                    placeholder="Describe this goal in detail..."
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-300">Goal Achieved</Label>
+                  <RadioGroup defaultValue="No" className="flex space-x-6">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="Yes" id="goal-yes" />
+                      <Label htmlFor="goal-yes" className="text-green-400">Yes</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="Partial" id="goal-partial" />
+                      <Label htmlFor="goal-partial" className="text-yellow-400">Partial</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="No" id="goal-no" />
+                      <Label htmlFor="goal-no" className="text-red-400">No</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+                <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Goal
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 6: // Objectives
+        return (
+          <div className="space-y-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Exercise Objectives</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Define specific, measurable objectives to be tested
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label className="text-gray-300">Objective Name</Label>
+                  <Input
+                    placeholder="e.g., Activate EOC within 30 minutes"
+                    className="bg-gray-700 border-gray-600 text-white"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-300">Objective Description</Label>
+                  <Textarea
+                    placeholder="Describe the specific objective to be measured..."
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-300">Objective Achieved</Label>
+                  <RadioGroup defaultValue="No" className="flex space-x-6">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="Yes" id="obj-yes" />
+                      <Label htmlFor="obj-yes" className="text-green-400">Yes</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="Partial" id="obj-partial" />
+                      <Label htmlFor="obj-partial" className="text-yellow-400">Partial</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="No" id="obj-no" />
+                      <Label htmlFor="obj-no" className="text-red-400">No</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+                <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Objective
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 7: // Events
+        return (
+          <div className="space-y-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Event Image</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ImageUploadComponent imageType="event_image" title="Event" />
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Exercise Events</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Define key events within the exercise timeline
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label className="text-gray-300">Event Name</Label>
+                  <Input
+                    placeholder="e.g., Initial Emergency Notification"
+                    className="bg-gray-700 border-gray-600 text-white"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-300">Event Description</Label>
+                  <Textarea
+                    placeholder="Describe the event in detail..."
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-300">Anticipated Actions</Label>
+                  <Textarea
+                    placeholder="What actions are expected from participants?"
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={2}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-300">Latitude</Label>
+                    <Input
+                      type="number"
+                      step="any"
+                      placeholder="0.0"
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-gray-300">Longitude</Label>
+                    <Input
+                      type="number"
+                      step="any"
+                      placeholder="0.0"
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-300">Start Date</Label>
+                    <Input
+                      type="date"
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-gray-300">Start Time</Label>
+                    <Input
+                      type="time"
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-300">End Date</Label>
+                    <Input
+                      type="date"
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-gray-300">End Time</Label>
+                    <Input
+                      type="time"
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-gray-300">Tier Scale</Label>
+                  <Select>
+                    <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                      <SelectValue placeholder="Select tier scale" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-700 border-gray-600">
+                      <SelectItem value="tier1" className="text-white">Tier 1: Incident - Moderately disruptive event</SelectItem>
+                      <SelectItem value="tier2" className="text-white">Tier 2: Emergency - Disruptive event requiring external assistance</SelectItem>
+                      <SelectItem value="tier3" className="text-white">Tier 3: Disaster - Significant event with severe impact</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-gray-300">Escalation Value</Label>
+                  <RadioGroup className="grid grid-cols-5 gap-4 mt-2">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="none" id="esc-none" />
+                      <Label htmlFor="esc-none" className="bg-gray-500 text-white px-2 py-1 rounded text-sm">None</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="low" id="esc-low" />
+                      <Label htmlFor="esc-low" className="bg-green-600 text-white px-2 py-1 rounded text-sm">Low</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="confirm" id="esc-confirm" />
+                      <Label htmlFor="esc-confirm" className="bg-yellow-600 text-white px-2 py-1 rounded text-sm">Confirm</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="warning" id="esc-warning" />
+                      <Label htmlFor="esc-warning" className="bg-orange-600 text-white px-2 py-1 rounded text-sm">Warning</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="danger" id="esc-danger" />
+                      <Label htmlFor="esc-danger" className="bg-red-600 text-white px-2 py-1 rounded text-sm">Danger</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
+                <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Event
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 8: // Functions
+        return (
+          <div className="space-y-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Exercise Functions</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Define the functions to be exercised and tested
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label className="text-gray-300">Function Name</Label>
+                  <Input
+                    placeholder="e.g., Emergency Communications"
+                    className="bg-gray-700 border-gray-600 text-white"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-300">Function Description</Label>
+                  <Textarea
+                    placeholder="Describe the function being tested..."
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-300">Function Achieved</Label>
+                  <RadioGroup defaultValue="No" className="flex space-x-6">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="Yes" id="func-yes" />
+                      <Label htmlFor="func-yes" className="text-green-400">Yes</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="Partial" id="func-partial" />
+                      <Label htmlFor="func-partial" className="text-yellow-400">Partial</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="No" id="func-no" />
+                      <Label htmlFor="func-no" className="text-red-400">No</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+                <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Function
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 9: // Injections (MSEL Integration)
+        return (
+          <div className="space-y-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Exercise Injections</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Import MSEL events for this exercise
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-blue-900/20 border border-blue-500/30 rounded">
+                  <div className="flex items-center space-x-3">
+                    <ClipboardList className="h-8 w-8 text-blue-400" />
+                    <div>
+                      <h3 className="text-blue-300 font-semibold">MSEL Integration</h3>
+                      <p className="text-gray-400 text-sm">Import events from Master Sequence Event List</p>
+                    </div>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                    onClick={() => window.open('#msel', '_blank')}
+                  >
+                    Open MSEL
+                  </Button>
+                </div>
+                <div>
+                  <Label className="text-gray-300">Exercise ID for MSEL Linking</Label>
+                  <Input
+                    placeholder="Enter exercise ID to link MSEL events"
+                    className="bg-gray-700 border-gray-600 text-white"
+                  />
+                </div>
+                <Button className="bg-blue-600 hover:bg-blue-700">
+                  Import MSEL Events
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 10: // Organizations
+        return (
+          <div className="space-y-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Organization Image</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ImageUploadComponent imageType="org_image" title="Organization" />
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Exercise Organizations</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Add organizations participating in the exercise
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label className="text-gray-300">Organization Name</Label>
+                  <Input
+                    placeholder="e.g., City Emergency Services"
+                    className="bg-gray-700 border-gray-600 text-white"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-300">Description</Label>
+                  <Textarea
+                    placeholder="Describe the organization's role..."
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={2}
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-300">Home Base</Label>
+                  <Input
+                    placeholder="Organization headquarters or base location"
+                    className="bg-gray-700 border-gray-600 text-white"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-300">Contact First Name</Label>
+                    <Input
+                      placeholder="First name"
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-gray-300">Contact Last Name</Label>
+                    <Input
+                      placeholder="Last name"
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-300">Contact Cell Phone</Label>
+                    <Input
+                      placeholder="+1 (555) 123-4567"
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-gray-300">Contact Email</Label>
+                    <Input
+                      type="email"
+                      placeholder="contact@organization.com"
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                </div>
+
+                <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Organization
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 11: // Team Coordinators
+        return (
+          <div className="space-y-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Team Coordinators</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Select participants who will serve as team coordinators
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-green-900/20 border border-green-500/30 rounded">
+                  <div className="flex items-center space-x-3">
+                    <Users className="h-8 w-8 text-green-400" />
+                    <div>
+                      <h3 className="text-green-300 font-semibold">Participant Integration</h3>
+                      <p className="text-gray-400 text-sm">Import eligible participants with coordinator roles</p>
+                    </div>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+                  >
+                    Load Coordinators
+                  </Button>
+                </div>
+                <div className="bg-gray-700/50 p-4 rounded">
+                  <p className="text-gray-400 text-sm">
+                    Coordinators will be automatically selected from participants with the following roles:
+                  </p>
+                  <ul className="text-gray-400 text-sm mt-2 space-y-1">
+                    <li>• Incident Commander</li>
+                    <li>• Operations Chief</li>
+                    <li>• Planning Chief</li>
+                    <li>• Logistics Chief</li>
+                    <li>• Finance Chief</li>
+                    <li>• Participants with "Coordinator" in position title</li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 12: // Code Words
+        return (
+          <div className="space-y-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Code Word Image</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ImageUploadComponent imageType="code_image" title="Code Word" />
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Exercise Code Words</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Define code words used during the exercise
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label className="text-gray-300">Code Word</Label>
+                  <Input
+                    placeholder="e.g., THUNDERBOLT"
+                    className="bg-gray-700 border-gray-600 text-white"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-300">Definition</Label>
+                  <Textarea
+                    placeholder="Define what this code word means..."
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={3}
+                  />
+                </div>
+                <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Code Word
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 13: // Callsigns
+        return (
+          <div className="space-y-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Callsign Image</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ImageUploadComponent imageType="callsign_image" title="Callsign" />
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Communication Callsigns</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Define radio callsigns for the exercise
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label className="text-gray-300">Callsign</Label>
+                  <Input
+                    placeholder="e.g., COMMAND-1"
+                    className="bg-gray-700 border-gray-600 text-white"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-300">Definition</Label>
+                  <Textarea
+                    placeholder="Define the role or position for this callsign..."
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={3}
+                  />
+                </div>
+                <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Callsign
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 14: // Communication Frequencies
+        return (
+          <div className="space-y-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Frequency Image</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ImageUploadComponent imageType="freq_image" title="Communication Frequency" />
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Communication Frequencies</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Define radio frequencies and settings for the exercise
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-300">Frequency Name</Label>
+                    <Input
+                      placeholder="e.g., Command Net"
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-gray-300">Frequency (MHz)</Label>
+                    <Input
+                      placeholder="e.g., 155.475"
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-gray-300">Description</Label>
+                  <Textarea
+                    placeholder="Describe the usage of this frequency..."
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={2}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-300">Tone (Hz)</Label>
+                    <Select>
+                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                        <SelectValue placeholder="Select tone" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-700 border-gray-600 max-h-60">
+                        {['71.9', '74.4', '77.0', '79.7', '82.5', '85.4', '88.5', '91.5', '94.8', '97.4', '100.0', '103.5', '107.2', '110.9', '114.8', '118.8', '123.0', '127.3'].map((tone) => (
+                          <SelectItem key={tone} value={tone} className="text-white">{tone}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-gray-300">Offset</Label>
+                    <Select>
+                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                        <SelectValue placeholder="Select offset" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-700 border-gray-600">
+                        <SelectItem value="negative" className="text-white">Negative</SelectItem>
+                        <SelectItem value="positive" className="text-white">Positive</SelectItem>
+                        <SelectItem value="simplex" className="text-white">Simplex</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-300">Channel</Label>
+                    <Input
+                      placeholder="e.g., 1"
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-gray-300">Radio Type</Label>
+                    <Select>
+                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                        <SelectValue placeholder="Select radio type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-700 border-gray-600">
+                        <SelectItem value="handheld" className="text-white">Handheld</SelectItem>
+                        <SelectItem value="mobile" className="text-white">Mobile</SelectItem>
+                        <SelectItem value="base_station" className="text-white">Base Station</SelectItem>
+                        <SelectItem value="repeater" className="text-white">Repeater</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-gray-300">Location</Label>
+                  <Input
+                    placeholder="Physical location of radio equipment"
+                    className="bg-gray-700 border-gray-600 text-white"
+                  />
+                </div>
+
+                <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Frequency
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 15: // Assumptions
+        return (
+          <div className="space-y-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Assumption Image</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ImageUploadComponent imageType="assumption_image" title="Assumption" />
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Exercise Assumptions</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Define assumptions made for the exercise
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label className="text-gray-300">Assumption Name</Label>
+                  <Input
+                    placeholder="e.g., Weather Conditions"
+                    className="bg-gray-700 border-gray-600 text-white"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-300">Assumption</Label>
+                  <Textarea
+                    placeholder="Describe the assumption being made..."
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={3}
+                  />
+                </div>
+                <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Assumption
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 16: // Artificialities
+        return (
+          <div className="space-y-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Artificiality Image</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ImageUploadComponent imageType="artificiality_image" title="Artificiality" />
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Exercise Artificialities</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Define artificial constraints or limitations for the exercise
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label className="text-gray-300">Artificiality Name</Label>
+                  <Input
+                    placeholder="e.g., Simulated Resource Limitations"
+                    className="bg-gray-700 border-gray-600 text-white"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-300">Artificiality</Label>
+                  <Textarea
+                    placeholder="Describe the artificial constraint or limitation..."
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={3}
+                  />
+                </div>
+                <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Artificiality
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 17: // Safety
+        return (
+          <div className="space-y-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Safety Image</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ImageUploadComponent imageType="safety_image" title="Safety" />
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Safety Officer Information</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Safety officer details are automatically populated from participants
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="bg-green-900/20 border border-green-500/30 p-4 rounded">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <Shield className="h-6 w-6 text-green-400" />
+                    <h3 className="text-green-300 font-semibold">Current Safety Officer</h3>
+                  </div>
+                  <div className="grid grid-cols-3 gap-4 text-sm">
+                    <div>
+                      <Label className="text-gray-300">First Name</Label>
+                      <Input 
+                        placeholder="Auto-populated"
+                        className="bg-gray-700 border-gray-600 text-white"
+                        disabled
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-gray-300">Last Name</Label>
+                      <Input 
+                        placeholder="Auto-populated"
+                        className="bg-gray-700 border-gray-600 text-white"
+                        disabled
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-gray-300">Cell Phone</Label>
+                      <Input 
+                        placeholder="Auto-populated"
+                        className="bg-gray-700 border-gray-600 text-white"
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    className="border-green-500/50 text-green-400 hover:bg-green-500/10 mt-3"
+                  >
+                    Load Safety Officer Details
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-orange-500">Safety Concerns</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Document safety concerns and considerations for the exercise
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label className="text-gray-300">Safety Concern Name</Label>
+                  <Input
+                    placeholder="e.g., Vehicle Operations"
+                    className="bg-gray-700 border-gray-600 text-white"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-300">Safety Concern</Label>
+                  <Textarea
+                    placeholder="Describe the safety concern and mitigation measures..."
+                    className="bg-gray-700 border-gray-600 text-white"
+                    rows={3}
+                  />
+                </div>
+                <Button className="bg-red-600 hover:bg-red-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Safety Concern
+                </Button>
               </CardContent>
             </Card>
           </div>

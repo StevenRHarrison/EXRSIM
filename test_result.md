@@ -416,6 +416,18 @@
         -agent: "testing"
         -comment: "🎉 PARTICIPANT POSITION OPTIONS TESTING COMPLETED - PERFECT RESULTS! ✅ COMPREHENSIVE VERIFICATION: Successfully navigated to participants section (#participants), clicked 'Add Participant' button, located Position dropdown field, opened dropdown and verified all options. ✅ POSITION OPTIONS VERIFICATION: Found exactly 27 position options as expected. ALL 27 NEW POSITIONS PRESENT: Exercise Evaluator, Exercise Director, Exercise Observer, Team Coordinator, Team Planner, Team Facilitator, Team Evaluator, Team Task, Participant, Staff Member, Fire Chief, Police Chief, Fire Fighter, Medical, Supervisor, Security, Facilitator, Umpire, Scribe, Assistant, Exercise Controller, Agency Representative, Owner, Actor, VIP, Media, Visitor. ✅ OLD POSITIONS CORRECTLY REMOVED: Confirmed that none of the old positions (Incident Commander, Operations Chief, Planning Chief, Logistics Chief, Finance/Administration Chief, Safety Officer, Liaison Officer, Public Information Officer) are present in the dropdown. ✅ FUNCTIONALITY VERIFIED: Position dropdown opens correctly, displays all 27 options in proper shadcn Select component format, options are properly formatted and selectable. ✅ SUMMARY: Total options available: 27, Expected new positions: 27, New positions found: 27/27 (100%), New positions missing: 0, Old positions found: 0. The participant position options update has been successfully implemented and is working perfectly. Users can now select from the complete new set of 27 emergency exercise positions."
 
+  - task: "Participant Assigned To Field - New 20 Assignment Options"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "NEW TESTING REQUEST: User requests testing of newly added 'Assigned to' field in participant form. Field should appear beside Position field with dropdown containing 20 assignment options. Need to verify: 1) Navigate to participants section (#participants), 2) Click 'Add Participant' to open form, 3) Verify Position and 'Assigned to' fields displayed side by side in grid layout, 4) Test 'Assigned to' dropdown contains all 20 options: Operations Center EOC, Command Post, Airbase, Base, Camp, Exercise, Fire Hall, Heliport, Helispot, Hospital, Incident, Medical, Police, Public Works, Staging Areas, Mobile Unit, Stationary Unit, Assistant, Assembly Place, Muster Point, 5) Test selecting different options from both dropdowns, 6) Verify both fields work independently and update form state, 7) Test form submission includes new field, 8) Verify field is optional (not marked as required with *)."
+
 ## agent_communication:
     -agent: "main"
     -message: "Identified Exercise Builder functionality issues. Located saveExercise function and multiple add buttons throughout 17-step wizard. Ready to test backend API first, then frontend functionality. Need to verify if add buttons have click handlers and if save functionality properly creates exercises that appear on dashboard."

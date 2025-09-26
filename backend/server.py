@@ -52,38 +52,201 @@ class ParticipantRole(str, Enum):
     OBSERVER = "observer"
     EVALUATOR = "evaluator"
 
-# Exercise Models
-class Exercise(BaseModel):
+# Exercise Builder Models
+class ExerciseBuilder(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    name: str
-    description: str
+    # Step 1: Exercise
+    exercise_image: Optional[str] = None
+    exercise_name: str
+    exercise_type: str  # Table Top, Drill, Functional, Full Scale Exercise, No-Notice Exercise, Real World Event
+    exercise_description: str
+    location: str
     start_date: datetime
+    start_time: str
     end_date: datetime
-    status: ExerciseStatus = ExerciseStatus.DRAFT
-    scenarios: List[str] = []
-    goals: List[str] = []
-    objectives: List[str] = []
+    end_time: str
+    
+    # Step 2: Scope
+    scope_description: str = ""
+    scope_hazards: str = ""
+    scope_geographic_area: str = ""
+    scope_functions: str = ""
+    scope_organizations: str = ""
+    scope_personnel: str = ""
+    scope_exercise_type: str = ""  # Copy from exercise_type
+    
+    # Step 3: Purpose
+    purpose_description: str = ""
+    
+    # Step 4: Scenario
+    scenario_image: Optional[str] = None
+    scenario_name: str = ""
+    scenario_description: str = ""
+    scenario_latitude: float = 0.0
+    scenario_longitude: float = 0.0
+    
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-class ExerciseCreate(BaseModel):
+class ExerciseBuilderCreate(BaseModel):
+    exercise_image: Optional[str] = None
+    exercise_name: str
+    exercise_type: str
+    exercise_description: str
+    location: str
+    start_date: datetime
+    start_time: str
+    end_date: datetime
+    end_time: str
+    scope_description: str = ""
+    scope_hazards: str = ""
+    scope_geographic_area: str = ""
+    scope_functions: str = ""
+    scope_organizations: str = ""
+    scope_personnel: str = ""
+    scope_exercise_type: str = ""
+    purpose_description: str = ""
+    scenario_image: Optional[str] = None
+    scenario_name: str = ""
+    scenario_description: str = ""
+    scenario_latitude: float = 0.0
+    scenario_longitude: float = 0.0
+
+class ExerciseBuilderUpdate(BaseModel):
+    exercise_image: Optional[str] = None
+    exercise_name: Optional[str] = None
+    exercise_type: Optional[str] = None
+    exercise_description: Optional[str] = None
+    location: Optional[str] = None
+    start_date: Optional[datetime] = None
+    start_time: Optional[str] = None
+    end_date: Optional[datetime] = None
+    end_time: Optional[str] = None
+    scope_description: Optional[str] = None
+    scope_hazards: Optional[str] = None
+    scope_geographic_area: Optional[str] = None
+    scope_functions: Optional[str] = None
+    scope_organizations: Optional[str] = None
+    scope_personnel: Optional[str] = None
+    scope_exercise_type: Optional[str] = None
+    purpose_description: Optional[str] = None
+    scenario_image: Optional[str] = None
+    scenario_name: Optional[str] = None
+    scenario_description: Optional[str] = None
+    scenario_latitude: Optional[float] = None
+    scenario_longitude: Optional[float] = None
+
+# Exercise Components Models
+class ExerciseGoal(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    exercise_id: str
     name: str
     description: str
-    start_date: datetime
-    end_date: datetime
-    scenarios: List[str] = []
-    goals: List[str] = []
-    objectives: List[str] = []
+    achieved: str = "No"  # Yes, Partial, No
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-class ExerciseUpdate(BaseModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
-    start_date: Optional[datetime] = None
-    end_date: Optional[datetime] = None
-    status: Optional[ExerciseStatus] = None
-    scenarios: Optional[List[str]] = None
-    goals: Optional[List[str]] = None
-    objectives: Optional[List[str]] = None
+class ExerciseObjective(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    exercise_id: str
+    name: str
+    description: str
+    achieved: str = "No"  # Yes, Partial, No
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ExerciseEvent(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    exercise_id: str
+    event_image: Optional[str] = None
+    name: str
+    description: str
+    anticipated_actions: str
+    latitude: float = 0.0
+    longitude: float = 0.0
+    start_date: datetime
+    start_time: str
+    end_date: datetime
+    end_time: str
+    tier_scale: str  # Tier 1: Incident, Tier 2: Emergency, Tier 3: Disaster
+    escalation_value: str  # None, Low, Confirm, Warning, Danger
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ExerciseFunction(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    exercise_id: str
+    name: str
+    description: str
+    achieved: str = "No"  # Yes, Partial, No
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ExerciseOrganization(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    exercise_id: str
+    org_image: Optional[str] = None
+    name: str
+    description: str
+    home_base: str
+    contact_first_name: str
+    contact_last_name: str
+    contact_cell_phone: str
+    contact_email: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ExerciseCodeWord(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    exercise_id: str
+    code_image: Optional[str] = None
+    code_word: str
+    definition: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ExerciseCallsign(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    exercise_id: str
+    callsign_image: Optional[str] = None
+    callsign: str
+    definition: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ExerciseCommFreq(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    exercise_id: str
+    freq_image: Optional[str] = None
+    name: str
+    description: str
+    frequency: str
+    tone: str  # 71.9, 74.4, etc.
+    offset: str  # Negative, Positive, Simplex
+    channel: str
+    radio_type: str  # Handheld, Mobile, Base Station, Repeater
+    location: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ExerciseAssumption(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    exercise_id: str
+    assumption_image: Optional[str] = None
+    name: str
+    assumption: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ExerciseArtificiality(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    exercise_id: str
+    artificiality_image: Optional[str] = None
+    name: str
+    artificiality: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ExerciseSafety(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    exercise_id: str
+    safety_image: Optional[str] = None
+    name: str
+    safety_concern: str
+    safety_officer_first_name: str = ""
+    safety_officer_last_name: str = ""
+    safety_officer_cell_phone: str = ""
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 # MSEL Models
 class MSELEvent(BaseModel):

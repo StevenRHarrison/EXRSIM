@@ -85,6 +85,45 @@ class ExerciseBuilder(BaseModel):
     scenario_latitude: float = 0.0
     scenario_longitude: float = 0.0
     
+    # Step 5: Goals
+    goals: List[dict] = Field(default_factory=list)
+    
+    # Step 6: Objectives
+    objectives: List[dict] = Field(default_factory=list)
+    
+    # Step 7: Events
+    events: List[dict] = Field(default_factory=list)
+    
+    # Step 8: Functions
+    functions: List[dict] = Field(default_factory=list)
+    
+    # Step 9: Injections (MSEL integration)
+    injections: List[dict] = Field(default_factory=list)
+    
+    # Step 10: Organizations
+    organizations: List[dict] = Field(default_factory=list)
+    
+    # Step 11: Team Coordinators
+    coordinators: List[dict] = Field(default_factory=list)
+    
+    # Step 12: Code Words
+    codeWords: List[dict] = Field(default_factory=list)
+    
+    # Step 13: Callsigns
+    callsigns: List[dict] = Field(default_factory=list)
+    
+    # Step 14: Communication Frequencies
+    frequencies: List[dict] = Field(default_factory=list)
+    
+    # Step 15: Assumptions
+    assumptions: List[dict] = Field(default_factory=list)
+    
+    # Step 16: Artificialities
+    artificialities: List[dict] = Field(default_factory=list)
+    
+    # Step 17: Safety Concerns
+    safetyConcerns: List[dict] = Field(default_factory=list)
+    
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 

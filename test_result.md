@@ -419,15 +419,18 @@
 
   - task: "Participant Assigned To Field - New 20 Assignment Options"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/src/App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: "NA"
         -agent: "testing"
         -comment: "NEW TESTING REQUEST: User requests testing of newly added 'Assigned to' field in participant form. Field should appear beside Position field with dropdown containing 20 assignment options. Need to verify: 1) Navigate to participants section (#participants), 2) Click 'Add Participant' to open form, 3) Verify Position and 'Assigned to' fields displayed side by side in grid layout, 4) Test 'Assigned to' dropdown contains all 20 options: Operations Center EOC, Command Post, Airbase, Base, Camp, Exercise, Fire Hall, Heliport, Helispot, Hospital, Incident, Medical, Police, Public Works, Staging Areas, Mobile Unit, Stationary Unit, Assistant, Assembly Place, Muster Point, 5) Test selecting different options from both dropdowns, 6) Verify both fields work independently and update form state, 7) Test form submission includes new field, 8) Verify field is optional (not marked as required with *)."
+        -working: false
+        -agent: "testing"
+        -comment: "🎯 COMPREHENSIVE TESTING COMPLETED - CRITICAL BUG FOUND! ✅ UI FUNCTIONALITY PERFECT: Successfully navigated to participants section (#participants), clicked 'Add Participant' button, verified Position and 'Assigned to' fields displayed side by side in perfect grid layout (grid-cols-2 gap-4). Position field correctly marked as required (*), 'Assigned to' field correctly optional (no *). ✅ DROPDOWN VERIFICATION PERFECT: 'Assigned to' dropdown contains exactly 20 options as expected. ALL 20 ASSIGNMENT OPTIONS PRESENT: Operations Center EOC, Command Post, Airbase, Base, Camp, Exercise, Fire Hall, Heliport, Helispot, Hospital, Incident, Medical, Police, Public Works, Staging Areas, Mobile Unit, Stationary Unit, Assistant, Assembly Place, Muster Point. ✅ FUNCTIONALITY PERFECT: Both dropdowns work independently, selections persist correctly, form state management working perfectly. ❌ CRITICAL BUG - FORM SUBMISSION: The 'assignedTo' field is NOT included in the API request data. Form collects assignedTo in formData.assignedTo but handleSubmit function (lines 474-491) excludes it from participantData object sent to backend. API call captured shows missing assignedTo field: participantData only includes position but not assignedTo. ROOT CAUSE: Line 474-491 in handleSubmit function missing 'assignedTo: formData.assignedTo' in participantData object. USER IMPACT: Users can select assignment options but data is lost on form submission - assignments are not saved to database."
 
 ## agent_communication:
     -agent: "main"

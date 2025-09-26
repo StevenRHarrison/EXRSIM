@@ -4366,6 +4366,8 @@ function App() {
         setActiveMenu('builder');
       } else if (hashBase && ['dashboard', 'exercises', 'msel', 'hira', 'participants'].includes(hashBase)) {
         setActiveMenu(hashBase);
+      } else if (!hashBase) {
+        setActiveMenu('dashboard');
       }
     };
 

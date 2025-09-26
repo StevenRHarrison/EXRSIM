@@ -240,49 +240,6 @@ def parse_from_mongo(item):
                     pass
     return item
 
-# Exercise Routes
-@api_router.get("/exercises", response_model=List[Exercise])
-async def get_exercises():
-    exercises = await db.exercises.find().to_list(1000)
-    return [Exercise(**parse_from_mongo(exercise)) for exercise in exercises]
-
-@api_router.get("/exercises/{exercise_id}", response_model=Exercise)
-async def get_exercise(exercise_id: str):
-    exercise = await db.exercises.find_one({"id": exercise_id})
-    if not exercise:
-        raise HTTPException(status_code=404, detail="Exercise not found")
-    return Exercise(**parse_from_mongo(exercise))
-
-@api_router.post("/exercises", response_model=Exercise)
-async def create_exercise(exercise_data: ExerciseCreate):
-    exercise_dict = exercise_data.dict()
-    exercise = Exercise(**exercise_dict)
-    exercise_mongo = prepare_for_mongo(exercise.dict())
-    await db.exercises.insert_one(exercise_mongo)
-    return exercise
-
-@api_router.put("/exercises/{exercise_id}", response_model=Exercise)
-async def update_exercise(exercise_id: str, exercise_data: ExerciseUpdate):
-    update_dict = {k: v for k, v in exercise_data.dict().items() if v is not None}
-    update_dict["updated_at"] = datetime.now(timezone.utc)
-    update_mongo = prepare_for_mongo(update_dict)
-    
-    result = await db.exercises.update_one(
-        {"id": exercise_id},
-        {"$set": update_mongo}
-    )
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Exercise not found")
-    
-    return await get_exercise(exercise_id)
-
-@api_router.delete("/exercises/{exercise_id}")
-async def delete_exercise(exercise_id: str):
-    result = await db.exercises.delete_one({"id": exercise_id})
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Exercise not found")
-    return {"message": "Exercise deleted successfully"}
-
 # MSEL Routes
 @api_router.get("/msel", response_model=List[MSELEvent])
 async def get_msel_events():

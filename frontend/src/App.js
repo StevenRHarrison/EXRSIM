@@ -624,20 +624,38 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
               </div>
             </div>
 
-            <div>
-              <Label htmlFor="position" className="text-gray-300">Position *</Label>
-              <Select value={formData.position} onValueChange={(value) => setFormData(prev => ({ ...prev, position: value }))}>
-                <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
-                  <SelectValue placeholder="Select position" />
-                </SelectTrigger>
-                <SelectContent className="bg-gray-700 border-gray-600">
-                  {positions.map((position) => (
-                    <SelectItem key={position} value={position} className="text-white focus:bg-gray-600">
-                      {position}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="position" className="text-gray-300">Position *</Label>
+                <Select value={formData.position} onValueChange={(value) => setFormData(prev => ({ ...prev, position: value }))}>
+                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                    <SelectValue placeholder="Select position" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-700 border-gray-600">
+                    {positions.map((position) => (
+                      <SelectItem key={position} value={position} className="text-white focus:bg-gray-600">
+                        {position}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label htmlFor="assignedTo" className="text-gray-300">Assigned to</Label>
+                <Select value={formData.assignedTo} onValueChange={(value) => setFormData(prev => ({ ...prev, assignedTo: value }))}>
+                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                    <SelectValue placeholder="Select assignment" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-700 border-gray-600">
+                    {assignedToOptions.map((option) => (
+                      <SelectItem key={option} value={option} className="text-white focus:bg-gray-600">
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div>

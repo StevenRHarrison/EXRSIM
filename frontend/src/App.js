@@ -295,20 +295,33 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
   const [loading, setLoading] = useState(false);
 
   const positions = [
-    'Incident Commander',
-    'Operations Chief',
-    'Planning Chief',
-    'Logistics Chief',
-    'Finance/Administration Chief',
-    'Safety Officer',
-    'Liaison Officer',
-    'Public Information Officer',
-    'Observer',
-    'Evaluator',
-    'Emergency Operations Center Manager',
-    'Communications Coordinator',
-    'Resource Coordinator',
-    'Situation Analyst'
+    'Exercise Evaluator',
+    'Exercise Director',
+    'Exercise Observer',
+    'Team Coordinator',
+    'Team Planner',
+    'Team Facilitator',
+    'Team Evaluator',
+    'Team Task',
+    'Participant',
+    'Staff Member',
+    'Fire Chief',
+    'Police Chief',
+    'Fire Fighter',
+    'Medical',
+    'Supervisor',
+    'Security',
+    'Facilitator',
+    'Umpire',
+    'Scribe',
+    'Assistant',
+    'Exercise Controller',
+    'Agency Representative',
+    'Owner',
+    'Actor',
+    'VIP',
+    'Media',
+    'Visitor'
   ];
 
   const countries = [

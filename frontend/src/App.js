@@ -2752,7 +2752,7 @@ const HIRAView = () => {
 };
 
 // Exercise Builder Step-by-Step Wizard
-const ExerciseBuilderWizard = ({ onBack }) => {
+const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [exerciseData, setExerciseData] = useState({
     // Step 1: Exercise
@@ -2784,6 +2784,54 @@ const ExerciseBuilderWizard = ({ onBack }) => {
   });
   const [imagePreview, setImagePreview] = useState({});
   const [loading, setLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Load existing exercise data when editing
+  useEffect(() => {
+    if (editingExercise) {
+      setIsEditing(true);
+      
+      // Convert ISO date strings back to date format for form inputs
+      const startDate = editingExercise.start_date ? new Date(editingExercise.start_date) : null;
+      const endDate = editingExercise.end_date ? new Date(editingExercise.end_date) : null;
+      
+      setExerciseData({
+        id: editingExercise.id,
+        exercise_image: editingExercise.exercise_image || null,
+        exercise_name: editingExercise.exercise_name || '',
+        exercise_type: editingExercise.exercise_type || '',
+        exercise_description: editingExercise.exercise_description || '',
+        location: editingExercise.location || '',
+        start_date: startDate ? startDate.toISOString().split('T')[0] : '',
+        start_time: startDate ? startDate.toTimeString().slice(0, 5) : '',
+        end_date: endDate ? endDate.toISOString().split('T')[0] : '',
+        end_time: endDate ? endDate.toTimeString().slice(0, 5) : '',
+        scope_description: editingExercise.scope_description || '',
+        scope_hazards: editingExercise.scope_hazards || '',
+        scope_geographic_area: editingExercise.scope_geographic_area || '',
+        scope_functions: editingExercise.scope_functions || '',
+        scope_organizations: editingExercise.scope_organizations || '',
+        scope_personnel: editingExercise.scope_personnel || '',
+        scope_exercise_type: editingExercise.scope_exercise_type || '',
+        purpose_description: editingExercise.purpose_description || '',
+        scenario_image: editingExercise.scenario_image || null,
+        scenario_name: editingExercise.scenario_name || '',
+        scenario_description: editingExercise.scenario_description || '',
+        scenario_latitude: editingExercise.scenario_latitude || 0,
+        scenario_longitude: editingExercise.scenario_longitude || 0
+      });
+
+      // Set image previews if they exist
+      const previews = {};
+      if (editingExercise.exercise_image) {
+        previews.exercise_image = editingExercise.exercise_image;
+      }
+      if (editingExercise.scenario_image) {
+        previews.scenario_image = editingExercise.scenario_image;
+      }
+      setImagePreview(previews);
+    }
+  }, [editingExercise]);
 
   const exerciseTypes = [
     'Table Top',

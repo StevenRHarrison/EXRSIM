@@ -189,11 +189,21 @@ def test_exercise_builder_api():
             print(f"❌ Failed to get specific exercise: {response.text}")
             return False
             
-        # Test 5: PUT /api/exercise-builder/{exercise_id} (Update exercise)
-        print(f"\n5. Testing PUT /api/exercise-builder/{created_exercise_id}")
+        # Test 5: PUT /api/exercise-builder/{exercise_id} (Update exercise with dynamic data)
+        print(f"\n5. Testing PUT /api/exercise-builder/{created_exercise_id} (Update with dynamic data)")
         update_data = test_exercise_data.copy()
         update_data['exercise_name'] = "Updated Emergency Flood Response Test"
         update_data['exercise_description'] = "Updated testing emergency response to major flood event"
+        
+        # Add new items to existing dynamic collections
+        update_data['goals'].append({"id": 14, "name": "Test Goal 2", "description": "Second test goal", "achieved": "No"})
+        update_data['objectives'].append({"id": 15, "name": "Test Objective 2", "description": "Second test objective", "achieved": "Partial"})
+        update_data['events'].append({"id": 16, "name": "Evacuation Order", "description": "Order evacuation of affected areas", "actions": "Issue evacuation notice"})
+        
+        print(f"   📊 Updated dynamic collections:")
+        print(f"   - Goals: {len(update_data['goals'])} items (added 1)")
+        print(f"   - Objectives: {len(update_data['objectives'])} items (added 1)")
+        print(f"   - Events: {len(update_data['events'])} items (added 1)")
         
         response = requests.put(
             f"{BACKEND_URL}/exercise-builder/{created_exercise_id}",

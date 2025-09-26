@@ -987,13 +987,377 @@ const ParticipantsView = () => {
   );
 };
 
-// Placeholder components for other views
-const ExerciseView = () => (
-  <div className="p-6">
-    <h1 className="text-3xl font-bold text-orange-500 mb-4">Exercises</h1>
-    <p className="text-gray-400">Exercise management interface coming soon...</p>
-  </div>
-);
+// Exercise List View (separate from Dashboard)
+const ExerciseListView = () => {
+  const [exercises, setExercises] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedExercise, setSelectedExercise] = useState(null);
+
+  useEffect(() => {
+    fetchExercises();
+  }, []);
+
+  const fetchExercises = async () => {
+    try {
+      const response = await axios.get(`${API}/exercise-builder`);
+      setExercises(response.data);
+    } catch (error) {
+      console.error('Error fetching exercises:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteExercise = async (exerciseId) => {
+    if (window.confirm('Are you sure you want to delete this exercise?')) {
+      try {
+        await axios.delete(`${API}/exercise-builder/${exerciseId}`);
+        setExercises(prev => prev.filter(e => e.id !== exerciseId));
+      } catch (error) {
+        console.error('Error deleting exercise:', error);
+        alert('Error deleting exercise. Please try again.');
+      }
+    }
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-CA', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const formatTime = (timeString) => {
+    if (timeString && timeString.includes(':')) {
+      return timeString;
+    }
+    return timeString || 'Not set';
+  };
+
+  const getExerciseTypeColor = (type) => {
+    const colors = {
+      'Table Top': 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+      'Drill': 'bg-green-500/20 text-green-300 border-green-500/30',
+      'Functional': 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+      'Full Scale Exercise': 'bg-red-500/20 text-red-300 border-red-500/30',
+      'No-Notice Exercise': 'bg-orange-500/20 text-orange-300 border-orange-500/30',
+      'Real World Event': 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30'
+    };
+    return colors[type] || 'bg-gray-500/20 text-gray-300 border-gray-500/30';
+  };
+
+  if (selectedExercise) {
+    return (
+      <ExerciseDetailView 
+        exercise={selectedExercise} 
+        onBack={() => setSelectedExercise(null)} 
+      />
+    );
+  }
+
+  return (
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-3xl font-bold text-orange-500 mb-2">Exercise Management</h1>
+          <p className="text-gray-400">Manage completed emergency training exercises</p>
+        </div>
+        <Button 
+          onClick={() => window.location.href = '#builder'}
+          className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
+          data-testid="new-exercise-btn"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Create New Exercise
+        </Button>
+      </div>
+
+      {loading ? (
+        <div className="space-y-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Card key={i} className="bg-gray-800 border-gray-700">
+              <CardContent className="p-6">
+                <div className="flex items-start space-x-4">
+                  <div className="w-16 h-16 bg-gray-700 rounded animate-pulse"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-gray-700 rounded animate-pulse w-1/3"></div>
+                    <div className="h-3 bg-gray-700 rounded animate-pulse w-2/3"></div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : exercises.length === 0 ? (
+        <Card className="bg-gray-800 border-gray-700 border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <BookOpen className="h-12 w-12 text-gray-500 mb-4" />
+            <h3 className="text-lg font-semibold text-gray-300 mb-2">No Exercises Created Yet</h3>
+            <p className="text-gray-500 text-center mb-4">
+              Use the Exercise Builder to create your first emergency training exercise.
+            </p>
+            <Button 
+              onClick={() => window.location.href = '#builder'}
+              className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
+            >
+              <BookOpen className="h-4 w-4 mr-2" />
+              Start Exercise Builder
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-sm text-gray-400">
+              Showing {exercises.length} exercise{exercises.length !== 1 ? 's' : ''}
+            </p>
+          </div>
+          {exercises.map((exercise) => (
+            <Card 
+              key={exercise.id} 
+              className="bg-gray-800 border-gray-700 hover:border-orange-500/50 transition-colors cursor-pointer"
+              onClick={() => setSelectedExercise(exercise)}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-start space-x-4">
+                  {/* Exercise Image */}
+                  <div className="flex-shrink-0">
+                    <div className="w-16 h-16 rounded-lg bg-gray-600 overflow-hidden flex items-center justify-center">
+                      {exercise.exercise_image ? (
+                        <img 
+                          src={exercise.exercise_image} 
+                          alt={exercise.exercise_name} 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <Target className="h-8 w-8 text-orange-500" />
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <h3 className="text-xl font-semibold text-white truncate">
+                        {exercise.exercise_name}
+                      </h3>
+                      <Badge className={getExerciseTypeColor(exercise.exercise_type)}>
+                        {exercise.exercise_type}
+                      </Badge>
+                    </div>
+                    
+                    <p className="text-gray-400 mb-3 line-clamp-2">{exercise.exercise_description}</p>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                      <div className="flex items-center space-x-2 text-gray-300">
+                        <MapPin className="h-4 w-4 text-orange-500" />
+                        <span className="truncate">{exercise.location || 'Location not set'}</span>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2 text-gray-300">
+                        <CalendarDays className="h-4 w-4 text-orange-500" />
+                        <span>Start: {formatDate(exercise.start_date)}</span>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2 text-gray-300">
+                        <CalendarDays className="h-4 w-4 text-orange-500" />
+                        <span>End: {formatDate(exercise.end_date)}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-3 text-xs text-gray-500">
+                      <span>Created: {new Date(exercise.created_at).toLocaleDateString()}</span>
+                      <span>Times: {formatTime(exercise.start_time)} - {formatTime(exercise.end_time)}</span>
+                    </div>
+                  </div>
+                  
+                  {/* Action Buttons */}
+                  <div className="flex space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedExercise(exercise);
+                      }}
+                      className="border-gray-600 text-gray-300 hover:text-orange-500 hover:border-orange-500/50"
+                    >
+                      <Target className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteExercise(exercise.id);
+                      }}
+                      className="border-red-600 text-red-400 hover:text-red-300 hover:border-red-500/50"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Exercise Detail View
+const ExerciseDetailView = ({ exercise, onBack }) => {
+  return (
+    <div className="p-6 max-w-6xl mx-auto">
+      <div className="mb-6">
+        <Button 
+          variant="ghost" 
+          onClick={onBack}
+          className="text-gray-400 hover:text-orange-500 mb-4"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Exercise List
+        </Button>
+        <div className="flex items-start space-x-6">
+          {exercise.exercise_image && (
+            <div className="w-32 h-32 rounded-lg bg-gray-700 overflow-hidden flex-shrink-0">
+              <img 
+                src={exercise.exercise_image} 
+                alt={exercise.exercise_name} 
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold text-orange-500 mb-2">{exercise.exercise_name}</h1>
+            <div className="flex items-center space-x-3 mb-4">
+              <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30 text-base px-3 py-1">
+                {exercise.exercise_type}
+              </Badge>
+            </div>
+            <p className="text-gray-300 text-lg">{exercise.exercise_description}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Basic Information */}
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500 flex items-center">
+              <MapPin className="h-5 w-5 mr-2" />
+              Location & Schedule
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div>
+              <Label className="text-gray-400 text-sm">Location</Label>
+              <p className="text-white">{exercise.location || 'Not specified'}</p>
+            </div>
+            <div>
+              <Label className="text-gray-400 text-sm">Start</Label>
+              <p className="text-white">
+                {new Date(exercise.start_date).toLocaleDateString()} at {exercise.start_time || 'TBD'}
+              </p>
+            </div>
+            <div>
+              <Label className="text-gray-400 text-sm">End</Label>
+              <p className="text-white">
+                {new Date(exercise.end_date).toLocaleDateString()} at {exercise.end_time || 'TBD'}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Scope */}
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Exercise Scope</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div>
+              <Label className="text-gray-400 text-sm">Hazards</Label>
+              <p className="text-white text-sm">{exercise.scope_hazards || 'Not specified'}</p>
+            </div>
+            <div>
+              <Label className="text-gray-400 text-sm">Geographic Area</Label>
+              <p className="text-white text-sm">{exercise.scope_geographic_area || 'Not specified'}</p>
+            </div>
+            <div>
+              <Label className="text-gray-400 text-sm">Functions</Label>
+              <p className="text-white text-sm">{exercise.scope_functions || 'Not specified'}</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Purpose */}
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Exercise Purpose</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-white">{exercise.purpose_description || 'Not specified'}</p>
+          </CardContent>
+        </Card>
+
+        {/* Scenario */}
+        {(exercise.scenario_name || exercise.scenario_description) && (
+          <Card className="bg-gray-800 border-gray-700 col-span-full">
+            <CardHeader>
+              <CardTitle className="text-orange-500">Scenario</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-start space-x-4">
+                {exercise.scenario_image && (
+                  <div className="w-24 h-24 rounded bg-gray-700 overflow-hidden flex-shrink-0">
+                    <img 
+                      src={exercise.scenario_image} 
+                      alt={exercise.scenario_name} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-white mb-2">{exercise.scenario_name}</h3>
+                  <p className="text-gray-300">{exercise.scenario_description}</p>
+                  {(exercise.scenario_latitude || exercise.scenario_longitude) && (
+                    <p className="text-gray-400 text-sm mt-2">
+                      Coordinates: {exercise.scenario_latitude}, {exercise.scenario_longitude}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      <div className="mt-8 flex justify-end space-x-4">
+        <Button
+          variant="outline"
+          className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10"
+          onClick={() => window.location.href = `#builder?exercise=${exercise.id}`}
+        >
+          <Edit className="h-4 w-4 mr-2" />
+          Edit Exercise
+        </Button>
+        <Button
+          variant="outline"
+          className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+        >
+          <ClipboardList className="h-4 w-4 mr-2" />
+          View MSEL
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+const ExerciseView = () => {
+  return <ExerciseListView />;
+};
 
 // MSEL Management Components
 const MSELForm = ({ onBack, onSave, editingEvent = null }) => {

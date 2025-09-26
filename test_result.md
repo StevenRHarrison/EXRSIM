@@ -269,7 +269,12 @@
   run_ui: false
 
 ## test_plan:
-  current_focus: []
+  current_focus:
+    - "Dynamic Add Goal Button (Step 5) - New Implementation"
+    - "Dynamic Add Objective Button (Step 6) - New Implementation"
+    - "Save Step Functionality - Individual Step Saving"
+    - "Dynamic State Management - Goals and Objectives Lists"
+    - "Remove Functionality - Goal and Objective Removal"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -289,3 +294,5 @@
     -message: "🚨 CRITICAL BUG FOUND: Edit Exercise functionality partially working but has URL parameter parsing bug. ✅ WORKING: Edit Exercise button navigation, backend API endpoints, exercise data retrieval. ❌ BROKEN: URL parameter parsing in ExerciseBuilder component - uses window.location.search instead of parsing from hash portion. URL format is #builder?exercise=<id> but code expects ?exercise=<id>#builder. This causes direct navigation to fail and redirects to dashboard. REQUIRES IMMEDIATE FIX in line 4296 of App.js."
     -agent: "testing"
     -message: "🎉 EDIT EXERCISE FUNCTIONALITY FULLY WORKING! Successfully fixed URL parameter parsing bugs and completed comprehensive testing. ✅ CONFIRMED WORKING: Edit Exercise button access, URL navigation (#builder?exercise=<id>), hash parameter parsing, edit mode loading, form pre-population, and save functionality. The user's reported issue is now resolved - Edit Exercise button in Exercise list now properly takes users back to the Exercise Builder wizard with existing exercise data pre-populated for editing. Ready for production use."
+    -agent: "main"
+    -message: "NEW IMPLEMENTATION COMPLETED: Enhanced Exercise Builder with dynamic state management for goals, objectives, and other collections. Added working 'Add' buttons that actually add items to lists, individual 'Save Step' buttons on each step that save drafts to database, display of added items with remove functionality, and form state management for current items being added. Ready for comprehensive testing of Steps 5 and 6 (Goals and Objectives) with new dynamic functionality."

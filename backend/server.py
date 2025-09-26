@@ -403,7 +403,144 @@ def parse_from_mongo(item):
                     pass
     return item
 
-# MSEL Routes
+# Exercise Builder Routes
+@api_router.get("/exercise-builder", response_model=List[ExerciseBuilder])
+async def get_exercises():
+    exercises = await db.exercise_builder.find().to_list(1000)
+    return [ExerciseBuilder(**parse_from_mongo(exercise)) for exercise in exercises]
+
+@api_router.get("/exercise-builder/{exercise_id}", response_model=ExerciseBuilder)
+async def get_exercise(exercise_id: str):
+    exercise = await db.exercise_builder.find_one({"id": exercise_id})
+    if not exercise:
+        raise HTTPException(status_code=404, detail="Exercise not found")
+    return ExerciseBuilder(**parse_from_mongo(exercise))
+
+@api_router.post("/exercise-builder", response_model=ExerciseBuilder)
+async def create_exercise(exercise_data: ExerciseBuilderCreate):
+    exercise = ExerciseBuilder(**exercise_data.dict())
+    # Auto-copy exercise type to scope
+    exercise.scope_exercise_type = exercise.exercise_type
+    exercise_mongo = prepare_for_mongo(exercise.dict())
+    await db.exercise_builder.insert_one(exercise_mongo)
+    return exercise
+
+@api_router.put("/exercise-builder/{exercise_id}", response_model=ExerciseBuilder)
+async def update_exercise(exercise_id: str, exercise_data: ExerciseBuilderCreate):
+    update_dict = exercise_data.dict()
+    update_dict["updated_at"] = datetime.now(timezone.utc)
+    # Auto-copy exercise type to scope if provided
+    if update_dict.get("exercise_type"):
+        update_dict["scope_exercise_type"] = update_dict["exercise_type"]
+    update_mongo = prepare_for_mongo(update_dict)
+    
+    result = await db.exercise_builder.update_one(
+        {"id": exercise_id},
+        {"$set": update_mongo}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Exercise not found")
+    
+    return await get_exercise(exercise_id)
+
+@api_router.delete("/exercise-builder/{exercise_id}")
+async def delete_exercise(exercise_id: str):
+    result = await db.exercise_builder.delete_one({"id": exercise_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Exercise not found")
+    return {"message": "Exercise deleted successfully"}
+
+# Exercise Components Routes
+@api_router.get("/exercise-goals/{exercise_id}", response_model=List[ExerciseGoal])
+async def get_exercise_goals(exercise_id: str):
+    goals = await db.exercise_goals.find({"exercise_id": exercise_id}).to_list(1000)
+    return [ExerciseGoal(**parse_from_mongo(goal)) for goal in goals]
+
+@api_router.post("/exercise-goals", response_model=ExerciseGoal)
+async def create_exercise_goal(goal_data: dict):
+    goal = ExerciseGoal(**goal_data)
+    goal_mongo = prepare_for_mongo(goal.dict())
+    await db.exercise_goals.insert_one(goal_mongo)
+    return goal
+
+@api_router.get("/exercise-objectives/{exercise_id}", response_model=List[ExerciseObjective])
+async def get_exercise_objectives(exercise_id: str):
+    objectives = await db.exercise_objectives.find({"exercise_id": exercise_id}).to_list(1000)
+    return [ExerciseObjective(**parse_from_mongo(obj)) for obj in objectives]
+
+@api_router.post("/exercise-objectives", response_model=ExerciseObjective)
+async def create_exercise_objective(objective_data: dict):
+    objective = ExerciseObjective(**objective_data)
+    objective_mongo = prepare_for_mongo(objective.dict())
+    await db.exercise_objectives.insert_one(objective_mongo)
+    return objective
+
+@api_router.get("/exercise-events/{exercise_id}", response_model=List[ExerciseEvent])
+async def get_exercise_events(exercise_id: str):
+    events = await db.exercise_events.find({"exercise_id": exercise_id}).to_list(1000)
+    return [ExerciseEvent(**parse_from_mongo(event)) for event in events]
+
+@api_router.post("/exercise-events", response_model=ExerciseEvent)
+async def create_exercise_event(event_data: dict):
+    event = ExerciseEvent(**event_data)
+    event_mongo = prepare_for_mongo(event.dict())
+    await db.exercise_events.insert_one(event_mongo)
+    return event
+
+@api_router.get("/exercise-functions/{exercise_id}", response_model=List[ExerciseFunction])
+async def get_exercise_functions(exercise_id: str):
+    functions = await db.exercise_functions.find({"exercise_id": exercise_id}).to_list(1000)
+    return [ExerciseFunction(**parse_from_mongo(func)) for func in functions]
+
+@api_router.post("/exercise-functions", response_model=ExerciseFunction)
+async def create_exercise_function(function_data: dict):
+    function = ExerciseFunction(**function_data)
+    function_mongo = prepare_for_mongo(function.dict())
+    await db.exercise_functions.insert_one(function_mongo)
+    return function
+
+@api_router.get("/exercise-organizations/{exercise_id}", response_model=List[ExerciseOrganization])
+async def get_exercise_organizations(exercise_id: str):
+    orgs = await db.exercise_organizations.find({"exercise_id": exercise_id}).to_list(1000)
+    return [ExerciseOrganization(**parse_from_mongo(org)) for org in orgs]
+
+@api_router.post("/exercise-organizations", response_model=ExerciseOrganization)
+async def create_exercise_organization(org_data: dict):
+    org = ExerciseOrganization(**org_data)
+    org_mongo = prepare_for_mongo(org.dict())
+    await db.exercise_organizations.insert_one(org_mongo)
+    return org
+
+# Get Team Coordinators (from participants with specific role)
+@api_router.get("/team-coordinators/{exercise_id}")
+async def get_team_coordinators(exercise_id: str):
+    # Find participants marked as involved in exercise and with coordinator roles
+    participants = await db.participants.find({
+        "involvedInExercise": True,
+        "$or": [
+            {"role": "incident_commander"},
+            {"role": "operations_chief"},
+            {"role": "planning_chief"},
+            {"role": "logistics_chief"},
+            {"role": "finance_chief"},
+            {"position": {"$regex": "coordinator", "$options": "i"}}
+        ]
+    }).to_list(1000)
+    return [Participant(**parse_from_mongo(p)) for p in participants]
+
+# Get Safety Officer
+@api_router.get("/safety-officer")
+async def get_safety_officer():
+    safety_officer = await db.participants.find_one({
+        "involvedInExercise": True,
+        "$or": [
+            {"role": "safety_officer"},
+            {"position": {"$regex": "safety officer", "$options": "i"}}
+        ]
+    })
+    if safety_officer:
+        return Participant(**parse_from_mongo(safety_officer))
+    return None
 @api_router.get("/msel", response_model=List[MSELEvent])
 async def get_msel_events():
     events = await db.msel_events.find().to_list(1000)

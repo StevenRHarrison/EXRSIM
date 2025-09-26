@@ -4225,6 +4225,19 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 </Button>
               </CardContent>
             </Card>
+            
+            {/* Save Step Button */}
+            <div className="flex justify-end">
+              <Button 
+                onClick={saveStepDraft}
+                disabled={loading}
+                variant="outline"
+                className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10"
+              >
+                <Save className="h-4 w-4 mr-2" />
+                {loading ? 'Saving...' : 'Save Step'}
+              </Button>
+            </div>
           </div>
         );
 

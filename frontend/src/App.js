@@ -468,6 +468,29 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
     }
   };
 
+  const saveStepDraft = async () => {
+    setLoading(true);
+    try {
+      // Save current form data as draft
+      const draftData = {
+        ...formData,
+        isDraft: true
+      };
+      
+      // You could save this to localStorage or send to backend
+      localStorage.setItem('participantDraft', JSON.stringify(draftData));
+      console.log('Participant step saved as draft:', draftData);
+      
+      // Show success message
+      alert('Step saved successfully!');
+    } catch (error) {
+      console.error('Error saving step:', error);
+      alert('Error saving step. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <div className="mb-6">

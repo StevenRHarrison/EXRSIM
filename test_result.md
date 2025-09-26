@@ -371,9 +371,9 @@
   run_ui: false
 
 ## test_plan:
-  current_focus:
+  current_focus: []
+  stuck_tasks:
     - "Edit Exercise Data Persistence - Data Loss Investigation"
-  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 

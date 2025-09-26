@@ -187,6 +187,19 @@ class ExerciseBuilderUpdate(BaseModel):
     scenario_description: Optional[str] = None
     scenario_latitude: Optional[float] = None
     scenario_longitude: Optional[float] = None
+    goals: Optional[List[dict]] = None
+    objectives: Optional[List[dict]] = None
+    events: Optional[List[dict]] = None
+    functions: Optional[List[dict]] = None
+    injections: Optional[List[dict]] = None
+    organizations: Optional[List[dict]] = None
+    coordinators: Optional[List[dict]] = None
+    codeWords: Optional[List[dict]] = None
+    callsigns: Optional[List[dict]] = None
+    frequencies: Optional[List[dict]] = None
+    assumptions: Optional[List[dict]] = None
+    artificialities: Optional[List[dict]] = None
+    safetyConcerns: Optional[List[dict]] = None
 
 # Exercise Components Models
 class ExerciseGoal(BaseModel):

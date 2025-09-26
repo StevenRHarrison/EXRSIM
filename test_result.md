@@ -101,3 +101,138 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+## user_problem_statement: Debug and fix Exercise Builder functionality - specifically "save draft" and "Complete Exercise" buttons not working, and test all "add" buttons within the Exercise Builder steps
+
+## backend:
+  - task: "Exercise Builder API endpoints"
+    implemented: true
+    working: "unknown"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "unknown"
+        -agent: "main"
+        -comment: "Backend API endpoints exist for exercise-builder CRUD operations, need to verify functionality"
+
+## frontend:
+  - task: "Exercise Builder Save Draft Button"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/App.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: false
+        -agent: "main"
+        -comment: "User reported Save Draft button not working, located at line ~4182 in saveExercise function"
+
+  - task: "Exercise Builder Complete Exercise Button"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/App.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: false
+        -agent: "main"
+        -comment: "User reported Complete Exercise button not working, located at line ~4172 in saveExercise function"
+
+  - task: "Add Goal Button (Step 5)"
+    implemented: true
+    working: "unknown"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "unknown"
+        -agent: "main"
+        -comment: "Add Goal button at line ~3264, needs functionality testing"
+
+  - task: "Add Objective Button (Step 6)"
+    implemented: true
+    working: "unknown"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "unknown"
+        -agent: "main"
+        -comment: "Add Objective button at line ~3316, needs functionality testing"
+
+  - task: "Add Event Button (Step 7)"
+    implemented: true
+    working: "unknown"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "unknown"
+        -agent: "main"
+        -comment: "Add Event button at line ~3464, needs functionality testing"
+
+  - task: "Add Function Button (Step 8)"
+    implemented: true
+    working: "unknown"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "unknown"
+        -agent: "main"
+        -comment: "Add Function button at line ~3516, needs functionality testing"
+
+  - task: "Add Organization Button (Step 10)"
+    implemented: true
+    working: "unknown"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "unknown"
+        -agent: "main"
+        -comment: "Add Organization button at line ~3645, needs functionality testing"
+
+  - task: "Other Add Buttons (Code Word, Callsign, Frequency, Assumption, Artificiality, Safety Concern)"
+    implemented: true
+    working: "unknown"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        -working: "unknown"
+        -agent: "main"
+        -comment: "Multiple add buttons in steps 12-17, need functionality testing"
+
+## metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+## test_plan:
+  current_focus:
+    - "Exercise Builder Save Draft Button"
+    - "Exercise Builder Complete Exercise Button"
+    - "Add Goal Button (Step 5)"
+    - "Add Objective Button (Step 6)"
+    - "Add Event Button (Step 7)"
+    - "Add Function Button (Step 8)"
+    - "Add Organization Button (Step 10)"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+## agent_communication:
+    -agent: "main"
+    -message: "Identified Exercise Builder functionality issues. Located saveExercise function and multiple add buttons throughout 17-step wizard. Ready to test backend API first, then frontend functionality. Need to verify if add buttons have click handlers and if save functionality properly creates exercises that appear on dashboard."

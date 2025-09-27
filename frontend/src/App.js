@@ -5059,13 +5059,23 @@ const ScopeModal = ({ isOpen, onClose, onSave, initialData = null, exerciseId })
   const handleSave = async () => {
     setLoading(true);
     try {
-      // Update the exercise with the new scope data
-      const response = await axios.put(`${API}/exercise-builder/${exerciseId}`, scopeData);
+      // Update the exercise with the new scope data - need to send a partial update
+      const updatePayload = {
+        scope_description: scopeData.scope_description,
+        scope_hazards: scopeData.scope_hazards,
+        scope_geographic_area: scopeData.scope_geographic_area,
+        scope_functions: scopeData.scope_functions,
+        scope_organizations: scopeData.scope_organizations,
+        scope_personnel: scopeData.scope_personnel
+      };
+      
+      const response = await axios.put(`${API}/exercise-builder/${exerciseId}`, updatePayload);
       onSave(response.data);
       onClose();
     } catch (error) {
       console.error('Error saving scope:', error);
-      // Handle error - could show toast notification
+      // Show error message to user
+      alert('Error saving scope data. Please try again.');
     } finally {
       setLoading(false);
     }

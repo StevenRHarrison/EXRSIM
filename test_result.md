@@ -456,7 +456,7 @@
 
 ## test_plan:
   current_focus:
-    - "Exercise Management Dashboard Hierarchical Sidebar Menu Structure"
+    - "Exercise Management Dashboard Improvement Hierarchical Menu Section"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"

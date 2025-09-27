@@ -601,11 +601,13 @@ def test_comprehensive_exercise_builder():
             # Verify dynamic collections updates persisted
             goals_count = len(final_exercise.get("goals", []))
             objectives_count = len(final_exercise.get("objectives", []))
+            original_goals_count = len(test_data.get("goals", []))
+            original_objectives_count = len(test_data.get("objectives", []))
             
-            if goals_count > 3 and objectives_count > 3:  # Original had 3 each
-                print(f"✅ Dynamic collections updates persisted (Goals: {goals_count}, Objectives: {objectives_count})")
+            if goals_count > original_goals_count and objectives_count > original_objectives_count:
+                print(f"✅ Dynamic collections updates persisted (Goals: {original_goals_count}→{goals_count}, Objectives: {original_objectives_count}→{objectives_count})")
             else:
-                print(f"❌ Dynamic collections updates NOT persisted (Goals: {goals_count}, Objectives: {objectives_count})")
+                print(f"❌ Dynamic collections updates NOT persisted (Goals: {original_goals_count}→{goals_count}, Objectives: {original_objectives_count}→{objectives_count})")
                 return False
                 
         else:

@@ -413,7 +413,7 @@ class Participant(BaseModel):
     phone: str
     address: str = ""
     organization: str = ""
-    role: ParticipantRole
+    role: str = ""  # Changed from ParticipantRole enum to string for flexibility
     experience_level: str = ""
     certifications: List[str] = []
     # Enhanced fields

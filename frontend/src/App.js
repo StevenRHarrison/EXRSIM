@@ -5687,14 +5687,15 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
     }
   };
 
-  const exerciseMenuItems = [
-    { id: 'overview', title: 'Exercise Overview', icon: Shield },
-    { id: 'exercise', title: 'Exercise Details', icon: FileText },
+  const topLevelMenuItems = [
+    { id: 'overview', title: 'Exercise Overview', icon: Shield }
+  ];
+
+  const exerciseStepsMenuItems = [
     { id: 'scope', title: 'Scope', icon: Target },
     { id: 'purpose', title: 'Purpose', icon: Flag },
     { id: 'scenario', title: 'Scenario', icon: Map },
     { id: 'goals', title: 'Goals', icon: Trophy },
-    { id: 'objectives', title: 'Objectives', icon: CheckCircle },
     { id: 'events', title: 'Events', icon: Calendar },
     { id: 'functions', title: 'Functions', icon: Settings },
     { id: 'injections', title: 'Injections (MSEL)', icon: ClipboardList },
@@ -5702,10 +5703,18 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
     { id: 'coordinators', title: 'Team Coordinators', icon: Users },
     { id: 'codewords', title: 'Code Words', icon: Key },
     { id: 'callsigns', title: 'Callsigns', icon: Radio },
-    { id: 'frequencies', title: 'Communication', icon: Headphones },
+    { id: 'frequencies', title: 'Communications', icon: Headphones },
     { id: 'assumptions', title: 'Assumptions', icon: MessageSquare },
     { id: 'artificialities', title: 'Artificialities', icon: AlertTriangle },
     { id: 'safety', title: 'Safety Concerns', icon: ShieldAlert },
+  ];
+
+  // Combined for compatibility with existing code
+  const exerciseMenuItems = [
+    ...topLevelMenuItems,
+    { id: 'exercise', title: 'Exercise Details', icon: FileText },
+    { id: 'objectives', title: 'Objectives', icon: CheckCircle },
+    ...exerciseStepsMenuItems
   ];
 
   const getExerciseStatus = () => {

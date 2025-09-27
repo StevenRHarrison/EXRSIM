@@ -5057,11 +5057,19 @@ const ScopeModal = ({ isOpen, onClose, onSave, initialData = null, exerciseId })
   }, [initialData, isOpen]);
 
   const handleSave = async () => {
+    console.log('🚀 ScopeModal handleSave called');
+    console.log('📊 Current scopeData:', scopeData);
+    console.log('🆔 Exercise ID:', exerciseId);
+    
     setLoading(true);
     try {
+      console.log('📡 Fetching current exercise data...');
+      
       // First fetch the current exercise data to get all required fields
       const currentExerciseResponse = await axios.get(`${API}/exercise-builder/${exerciseId}`);
       const currentExercise = currentExerciseResponse.data;
+      
+      console.log('✅ Current exercise fetched:', currentExercise);
       
       // Merge the scope data with the existing exercise data
       // Ensure required fields have valid values
@@ -5081,13 +5089,20 @@ const ScopeModal = ({ isOpen, onClose, onSave, initialData = null, exerciseId })
         scope_personnel: scopeData.scope_personnel
       };
       
+      console.log('📦 Update payload prepared:', updatePayload);
+      console.log('🔄 Sending PUT request to:', `${API}/exercise-builder/${exerciseId}`);
+      
       const response = await axios.put(`${API}/exercise-builder/${exerciseId}`, updatePayload);
+      
+      console.log('✅ Save successful! Response:', response.data);
+      
       onSave(response.data);
       onClose();
     } catch (error) {
-      console.error('Error saving scope:', error);
+      console.error('❌ Error saving scope:', error);
+      console.error('❌ Error details:', error.response?.data || error.message);
       // Show error message to user
-      alert('Error saving scope data. Please try again.');
+      alert(`Error saving scope data: ${error.response?.data?.detail || error.message}. Please try again.`);
     } finally {
       setLoading(false);
     }

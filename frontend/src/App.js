@@ -4675,6 +4675,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Callsign</Label>
                   <Input
+                    value={currentCallsign.callsign}
+                    onChange={(e) => setCurrentCallsign(prev => ({ ...prev, callsign: e.target.value }))}
                     placeholder="e.g., COMMAND-1"
                     className="bg-gray-700 border-gray-600 text-white"
                   />
@@ -4682,17 +4684,50 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Definition</Label>
                   <Textarea
+                    value={currentCallsign.description}
+                    onChange={(e) => setCurrentCallsign(prev => ({ ...prev, description: e.target.value }))}
                     placeholder="Define the role or position for this callsign..."
                     className="bg-gray-700 border-gray-600 text-white"
                     rows={3}
                   />
                 </div>
-                <Button className="bg-blue-600 hover:bg-blue-700">
+                <Button onClick={addCallsign} className="bg-blue-600 hover:bg-blue-700">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Callsign
                 </Button>
               </CardContent>
             </Card>
+
+            {/* Added Callsigns Display */}
+            {callsigns.length > 0 && (
+              <Card className="bg-gray-800 border-gray-700">
+                <CardHeader>
+                  <CardTitle className="text-orange-500">Added Callsigns ({callsigns.length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {callsigns.map((callsign) => (
+                      <div key={callsign.id} className="p-4 bg-gray-700 rounded-lg">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-white text-lg">{callsign.callsign}</h3>
+                            <p className="text-gray-300 text-sm mt-1">{callsign.description}</p>
+                          </div>
+                          <Button
+                            onClick={() => removeCallsign(callsign.id)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-400 hover:text-red-300"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
             
             {/* Save Step Button */}
             <div className="flex justify-end">

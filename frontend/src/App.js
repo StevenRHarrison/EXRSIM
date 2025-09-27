@@ -500,7 +500,8 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
         name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         phone: formData.cellPhone || formData.homePhone,
-        address: `${formData.address}, ${formData.city}, ${formData.provinceState}`,
+        address: formData.address, // Include the individual address field
+        fullAddress: `${formData.address}, ${formData.city}, ${formData.provinceState}`, // Keep full address for compatibility
         organization: '', // Will be handled later
         role: formData.position.toLowerCase().replace(/\s+/g, '_'),
         firstName: formData.firstName,

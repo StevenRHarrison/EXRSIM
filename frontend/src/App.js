@@ -5022,6 +5022,163 @@ const ExerciseBuilder = () => {
   );
 };
 
+// Scope Modal Component
+const ScopeModal = ({ isOpen, onClose, onSave, initialData = null, exerciseId }) => {
+  const [scopeData, setScopeData] = useState({
+    scope_description: '',
+    scope_hazards: '',
+    scope_geographic_area: '',
+    scope_functions: '',
+    scope_organizations: '',
+    scope_personnel: ''
+  });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (initialData) {
+      setScopeData({
+        scope_description: initialData.scope_description || '',
+        scope_hazards: initialData.scope_hazards || '',
+        scope_geographic_area: initialData.scope_geographic_area || '',
+        scope_functions: initialData.scope_functions || '',
+        scope_organizations: initialData.scope_organizations || '',
+        scope_personnel: initialData.scope_personnel || ''
+      });
+    } else {
+      setScopeData({
+        scope_description: '',
+        scope_hazards: '',
+        scope_geographic_area: '',
+        scope_functions: '',
+        scope_organizations: '',
+        scope_personnel: ''
+      });
+    }
+  }, [initialData, isOpen]);
+
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      // Update the exercise with the new scope data
+      const response = await axios.put(`${API}/exercise-builder/${exerciseId}`, scopeData);
+      onSave(response.data);
+      onClose();
+    } catch (error) {
+      console.error('Error saving scope:', error);
+      // Handle error - could show toast notification
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-gray-800 border border-gray-700 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-auto">
+        <div className="flex items-center justify-between p-6 border-b border-gray-700">
+          <h2 className="text-2xl font-bold text-orange-500">
+            {initialData ? 'Edit Exercise Scope' : 'Add Exercise Scope'}
+          </h2>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="text-gray-400 hover:text-white"
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        </div>
+
+        <div className="p-6 space-y-6">
+          <div>
+            <Label className="text-gray-300">Scope Description</Label>
+            <Textarea
+              value={scopeData.scope_description}
+              onChange={(e) => setScopeData(prev => ({ ...prev, scope_description: e.target.value }))}
+              className="bg-gray-700 border-gray-600 text-white mt-2"
+              rows={3}
+              placeholder="Describe the overall scope of this exercise..."
+            />
+          </div>
+
+          <div>
+            <Label className="text-gray-300">Hazards</Label>
+            <Textarea
+              value={scopeData.scope_hazards}
+              onChange={(e) => setScopeData(prev => ({ ...prev, scope_hazards: e.target.value }))}
+              className="bg-gray-700 border-gray-600 text-white mt-2"
+              rows={2}
+              placeholder="List the hazards to be addressed in this exercise..."
+            />
+          </div>
+
+          <div>
+            <Label className="text-gray-300">Geographic Area</Label>
+            <Textarea
+              value={scopeData.scope_geographic_area}
+              onChange={(e) => setScopeData(prev => ({ ...prev, scope_geographic_area: e.target.value }))}
+              className="bg-gray-700 border-gray-600 text-white mt-2"
+              rows={2}
+              placeholder="Define the geographic boundaries and areas involved..."
+            />
+          </div>
+
+          <div>
+            <Label className="text-gray-300">Functions</Label>
+            <Textarea
+              value={scopeData.scope_functions}
+              onChange={(e) => setScopeData(prev => ({ ...prev, scope_functions: e.target.value }))}
+              className="bg-gray-700 border-gray-600 text-white mt-2"
+              rows={2}
+              placeholder="Specify the emergency response functions to be exercised..."
+            />
+          </div>
+
+          <div>
+            <Label className="text-gray-300">Organizations</Label>
+            <Textarea
+              value={scopeData.scope_organizations}
+              onChange={(e) => setScopeData(prev => ({ ...prev, scope_organizations: e.target.value }))}
+              className="bg-gray-700 border-gray-600 text-white mt-2"
+              rows={2}
+              placeholder="List the organizations and agencies participating..."
+            />
+          </div>
+
+          <div>
+            <Label className="text-gray-300">Personnel</Label>
+            <Textarea
+              value={scopeData.scope_personnel}
+              onChange={(e) => setScopeData(prev => ({ ...prev, scope_personnel: e.target.value }))}
+              className="bg-gray-700 border-gray-600 text-white mt-2"
+              rows={2}
+              placeholder="Describe the personnel and roles involved..."
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-700">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            className="border-gray-600 text-gray-300 hover:bg-gray-700"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSave}
+            disabled={loading}
+            className="bg-orange-500 hover:bg-orange-600 text-black"
+          >
+            {loading ? 'Saving...' : initialData ? 'Update Scope' : 'Add Scope'}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Exercise Management Dashboard Component
 const ExerciseManagementDashboard = ({ exerciseId }) => {
   const [exercise, setExercise] = useState(null);

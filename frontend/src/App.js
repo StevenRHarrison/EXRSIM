@@ -3306,6 +3306,15 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
         endDate.setDate(endDate.getDate() + 1);
       }
       
+      // Log debug information about data being saved
+      console.log('💾 Saving Exercise with Complete Data:');
+      console.log('📝 Basic Exercise Data:', exerciseData);
+      console.log('🎯 Goals:', goals);
+      console.log('🔸 Objectives:', objectives);
+      console.log('📅 Events:', events);
+      console.log('⚙️ Functions:', functions);
+      console.log('🏢 Organizations:', organizations);
+      
       const exercisePayload = {
         ...exerciseData,
         start_date: startDate.toISOString(),
@@ -3324,6 +3333,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
         artificialities: artificialities,
         safetyConcerns: safetyConcerns
       };
+      
+      console.log('📦 Complete Payload Being Sent:', exercisePayload);
       
       // Remove id from payload for create operations, but keep it for updates
       const payloadForAPI = { ...exercisePayload };

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend API Testing for EXRSIM Exercise Builder
-Tests ALL 17 steps with complete field-by-field data persistence verification
+Comprehensive Backend API Testing for EXRSIM Participant CRUD
+Tests participant CRUD functionality comprehensively to identify any issues with data persistence across ALL fields
 As requested in the comprehensive testing review
 """
 

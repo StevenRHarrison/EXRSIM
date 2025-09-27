@@ -4768,6 +4768,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                   <div>
                     <Label className="text-gray-300">Frequency Name</Label>
                     <Input
+                      value={currentFrequency.frequency || ''}
+                      onChange={(e) => setCurrentFrequency(prev => ({ ...prev, frequency: e.target.value }))}
                       placeholder="e.g., Command Net"
                       className="bg-gray-700 border-gray-600 text-white"
                     />
@@ -4775,6 +4777,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                   <div>
                     <Label className="text-gray-300">Frequency (MHz)</Label>
                     <Input
+                      value={currentFrequency.type || ''}
+                      onChange={(e) => setCurrentFrequency(prev => ({ ...prev, type: e.target.value }))}
                       placeholder="e.g., 155.475"
                       className="bg-gray-700 border-gray-600 text-white"
                     />
@@ -4784,6 +4788,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Description</Label>
                   <Textarea
+                    value={currentFrequency.description || ''}
+                    onChange={(e) => setCurrentFrequency(prev => ({ ...prev, description: e.target.value }))}
                     placeholder="Describe the usage of this frequency..."
                     className="bg-gray-700 border-gray-600 text-white"
                     rows={2}
@@ -4793,7 +4799,10 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label className="text-gray-300">Tone (Hz)</Label>
-                    <Select>
+                    <Select 
+                      value={currentFrequency.tone || ''} 
+                      onValueChange={(value) => setCurrentFrequency(prev => ({ ...prev, tone: value }))}
+                    >
                       <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                         <SelectValue placeholder="Select tone" />
                       </SelectTrigger>
@@ -4806,7 +4815,10 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                   </div>
                   <div>
                     <Label className="text-gray-300">Offset</Label>
-                    <Select>
+                    <Select 
+                      value={currentFrequency.offset || ''} 
+                      onValueChange={(value) => setCurrentFrequency(prev => ({ ...prev, offset: value }))}
+                    >
                       <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                         <SelectValue placeholder="Select offset" />
                       </SelectTrigger>
@@ -4823,13 +4835,18 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                   <div>
                     <Label className="text-gray-300">Channel</Label>
                     <Input
+                      value={currentFrequency.channel || ''}
+                      onChange={(e) => setCurrentFrequency(prev => ({ ...prev, channel: e.target.value }))}
                       placeholder="e.g., 1"
                       className="bg-gray-700 border-gray-600 text-white"
                     />
                   </div>
                   <div>
                     <Label className="text-gray-300">Radio Type</Label>
-                    <Select>
+                    <Select 
+                      value={currentFrequency.radio_type || ''} 
+                      onValueChange={(value) => setCurrentFrequency(prev => ({ ...prev, radio_type: value }))}
+                    >
                       <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                         <SelectValue placeholder="Select radio type" />
                       </SelectTrigger>
@@ -4844,19 +4861,64 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 </div>
 
                 <div>
-                  <Label className="text-gray-300">Location</Label>
-                  <Input
-                    placeholder="Physical location of radio equipment"
-                    className="bg-gray-700 border-gray-600 text-white"
-                  />
+                  <Label className="text-gray-300">Primary/Backup</Label>
+                  <Select 
+                    value={currentFrequency.primary_backup || 'Primary'} 
+                    onValueChange={(value) => setCurrentFrequency(prev => ({ ...prev, primary_backup: value }))}
+                  >
+                    <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-700 border-gray-600">
+                      <SelectItem value="Primary" className="text-white">Primary</SelectItem>
+                      <SelectItem value="Backup" className="text-white">Backup</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
-                <Button className="bg-blue-600 hover:bg-blue-700">
+                <Button onClick={addFrequency} className="bg-blue-600 hover:bg-blue-700">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Frequency
                 </Button>
               </CardContent>
             </Card>
+
+            {/* Added Frequencies Display */}
+            {frequencies.length > 0 && (
+              <Card className="bg-gray-800 border-gray-700">
+                <CardHeader>
+                  <CardTitle className="text-orange-500">Added Frequencies ({frequencies.length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {frequencies.map((freq) => (
+                      <div key={freq.id} className="p-4 bg-gray-700 rounded-lg">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-white text-lg">{freq.frequency}</h3>
+                            <p className="text-gray-300 text-sm mt-1">{freq.description}</p>
+                            <div className="mt-2 text-xs text-gray-400 grid grid-cols-2 gap-2">
+                              <span>Frequency: {freq.type}</span>
+                              <span>Type: {freq.primary_backup}</span>
+                              <span>Tone: {freq.tone || 'Not set'}</span>
+                              <span>Radio: {freq.radio_type || 'Not set'}</span>
+                            </div>
+                          </div>
+                          <Button
+                            onClick={() => removeFrequency(freq.id)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-400 hover:text-red-300"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
             
             {/* Save Step Button */}
             <div className="flex justify-end">

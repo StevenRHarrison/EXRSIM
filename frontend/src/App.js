@@ -5405,30 +5405,37 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
 // Main App Component
 function App() {
   const [activeMenu, setActiveMenu] = useState('dashboard');
+  const [managingExerciseId, setManagingExerciseId] = useState(null);
 
   // Handle URL-based navigation for editing exercises
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.substring(1); // Remove the #
       
-      // Check for parameters in hash format: #builder?exercise=<id>
+      // Check for parameters in hash format: #builder?exercise=<id> or #manage?exercise=<id>
       const queryStart = hash.indexOf('?');
       let hashBase = hash;
-      let hasExerciseParam = false;
+      let exerciseId = null;
       
       if (queryStart !== -1) {
         hashBase = hash.substring(0, queryStart);
         const queryString = hash.substring(queryStart + 1);
         const urlParams = new URLSearchParams(queryString);
-        hasExerciseParam = urlParams.get('exercise') !== null;
+        exerciseId = urlParams.get('exercise');
       }
       
-      if (hashBase === 'builder' || hasExerciseParam) {
+      if (hashBase === 'manage' && exerciseId) {
+        setActiveMenu('manage');
+        setManagingExerciseId(exerciseId);
+      } else if (hashBase === 'builder') {
         setActiveMenu('builder');
+        setManagingExerciseId(null);
       } else if (hashBase && ['dashboard', 'exercises', 'msel', 'hira', 'participants'].includes(hashBase)) {
         setActiveMenu(hashBase);
+        setManagingExerciseId(null);
       } else if (!hashBase) {
         setActiveMenu('dashboard');
+        setManagingExerciseId(null);
       }
     };
 
@@ -5459,10 +5466,23 @@ function App() {
         return <ParticipantsView />;
       case 'builder':
         return <ExerciseBuilder />;
+      case 'manage':
+        return <ExerciseManagementDashboard exerciseId={managingExerciseId} />;
       default:
         return <Dashboard />;
     }
   };
+
+  // Don't show the main navigation and sidebar for the exercise management dashboard
+  if (activeMenu === 'manage') {
+    return (
+      <div className="min-h-screen bg-black text-white">
+        <BrowserRouter>
+          {renderContent()}
+        </BrowserRouter>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">

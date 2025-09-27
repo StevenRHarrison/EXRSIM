@@ -485,6 +485,11 @@ def test_comprehensive_exercise_builder():
         # Create updated test data - start with the original retrieved data
         updated_data = retrieved_exercise.copy()
         
+        # Store original counts for verification (from retrieved data)
+        original_goals_count = len(retrieved_exercise.get("goals", []))
+        original_objectives_count = len(retrieved_exercise.get("objectives", []))
+        original_events_count = len(retrieved_exercise.get("events", []))
+        
         # Modify Step 1 fields
         updated_data["exercise_name"] = "UPDATED - Comprehensive Multi-Hazard Emergency Response Exercise"
         updated_data["exercise_description"] = "UPDATED - A comprehensive emergency response exercise with enhanced testing protocols"
@@ -525,11 +530,6 @@ def test_comprehensive_exercise_builder():
             "tier": "Tier 1: Incident",
             "escalation": "Low"
         })
-        
-        # Store original counts for verification
-        original_goals_count = len(retrieved_exercise.get("goals", []))
-        original_objectives_count = len(retrieved_exercise.get("objectives", []))
-        original_events_count = len(retrieved_exercise.get("events", []))
         
         print(f"   📊 Original counts: Goals={original_goals_count}, Objectives={original_objectives_count}, Events={original_events_count}")
         print(f"   📊 Updated counts: Goals={len(updated_data['goals'])}, Objectives={len(updated_data['objectives'])}, Events={len(updated_data['events'])}")

@@ -5064,8 +5064,15 @@ const ScopeModal = ({ isOpen, onClose, onSave, initialData = null, exerciseId })
       const currentExercise = currentExerciseResponse.data;
       
       // Merge the scope data with the existing exercise data
+      // Ensure required fields have valid values
       const updatePayload = {
         ...currentExercise,
+        // Provide defaults for required fields if they're empty
+        exercise_type: currentExercise.exercise_type || 'Table Top',
+        location: currentExercise.location || 'Not specified',
+        start_time: currentExercise.start_time || '09:00',
+        end_time: currentExercise.end_time || '17:00',
+        // Update scope fields
         scope_description: scopeData.scope_description,
         scope_hazards: scopeData.scope_hazards,
         scope_geographic_area: scopeData.scope_geographic_area,

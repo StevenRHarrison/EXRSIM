@@ -245,6 +245,7 @@ const Dashboard = () => {
               key={exercise.id} 
               className="bg-gray-800 border-gray-700 hover:border-orange-500/50 transition-colors cursor-pointer"
               data-testid={`exercise-card-${exercise.id}`}
+              onClick={() => window.location.href = `#manage?exercise=${exercise.id}`}
             >
               <CardHeader>
                 <div className="flex items-start justify-between">

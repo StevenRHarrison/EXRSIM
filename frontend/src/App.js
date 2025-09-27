@@ -3310,7 +3310,19 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
         ...exerciseData,
         start_date: startDate.toISOString(),
         end_date: endDate.toISOString(),
-        scope_exercise_type: exerciseData.exercise_type
+        scope_exercise_type: exerciseData.exercise_type,
+        // Add all dynamic collections
+        goals: goals,
+        objectives: objectives,
+        events: events,
+        functions: functions,
+        organizations: organizations,
+        codeWords: codeWords,
+        callsigns: callsigns,
+        frequencies: frequencies,
+        assumptions: assumptions,
+        artificialities: artificialities,
+        safetyConcerns: safetyConcerns
       };
       
       // Remove id from payload for create operations, but keep it for updates

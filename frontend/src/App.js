@@ -5184,6 +5184,10 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
   const [exercise, setExercise] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState('overview');
+  
+  // Modal states
+  const [scopeModalOpen, setScopeModalOpen] = useState(false);
+  const [editingScope, setEditingScope] = useState(null);
 
   useEffect(() => {
     if (exerciseId) {

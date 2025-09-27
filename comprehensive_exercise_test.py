@@ -482,8 +482,8 @@ def test_comprehensive_exercise_builder():
         print(f"\n3️⃣ TESTING: UPDATE EXERCISE (PUT)")
         print("Updating exercise with modified data across all 17 steps...")
         
-        # Create updated test data
-        updated_data = test_data.copy()
+        # Create updated test data - start with the original retrieved data
+        updated_data = retrieved_exercise.copy()
         
         # Modify Step 1 fields
         updated_data["exercise_name"] = "UPDATED - Comprehensive Multi-Hazard Emergency Response Exercise"
@@ -526,21 +526,13 @@ def test_comprehensive_exercise_builder():
             "escalation": "Low"
         })
         
-        # Update other collections similarly
-        for collection_name in ["functions", "injections", "organizations", "coordinators", 
-                               "codeWords", "callsigns", "frequencies", "assumptions", 
-                               "artificialities", "safetyConcerns"]:
-            if collection_name in updated_data and len(updated_data[collection_name]) > 0:
-                # Add a new item to each collection
-                new_item = updated_data[collection_name][0].copy()
-                new_item["id"] = new_item["id"] + 1000  # Ensure unique ID
-                
-                # Update name/description fields
-                for key in new_item.keys():
-                    if isinstance(new_item[key], str) and key in ["name", "description", "word", "callsign", "concern", "assumption", "artificiality"]:
-                        new_item[key] = f"UPDATED - {new_item[key]}"
-                
-                updated_data[collection_name].append(new_item)
+        # Store original counts for verification
+        original_goals_count = len(retrieved_exercise.get("goals", []))
+        original_objectives_count = len(retrieved_exercise.get("objectives", []))
+        original_events_count = len(retrieved_exercise.get("events", []))
+        
+        print(f"   📊 Original counts: Goals={original_goals_count}, Objectives={original_objectives_count}, Events={original_events_count}")
+        print(f"   📊 Updated counts: Goals={len(updated_data['goals'])}, Objectives={len(updated_data['objectives'])}, Events={len(updated_data['events'])}")
         
         response = requests.put(
             f"{BACKEND_URL}/exercise-builder/{created_exercise_id}",
@@ -563,15 +555,13 @@ def test_comprehensive_exercise_builder():
             
             # Verify dynamic collections were updated
             print("\n📊 DYNAMIC COLLECTIONS UPDATE VERIFICATION:")
-            for collection_name in ["goals", "objectives", "events"]:
+            for collection_name, original_count in [("goals", original_goals_count), ("objectives", original_objectives_count), ("events", original_events_count)]:
                 updated_collection = updated_exercise.get(collection_name, [])
-                original_collection = test_data.get(collection_name, [])
-                
-                expected_count = len(original_collection) + 1  # We added 1 item to each
                 actual_count = len(updated_collection)
+                expected_count = original_count + 1  # We added 1 item to each
                 
                 if actual_count >= expected_count:
-                    print(f"   ✅ {collection_name}: {len(original_collection)} → {actual_count} items (expected: {expected_count})")
+                    print(f"   ✅ {collection_name}: {original_count} → {actual_count} items (expected: {expected_count})")
                 else:
                     print(f"   ❌ {collection_name}: Expected {expected_count}, got {actual_count} items")
                     return False

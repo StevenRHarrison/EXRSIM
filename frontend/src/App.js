@@ -3991,6 +3991,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Event Name</Label>
                   <Input
+                    value={currentEvent.name}
+                    onChange={(e) => setCurrentEvent(prev => ({ ...prev, name: e.target.value }))}
                     placeholder="e.g., Initial Emergency Notification"
                     className="bg-gray-700 border-gray-600 text-white"
                   />
@@ -3998,6 +4000,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Event Description</Label>
                   <Textarea
+                    value={currentEvent.description}
+                    onChange={(e) => setCurrentEvent(prev => ({ ...prev, description: e.target.value }))}
                     placeholder="Describe the event in detail..."
                     className="bg-gray-700 border-gray-600 text-white"
                     rows={3}
@@ -4006,6 +4010,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Anticipated Actions</Label>
                   <Textarea
+                    value={currentEvent.actions}
+                    onChange={(e) => setCurrentEvent(prev => ({ ...prev, actions: e.target.value }))}
                     placeholder="What actions are expected from participants?"
                     className="bg-gray-700 border-gray-600 text-white"
                     rows={2}
@@ -4018,6 +4024,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                     <Input
                       type="number"
                       step="any"
+                      value={currentEvent.latitude}
+                      onChange={(e) => setCurrentEvent(prev => ({ ...prev, latitude: parseFloat(e.target.value) || 0 }))}
                       placeholder="0.0"
                       className="bg-gray-700 border-gray-600 text-white"
                     />
@@ -4027,6 +4035,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                     <Input
                       type="number"
                       step="any"
+                      value={currentEvent.longitude}
+                      onChange={(e) => setCurrentEvent(prev => ({ ...prev, longitude: parseFloat(e.target.value) || 0 }))}
                       placeholder="0.0"
                       className="bg-gray-700 border-gray-600 text-white"
                     />
@@ -4038,6 +4048,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                     <Label className="text-gray-300">Start Date</Label>
                     <Input
                       type="date"
+                      value={currentEvent.start_date}
+                      onChange={(e) => setCurrentEvent(prev => ({ ...prev, start_date: e.target.value }))}
                       className="bg-gray-700 border-gray-600 text-white"
                     />
                   </div>
@@ -4045,6 +4057,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                     <Label className="text-gray-300">Start Time</Label>
                     <Input
                       type="time"
+                      value={currentEvent.start_time}
+                      onChange={(e) => setCurrentEvent(prev => ({ ...prev, start_time: e.target.value }))}
                       className="bg-gray-700 border-gray-600 text-white"
                     />
                   </div>
@@ -4055,6 +4069,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                     <Label className="text-gray-300">End Date</Label>
                     <Input
                       type="date"
+                      value={currentEvent.end_date}
+                      onChange={(e) => setCurrentEvent(prev => ({ ...prev, end_date: e.target.value }))}
                       className="bg-gray-700 border-gray-600 text-white"
                     />
                   </div>
@@ -4062,6 +4078,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                     <Label className="text-gray-300">End Time</Label>
                     <Input
                       type="time"
+                      value={currentEvent.end_time}
+                      onChange={(e) => setCurrentEvent(prev => ({ ...prev, end_time: e.target.value }))}
                       className="bg-gray-700 border-gray-600 text-white"
                     />
                   </div>
@@ -4069,7 +4087,7 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
 
                 <div>
                   <Label className="text-gray-300">Tier Scale</Label>
-                  <Select>
+                  <Select value={currentEvent.tier_scale} onValueChange={(value) => setCurrentEvent(prev => ({ ...prev, tier_scale: value }))}>
                     <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                       <SelectValue placeholder="Select tier scale" />
                     </SelectTrigger>
@@ -4083,7 +4101,11 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
 
                 <div>
                   <Label className="text-gray-300">Escalation Value</Label>
-                  <RadioGroup className="grid grid-cols-5 gap-4 mt-2">
+                  <RadioGroup 
+                    value={currentEvent.escalation_value} 
+                    onValueChange={(value) => setCurrentEvent(prev => ({ ...prev, escalation_value: value }))}
+                    className="grid grid-cols-5 gap-4 mt-2"
+                  >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="none" id="esc-none" />
                       <Label htmlFor="esc-none" className="bg-gray-500 text-white px-2 py-1 rounded text-sm">None</Label>
@@ -4107,12 +4129,48 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                   </RadioGroup>
                 </div>
 
-                <Button className="bg-blue-600 hover:bg-blue-700">
+                <Button onClick={addEvent} className="bg-blue-600 hover:bg-blue-700">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Event
                 </Button>
               </CardContent>
             </Card>
+
+            {/* Added Events Display */}
+            {events.length > 0 && (
+              <Card className="bg-gray-800 border-gray-700">
+                <CardHeader>
+                  <CardTitle className="text-orange-500">Added Events ({events.length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {events.map((event) => (
+                      <div key={event.id} className="p-4 bg-gray-700 rounded-lg">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-white">{event.name}</h3>
+                            <p className="text-gray-300 text-sm">{event.description}</p>
+                            <div className="mt-2 flex space-x-4 text-xs text-gray-400">
+                              <span>Start: {event.start_date} {event.start_time}</span>
+                              <span>End: {event.end_date} {event.end_time}</span>
+                              <span>Tier: {event.tier_scale}</span>
+                            </div>
+                          </div>
+                          <Button
+                            onClick={() => removeEvent(event.id)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-400 hover:text-red-300"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
             
             {/* Save Step Button */}
             <div className="flex justify-end">

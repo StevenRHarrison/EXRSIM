@@ -5050,24 +5050,59 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Artificiality Name</Label>
                   <Input
+                    value={currentArtificiality.artificiality || ''}
+                    onChange={(e) => setCurrentArtificiality(prev => ({ ...prev, artificiality: e.target.value }))}
                     placeholder="e.g., Simulated Resource Limitations"
                     className="bg-gray-700 border-gray-600 text-white"
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-300">Artificiality</Label>
+                  <Label className="text-gray-300">Artificiality Description</Label>
                   <Textarea
+                    value={currentArtificiality.description || ''}
+                    onChange={(e) => setCurrentArtificiality(prev => ({ ...prev, description: e.target.value }))}
                     placeholder="Describe the artificial constraint or limitation..."
                     className="bg-gray-700 border-gray-600 text-white"
                     rows={3}
                   />
                 </div>
-                <Button className="bg-blue-600 hover:bg-blue-700">
+                <Button onClick={addArtificiality} className="bg-blue-600 hover:bg-blue-700">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Artificiality
                 </Button>
               </CardContent>
             </Card>
+
+            {/* Added Artificialities Display */}
+            {artificialities.length > 0 && (
+              <Card className="bg-gray-800 border-gray-700">
+                <CardHeader>
+                  <CardTitle className="text-orange-500">Added Artificialities ({artificialities.length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {artificialities.map((artificiality) => (
+                      <div key={artificiality.id} className="p-4 bg-gray-700 rounded-lg">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-white text-lg">{artificiality.artificiality}</h3>
+                            <p className="text-gray-300 text-sm mt-1">{artificiality.description}</p>
+                          </div>
+                          <Button
+                            onClick={() => removeArtificiality(artificiality.id)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-400 hover:text-red-300"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
             
             {/* Save Step Button */}
             <div className="flex justify-end">

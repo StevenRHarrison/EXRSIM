@@ -5671,6 +5671,9 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
   
   // Exercise Steps menu expansion state
   const [exerciseStepsExpanded, setExerciseStepsExpanded] = useState(true);
+  
+  // Improvement menu expansion state
+  const [improvementExpanded, setImprovementExpanded] = useState(true);
 
   useEffect(() => {
     if (exerciseId) {

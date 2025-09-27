@@ -36,7 +36,20 @@ import {
   Edit,
   Trash2,
   Save,
-  Info
+  Info,
+  FileText,
+  Flag,
+  Map,
+  Trophy,
+  CheckCircle,
+  Calendar,
+  Building,
+  Key,
+  Radio,
+  Headphones,
+  MessageSquare,
+  ShieldAlert,
+  Clock
 } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;

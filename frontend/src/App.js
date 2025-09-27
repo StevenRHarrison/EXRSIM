@@ -5721,12 +5721,22 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
     { id: 'safety', title: 'Safety Concerns', icon: ShieldAlert },
   ];
 
+  const improvementMenuItems = [
+    { id: 'evaluations', title: 'Evaluations', icon: Star },
+    { id: 'lessons_learned', title: 'Lessons Learned', icon: Lightbulb },
+    { id: 'deficiencies', title: 'Deficiencies', icon: AlertCircle },
+    { id: 'near_misses', title: 'Near Misses', icon: Zap },
+    { id: 'comments', title: 'Comments', icon: MessageCircle },
+    { id: 'corrective_actions', title: 'Corrective Actions', icon: CheckSquare }
+  ];
+
   // Combined for compatibility with existing code
   const exerciseMenuItems = [
     ...topLevelMenuItems,
     { id: 'exercise', title: 'Exercise Details', icon: FileText },
     { id: 'objectives', title: 'Objectives', icon: CheckCircle },
-    ...exerciseStepsMenuItems
+    ...exerciseStepsMenuItems,
+    ...improvementMenuItems
   ];
 
   const getExerciseStatus = () => {

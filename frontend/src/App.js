@@ -50,7 +50,9 @@ import {
   MessageSquare,
   ShieldAlert,
   Clock,
-  X
+  X,
+  ChevronDown,
+  ChevronRight
 } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;

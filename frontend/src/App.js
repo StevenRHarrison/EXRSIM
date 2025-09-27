@@ -4376,6 +4376,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Organization Name</Label>
                   <Input
+                    value={currentOrganization.name}
+                    onChange={(e) => setCurrentOrganization(prev => ({ ...prev, name: e.target.value }))}
                     placeholder="e.g., City Emergency Services"
                     className="bg-gray-700 border-gray-600 text-white"
                   />
@@ -4383,6 +4385,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Description</Label>
                   <Textarea
+                    value={currentOrganization.description}
+                    onChange={(e) => setCurrentOrganization(prev => ({ ...prev, description: e.target.value }))}
                     placeholder="Describe the organization's role..."
                     className="bg-gray-700 border-gray-600 text-white"
                     rows={2}
@@ -4391,6 +4395,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Home Base</Label>
                   <Input
+                    value={currentOrganization.home_base}
+                    onChange={(e) => setCurrentOrganization(prev => ({ ...prev, home_base: e.target.value }))}
                     placeholder="Organization headquarters or base location"
                     className="bg-gray-700 border-gray-600 text-white"
                   />
@@ -4400,6 +4406,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                   <div>
                     <Label className="text-gray-300">Contact First Name</Label>
                     <Input
+                      value={currentOrganization.contact_first_name}
+                      onChange={(e) => setCurrentOrganization(prev => ({ ...prev, contact_first_name: e.target.value }))}
                       placeholder="First name"
                       className="bg-gray-700 border-gray-600 text-white"
                     />
@@ -4407,6 +4415,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                   <div>
                     <Label className="text-gray-300">Contact Last Name</Label>
                     <Input
+                      value={currentOrganization.contact_last_name}
+                      onChange={(e) => setCurrentOrganization(prev => ({ ...prev, contact_last_name: e.target.value }))}
                       placeholder="Last name"
                       className="bg-gray-700 border-gray-600 text-white"
                     />
@@ -4417,6 +4427,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                   <div>
                     <Label className="text-gray-300">Contact Cell Phone</Label>
                     <Input
+                      value={currentOrganization.contact_phone}
+                      onChange={(e) => setCurrentOrganization(prev => ({ ...prev, contact_phone: e.target.value }))}
                       placeholder="+1 (555) 123-4567"
                       className="bg-gray-700 border-gray-600 text-white"
                     />
@@ -4425,18 +4437,56 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                     <Label className="text-gray-300">Contact Email</Label>
                     <Input
                       type="email"
+                      value={currentOrganization.contact_email}
+                      onChange={(e) => setCurrentOrganization(prev => ({ ...prev, contact_email: e.target.value }))}
                       placeholder="contact@organization.com"
                       className="bg-gray-700 border-gray-600 text-white"
                     />
                   </div>
                 </div>
 
-                <Button className="bg-blue-600 hover:bg-blue-700">
+                <Button onClick={addOrganization} className="bg-blue-600 hover:bg-blue-700">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Organization
                 </Button>
               </CardContent>
             </Card>
+
+            {/* Added Organizations Display */}
+            {organizations.length > 0 && (
+              <Card className="bg-gray-800 border-gray-700">
+                <CardHeader>
+                  <CardTitle className="text-orange-500">Added Organizations ({organizations.length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {organizations.map((org) => (
+                      <div key={org.id} className="p-4 bg-gray-700 rounded-lg">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-white">{org.name}</h3>
+                            <p className="text-gray-300 text-sm">{org.description}</p>
+                            <div className="mt-2 text-xs text-gray-400 space-y-1">
+                              <div>Home Base: {org.home_base}</div>
+                              <div>Contact: {org.contact_first_name} {org.contact_last_name}</div>
+                              <div>Phone: {org.contact_phone} | Email: {org.contact_email}</div>
+                            </div>
+                          </div>
+                          <Button
+                            onClick={() => removeOrganization(org.id)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-400 hover:text-red-300"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
             
             {/* Save Step Button */}
             <div className="flex justify-end">

@@ -567,10 +567,13 @@ def test_comprehensive_exercise_builder():
                 updated_collection = updated_exercise.get(collection_name, [])
                 original_collection = test_data.get(collection_name, [])
                 
-                if len(updated_collection) > len(original_collection):
-                    print(f"   ✅ {collection_name}: {len(original_collection)} → {len(updated_collection)} items")
+                expected_count = len(original_collection) + 1  # We added 1 item to each
+                actual_count = len(updated_collection)
+                
+                if actual_count >= expected_count:
+                    print(f"   ✅ {collection_name}: {len(original_collection)} → {actual_count} items (expected: {expected_count})")
                 else:
-                    print(f"   ❌ {collection_name}: Expected increase, got {len(updated_collection)} items")
+                    print(f"   ❌ {collection_name}: Expected {expected_count}, got {actual_count} items")
                     return False
                     
         else:

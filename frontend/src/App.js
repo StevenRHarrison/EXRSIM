@@ -6543,7 +6543,8 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
             
             <ScrollArea className="h-[calc(100vh-200px)]">
               <div className="space-y-1">
-                {exerciseMenuItems.map((item) => {
+                {/* Top Level Menu Items */}
+                {topLevelMenuItems.map((item) => {
                   const Icon = item.icon;
                   return (
                     <Button
@@ -6561,6 +6562,47 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
                     </Button>
                   );
                 })}
+                
+                {/* Exercise Steps Collapsible Section */}
+                <div className="pt-2">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-left text-gray-300 hover:text-orange-500 hover:bg-gray-800 mb-1"
+                    onClick={() => setExerciseStepsExpanded(!exerciseStepsExpanded)}
+                  >
+                    {exerciseStepsExpanded ? (
+                      <ChevronDown className="h-4 w-4 mr-2 flex-shrink-0" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4 mr-2 flex-shrink-0" />
+                    )}
+                    <Settings className="h-4 w-4 mr-2 flex-shrink-0" />
+                    <span className="font-medium">Exercise Steps</span>
+                  </Button>
+                  
+                  {/* Exercise Steps Sub-menu Items */}
+                  {exerciseStepsExpanded && (
+                    <div className="ml-4 space-y-1 border-l border-gray-700 pl-2">
+                      {exerciseStepsMenuItems.map((item) => {
+                        const Icon = item.icon;
+                        return (
+                          <Button
+                            key={item.id}
+                            variant={activeSection === item.id ? "secondary" : "ghost"}
+                            className={`w-full justify-start text-left text-sm ${
+                              activeSection === item.id
+                                ? "bg-orange-500/20 text-orange-300 border-orange-500/50"
+                                : "text-gray-400 hover:text-orange-500 hover:bg-gray-800"
+                            }`}
+                            onClick={() => setActiveSection(item.id)}
+                          >
+                            <Icon className="h-3 w-3 mr-2 flex-shrink-0" />
+                            <span className="truncate">{item.title}</span>
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               </div>
             </ScrollArea>
           </div>

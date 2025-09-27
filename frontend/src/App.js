@@ -6521,6 +6521,180 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
     );
   };
 
+  const renderEvaluationsManagement = () => {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">Exercise Evaluations</h1>
+          <Button 
+            className="bg-orange-500 hover:bg-orange-600 text-black"
+            onClick={() => {/* Add new evaluation logic */}}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Evaluation
+          </Button>
+        </div>
+
+        <Card className="bg-gray-800 border-gray-700 border-dashed">
+          <CardContent className="p-12 text-center">
+            <Star className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-300 mb-2">No Evaluations Yet</h3>
+            <p className="text-gray-500 mb-4">Add exercise evaluations to track performance and effectiveness.</p>
+            <Button className="bg-orange-500 hover:bg-orange-600 text-black">
+              <Plus className="h-4 w-4 mr-2" />
+              Add First Evaluation
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderLessonsLearnedManagement = () => {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">Lessons Learned</h1>
+          <Button 
+            className="bg-orange-500 hover:bg-orange-600 text-black"
+            onClick={() => {/* Add new lesson logic */}}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Lesson
+          </Button>
+        </div>
+
+        <Card className="bg-gray-800 border-gray-700 border-dashed">
+          <CardContent className="p-12 text-center">
+            <Lightbulb className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-300 mb-2">No Lessons Learned Yet</h3>
+            <p className="text-gray-500 mb-4">Document key lessons and insights from the exercise.</p>
+            <Button className="bg-orange-500 hover:bg-orange-600 text-black">
+              <Plus className="h-4 w-4 mr-2" />
+              Add First Lesson
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderDeficienciesManagement = () => {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">Exercise Deficiencies</h1>
+          <Button 
+            className="bg-orange-500 hover:bg-orange-600 text-black"
+            onClick={() => {/* Add new deficiency logic */}}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Deficiency
+          </Button>
+        </div>
+
+        <Card className="bg-gray-800 border-gray-700 border-dashed">
+          <CardContent className="p-12 text-center">
+            <AlertCircle className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-300 mb-2">No Deficiencies Recorded</h3>
+            <p className="text-gray-500 mb-4">Track areas that need improvement or fell short of expectations.</p>
+            <Button className="bg-orange-500 hover:bg-orange-600 text-black">
+              <Plus className="h-4 w-4 mr-2" />
+              Add First Deficiency
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderNearMissesManagement = () => {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">Near Misses</h1>
+          <Button 
+            className="bg-orange-500 hover:bg-orange-600 text-black"
+            onClick={() => {/* Add new near miss logic */}}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Near Miss
+          </Button>
+        </div>
+
+        <Card className="bg-gray-800 border-gray-700 border-dashed">
+          <CardContent className="p-12 text-center">
+            <Zap className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-300 mb-2">No Near Misses Reported</h3>
+            <p className="text-gray-500 mb-4">Document incidents that almost occurred but were avoided.</p>
+            <Button className="bg-orange-500 hover:bg-orange-600 text-black">
+              <Plus className="h-4 w-4 mr-2" />
+              Add First Near Miss
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderCommentsManagement = () => {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">Exercise Comments</h1>
+          <Button 
+            className="bg-orange-500 hover:bg-orange-600 text-black"
+            onClick={() => {/* Add new comment logic */}}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Comment
+          </Button>
+        </div>
+
+        <Card className="bg-gray-800 border-gray-700 border-dashed">
+          <CardContent className="p-12 text-center">
+            <MessageCircle className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-300 mb-2">No Comments Yet</h3>
+            <p className="text-gray-500 mb-4">Add general observations and feedback about the exercise.</p>
+            <Button className="bg-orange-500 hover:bg-orange-600 text-black">
+              <Plus className="h-4 w-4 mr-2" />
+              Add First Comment
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderCorrectiveActionsManagement = () => {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">Corrective Actions</h1>
+          <Button 
+            className="bg-orange-500 hover:bg-orange-600 text-black"
+            onClick={() => {/* Add new corrective action logic */}}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Corrective Action
+          </Button>
+        </div>
+
+        <Card className="bg-gray-800 border-gray-700 border-dashed">
+          <CardContent className="p-12 text-center">
+            <CheckSquare className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-300 mb-2">No Corrective Actions Yet</h3>
+            <p className="text-gray-500 mb-4">Define actions to address identified issues and improvements.</p>
+            <Button className="bg-orange-500 hover:bg-orange-600 text-black">
+              <Plus className="h-4 w-4 mr-2" />
+              Add First Corrective Action
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="p-6 flex items-center justify-center h-64">

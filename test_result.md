@@ -395,7 +395,12 @@
   run_ui: false
 
 ## test_plan:
-  current_focus: []
+  current_focus:
+    - "Exercise Management Dashboard Navigation"
+    - "Exercise Management Dashboard Sidebar"
+    - "Exercise Overview Display"
+    - "Back to Dashboard Functionality"
+    - "Edit Exercise Button"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"

@@ -4958,24 +4958,59 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Assumption Name</Label>
                   <Input
+                    value={currentAssumption.assumption || ''}
+                    onChange={(e) => setCurrentAssumption(prev => ({ ...prev, assumption: e.target.value }))}
                     placeholder="e.g., Weather Conditions"
                     className="bg-gray-700 border-gray-600 text-white"
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-300">Assumption</Label>
+                  <Label className="text-gray-300">Assumption Description</Label>
                   <Textarea
+                    value={currentAssumption.description || ''}
+                    onChange={(e) => setCurrentAssumption(prev => ({ ...prev, description: e.target.value }))}
                     placeholder="Describe the assumption being made..."
                     className="bg-gray-700 border-gray-600 text-white"
                     rows={3}
                   />
                 </div>
-                <Button className="bg-blue-600 hover:bg-blue-700">
+                <Button onClick={addAssumption} className="bg-blue-600 hover:bg-blue-700">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Assumption
                 </Button>
               </CardContent>
             </Card>
+
+            {/* Added Assumptions Display */}
+            {assumptions.length > 0 && (
+              <Card className="bg-gray-800 border-gray-700">
+                <CardHeader>
+                  <CardTitle className="text-orange-500">Added Assumptions ({assumptions.length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {assumptions.map((assumption) => (
+                      <div key={assumption.id} className="p-4 bg-gray-700 rounded-lg">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-white text-lg">{assumption.assumption}</h3>
+                            <p className="text-gray-300 text-sm mt-1">{assumption.description}</p>
+                          </div>
+                          <Button
+                            onClick={() => removeAssumption(assumption.id)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-400 hover:text-red-300"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
             
             {/* Save Step Button */}
             <div className="flex justify-end">

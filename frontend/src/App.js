@@ -5191,24 +5191,86 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Safety Concern Name</Label>
                   <Input
+                    value={currentSafetyConcern.concern || ''}
+                    onChange={(e) => setCurrentSafetyConcern(prev => ({ ...prev, concern: e.target.value }))}
                     placeholder="e.g., Vehicle Operations"
                     className="bg-gray-700 border-gray-600 text-white"
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-300">Safety Concern</Label>
+                  <Label className="text-gray-300">Safety Concern Description</Label>
                   <Textarea
+                    value={currentSafetyConcern.description || ''}
+                    onChange={(e) => setCurrentSafetyConcern(prev => ({ ...prev, description: e.target.value }))}
                     placeholder="Describe the safety concern and mitigation measures..."
                     className="bg-gray-700 border-gray-600 text-white"
                     rows={3}
                   />
                 </div>
-                <Button className="bg-red-600 hover:bg-red-700">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-300">Safety Officer Name</Label>
+                    <Input
+                      value={currentSafetyConcern.safety_officer || ''}
+                      onChange={(e) => setCurrentSafetyConcern(prev => ({ ...prev, safety_officer: e.target.value }))}
+                      placeholder="Responsible safety officer"
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-gray-300">Officer Phone</Label>
+                    <Input
+                      value={currentSafetyConcern.phone || ''}
+                      onChange={(e) => setCurrentSafetyConcern(prev => ({ ...prev, phone: e.target.value }))}
+                      placeholder="+1 (555) 123-4567"
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                </div>
+                <Button onClick={addSafetyConcern} className="bg-red-600 hover:bg-red-700">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Safety Concern
                 </Button>
               </CardContent>
             </Card>
+
+            {/* Added Safety Concerns Display */}
+            {safetyConcerns.length > 0 && (
+              <Card className="bg-gray-800 border-red-500/20">
+                <CardHeader>
+                  <CardTitle className="text-red-500">Added Safety Concerns ({safetyConcerns.length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {safetyConcerns.map((concern) => (
+                      <div key={concern.id} className="p-4 bg-gray-700 rounded-lg border-l-4 border-red-500">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-2">
+                              <ShieldAlert className="h-5 w-5 text-red-400" />
+                              <h3 className="font-semibold text-white text-lg">{concern.concern}</h3>
+                            </div>
+                            <p className="text-gray-300 text-sm mb-2">{concern.description}</p>
+                            <div className="text-xs text-gray-400">
+                              <span>Safety Officer: {concern.safety_officer || 'Not assigned'}</span>
+                              {concern.phone && <span> | Phone: {concern.phone}</span>}
+                            </div>
+                          </div>
+                          <Button
+                            onClick={() => removeSafetyConcern(concern.id)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-400 hover:text-red-300"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
             
             {/* Save Step Button */}
             <div className="flex justify-end">

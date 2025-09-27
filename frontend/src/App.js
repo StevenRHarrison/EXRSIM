@@ -6081,6 +6081,15 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
           </div>
         </div>
       </div>
+      
+      {/* Modals */}
+      <ScopeModal 
+        isOpen={scopeModalOpen}
+        onClose={() => setScopeModalOpen(false)}
+        onSave={handleScopeUpdate}
+        initialData={editingScope}
+        exerciseId={exerciseId}
+      />
     </div>
   );
 };

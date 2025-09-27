@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-## user_problem_statement: Test the Edit Exercise workflow to identify where existing data is being lost when opening saved exercises for editing in the EXRSIM Exercise Builder
+## user_problem_statement: Test the new Exercise Management Dashboard functionality in the EXRSIM application. This is a major new feature that should provide comprehensive exercise management capabilities.
 
 ## backend:
   - task: "Exercise Builder API endpoints"

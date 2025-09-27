@@ -5059,8 +5059,13 @@ const ScopeModal = ({ isOpen, onClose, onSave, initialData = null, exerciseId })
   const handleSave = async () => {
     setLoading(true);
     try {
-      // Update the exercise with the new scope data - need to send a partial update
+      // First fetch the current exercise data to get all required fields
+      const currentExerciseResponse = await axios.get(`${API}/exercise-builder/${exerciseId}`);
+      const currentExercise = currentExerciseResponse.data;
+      
+      // Merge the scope data with the existing exercise data
       const updatePayload = {
+        ...currentExercise,
         scope_description: scopeData.scope_description,
         scope_hazards: scopeData.scope_hazards,
         scope_geographic_area: scopeData.scope_geographic_area,

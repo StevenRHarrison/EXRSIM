@@ -592,11 +592,11 @@ def test_comprehensive_exercise_builder():
             goals_count = len(final_exercise.get("goals", []))
             objectives_count = len(final_exercise.get("objectives", []))
             
-            # Use the original counts from the test data
-            original_goals_count = len(test_data.get("goals", []))
-            original_objectives_count = len(test_data.get("objectives", []))
+            # Use the original counts from the retrieved data (before update)
+            expected_goals = original_goals_count + 1
+            expected_objectives = original_objectives_count + 1
             
-            if goals_count > original_goals_count and objectives_count > original_objectives_count:
+            if goals_count >= expected_goals and objectives_count >= expected_objectives:
                 print(f"✅ Dynamic collections updates persisted (Goals: {original_goals_count}→{goals_count}, Objectives: {original_objectives_count}→{objectives_count})")
             else:
                 print(f"❌ Dynamic collections updates NOT persisted (Goals: {original_goals_count}→{goals_count}, Objectives: {original_objectives_count}→{objectives_count})")

@@ -5459,6 +5459,8 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
     
     // Render specific management interfaces for each section
     switch (activeSection) {
+      case 'scope':
+        return renderScopeManagement();
       case 'goals':
         return renderGoalsManagement();
       case 'objectives':
@@ -5470,6 +5472,158 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
       default:
         return renderGenericSectionManagement();
     }
+  };
+
+  const handleScopeUpdate = (updatedExercise) => {
+    setExercise(updatedExercise);
+  };
+
+  const renderScopeManagement = () => {
+    const hasScope = exercise?.scope_description || exercise?.scope_hazards || 
+                    exercise?.scope_geographic_area || exercise?.scope_functions || 
+                    exercise?.scope_organizations || exercise?.scope_personnel;
+
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">Exercise Scope</h1>
+          <Button 
+            className="bg-orange-500 hover:bg-orange-600 text-black"
+            onClick={() => {
+              setEditingScope(hasScope ? exercise : null);
+              setScopeModalOpen(true);
+            }}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            {hasScope ? 'Edit Scope' : 'Add Scope'}
+          </Button>
+        </div>
+
+        {/* Scope Display */}
+        {hasScope ? (
+          <Card className="bg-gray-800 border-gray-700">
+            <CardContent className="p-6">
+              <div className="space-y-6">
+                {exercise.scope_description && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-orange-400 mb-2">Description</h3>
+                    <p className="text-gray-300">{exercise.scope_description}</p>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {exercise.scope_hazards && (
+                    <div>
+                      <h4 className="text-md font-semibold text-white mb-2">Hazards</h4>
+                      <div className="bg-gray-700/50 p-4 rounded-lg">
+                        <p className="text-gray-300">{exercise.scope_hazards}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {exercise.scope_geographic_area && (
+                    <div>
+                      <h4 className="text-md font-semibold text-white mb-2">Geographic Area</h4>
+                      <div className="bg-gray-700/50 p-4 rounded-lg">
+                        <p className="text-gray-300">{exercise.scope_geographic_area}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {exercise.scope_functions && (
+                    <div>
+                      <h4 className="text-md font-semibold text-white mb-2">Functions</h4>
+                      <div className="bg-gray-700/50 p-4 rounded-lg">
+                        <p className="text-gray-300">{exercise.scope_functions}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {exercise.scope_organizations && (
+                    <div>
+                      <h4 className="text-md font-semibold text-white mb-2">Organizations</h4>
+                      <div className="bg-gray-700/50 p-4 rounded-lg">
+                        <p className="text-gray-300">{exercise.scope_organizations}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {exercise.scope_personnel && (
+                    <div>
+                      <h4 className="text-md font-semibold text-white mb-2">Personnel</h4>
+                      <div className="bg-gray-700/50 p-4 rounded-lg">
+                        <p className="text-gray-300">{exercise.scope_personnel}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex justify-end space-x-3 pt-4 border-t border-gray-700">
+                  <Button 
+                    variant="outline"
+                    className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                    onClick={() => {
+                      setEditingScope(exercise);
+                      setScopeModalOpen(true);
+                    }}
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    Edit Scope
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="bg-gray-800 border-gray-700 border-dashed">
+            <CardContent className="p-12 text-center">
+              <Target className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-300 mb-2">No Scope Defined</h3>
+              <p className="text-gray-500 mb-4">
+                Define the exercise scope including hazards, geographic area, functions, organizations, and personnel.
+              </p>
+              <Button 
+                className="bg-orange-500 hover:bg-orange-600 text-black"
+                onClick={() => {
+                  setEditingScope(null);
+                  setScopeModalOpen(true);
+                }}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add First Scope
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Exercise Details Context */}
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Exercise Context</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+              <div>
+                <span className="text-gray-400">Location:</span>
+                <p className="text-white">{exercise?.location || 'Not specified'}</p>
+              </div>
+              <div>
+                <span className="text-gray-400">Start Date:</span>
+                <p className="text-white">{exercise?.start_date || 'Not set'}</p>
+              </div>
+              <div>
+                <span className="text-gray-400">End Date:</span>
+                <p className="text-white">{exercise?.end_date || 'Not set'}</p>
+              </div>
+              <div>
+                <span className="text-gray-400">Exercise Type:</span>
+                <p className="text-white">{exercise?.exercise_type || 'Not set'}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   };
 
   const renderGoalsManagement = () => {

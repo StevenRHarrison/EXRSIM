@@ -4583,6 +4583,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Code Word</Label>
                   <Input
+                    value={currentCodeWord.word}
+                    onChange={(e) => setCurrentCodeWord(prev => ({ ...prev, word: e.target.value }))}
                     placeholder="e.g., THUNDERBOLT"
                     className="bg-gray-700 border-gray-600 text-white"
                   />
@@ -4590,17 +4592,50 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Definition</Label>
                   <Textarea
+                    value={currentCodeWord.meaning}
+                    onChange={(e) => setCurrentCodeWord(prev => ({ ...prev, meaning: e.target.value }))}
                     placeholder="Define what this code word means..."
                     className="bg-gray-700 border-gray-600 text-white"
                     rows={3}
                   />
                 </div>
-                <Button className="bg-blue-600 hover:bg-blue-700">
+                <Button onClick={addCodeWord} className="bg-blue-600 hover:bg-blue-700">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Code Word
                 </Button>
               </CardContent>
             </Card>
+
+            {/* Added Code Words Display */}
+            {codeWords.length > 0 && (
+              <Card className="bg-gray-800 border-gray-700">
+                <CardHeader>
+                  <CardTitle className="text-orange-500">Added Code Words ({codeWords.length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {codeWords.map((codeWord) => (
+                      <div key={codeWord.id} className="p-4 bg-gray-700 rounded-lg">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-white text-lg">{codeWord.word}</h3>
+                            <p className="text-gray-300 text-sm mt-1">{codeWord.meaning}</p>
+                          </div>
+                          <Button
+                            onClick={() => removeCodeWord(codeWord.id)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-400 hover:text-red-300"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
             
             {/* Save Step Button */}
             <div className="flex justify-end">

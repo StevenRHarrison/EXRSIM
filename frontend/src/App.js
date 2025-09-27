@@ -52,7 +52,14 @@ import {
   Clock,
   X,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  TrendingUp,
+  Star,
+  Lightbulb,
+  AlertCircle,
+  Zap,
+  MessageCircle,
+  CheckSquare
 } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;

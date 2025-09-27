@@ -5295,22 +5295,388 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
       return renderExerciseOverview();
     }
     
-    // For other sections, we'll render the appropriate management interface
-    // This will be expanded with actual section components
+    // Render specific management interfaces for each section
+    switch (activeSection) {
+      case 'goals':
+        return renderGoalsManagement();
+      case 'objectives':
+        return renderObjectivesManagement();
+      case 'events':
+        return renderEventsManagement();
+      case 'safety':
+        return renderSafetyManagement();
+      default:
+        return renderGenericSectionManagement();
+    }
+  };
+
+  const renderGoalsManagement = () => {
     return (
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-        <h2 className="text-xl font-bold text-white mb-4">
-          {exerciseMenuItems.find(item => item.id === activeSection)?.title}
-        </h2>
-        <p className="text-gray-400">
-          Management interface for {activeSection} will be implemented here with full CRUD capabilities.
-        </p>
-        <div className="mt-4 p-4 bg-gray-700/50 rounded-lg">
-          <h3 className="text-lg font-semibold text-white mb-2">Current Data:</h3>
-          <pre className="text-sm text-gray-300 overflow-auto">
-            {JSON.stringify(exercise?.[activeSection] || [], null, 2)}
-          </pre>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">Exercise Goals</h1>
+          <Button 
+            className="bg-orange-500 hover:bg-orange-600 text-black"
+            onClick={() => {/* Add new goal logic */}}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Goal
+          </Button>
         </div>
+
+        {/* Goals List */}
+        <div className="space-y-4">
+          {exercise.goals && exercise.goals.length > 0 ? (
+            exercise.goals.map((goal, index) => (
+              <Card key={goal.id || index} className="bg-gray-800 border-gray-700">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-white mb-2">{goal.name}</h3>
+                      <p className="text-gray-300 mb-3">{goal.description}</p>
+                      <Badge className={
+                        goal.achieved === 'Yes' ? 'bg-green-500/20 text-green-300 border-green-500/30' :
+                        goal.achieved === 'Partial' ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30' :
+                        'bg-red-500/20 text-red-300 border-red-500/30'
+                      }>
+                        Status: {goal.achieved}
+                      </Badge>
+                    </div>
+                    <div className="flex space-x-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <Card className="bg-gray-800 border-gray-700 border-dashed">
+              <CardContent className="p-12 text-center">
+                <Trophy className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-300 mb-2">No Goals Yet</h3>
+                <p className="text-gray-500 mb-4">Add exercise goals to track progress and success criteria.</p>
+                <Button className="bg-orange-500 hover:bg-orange-600 text-black">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add First Goal
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderObjectivesManagement = () => {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">Exercise Objectives</h1>
+          <Button 
+            className="bg-orange-500 hover:bg-orange-600 text-black"
+            onClick={() => {/* Add new objective logic */}}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Objective
+          </Button>
+        </div>
+
+        {/* Objectives List */}
+        <div className="space-y-4">
+          {exercise.objectives && exercise.objectives.length > 0 ? (
+            exercise.objectives.map((objective, index) => (
+              <Card key={objective.id || index} className="bg-gray-800 border-gray-700">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-white mb-2">{objective.name}</h3>
+                      <p className="text-gray-300 mb-3">{objective.description}</p>
+                      <Badge className={
+                        objective.achieved === 'Yes' ? 'bg-green-500/20 text-green-300 border-green-500/30' :
+                        objective.achieved === 'Partial' ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30' :
+                        'bg-red-500/20 text-red-300 border-red-500/30'
+                      }>
+                        Status: {objective.achieved}
+                      </Badge>
+                    </div>
+                    <div className="flex space-x-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <Card className="bg-gray-800 border-gray-700 border-dashed">
+              <CardContent className="p-12 text-center">
+                <CheckCircle className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-300 mb-2">No Objectives Yet</h3>
+                <p className="text-gray-500 mb-4">Add specific objectives to measure exercise success.</p>
+                <Button className="bg-orange-500 hover:bg-orange-600 text-black">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add First Objective
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderEventsManagement = () => {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">Exercise Events</h1>
+          <Button 
+            className="bg-orange-500 hover:bg-orange-600 text-black"
+            onClick={() => {/* Add new event logic */}}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Event
+          </Button>
+        </div>
+
+        {/* Events List */}
+        <div className="space-y-4">
+          {exercise.events && exercise.events.length > 0 ? (
+            exercise.events.map((event, index) => (
+              <Card key={event.id || index} className="bg-gray-800 border-gray-700">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-white mb-2">{event.name}</h3>
+                      <p className="text-gray-300 mb-3">{event.description}</p>
+                      <div className="flex space-x-4 text-sm text-gray-400">
+                        <span>Start: {event.startTime || 'Not set'}</span>
+                        <span>End: {event.endTime || 'Not set'}</span>
+                        <span>Tier: {event.tierScale || 'Not set'}</span>
+                      </div>
+                    </div>
+                    <div className="flex space-x-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <Card className="bg-gray-800 border-gray-700 border-dashed">
+              <CardContent className="p-12 text-center">
+                <Calendar className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-300 mb-2">No Events Yet</h3>
+                <p className="text-gray-500 mb-4">Add events to create the exercise timeline and scenarios.</p>
+                <Button className="bg-orange-500 hover:bg-orange-600 text-black">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add First Event
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderSafetyManagement = () => {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">Safety Concerns</h1>
+          <Button 
+            className="bg-red-500 hover:bg-red-600 text-white"
+            onClick={() => {/* Add new safety concern logic */}}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Safety Concern
+          </Button>
+        </div>
+
+        {/* Safety Concerns List */}
+        <div className="space-y-4">
+          {exercise.safetyConcerns && exercise.safetyConcerns.length > 0 ? (
+            exercise.safetyConcerns.map((concern, index) => (
+              <Card key={concern.id || index} className="bg-gray-800 border-red-500/20">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <ShieldAlert className="h-5 w-5 text-red-400" />
+                        <h3 className="text-lg font-semibold text-white">{concern.name}</h3>
+                      </div>
+                      <p className="text-gray-300 mb-3">{concern.description}</p>
+                      <Badge className="bg-red-500/20 text-red-300 border-red-500/30">
+                        Priority: High
+                      </Badge>
+                    </div>
+                    <div className="flex space-x-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <Card className="bg-gray-800 border-gray-700 border-dashed">
+              <CardContent className="p-12 text-center">
+                <ShieldAlert className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-300 mb-2">No Safety Concerns</h3>
+                <p className="text-gray-500 mb-4">Document safety concerns and mitigation measures for this exercise.</p>
+                <Button className="bg-red-500 hover:bg-red-600 text-white">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Safety Concern
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderGenericSectionManagement = () => {
+    const sectionTitle = exerciseMenuItems.find(item => item.id === activeSection)?.title || activeSection;
+    const sectionData = exercise?.[activeSection] || [];
+    
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">{sectionTitle}</h1>
+          <Button 
+            className="bg-orange-500 hover:bg-orange-600 text-black"
+            onClick={() => {/* Add new item logic */}}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add {sectionTitle}
+          </Button>
+        </div>
+
+        {/* Current Data Display */}
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Current {sectionTitle} Data</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {Array.isArray(sectionData) && sectionData.length > 0 ? (
+              <div className="space-y-4">
+                {sectionData.map((item, index) => (
+                  <div key={item.id || index} className="bg-gray-700/50 p-4 rounded-lg">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h3 className="text-white font-medium mb-2">
+                          {item.name || item.word || item.callsign || `${sectionTitle} ${index + 1}`}
+                        </h3>
+                        {item.description && (
+                          <p className="text-gray-400 text-sm mb-2">{item.description}</p>
+                        )}
+                        {item.definition && (
+                          <p className="text-gray-400 text-sm mb-2">Definition: {item.definition}</p>
+                        )}
+                        <div className="text-xs text-gray-500">
+                          {Object.entries(item).filter(([key]) => !['id', 'name', 'description', 'definition'].includes(key))
+                            .map(([key, value]) => `${key}: ${value}`).join(' | ')}
+                        </div>
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <div className="text-gray-400 mb-4">No {sectionTitle.toLowerCase()} data available</div>
+                <Button 
+                  className="bg-orange-500 hover:bg-orange-600 text-black"
+                  onClick={() => {/* Add new item logic */}}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add First {sectionTitle}
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* CRUD Interface Note */}
+        <Card className="bg-blue-900/20 border-blue-500/30">
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <Info className="h-5 w-5 text-blue-400" />
+              <div className="text-blue-300 text-sm">
+                Full CRUD interface for {sectionTitle.toLowerCase()} management will be implemented here. 
+                Users will be able to create, edit, update, and delete {sectionTitle.toLowerCase()} with proper forms and validation.
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   };

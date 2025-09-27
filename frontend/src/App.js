@@ -5007,6 +5007,388 @@ const ExerciseBuilder = () => {
   );
 };
 
+// Exercise Management Dashboard Component
+const ExerciseManagementDashboard = ({ exerciseId }) => {
+  const [exercise, setExercise] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [activeSection, setActiveSection] = useState('overview');
+
+  useEffect(() => {
+    if (exerciseId) {
+      fetchExercise();
+    }
+  }, [exerciseId]);
+
+  const fetchExercise = async () => {
+    try {
+      const response = await axios.get(`${API}/exercise-builder/${exerciseId}`);
+      setExercise(response.data);
+    } catch (error) {
+      console.error('Error fetching exercise:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const exerciseMenuItems = [
+    { id: 'overview', title: 'Exercise Overview', icon: Shield },
+    { id: 'exercise', title: 'Exercise Details', icon: FileText },
+    { id: 'scope', title: 'Scope', icon: Target },
+    { id: 'purpose', title: 'Purpose', icon: Flag },
+    { id: 'scenario', title: 'Scenario', icon: Map },
+    { id: 'goals', title: 'Goals', icon: Trophy },
+    { id: 'objectives', title: 'Objectives', icon: CheckCircle },
+    { id: 'events', title: 'Events', icon: Calendar },
+    { id: 'functions', title: 'Functions', icon: Settings },
+    { id: 'injections', title: 'Injections (MSEL)', icon: ClipboardList },
+    { id: 'organizations', title: 'Organizations', icon: Building },
+    { id: 'coordinators', title: 'Team Coordinators', icon: Users },
+    { id: 'codewords', title: 'Code Words', icon: Key },
+    { id: 'callsigns', title: 'Callsigns', icon: Radio },
+    { id: 'frequencies', title: 'Communication', icon: Headphones },
+    { id: 'assumptions', title: 'Assumptions', icon: MessageSquare },
+    { id: 'artificialities', title: 'Artificialities', icon: AlertTriangle },
+    { id: 'safety', title: 'Safety Concerns', icon: ShieldAlert },
+  ];
+
+  const getExerciseStatus = () => {
+    if (!exercise) return 'Unknown';
+    const now = new Date();
+    const startDate = new Date(exercise.start_date);
+    const endDate = new Date(exercise.end_date);
+    
+    if (now < startDate) return 'Planning';
+    if (now >= startDate && now <= endDate) return 'Active';
+    if (now > endDate) return 'Completed';
+    return 'Scheduled';
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Planning': return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
+      case 'Active': return 'bg-green-500/20 text-green-300 border-green-500/30';
+      case 'Completed': return 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+      case 'Scheduled': return 'bg-purple-500/20 text-purple-300 border-purple-500/30';
+      default: return 'bg-gray-500/20 text-gray-300 border-gray-500/30';
+    }
+  };
+
+  const renderExerciseOverview = () => {
+    if (!exercise) return null;
+    
+    const status = getExerciseStatus();
+    
+    return (
+      <div className="space-y-6">
+        {/* Exercise Header */}
+        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h1 className="text-2xl font-bold text-white mb-2">{exercise.exercise_name}</h1>
+              <div className="flex items-center space-x-4">
+                <Badge className={getStatusColor(status)}>
+                  {status}
+                </Badge>
+                <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">
+                  {exercise.exercise_type}
+                </Badge>
+              </div>
+            </div>
+            {exercise.exercise_image && (
+              <div className="w-20 h-20 rounded-lg bg-gray-700 overflow-hidden">
+                <img src={exercise.exercise_image} alt={exercise.exercise_name} className="w-full h-full object-cover" />
+              </div>
+            )}
+          </div>
+          
+          <p className="text-gray-300 mb-4">{exercise.exercise_description}</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-gray-700/50 p-4 rounded-lg">
+              <div className="flex items-center space-x-2 mb-2">
+                <MapPin className="h-5 w-5 text-orange-400" />
+                <span className="text-sm font-medium text-gray-300">Location</span>
+              </div>
+              <p className="text-white">{exercise.location || 'Not specified'}</p>
+            </div>
+            
+            <div className="bg-gray-700/50 p-4 rounded-lg">
+              <div className="flex items-center space-x-2 mb-2">
+                <Clock className="h-5 w-5 text-orange-400" />
+                <span className="text-sm font-medium text-gray-300">Duration</span>
+              </div>
+              <p className="text-white">
+                {new Date(exercise.start_date).toLocaleDateString()} - {new Date(exercise.end_date).toLocaleDateString()}
+              </p>
+            </div>
+            
+            <div className="bg-gray-700/50 p-4 rounded-lg">
+              <div className="flex items-center space-x-2 mb-2">
+                <Users className="h-5 w-5 text-orange-400" />
+                <span className="text-sm font-medium text-gray-300">Participants</span>
+              </div>
+              <p className="text-white">{exercise.coordinators?.length || 0} Coordinators</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Card className="bg-gray-800 border-gray-700">
+            <CardContent className="p-4 text-center">
+              <Trophy className="h-8 w-8 text-orange-400 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-white">{exercise.goals?.length || 0}</div>
+              <div className="text-sm text-gray-400">Goals</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-gray-800 border-gray-700">
+            <CardContent className="p-4 text-center">
+              <CheckCircle className="h-8 w-8 text-blue-400 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-white">{exercise.objectives?.length || 0}</div>
+              <div className="text-sm text-gray-400">Objectives</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-gray-800 border-gray-700">
+            <CardContent className="p-4 text-center">
+              <Calendar className="h-8 w-8 text-green-400 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-white">{exercise.events?.length || 0}</div>
+              <div className="text-sm text-gray-400">Events</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-gray-800 border-gray-700">
+            <CardContent className="p-4 text-center">
+              <Building className="h-8 w-8 text-purple-400 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-white">{exercise.organizations?.length || 0}</div>
+              <div className="text-sm text-gray-400">Organizations</div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Emergency Preparedness Features */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Exercise Timeline */}
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-orange-500 flex items-center">
+                <Clock className="h-5 w-5 mr-2" />
+                Exercise Timeline
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-3">
+                  <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                  <div>
+                    <div className="text-white font-medium">Exercise Start</div>
+                    <div className="text-sm text-gray-400">
+                      {new Date(exercise.start_date).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <div>
+                    <div className="text-white font-medium">Exercise End</div>
+                    <div className="text-sm text-gray-400">
+                      {new Date(exercise.end_date).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Safety Information */}
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-red-500 flex items-center">
+                <ShieldAlert className="h-5 w-5 mr-2" />
+                Safety Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="text-white font-medium">Safety Concerns: {exercise.safetyConcerns?.length || 0}</div>
+                <div className="text-sm text-gray-400">
+                  {exercise.safetyConcerns?.length > 0 ? 
+                    "Safety protocols have been documented for this exercise." : 
+                    "No specific safety concerns documented."
+                  }
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                  onClick={() => setActiveSection('safety')}
+                >
+                  View Safety Details
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Quick Actions */}
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Quick Actions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-3">
+              <Button 
+                className="bg-orange-500 hover:bg-orange-600 text-black"
+                onClick={() => window.location.href = `#builder?exercise=${exercise.id}`}
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                Edit Exercise
+              </Button>
+              <Button 
+                variant="outline" 
+                className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                onClick={() => setActiveSection('goals')}
+              >
+                <Trophy className="h-4 w-4 mr-2" />
+                Manage Goals
+              </Button>
+              <Button 
+                variant="outline" 
+                className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+                onClick={() => setActiveSection('events')}
+              >
+                <Calendar className="h-4 w-4 mr-2" />
+                Manage Events
+              </Button>
+              <Button 
+                variant="outline" 
+                className="border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
+                onClick={() => setActiveSection('coordinators')}
+              >
+                <Users className="h-4 w-4 mr-2" />
+                Team Coordinators
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderSectionContent = () => {
+    if (activeSection === 'overview') {
+      return renderExerciseOverview();
+    }
+    
+    // For other sections, we'll render the appropriate management interface
+    // This will be expanded with actual section components
+    return (
+      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+        <h2 className="text-xl font-bold text-white mb-4">
+          {exerciseMenuItems.find(item => item.id === activeSection)?.title}
+        </h2>
+        <p className="text-gray-400">
+          Management interface for {activeSection} will be implemented here with full CRUD capabilities.
+        </p>
+        <div className="mt-4 p-4 bg-gray-700/50 rounded-lg">
+          <h3 className="text-lg font-semibold text-white mb-2">Current Data:</h3>
+          <pre className="text-sm text-gray-300 overflow-auto">
+            {JSON.stringify(exercise?.[activeSection] || [], null, 2)}
+          </pre>
+        </div>
+      </div>
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="p-6 flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading exercise...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!exercise) {
+    return (
+      <div className="p-6 flex items-center justify-center h-64">
+        <div className="text-center">
+          <ShieldAlert className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-300 mb-2">Exercise Not Found</h3>
+          <p className="text-gray-500 mb-4">The requested exercise could not be loaded.</p>
+          <Button 
+            variant="outline"
+            onClick={() => window.location.href = '#dashboard'}
+            className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10"
+          >
+            Back to Dashboard
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-black text-white">
+      <div className="flex">
+        {/* Exercise-Specific Sidebar */}
+        <div className="w-80 bg-gray-900 border-r border-orange-500/20 h-screen sticky top-0">
+          <div className="p-4">
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start text-gray-300 hover:text-orange-500 mb-4"
+              onClick={() => window.location.href = '#dashboard'}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Dashboard
+            </Button>
+            
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold text-white mb-2">{exercise.exercise_name}</h2>
+              <Badge className={getStatusColor(getExerciseStatus())}>
+                {getExerciseStatus()}
+              </Badge>
+            </div>
+            
+            <ScrollArea className="h-[calc(100vh-200px)]">
+              <div className="space-y-1">
+                {exerciseMenuItems.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Button
+                      key={item.id}
+                      variant={activeSection === item.id ? "secondary" : "ghost"}
+                      className={`w-full justify-start text-left ${
+                        activeSection === item.id
+                          ? "bg-orange-500/20 text-orange-300 border-orange-500/50"
+                          : "text-gray-300 hover:text-orange-500 hover:bg-gray-800"
+                      }`}
+                      onClick={() => setActiveSection(item.id)}
+                    >
+                      <Icon className="h-4 w-4 mr-3 flex-shrink-0" />
+                      <span className="truncate">{item.title}</span>
+                    </Button>
+                  );
+                })}
+              </div>
+            </ScrollArea>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 overflow-auto">
+          <div className="p-6">
+            {renderSectionContent()}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Main App Component
 function App() {
   const [activeMenu, setActiveMenu] = useState('dashboard');

@@ -4201,6 +4201,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Function Name</Label>
                   <Input
+                    value={currentFunction.name}
+                    onChange={(e) => setCurrentFunction(prev => ({ ...prev, name: e.target.value }))}
                     placeholder="e.g., Emergency Communications"
                     className="bg-gray-700 border-gray-600 text-white"
                   />
@@ -4208,6 +4210,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 <div>
                   <Label className="text-gray-300">Function Description</Label>
                   <Textarea
+                    value={currentFunction.description}
+                    onChange={(e) => setCurrentFunction(prev => ({ ...prev, description: e.target.value }))}
                     placeholder="Describe the function being tested..."
                     className="bg-gray-700 border-gray-600 text-white"
                     rows={3}
@@ -4215,7 +4219,11 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                 </div>
                 <div>
                   <Label className="text-gray-300">Function Achieved</Label>
-                  <RadioGroup defaultValue="No" className="flex space-x-6">
+                  <RadioGroup 
+                    value={currentFunction.achieved} 
+                    onValueChange={(value) => setCurrentFunction(prev => ({ ...prev, achieved: value }))}
+                    className="flex space-x-6"
+                  >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="Yes" id="func-yes" />
                       <Label htmlFor="func-yes" className="text-green-400">Yes</Label>
@@ -4230,12 +4238,50 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                     </div>
                   </RadioGroup>
                 </div>
-                <Button className="bg-blue-600 hover:bg-blue-700">
+                <Button onClick={addFunction} className="bg-blue-600 hover:bg-blue-700">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Function
                 </Button>
               </CardContent>
             </Card>
+
+            {/* Added Functions Display */}
+            {functions.length > 0 && (
+              <Card className="bg-gray-800 border-gray-700">
+                <CardHeader>
+                  <CardTitle className="text-orange-500">Added Functions ({functions.length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {functions.map((func) => (
+                      <div key={func.id} className="p-4 bg-gray-700 rounded-lg">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-white">{func.name}</h3>
+                            <p className="text-gray-300 text-sm">{func.description}</p>
+                            <span className={`inline-block px-2 py-1 rounded text-xs mt-2 ${
+                              func.achieved === 'Yes' ? 'bg-green-600 text-white' :
+                              func.achieved === 'Partial' ? 'bg-yellow-600 text-white' :
+                              'bg-red-600 text-white'
+                            }`}>
+                              {func.achieved}
+                            </span>
+                          </div>
+                          <Button
+                            onClick={() => removeFunction(func.id)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-400 hover:text-red-300"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
             
             {/* Save Step Button */}
             <div className="flex justify-end">

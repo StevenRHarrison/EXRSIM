@@ -456,11 +456,7 @@
 
 ## test_plan:
   current_focus:
-    - "Exercise Builder Steps 14-17 Add Button Functionality"
-    - "Communication Frequencies Add Button (Step 14)"
-    - "Assumptions Add Button (Step 15)"
-    - "Artificialities Add Button (Step 16)"
-    - "Safety Concerns Add Button (Step 17)"
+    - "Exercise Management Dashboard Hierarchical Sidebar Menu Structure"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"

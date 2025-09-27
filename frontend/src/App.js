@@ -5192,7 +5192,7 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                   <Label className="text-gray-300">Safety Concern Name</Label>
                   <Input
                     value={currentSafetyConcern.concern || ''}
-                    onChange={(e) => setCurrentSafetyConcern(prev => ({ ...prev, concern: e.target.value }))}
+                    onChange={(e) => setSafetyConcern(prev => ({ ...prev, concern: e.target.value }))}
                     placeholder="e.g., Vehicle Operations"
                     className="bg-gray-700 border-gray-600 text-white"
                   />
@@ -5201,7 +5201,7 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                   <Label className="text-gray-300">Safety Concern Description</Label>
                   <Textarea
                     value={currentSafetyConcern.description || ''}
-                    onChange={(e) => setCurrentSafetyConcern(prev => ({ ...prev, description: e.target.value }))}
+                    onChange={(e) => setSafetyConcern(prev => ({ ...prev, description: e.target.value }))}
                     placeholder="Describe the safety concern and mitigation measures..."
                     className="bg-gray-700 border-gray-600 text-white"
                     rows={3}
@@ -5212,7 +5212,7 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                     <Label className="text-gray-300">Safety Officer Name</Label>
                     <Input
                       value={currentSafetyConcern.safety_officer || ''}
-                      onChange={(e) => setCurrentSafetyConcern(prev => ({ ...prev, safety_officer: e.target.value }))}
+                      onChange={(e) => setSafetyConcern(prev => ({ ...prev, safety_officer: e.target.value }))}
                       placeholder="Responsible safety officer"
                       className="bg-gray-700 border-gray-600 text-white"
                     />
@@ -5221,7 +5221,7 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                     <Label className="text-gray-300">Officer Phone</Label>
                     <Input
                       value={currentSafetyConcern.phone || ''}
-                      onChange={(e) => setCurrentSafetyConcern(prev => ({ ...prev, phone: e.target.value }))}
+                      onChange={(e) => setSafetyConcern(prev => ({ ...prev, phone: e.target.value }))}
                       placeholder="+1 (555) 123-4567"
                       className="bg-gray-700 border-gray-600 text-white"
                     />

@@ -5666,6 +5666,9 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
   // Modal states
   const [scopeModalOpen, setScopeModalOpen] = useState(false);
   const [editingScope, setEditingScope] = useState(null);
+  
+  // Exercise Steps menu expansion state
+  const [exerciseStepsExpanded, setExerciseStepsExpanded] = useState(true);
 
   useEffect(() => {
     if (exerciseId) {

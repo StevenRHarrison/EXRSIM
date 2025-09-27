@@ -591,6 +591,8 @@ def test_comprehensive_exercise_builder():
             # Verify dynamic collections updates persisted
             goals_count = len(final_exercise.get("goals", []))
             objectives_count = len(final_exercise.get("objectives", []))
+            
+            # Use the original counts from the test data
             original_goals_count = len(test_data.get("goals", []))
             original_objectives_count = len(test_data.get("objectives", []))
             

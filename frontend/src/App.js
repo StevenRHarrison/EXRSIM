@@ -5981,6 +5981,18 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
         return renderEventsManagement();
       case 'safety':
         return renderSafetyManagement();
+      case 'evaluations':
+        return renderEvaluationsManagement();
+      case 'lessons_learned':
+        return renderLessonsLearnedManagement();
+      case 'deficiencies':
+        return renderDeficienciesManagement();
+      case 'near_misses':
+        return renderNearMissesManagement();
+      case 'comments':
+        return renderCommentsManagement();
+      case 'corrective_actions':
+        return renderCorrectiveActionsManagement();
       default:
         return renderGenericSectionManagement();
     }

@@ -1014,6 +1014,11 @@ const ParticipantsList = ({ onAddNew, onEdit }) => {
                       </div>
                       
                       <div className="flex items-center space-x-2 text-gray-300">
+                        <Building className="h-4 w-4 text-orange-500" />
+                        <span>{participant.assignedTo || 'Not assigned'}</span>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2 text-gray-300">
                         <Mail className="h-4 w-4 text-orange-500" />
                         <span className="truncate">{participant.email}</span>
                       </div>
@@ -1022,13 +1027,16 @@ const ParticipantsList = ({ onAddNew, onEdit }) => {
                         <Phone className="h-4 w-4 text-orange-500" />
                         <span>{participant.cellPhone || participant.phone || 'No phone'}</span>
                       </div>
-                      
+                    </div>
+                    
+                    {/* Additional row for address */}
+                    <div className="mt-2 text-sm">
                       <div className="flex items-center space-x-2 text-gray-300">
                         <MapPin className="h-4 w-4 text-orange-500" />
                         <span className="truncate">
-                          {participant.city && participant.country ? 
-                            `${participant.city}, ${participant.country}` : 
-                            participant.address || 'No address'}
+                          {participant.address || participant.city && participant.country ? 
+                            `${participant.address || ''} ${participant.city}, ${participant.country}`.trim() : 
+                            'No address'}
                         </span>
                       </div>
                     </div>

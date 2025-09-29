@@ -1166,6 +1166,432 @@ def test_participant_crud_api():
         print(f"❌ Unexpected Error: {e}")
         return False
 
+def test_scribe_template_api():
+    """Test Digital Scribe Template API endpoints comprehensively as requested"""
+    print("=" * 60)
+    print("TESTING DIGITAL SCRIBE TEMPLATE API ENDPOINTS")
+    print("=" * 60)
+    
+    # Test data with comprehensive nested structures as specified in review request
+    test_scribe_data = {
+        "exercise_id": "4bb39755-0b97-4ded-902d-7f9325f3d9a9",  # Valid exercise ID
+        "scribe_name": "Sarah Johnson",
+        "scribe_signature": "S. Johnson",
+        "exercise_start_time": "9:30 AM",  # HH:MM AM/PM format
+        "exercise_end_time": "2:45 PM",   # HH:MM AM/PM format
+        
+        # Timeline Events with time strings
+        "timeline_events": [
+            {
+                "time": "9:30 AM",
+                "event": "Exercise initiation and briefing",
+                "observations": "All participants present and engaged"
+            },
+            {
+                "time": "10:15 AM", 
+                "event": "First emergency scenario activated",
+                "observations": "Quick response from fire department team"
+            },
+            {
+                "time": "11:00 PM",  # Test PM time
+                "event": "Mid-exercise evaluation checkpoint",
+                "observations": "Communication protocols working effectively"
+            },
+            {
+                "time": "12:15 AM",  # Test midnight time
+                "event": "Late night emergency response drill",
+                "observations": "Night shift coordination tested"
+            }
+        ],
+        
+        # Communications with longtext content field
+        "communications": [
+            {
+                "time": "9:45 AM",
+                "from_person": "Incident Commander",
+                "to_person": "Fire Chief",
+                "method": "Radio",
+                "content": "This is a comprehensive test of the longtext content field. It should be able to handle large amounts of text data including detailed communication logs, extensive notes, and multi-paragraph descriptions. The content field is specifically designed to store detailed communication records that may include timestamps, participant names, detailed messages, response protocols, and any other relevant information that needs to be preserved for post-exercise analysis and evaluation purposes."
+            },
+            {
+                "time": "10:30 AM",
+                "from_person": "Operations Chief",
+                "to_person": "EOC Director",
+                "method": "Phone",
+                "content": "Status update on current operations. All units are responding according to protocol. Resource allocation is proceeding as planned with no significant delays or issues identified at this time."
+            },
+            {
+                "time": "1:15 PM",
+                "from_person": "Safety Officer",
+                "to_person": "All Units",
+                "method": "Face-to-face",
+                "content": "Safety briefing completed. All personnel are aware of current hazards and safety protocols. No incidents reported during this phase of the exercise."
+            }
+        ],
+        
+        # Decisions with detailed rationale
+        "decisions": [
+            {
+                "time": "10:00 AM",
+                "decision": "Activate additional fire units",
+                "decision_maker": "Incident Commander",
+                "rationale": "Based on scenario escalation and resource assessment"
+            },
+            {
+                "time": "11:30 AM",
+                "decision": "Establish unified command structure",
+                "decision_maker": "EOC Director",
+                "rationale": "Multi-agency response requires coordinated command"
+            }
+        ],
+        
+        # Issues and challenges
+        "issues": [
+            {
+                "time": "10:45 AM",
+                "issue": "Radio communication interference",
+                "severity": "Medium",
+                "resolution": "Switched to backup frequency channel"
+            },
+            {
+                "time": "12:00 PM",
+                "issue": "Resource shortage simulation",
+                "severity": "High",
+                "resolution": "Activated mutual aid agreements"
+            }
+        ],
+        
+        # Participant observations
+        "participant_observations": [
+            {
+                "participant": "John Smith",
+                "role": "Fire Chief",
+                "performance": "Excellent",
+                "notes": "Demonstrated strong leadership and quick decision-making"
+            },
+            {
+                "participant": "Mary Wilson",
+                "role": "EOC Coordinator",
+                "performance": "Good",
+                "notes": "Effective coordination but could improve communication timing"
+            }
+        ],
+        
+        # Additional notes
+        "additional_notes": "Overall exercise performance was excellent. Key learning objectives were met. Recommend additional training on inter-agency communication protocols. Weather conditions were favorable throughout the exercise duration."
+    }
+    
+    created_template_id = None
+    
+    try:
+        # Test 1: GET /api/scribe-templates (Get all scribe templates)
+        print("\n1. Testing GET /api/scribe-templates")
+        response = requests.get(f"{BACKEND_URL}/scribe-templates")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            initial_templates = response.json()
+            print(f"✅ Successfully retrieved {len(initial_templates)} existing scribe templates")
+        else:
+            print(f"❌ Failed to get scribe templates: {response.text}")
+            return False
+            
+        # Test 2: POST /api/scribe-templates (Create comprehensive scribe template)
+        print("\n2. Testing POST /api/scribe-templates (create with comprehensive nested data)")
+        response = requests.post(
+            f"{BACKEND_URL}/scribe-templates",
+            json=test_scribe_data,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            created_template = response.json()
+            created_template_id = created_template.get("id")
+            print(f"✅ Successfully created scribe template with ID: {created_template_id}")
+            
+            # Verify comprehensive data structure persistence
+            print("\n   Verifying scribe template data persistence:")
+            
+            # Basic template info
+            if created_template.get("scribe_name") == test_scribe_data["scribe_name"]:
+                print(f"   ✅ Scribe Name: {created_template.get('scribe_name')}")
+            else:
+                print(f"   ❌ Scribe Name mismatch")
+                return False
+                
+            # Time field verification (HH:MM AM/PM format)
+            start_time = created_template.get("exercise_start_time")
+            end_time = created_template.get("exercise_end_time")
+            if start_time == "9:30 AM" and end_time == "2:45 PM":
+                print(f"   ✅ Time fields: Start '{start_time}', End '{end_time}' (HH:MM AM/PM format preserved)")
+            else:
+                print(f"   ❌ Time fields: Expected '9:30 AM'/'2:45 PM', Got '{start_time}'/'{end_time}'")
+                return False
+                
+            # Nested data structure verification
+            nested_collections = {
+                "timeline_events": 4,
+                "communications": 3,
+                "decisions": 2,
+                "issues": 2,
+                "participant_observations": 2
+            }
+            
+            for collection, expected_count in nested_collections.items():
+                actual_count = len(created_template.get(collection, []))
+                if actual_count == expected_count:
+                    print(f"   ✅ {collection}: {actual_count} items")
+                else:
+                    print(f"   ❌ {collection}: Expected {expected_count}, Got {actual_count}")
+                    return False
+                    
+            # Verify time strings in nested events
+            timeline_events = created_template.get("timeline_events", [])
+            if len(timeline_events) >= 4:
+                expected_times = ["9:30 AM", "10:15 AM", "11:00 PM", "12:15 AM"]
+                for i, expected_time in enumerate(expected_times):
+                    actual_time = timeline_events[i].get("time")
+                    if actual_time == expected_time:
+                        print(f"   ✅ Timeline Event {i+1} time: '{actual_time}'")
+                    else:
+                        print(f"   ❌ Timeline Event {i+1} time: Expected '{expected_time}', Got '{actual_time}'")
+                        return False
+                        
+            # Verify longtext content field
+            communications = created_template.get("communications", [])
+            if len(communications) >= 1:
+                first_comm_content = communications[0].get("content", "")
+                if len(first_comm_content) > 200:  # Should be longtext
+                    print(f"   ✅ Longtext content field: {len(first_comm_content)} characters preserved")
+                else:
+                    print(f"   ❌ Longtext content field: Expected >200 chars, Got {len(first_comm_content)}")
+                    return False
+                    
+        else:
+            print(f"❌ Failed to create scribe template: {response.text}")
+            return False
+            
+        # Test 3: GET /api/scribe-templates/{id} (Get specific scribe template)
+        print(f"\n3. Testing GET /api/scribe-templates/{created_template_id}")
+        response = requests.get(f"{BACKEND_URL}/scribe-templates/{created_template_id}")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            retrieved_template = response.json()
+            print(f"✅ Successfully retrieved scribe template: {retrieved_template.get('scribe_name')}")
+            
+            # Verify data integrity after retrieval
+            if (retrieved_template.get("exercise_start_time") == "9:30 AM" and 
+                len(retrieved_template.get("timeline_events", [])) == 4 and
+                len(retrieved_template.get("communications", [])) == 3):
+                print("   ✅ Data integrity verified after retrieval")
+            else:
+                print("   ❌ Data integrity compromised after retrieval")
+                return False
+        else:
+            print(f"❌ Failed to get specific scribe template: {response.text}")
+            return False
+            
+        # Test 4: PUT /api/scribe-templates/{id} (Update scribe template)
+        print(f"\n4. Testing PUT /api/scribe-templates/{created_template_id}")
+        update_data = {
+            "scribe_name": "Updated Sarah Johnson",
+            "exercise_end_time": "3:30 PM",  # Updated time
+            "timeline_events": test_scribe_data["timeline_events"] + [
+                {
+                    "time": "2:30 PM",
+                    "event": "Exercise conclusion and debrief",
+                    "observations": "Successful completion of all objectives"
+                }
+            ],
+            "communications": test_scribe_data["communications"] + [
+                {
+                    "time": "2:45 PM",
+                    "from_person": "Exercise Director",
+                    "to_person": "All Participants",
+                    "method": "Announcement",
+                    "content": "Exercise concluded successfully. Thank you for your participation and professional conduct throughout this training event."
+                }
+            ],
+            "additional_notes": "Updated notes: Exercise exceeded expectations with excellent inter-agency coordination demonstrated."
+        }
+        
+        response = requests.put(
+            f"{BACKEND_URL}/scribe-templates/{created_template_id}",
+            json=update_data,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            updated_template = response.json()
+            if (updated_template.get("scribe_name") == "Updated Sarah Johnson" and
+                updated_template.get("exercise_end_time") == "3:30 PM" and
+                len(updated_template.get("timeline_events", [])) == 5 and
+                len(updated_template.get("communications", [])) == 4):
+                print("✅ Scribe template updated successfully with additional nested data")
+            else:
+                print("❌ Scribe template update failed")
+                return False
+        else:
+            print(f"❌ Failed to update scribe template: {response.text}")
+            return False
+            
+        # Test 5: Test time string handling edge cases
+        print(f"\n5. Testing time string handling edge cases")
+        edge_case_data = {
+            "exercise_id": "4bb39755-0b97-4ded-902d-7f9325f3d9a9",
+            "scribe_name": "Time Test Scribe",
+            "exercise_start_time": "12:00 AM",  # Midnight
+            "exercise_end_time": "11:59 PM",   # Just before midnight
+            "timeline_events": [
+                {"time": "12:01 AM", "event": "Just after midnight", "observations": "Test"},
+                {"time": "12:00 PM", "event": "Noon exactly", "observations": "Test"},
+                {"time": "11:59 PM", "event": "Just before midnight", "observations": "Test"}
+            ]
+        }
+        
+        response = requests.post(
+            f"{BACKEND_URL}/scribe-templates",
+            json=edge_case_data,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            edge_template = response.json()
+            edge_template_id = edge_template.get("id")
+            print("✅ Edge case time strings handled correctly")
+            
+            # Verify edge case times
+            if (edge_template.get("exercise_start_time") == "12:00 AM" and
+                edge_template.get("exercise_end_time") == "11:59 PM"):
+                print("   ✅ Midnight and near-midnight times preserved correctly")
+            else:
+                print("   ❌ Edge case time handling failed")
+                return False
+                
+            # Clean up edge case template
+            requests.delete(f"{BACKEND_URL}/scribe-templates/{edge_template_id}")
+        else:
+            print(f"❌ Failed to handle edge case times: {response.text}")
+            return False
+            
+        # Test 6: Test error handling - Missing required fields
+        print(f"\n6. Testing error handling - Missing required exerciseId")
+        invalid_data = {
+            "scribe_name": "Test Scribe"
+            # Missing required exercise_id
+        }
+        
+        response = requests.post(
+            f"{BACKEND_URL}/scribe-templates",
+            json=invalid_data,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code in [400, 422]:
+            print("✅ Proper error handling for missing required fields")
+        else:
+            print(f"⚠️  Expected 400/422 for missing required fields, got {response.status_code}")
+            
+        # Test 7: Test invalid exercise ID reference
+        print(f"\n7. Testing invalid exercise ID reference")
+        invalid_exercise_data = {
+            "exercise_id": "invalid-exercise-id-12345",
+            "scribe_name": "Test Scribe"
+        }
+        
+        response = requests.post(
+            f"{BACKEND_URL}/scribe-templates",
+            json=invalid_exercise_data,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        # Note: Backend may or may not validate exercise ID existence
+        print(f"   Response for invalid exercise ID: {response.status_code}")
+        
+        # Test 8: DELETE /api/scribe-templates/{id} (Delete scribe template)
+        print(f"\n8. Testing DELETE /api/scribe-templates/{created_template_id}")
+        response = requests.delete(f"{BACKEND_URL}/scribe-templates/{created_template_id}")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            print("✅ Successfully deleted scribe template")
+            
+            # Verify deletion
+            response = requests.get(f"{BACKEND_URL}/scribe-templates/{created_template_id}")
+            if response.status_code == 404:
+                print("✅ Scribe template deletion verified")
+            else:
+                print("❌ Scribe template still exists after deletion")
+                return False
+        else:
+            print(f"❌ Failed to delete scribe template: {response.text}")
+            return False
+            
+        # Test 9: Test CRUD workflow verification
+        print(f"\n9. Testing complete CRUD workflow verification")
+        
+        # Create → Save → Retrieve → Update → Retrieve → Delete workflow
+        workflow_data = {
+            "exercise_id": "4bb39755-0b97-4ded-902d-7f9325f3d9a9",
+            "scribe_name": "Workflow Test Scribe",
+            "exercise_start_time": "8:00 AM",
+            "exercise_end_time": "4:00 PM",
+            "timeline_events": [
+                {"time": "8:30 AM", "event": "Workflow test event", "observations": "Initial"}
+            ],
+            "communications": [
+                {"time": "9:00 AM", "from_person": "Test", "to_person": "Test", "method": "Test", "content": "Workflow test communication"}
+            ]
+        }
+        
+        # Create
+        create_response = requests.post(f"{BACKEND_URL}/scribe-templates", json=workflow_data)
+        if create_response.status_code != 200:
+            print("❌ Workflow test: Create failed")
+            return False
+            
+        workflow_id = create_response.json().get("id")
+        
+        # Retrieve
+        retrieve_response = requests.get(f"{BACKEND_URL}/scribe-templates/{workflow_id}")
+        if retrieve_response.status_code != 200:
+            print("❌ Workflow test: Retrieve failed")
+            return False
+            
+        # Update
+        update_workflow_data = {"scribe_name": "Updated Workflow Scribe"}
+        update_response = requests.put(f"{BACKEND_URL}/scribe-templates/{workflow_id}", json=update_workflow_data)
+        if update_response.status_code != 200:
+            print("❌ Workflow test: Update failed")
+            return False
+            
+        # Retrieve again
+        retrieve2_response = requests.get(f"{BACKEND_URL}/scribe-templates/{workflow_id}")
+        if retrieve2_response.status_code != 200 or retrieve2_response.json().get("scribe_name") != "Updated Workflow Scribe":
+            print("❌ Workflow test: Second retrieve failed")
+            return False
+            
+        # Delete
+        delete_response = requests.delete(f"{BACKEND_URL}/scribe-templates/{workflow_id}")
+        if delete_response.status_code != 200:
+            print("❌ Workflow test: Delete failed")
+            return False
+            
+        print("✅ Complete CRUD workflow verification successful")
+        
+        print("\n✅ ALL DIGITAL SCRIBE TEMPLATE API TESTS PASSED")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Scribe Template API Test Error: {e}")
+        return False
+
 def test_health_check():
     """Test basic API health check"""
     print("Testing API Health Check...")

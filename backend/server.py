@@ -587,6 +587,26 @@ class ScribeTemplateCreate(BaseModel):
     issues: List[ScribeTemplateIssue] = Field(default_factory=list)
     participant_observations: List[ScribeTemplateParticipantObs] = Field(default_factory=list)
     additional_notes: str = ""
+    
+    @validator('exercise_start_time', pre=True)
+    def parse_start_time(cls, v):
+        if v is None or v == "":
+            return None
+        if isinstance(v, time):
+            return v
+        if isinstance(v, str):
+            return string_to_time(v)
+        return v
+    
+    @validator('exercise_end_time', pre=True)
+    def parse_end_time(cls, v):
+        if v is None or v == "":
+            return None
+        if isinstance(v, time):
+            return v
+        if isinstance(v, str):
+            return string_to_time(v)
+        return v
 
 class ScribeTemplateUpdate(BaseModel):
     scribe_name: Optional[str] = None
@@ -599,6 +619,26 @@ class ScribeTemplateUpdate(BaseModel):
     issues: Optional[List[ScribeTemplateIssue]] = None
     participant_observations: Optional[List[ScribeTemplateParticipantObs]] = None
     additional_notes: Optional[str] = None
+    
+    @validator('exercise_start_time', pre=True)
+    def parse_start_time(cls, v):
+        if v is None or v == "":
+            return None
+        if isinstance(v, time):
+            return v
+        if isinstance(v, str):
+            return string_to_time(v)
+        return v
+    
+    @validator('exercise_end_time', pre=True)
+    def parse_end_time(cls, v):
+        if v is None or v == "":
+            return None
+        if isinstance(v, time):
+            return v
+        if isinstance(v, str):
+            return string_to_time(v)
+        return v
     profileImage: Optional[str] = None
 
 # Helper functions

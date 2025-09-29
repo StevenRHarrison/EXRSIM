@@ -9162,7 +9162,7 @@ const ExerciseManagementDashboard = ({
     const addCommunication = () => {
       setScribeFormData(prev => ({
         ...prev,
-        communications: [...prev.communications, { time: '', from_person: '', to_person: '', message: '', method: '' }]
+        communications: [...prev.communications, { time: '', from_person: '', to_person: '', message: '', method: '', content: '' }]
       }));
     };
 

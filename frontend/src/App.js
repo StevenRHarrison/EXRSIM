@@ -9299,20 +9299,58 @@ const ExerciseManagementDashboard = ({
                 <Input
                   id="start_time"
                   value={scribeFormData.exercise_start_time}
-                  onChange={(e) => setScribeFormData(prev => ({ ...prev, exercise_start_time: e.target.value }))}
-                  className="bg-gray-700 border-gray-600 text-white"
-                  placeholder="HH:MM"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setScribeFormData(prev => ({ ...prev, exercise_start_time: value }));
+                    
+                    // Validate time format
+                    if (value && !validateTimeFormat(value)) {
+                      setScribeTimeErrors(prev => ({ ...prev, start_time: 'Please enter time in format: 10:00 AM or 2:30 PM' }));
+                    } else {
+                      setScribeTimeErrors(prev => ({ ...prev, start_time: null }));
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const formatted = formatTimeInput(e.target.value);
+                    if (formatted !== e.target.value) {
+                      setScribeFormData(prev => ({ ...prev, exercise_start_time: formatted }));
+                    }
+                  }}
+                  className={`bg-gray-700 border-gray-600 text-white ${scribeTimeErrors.start_time ? 'border-red-500' : ''}`}
+                  placeholder="10:00 AM"
                 />
+                {scribeTimeErrors.start_time && (
+                  <p className="text-red-500 text-sm mt-1">{scribeTimeErrors.start_time}</p>
+                )}
               </div>
               <div>
                 <Label htmlFor="end_time" className="text-gray-300">Exercise End Time</Label>
                 <Input
                   id="end_time"
                   value={scribeFormData.exercise_end_time}
-                  onChange={(e) => setScribeFormData(prev => ({ ...prev, exercise_end_time: e.target.value }))}
-                  className="bg-gray-700 border-gray-600 text-white"
-                  placeholder="HH:MM"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setScribeFormData(prev => ({ ...prev, exercise_end_time: value }));
+                    
+                    // Validate time format
+                    if (value && !validateTimeFormat(value)) {
+                      setScribeTimeErrors(prev => ({ ...prev, end_time: 'Please enter time in format: 10:00 AM or 2:30 PM' }));
+                    } else {
+                      setScribeTimeErrors(prev => ({ ...prev, end_time: null }));
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const formatted = formatTimeInput(e.target.value);
+                    if (formatted !== e.target.value) {
+                      setScribeFormData(prev => ({ ...prev, exercise_end_time: formatted }));
+                    }
+                  }}
+                  className={`bg-gray-700 border-gray-600 text-white ${scribeTimeErrors.end_time ? 'border-red-500' : ''}`}
+                  placeholder="2:30 PM"
                 />
+                {scribeTimeErrors.end_time && (
+                  <p className="text-red-500 text-sm mt-1">{scribeTimeErrors.end_time}</p>
+                )}
               </div>
             </div>
 

@@ -2084,62 +2084,77 @@ const ResourcesList = ({ onAddNew, onEdit }) => {
           <h1 className="text-3xl font-bold text-orange-500 mb-2">Resource Management</h1>
           <p className="text-gray-400">Manage equipment and supplies for emergency exercises</p>
         </div>
-        <Button 
-          onClick={onAddNew}
-          className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Add Resource
-        </Button>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <Label htmlFor="resource-filter" className="text-gray-300 text-sm">
+              Filter:
+            </Label>
+            <Select value={filter} onValueChange={setFilter}>
+              <SelectTrigger 
+                id="resource-filter"
+                className="w-44 bg-gray-700 border-gray-600 text-white"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-gray-700 border-gray-600">
+                <SelectItem value="all" className="text-white focus:bg-gray-600">
+                  Show All ({resources.length})
+                </SelectItem>
+                <SelectItem value="equipment" className="text-white focus:bg-gray-600">
+                  Equipment ({resources.filter(r => r.resource_type.startsWith('Equipment')).length})
+                </SelectItem>
+                <SelectItem value="supplies" className="text-white focus:bg-gray-600">
+                  Supplies ({resources.filter(r => r.resource_type.startsWith('Supplies')).length})
+                </SelectItem>
+                <SelectItem value="insufficient" className="text-white focus:bg-gray-600">
+                  Insufficient ({resources.filter(r => r.quantity_available < r.quantity_needed).length})
+                </SelectItem>
+                <SelectItem value="involved" className="text-white focus:bg-gray-600">
+                  Involved ({resources.filter(r => r.involved_in_exercise).length})
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Button 
+            onClick={onAddNew}
+            className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Resource
+          </Button>
+        </div>
       </div>
 
-      {/* Filters */}
-      <Card className="bg-gray-900 border-gray-700">
-        <CardContent className="p-4">
-          <div className="flex flex-wrap gap-2">
-            <Button
-              variant={filter === 'all' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilter('all')}
-              className={filter === 'all' ? 'bg-orange-500 text-black' : 'text-gray-400 border-gray-600 hover:bg-gray-800 hover:text-white'}
-            >
-              Show All ({resources.length})
-            </Button>
-            <Button
-              variant={filter === 'equipment' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilter('equipment')}
-              className={filter === 'equipment' ? 'bg-orange-500 text-black' : 'text-gray-400 border-gray-600 hover:bg-gray-800 hover:text-white'}
-            >
-              Equipment ({resources.filter(r => r.resource_type.startsWith('Equipment')).length})
-            </Button>
-            <Button
-              variant={filter === 'supplies' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilter('supplies')}
-              className={filter === 'supplies' ? 'bg-orange-500 text-black' : 'text-gray-400 border-gray-600 hover:bg-gray-800 hover:text-white'}
-            >
-              Supplies ({resources.filter(r => r.resource_type.startsWith('Supplies')).length})
-            </Button>
-            <Button
-              variant={filter === 'insufficient' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilter('insufficient')}
-              className={filter === 'insufficient' ? 'bg-orange-500 text-black' : 'text-gray-400 border-gray-600 hover:bg-gray-800 hover:text-white'}
-            >
-              Insufficient ({resources.filter(r => r.quantity_available < r.quantity_needed).length})
-            </Button>
-            <Button
-              variant={filter === 'involved' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilter('involved')}
-              className={filter === 'involved' ? 'bg-orange-500 text-black' : 'text-gray-400 border-gray-600 hover:bg-gray-800 hover:text-white'}
-            >
-              Involved ({resources.filter(r => r.involved_in_exercise).length})
-            </Button>
+      {/* Filter Status Indicator */}
+      {!loading && resources.length > 0 && (
+        <div className="mb-4">
+          <div className="flex items-center space-x-2 text-sm text-gray-400">
+            <span>
+              Showing {filteredResources.length} of {resources.length} resources
+            </span>
+            {filter === 'involved' && (
+              <Badge className="bg-green-500/20 text-green-300 border-green-500/30">
+                Exercise Resources Only
+              </Badge>
+            )}
+            {filter === 'insufficient' && (
+              <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30">
+                Insufficient Resources
+              </Badge>
+            )}
+            {filter === 'equipment' && (
+              <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">
+                Equipment Only
+              </Badge>
+            )}
+            {filter === 'supplies' && (
+              <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30">
+                Supplies Only
+              </Badge>
+            )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      )}
 
       {loading ? (
         <Card className="bg-gray-900 border-gray-700">

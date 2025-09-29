@@ -9752,6 +9752,21 @@ function App() {
     additional_notes: ''
   });
 
+  // Resources state
+  const [resources, setResources] = useState([]);
+  const [showAddResource, setShowAddResource] = useState(false);
+  const [editingResource, setEditingResource] = useState(null);
+  const [resourceFormData, setResourceFormData] = useState({
+    resource_type: '',
+    identification: '',
+    description: '',
+    quantity_available: 0,
+    quantity_needed: 0,
+    location: '',
+    contact_person: '',
+    contact_phone: ''
+  });
+
   // Handle URL-based navigation for editing exercises
   useEffect(() => {
     const handleHashChange = () => {

@@ -6226,7 +6226,17 @@ const ScopeModal = ({ isOpen, onClose, onSave, initialData = null, exerciseId })
 };
 
 // Exercise Management Dashboard Component
-const ExerciseManagementDashboard = ({ exerciseId }) => {
+const ExerciseManagementDashboard = ({ 
+  exerciseId, 
+  scribeTemplates, 
+  currentTemplate, 
+  scribeFormData, 
+  scribeFormLoading, 
+  setCurrentTemplate, 
+  setScribeFormData, 
+  setScribeFormLoading, 
+  loadScribeTemplates 
+}) => {
   const [exercise, setExercise] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState('overview');

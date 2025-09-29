@@ -9345,7 +9345,7 @@ const ExerciseManagementDashboard = ({
               </div>
               {scribeFormData.communications.map((comm, index) => (
                 <div key={index} className="bg-gray-700 p-4 rounded border border-gray-600">
-                  <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-3">
                     <div>
                       <Label className="text-gray-300">Time</Label>
                       <Input
@@ -9407,6 +9407,16 @@ const ExerciseManagementDashboard = ({
                         <X className="h-4 w-4" />
                       </Button>
                     </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-gray-300">Content</Label>
+                    <textarea
+                      value={comm.content}
+                      onChange={(e) => updateCommunication(index, 'content', e.target.value)}
+                      className="w-full bg-gray-600 border border-gray-500 text-white rounded px-3 py-2"
+                      rows="3"
+                      placeholder="Detailed communication content, context, or additional information..."
+                    />
                   </div>
                 </div>
               ))}

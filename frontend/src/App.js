@@ -6522,16 +6522,28 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-white">Exercise Scope</h1>
-          <Button 
-            className="bg-orange-500 hover:bg-orange-600 text-black"
-            onClick={() => {
-              setEditingScope(hasScope ? exercise : null);
-              setScopeModalOpen(true);
-            }}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            {hasScope ? 'Edit Scope' : 'Add Scope'}
-          </Button>
+          <div className="flex space-x-3">
+            {hasScope && (
+              <Button 
+                variant="outline"
+                className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10"
+                onClick={printScope}
+              >
+                <Printer className="h-4 w-4 mr-2" />
+                Print Scope
+              </Button>
+            )}
+            <Button 
+              className="bg-orange-500 hover:bg-orange-600 text-black"
+              onClick={() => {
+                setEditingScope(hasScope ? exercise : null);
+                setScopeModalOpen(true);
+              }}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              {hasScope ? 'Edit Scope' : 'Add Scope'}
+            </Button>
+          </div>
         </div>
 
         {/* Scope Display */}

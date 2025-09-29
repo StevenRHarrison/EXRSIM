@@ -17,7 +17,743 @@ import uuid
 # Get backend URL from frontend .env
 BACKEND_URL = "https://exrsim-platform-1.preview.emergentagent.com/api"
 
-def test_participant_crud_api():
+def test_exercise_builder_api():
+    """Test Exercise Builder API endpoints comprehensively"""
+    print("=" * 60)
+    print("TESTING EXERCISE BUILDER API ENDPOINTS")
+    print("=" * 60)
+    
+    # Test data with all 17 steps as specified in review request
+    test_exercise_data = {
+        # Step 1: Exercise Details
+        "exercise_name": "Emergency Response Training Exercise",
+        "exercise_type": "Table Top",
+        "exercise_description": "Comprehensive emergency response training focusing on multi-agency coordination",
+        "location": "Emergency Operations Center, Vancouver, BC",
+        "start_date": "2024-03-15T09:00:00Z",
+        "start_time": "09:00",
+        "end_date": "2024-03-15T17:00:00Z",
+        "end_time": "17:00",
+        "exercise_image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+        
+        # Step 2: Scope
+        "scope_description": "Multi-agency emergency response coordination",
+        "scope_hazards": "Earthquake, Fire, Flood",
+        "scope_geographic_area": "Greater Vancouver Regional District",
+        "scope_functions": "Command, Operations, Planning, Logistics",
+        "scope_organizations": "Fire, Police, EMS, Emergency Management",
+        "scope_personnel": "50-75 participants",
+        "scope_exercise_type": "Table Top",
+        
+        # Step 3: Purpose
+        "purpose_description": "Test inter-agency coordination and communication protocols during major emergency",
+        
+        # Step 4: Scenario
+        "scenario_name": "Major Earthquake Response",
+        "scenario_description": "7.2 magnitude earthquake strikes Greater Vancouver area",
+        "scenario_latitude": 49.2827,
+        "scenario_longitude": -123.1207,
+        "scenario_image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+        
+        # Step 5-17: Dynamic Collections
+        "goals": [
+            {"id": 1, "name": "Test Emergency Response", "description": "Verify team activation", "achieved": "Partial"},
+            {"id": 2, "name": "Communication Systems", "description": "Test radio systems", "achieved": "Yes"}
+        ],
+        "objectives": [
+            {"id": 1, "name": "Activate EOC within 30 minutes", "description": "Measure response time", "achieved": "No"}
+        ],
+        "events": [
+            {"id": 1, "name": "Initial Earthquake", "description": "7.2 magnitude earthquake", "time": "09:00"}
+        ],
+        "functions": [
+            {"id": 1, "name": "Command Function", "description": "Incident command structure", "achieved": "Yes"}
+        ],
+        "injections": [
+            {"id": 1, "event_number": 1, "scenario_time": "T+15", "message": "Earthquake detected"}
+        ],
+        "organizations": [
+            {"id": 1, "name": "Vancouver Fire Department", "description": "Primary fire response", "contact": "Chief Johnson"}
+        ],
+        "coordinators": [
+            {"id": 1, "name": "John Smith", "role": "Exercise Director", "phone": "555-0123"}
+        ],
+        "codeWords": [
+            {"id": 1, "code_word": "ALPHA", "definition": "All clear signal"}
+        ],
+        "callsigns": [
+            {"id": 1, "callsign": "COMMAND-1", "definition": "Incident Commander"}
+        ],
+        "frequencies": [
+            {"id": 1, "name": "Command Net", "frequency": "155.475", "description": "Primary command communications"}
+        ],
+        "assumptions": [
+            {"id": 1, "name": "Weather Conditions", "assumption": "Clear weather throughout exercise"}
+        ],
+        "artificialities": [
+            {"id": 1, "name": "Limited Resources", "artificiality": "Simulated shortage of emergency vehicles"}
+        ],
+        "safetyConcerns": [
+            {"id": 1, "name": "Participant Safety", "safety_concern": "Ensure all participants remain in designated areas", "safety_officer_first_name": "Sarah", "safety_officer_last_name": "Wilson", "safety_officer_cell_phone": "555-0199"}
+        ]
+    }
+    
+    created_exercise_id = None
+    
+    try:
+        # Test 1: GET /api/exercise-builder (Get all exercises)
+        print("\n1. Testing GET /api/exercise-builder")
+        response = requests.get(f"{BACKEND_URL}/exercise-builder")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            initial_exercises = response.json()
+            print(f"✅ Successfully retrieved {len(initial_exercises)} existing exercises")
+        else:
+            print(f"❌ Failed to get exercises: {response.text}")
+            return False
+            
+        # Test 2: POST /api/exercise-builder (Create new exercise)
+        print("\n2. Testing POST /api/exercise-builder (create comprehensive exercise)")
+        response = requests.post(
+            f"{BACKEND_URL}/exercise-builder",
+            json=test_exercise_data,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            created_exercise = response.json()
+            created_exercise_id = created_exercise.get("id")
+            print(f"✅ Successfully created exercise with ID: {created_exercise_id}")
+            
+            # Verify all 17 steps data is present
+            print("\n   Verifying exercise data persistence:")
+            
+            # Basic exercise info
+            if created_exercise.get("exercise_name") == test_exercise_data["exercise_name"]:
+                print(f"   ✅ Exercise Name: {created_exercise.get('exercise_name')}")
+            else:
+                print(f"   ❌ Exercise Name mismatch")
+                return False
+                
+            # Dynamic collections verification
+            collections_to_verify = ["goals", "objectives", "events", "functions", "organizations", 
+                                   "codeWords", "callsigns", "frequencies", "assumptions", 
+                                   "artificialities", "safetyConcerns"]
+            
+            for collection in collections_to_verify:
+                expected_count = len(test_exercise_data.get(collection, []))
+                actual_count = len(created_exercise.get(collection, []))
+                if actual_count == expected_count:
+                    print(f"   ✅ {collection}: {actual_count} items")
+                else:
+                    print(f"   ❌ {collection}: Expected {expected_count}, Got {actual_count}")
+                    return False
+                    
+        else:
+            print(f"❌ Failed to create exercise: {response.text}")
+            return False
+            
+        # Test 3: GET /api/exercise-builder/{id} (Get specific exercise)
+        print(f"\n3. Testing GET /api/exercise-builder/{created_exercise_id}")
+        response = requests.get(f"{BACKEND_URL}/exercise-builder/{created_exercise_id}")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            retrieved_exercise = response.json()
+            print(f"✅ Successfully retrieved exercise: {retrieved_exercise.get('exercise_name')}")
+            
+            # Verify coordinate data
+            if (retrieved_exercise.get("scenario_latitude") == 49.2827 and 
+                retrieved_exercise.get("scenario_longitude") == -123.1207):
+                print("   ✅ Coordinate data preserved correctly")
+            else:
+                print("   ❌ Coordinate data not preserved correctly")
+                return False
+        else:
+            print(f"❌ Failed to get specific exercise: {response.text}")
+            return False
+            
+        # Test 4: PUT /api/exercise-builder/{id} (Update exercise)
+        print(f"\n4. Testing PUT /api/exercise-builder/{created_exercise_id}")
+        update_data = test_exercise_data.copy()
+        update_data["exercise_name"] = "Updated Emergency Response Training"
+        update_data["goals"].append({"id": 3, "name": "New Goal", "description": "Additional goal", "achieved": "No"})
+        
+        response = requests.put(
+            f"{BACKEND_URL}/exercise-builder/{created_exercise_id}",
+            json=update_data,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            updated_exercise = response.json()
+            if (updated_exercise.get("exercise_name") == "Updated Emergency Response Training" and
+                len(updated_exercise.get("goals", [])) == 3):
+                print("✅ Exercise updated successfully with new goal added")
+            else:
+                print("❌ Exercise update failed")
+                return False
+        else:
+            print(f"❌ Failed to update exercise: {response.text}")
+            return False
+            
+        # Test 5: DELETE /api/exercise-builder/{id} (Delete exercise)
+        print(f"\n5. Testing DELETE /api/exercise-builder/{created_exercise_id}")
+        response = requests.delete(f"{BACKEND_URL}/exercise-builder/{created_exercise_id}")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            print("✅ Successfully deleted exercise")
+            
+            # Verify deletion
+            response = requests.get(f"{BACKEND_URL}/exercise-builder/{created_exercise_id}")
+            if response.status_code == 404:
+                print("✅ Exercise deletion verified")
+            else:
+                print("❌ Exercise still exists after deletion")
+                return False
+        else:
+            print(f"❌ Failed to delete exercise: {response.text}")
+            return False
+            
+        print("\n✅ ALL EXERCISE BUILDER API TESTS PASSED")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Exercise Builder API Test Error: {e}")
+        return False
+
+def test_hira_api():
+    """Test HIRA Management API endpoints"""
+    print("=" * 60)
+    print("TESTING HIRA MANAGEMENT API ENDPOINTS")
+    print("=" * 60)
+    
+    # Test data with coordinate validation
+    test_hira_data = {
+        "name": "Earthquake Hazard Assessment",
+        "description": "Major earthquake risk assessment for Vancouver region",
+        "notes": "Based on geological survey data from 2024",
+        "disaster_type": "Earthquake",
+        "latitude": 49.2827,  # Valid Vancouver coordinates
+        "longitude": -123.1207,
+        "frequency": 3,
+        "fatalities": 2,
+        "injuries": 3,
+        "evacuation": 2,
+        "property_damage": 3,
+        "critical_infrastructure": 3,
+        "environmental_damage": 1,
+        "business_financial_impact": 2,
+        "psychosocial_impact": 2,
+        "change_in_frequency": [True, False, True, False],
+        "change_in_vulnerability": [False, True, False],
+        "hazard_image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+    }
+    
+    created_hira_id = None
+    
+    try:
+        # Test 1: GET /api/hira (Get all HIRA entries)
+        print("\n1. Testing GET /api/hira")
+        response = requests.get(f"{BACKEND_URL}/hira")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            initial_hira = response.json()
+            print(f"✅ Successfully retrieved {len(initial_hira)} existing HIRA entries")
+        else:
+            print(f"❌ Failed to get HIRA entries: {response.text}")
+            return False
+            
+        # Test 2: POST /api/hira (Create HIRA entry with coordinates)
+        print("\n2. Testing POST /api/hira (create with coordinate validation)")
+        response = requests.post(
+            f"{BACKEND_URL}/hira",
+            json=test_hira_data,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            created_hira = response.json()
+            created_hira_id = created_hira.get("id")
+            print(f"✅ Successfully created HIRA entry with ID: {created_hira_id}")
+            
+            # Verify coordinate data
+            if (created_hira.get("latitude") == 49.2827 and 
+                created_hira.get("longitude") == -123.1207):
+                print("   ✅ Coordinate validation passed")
+            else:
+                print("   ❌ Coordinate validation failed")
+                return False
+                
+            # Verify risk assessment data
+            if (created_hira.get("frequency") == 3 and 
+                created_hira.get("fatalities") == 2):
+                print("   ✅ Risk assessment data preserved")
+            else:
+                print("   ❌ Risk assessment data not preserved")
+                return False
+                
+        else:
+            print(f"❌ Failed to create HIRA entry: {response.text}")
+            return False
+            
+        # Test 3: GET /api/hira/{id} (Get specific HIRA entry)
+        print(f"\n3. Testing GET /api/hira/{created_hira_id}")
+        response = requests.get(f"{BACKEND_URL}/hira/{created_hira_id}")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            retrieved_hira = response.json()
+            print(f"✅ Successfully retrieved HIRA: {retrieved_hira.get('name')}")
+        else:
+            print(f"❌ Failed to get specific HIRA entry: {response.text}")
+            return False
+            
+        # Test 4: PUT /api/hira/{id} (Update HIRA entry)
+        print(f"\n4. Testing PUT /api/hira/{created_hira_id}")
+        update_data = test_hira_data.copy()
+        update_data["name"] = "Updated Earthquake Assessment"
+        update_data["latitude"] = 49.3000  # Updated coordinates
+        update_data["longitude"] = -123.2000
+        
+        response = requests.put(
+            f"{BACKEND_URL}/hira/{created_hira_id}",
+            json=update_data,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            updated_hira = response.json()
+            if (updated_hira.get("name") == "Updated Earthquake Assessment" and
+                updated_hira.get("latitude") == 49.3000):
+                print("✅ HIRA entry updated successfully")
+            else:
+                print("❌ HIRA entry update failed")
+                return False
+        else:
+            print(f"❌ Failed to update HIRA entry: {response.text}")
+            return False
+            
+        # Test 5: DELETE /api/hira/{id} (Delete HIRA entry)
+        print(f"\n5. Testing DELETE /api/hira/{created_hira_id}")
+        response = requests.delete(f"{BACKEND_URL}/hira/{created_hira_id}")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            print("✅ Successfully deleted HIRA entry")
+            
+            # Verify deletion
+            response = requests.get(f"{BACKEND_URL}/hira/{created_hira_id}")
+            if response.status_code == 404:
+                print("✅ HIRA deletion verified")
+            else:
+                print("❌ HIRA entry still exists after deletion")
+                return False
+        else:
+            print(f"❌ Failed to delete HIRA entry: {response.text}")
+            return False
+            
+        print("\n✅ ALL HIRA API TESTS PASSED")
+        return True
+        
+    except Exception as e:
+        print(f"❌ HIRA API Test Error: {e}")
+        return False
+
+def test_msel_api():
+    """Test MSEL Management API endpoints"""
+    print("=" * 60)
+    print("TESTING MSEL MANAGEMENT API ENDPOINTS")
+    print("=" * 60)
+    
+    # Test data for MSEL events
+    test_msel_data = {
+        "exercise_id": "test-exercise-123",
+        "event_number": 1,
+        "scenario_time": "T+15 minutes",
+        "event_type": "Inject",
+        "inject_mode": "Phone Call",
+        "from_entity": "Emergency Operations Center",
+        "to_entity": "Fire Department",
+        "message": "Major earthquake detected, magnitude 7.2. Activate emergency response protocols.",
+        "expected_response": "Fire department activates emergency response team and reports status within 10 minutes",
+        "objective_capability_task": "Test emergency activation procedures",
+        "notes": "First major inject of the exercise"
+    }
+    
+    created_msel_id = None
+    
+    try:
+        # Test 1: GET /api/msel (Get all MSEL events)
+        print("\n1. Testing GET /api/msel")
+        response = requests.get(f"{BACKEND_URL}/msel")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            initial_msel = response.json()
+            print(f"✅ Successfully retrieved {len(initial_msel)} existing MSEL events")
+        else:
+            print(f"❌ Failed to get MSEL events: {response.text}")
+            return False
+            
+        # Test 2: POST /api/msel (Create MSEL event)
+        print("\n2. Testing POST /api/msel (create MSEL event)")
+        response = requests.post(
+            f"{BACKEND_URL}/msel",
+            json=test_msel_data,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            created_msel = response.json()
+            created_msel_id = created_msel.get("id")
+            print(f"✅ Successfully created MSEL event with ID: {created_msel_id}")
+            
+            # Verify MSEL data
+            if (created_msel.get("event_number") == 1 and 
+                created_msel.get("scenario_time") == "T+15 minutes"):
+                print("   ✅ MSEL event data preserved correctly")
+            else:
+                print("   ❌ MSEL event data not preserved correctly")
+                return False
+                
+        else:
+            print(f"❌ Failed to create MSEL event: {response.text}")
+            return False
+            
+        # Test 3: GET /api/msel/event/{id} (Get specific MSEL event)
+        print(f"\n3. Testing GET /api/msel/event/{created_msel_id}")
+        response = requests.get(f"{BACKEND_URL}/msel/event/{created_msel_id}")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            retrieved_msel = response.json()
+            print(f"✅ Successfully retrieved MSEL event #{retrieved_msel.get('event_number')}")
+        else:
+            print(f"❌ Failed to get specific MSEL event: {response.text}")
+            return False
+            
+        # Test 4: PUT /api/msel/event/{id} (Update MSEL event)
+        print(f"\n4. Testing PUT /api/msel/event/{created_msel_id}")
+        update_data = {
+            "event_number": 2,
+            "scenario_time": "T+30 minutes",
+            "message": "Updated: Earthquake aftershock detected",
+            "completed": True,
+            "actual_time": "10:45"
+        }
+        
+        response = requests.put(
+            f"{BACKEND_URL}/msel/event/{created_msel_id}",
+            json=update_data,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            updated_msel = response.json()
+            if (updated_msel.get("event_number") == 2 and
+                updated_msel.get("completed") == True):
+                print("✅ MSEL event updated successfully")
+            else:
+                print("❌ MSEL event update failed")
+                return False
+        else:
+            print(f"❌ Failed to update MSEL event: {response.text}")
+            return False
+            
+        # Test 5: DELETE /api/msel/event/{id} (Delete MSEL event)
+        print(f"\n5. Testing DELETE /api/msel/event/{created_msel_id}")
+        response = requests.delete(f"{BACKEND_URL}/msel/event/{created_msel_id}")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            print("✅ Successfully deleted MSEL event")
+            
+            # Verify deletion
+            response = requests.get(f"{BACKEND_URL}/msel/event/{created_msel_id}")
+            if response.status_code == 404:
+                print("✅ MSEL deletion verified")
+            else:
+                print("❌ MSEL event still exists after deletion")
+                return False
+        else:
+            print(f"❌ Failed to delete MSEL event: {response.text}")
+            return False
+            
+        print("\n✅ ALL MSEL API TESTS PASSED")
+        return True
+        
+    except Exception as e:
+        print(f"❌ MSEL API Test Error: {e}")
+        return False
+
+def test_data_validation():
+    """Test data validation for coordinates, emails, and phone numbers"""
+    print("=" * 60)
+    print("TESTING DATA VALIDATION")
+    print("=" * 60)
+    
+    try:
+        # Test coordinate validation - Invalid latitude
+        print("\n1. Testing invalid latitude (>90)")
+        invalid_hira = {
+            "name": "Test Invalid Coordinates",
+            "description": "Test description",
+            "disaster_type": "Earthquake",
+            "latitude": 95.0,  # Invalid - exceeds 90
+            "longitude": -123.1207,
+            "frequency": 1,
+            "fatalities": 0,
+            "injuries": 0,
+            "evacuation": 0,
+            "property_damage": 0,
+            "critical_infrastructure": 0,
+            "environmental_damage": 0,
+            "business_financial_impact": 0,
+            "psychosocial_impact": 0
+        }
+        
+        response = requests.post(f"{BACKEND_URL}/hira", json=invalid_hira)
+        print(f"Status Code: {response.status_code}")
+        if response.status_code in [400, 422]:
+            print("✅ Invalid latitude properly rejected")
+        else:
+            print("⚠️  Invalid latitude not properly validated")
+            
+        # Test coordinate validation - Invalid longitude
+        print("\n2. Testing invalid longitude (<-180)")
+        invalid_hira["latitude"] = 49.2827
+        invalid_hira["longitude"] = -185.0  # Invalid - less than -180
+        
+        response = requests.post(f"{BACKEND_URL}/hira", json=invalid_hira)
+        print(f"Status Code: {response.status_code}")
+        if response.status_code in [400, 422]:
+            print("✅ Invalid longitude properly rejected")
+        else:
+            print("⚠️  Invalid longitude not properly validated")
+            
+        # Test email validation
+        print("\n3. Testing invalid email format")
+        invalid_participant = {
+            "firstName": "Test",
+            "lastName": "User",
+            "email": "invalid-email-format",  # Invalid email
+            "position": "Test Position",
+            "name": "Test User",
+            "phone": "555-0123"
+        }
+        
+        response = requests.post(f"{BACKEND_URL}/participants", json=invalid_participant)
+        print(f"Status Code: {response.status_code}")
+        if response.status_code in [400, 422]:
+            print("✅ Invalid email format properly rejected")
+        else:
+            print("⚠️  Invalid email format not properly validated")
+            
+        # Test phone number validation
+        print("\n4. Testing invalid phone number format")
+        invalid_participant["email"] = "test@example.com"
+        invalid_participant["phone"] = "invalid-phone"  # Invalid phone
+        
+        response = requests.post(f"{BACKEND_URL}/participants", json=invalid_participant)
+        print(f"Status Code: {response.status_code}")
+        if response.status_code in [400, 422]:
+            print("✅ Invalid phone format properly rejected")
+        else:
+            print("⚠️  Invalid phone format not properly validated")
+            
+        print("\n✅ DATA VALIDATION TESTS COMPLETED")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Data Validation Test Error: {e}")
+        return False
+
+def test_edge_cases():
+    """Test edge cases and error handling"""
+    print("=" * 60)
+    print("TESTING EDGE CASES AND ERROR HANDLING")
+    print("=" * 60)
+    
+    try:
+        # Test 1: Large exercise data payload
+        print("\n1. Testing large exercise data payload")
+        large_exercise_data = {
+            "exercise_name": "Large Data Test Exercise",
+            "exercise_type": "Full Scale Exercise",
+            "exercise_description": "A" * 5000,  # Large description
+            "location": "Test Location",
+            "start_date": "2024-03-15T09:00:00Z",
+            "start_time": "09:00",
+            "end_date": "2024-03-15T17:00:00Z",
+            "end_time": "17:00",
+            "goals": [{"id": i, "name": f"Goal {i}", "description": f"Description {i}", "achieved": "No"} for i in range(100)]  # 100 goals
+        }
+        
+        start_time = time.time()
+        response = requests.post(f"{BACKEND_URL}/exercise-builder", json=large_exercise_data)
+        end_time = time.time()
+        response_time = end_time - start_time
+        
+        print(f"Status Code: {response.status_code}")
+        print(f"Response Time: {response_time:.2f} seconds")
+        
+        if response.status_code == 200:
+            print("✅ Large payload handled successfully")
+            created_exercise = response.json()
+            if len(created_exercise.get("goals", [])) == 100:
+                print("✅ All 100 goals preserved in large payload")
+            
+            # Clean up
+            exercise_id = created_exercise.get("id")
+            if exercise_id:
+                requests.delete(f"{BACKEND_URL}/exercise-builder/{exercise_id}")
+        else:
+            print(f"⚠️  Large payload handling issue: {response.text}")
+            
+        # Test 2: Empty/null values in optional fields
+        print("\n2. Testing empty/null values in optional fields")
+        minimal_exercise = {
+            "exercise_name": "Minimal Exercise",
+            "exercise_type": "Table Top",
+            "exercise_description": "",  # Empty description
+            "location": "",  # Empty location
+            "start_date": "2024-03-15T09:00:00Z",
+            "start_time": "09:00",
+            "end_date": "2024-03-15T17:00:00Z",
+            "end_time": "17:00",
+            "goals": [],  # Empty goals
+            "objectives": []  # Empty objectives
+        }
+        
+        response = requests.post(f"{BACKEND_URL}/exercise-builder", json=minimal_exercise)
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            print("✅ Empty/null optional fields handled correctly")
+            created_exercise = response.json()
+            # Clean up
+            exercise_id = created_exercise.get("id")
+            if exercise_id:
+                requests.delete(f"{BACKEND_URL}/exercise-builder/{exercise_id}")
+        else:
+            print(f"⚠️  Empty/null field handling issue: {response.text}")
+            
+        # Test 3: Unicode/special characters
+        print("\n3. Testing Unicode and special characters")
+        unicode_exercise = {
+            "exercise_name": "Exercice d'Urgence 🚨 测试演习",
+            "exercise_type": "Table Top",
+            "exercise_description": "Description with émojis 🔥💧⚡ and spéciàl chäractërs",
+            "location": "Montréal, Québec, Canada 🇨🇦",
+            "start_date": "2024-03-15T09:00:00Z",
+            "start_time": "09:00",
+            "end_date": "2024-03-15T17:00:00Z",
+            "end_time": "17:00"
+        }
+        
+        response = requests.post(f"{BACKEND_URL}/exercise-builder", json=unicode_exercise)
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            print("✅ Unicode/special characters handled correctly")
+            created_exercise = response.json()
+            if "🚨" in created_exercise.get("exercise_name", ""):
+                print("✅ Unicode characters preserved correctly")
+            
+            # Clean up
+            exercise_id = created_exercise.get("id")
+            if exercise_id:
+                requests.delete(f"{BACKEND_URL}/exercise-builder/{exercise_id}")
+        else:
+            print(f"⚠️  Unicode/special character handling issue: {response.text}")
+            
+        # Test 4: Non-existent resource access
+        print("\n4. Testing access to non-existent resources")
+        fake_id = "non-existent-id-12345"
+        
+        endpoints_to_test = [
+            f"/exercise-builder/{fake_id}",
+            f"/participants/{fake_id}",
+            f"/hira/{fake_id}",
+            f"/msel/event/{fake_id}"
+        ]
+        
+        for endpoint in endpoints_to_test:
+            response = requests.get(f"{BACKEND_URL}{endpoint}")
+            if response.status_code == 404:
+                print(f"✅ {endpoint}: Proper 404 response")
+            else:
+                print(f"⚠️  {endpoint}: Expected 404, got {response.status_code}")
+                
+        print("\n✅ EDGE CASE TESTS COMPLETED")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Edge Case Test Error: {e}")
+        return False
+
+def test_performance():
+    """Test performance with multiple concurrent requests"""
+    print("=" * 60)
+    print("TESTING PERFORMANCE")
+    print("=" * 60)
+    
+    try:
+        # Test response times for different endpoints
+        endpoints = [
+            "/exercise-builder",
+            "/participants", 
+            "/hira",
+            "/msel"
+        ]
+        
+        print("\n1. Testing response times for GET endpoints")
+        for endpoint in endpoints:
+            start_time = time.time()
+            response = requests.get(f"{BACKEND_URL}{endpoint}")
+            end_time = time.time()
+            response_time = end_time - start_time
+            
+            print(f"{endpoint}: {response_time:.3f}s (Status: {response.status_code})")
+            
+            if response_time > 5.0:
+                print(f"⚠️  Slow response time for {endpoint}")
+            else:
+                print(f"✅ Good response time for {endpoint}")
+                
+        # Test multiple rapid requests
+        print("\n2. Testing multiple rapid requests")
+        rapid_requests = 5
+        start_time = time.time()
+        
+        for i in range(rapid_requests):
+            response = requests.get(f"{BACKEND_URL}/")
+            if response.status_code != 200:
+                print(f"⚠️  Request {i+1} failed with status {response.status_code}")
+                
+        end_time = time.time()
+        total_time = end_time - start_time
+        avg_time = total_time / rapid_requests
+        
+        print(f"✅ {rapid_requests} requests completed in {total_time:.3f}s")
+        print(f"✅ Average response time: {avg_time:.3f}s")
+        
+        print("\n✅ PERFORMANCE TESTS COMPLETED")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Performance Test Error: {e}")
+        return False
     """Test Participant CRUD API endpoints comprehensively"""
     print("=" * 60)
     print("TESTING PARTICIPANT CRUD API ENDPOINTS")

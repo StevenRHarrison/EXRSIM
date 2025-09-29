@@ -874,16 +874,11 @@ async def create_scribe_template(template: ScribeTemplateCreate):
         template_dict['created_at'] = datetime.now(timezone.utc)
         template_dict['updated_at'] = datetime.now(timezone.utc)
         
-        # Convert time objects to strings for MongoDB storage
-        mongo_data = prepare_scribe_data_for_mongo(template_dict)
-        
-        result = await db.scribe_templates.insert_one(mongo_data)
+        result = await db.scribe_templates.insert_one(template_dict)
         
         if result.inserted_id:
             created_template = await db.scribe_templates.find_one({"id": template_dict['id']})
-            # Convert back to time objects for response
-            response_data = parse_scribe_data_from_mongo(created_template)
-            return ScribeTemplate(**response_data)
+            return ScribeTemplate(**created_template)
         else:
             raise HTTPException(status_code=400, detail="Failed to create scribe template")
     except Exception as e:

@@ -9704,6 +9704,22 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
 function App() {
   const [activeMenu, setActiveMenu] = useState('dashboard');
   const [managingExerciseId, setManagingExerciseId] = useState(null);
+  
+  // Scribe form state
+  const [scribeTemplates, setScribeTemplates] = useState([]);
+  const [currentTemplate, setCurrentTemplate] = useState(null);
+  const [scribeFormData, setScribeFormData] = useState({
+    scribe_name: '',
+    scribe_signature: '',
+    exercise_start_time: '',
+    exercise_end_time: '',
+    timeline_events: [],
+    communications: [],
+    decisions: [],
+    issues: [],
+    participant_observations: [],
+    additional_notes: ''
+  });
 
   // Handle URL-based navigation for editing exercises
   useEffect(() => {

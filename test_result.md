@@ -162,6 +162,32 @@
 ## user_problem_statement: Test the new Exercise Management Dashboard functionality in the EXRSIM application. This is a major new feature that should provide comprehensive exercise management capabilities.
 
 ## backend:
+  - task: "Scribe Template API Endpoints - CRUD Operations"
+    implemented: true
+    working: "unknown"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "unknown"
+        -agent: "main"
+        -comment: "Investigation required: Digital Scribe Form functionality needs comprehensive backend testing. Backend server.py contains ScribeTemplate, ScribeTemplateEvent, ScribeTemplateCommunication Pydantic models with CRUD endpoints. Need to verify all endpoints work correctly with time string fields and nested data structures."
+
+  - task: "Exercise Management Dashboard - Exercise Loading"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: false
+        -agent: "main"
+        -comment: "CRITICAL ISSUE IDENTIFIED: 'Exercise Not Found' error occurs when accessing exercise management with invalid exercise ID (exrsim-platform-1). However, when using valid exercise ID (4bb39755-0b97-4ded-902d-7f9325f3d9a9), Exercise Management Dashboard loads correctly with all features including Scribe functionality."
+        -working: true
+        -agent: "main"
+        -comment: "RESOLVED: Exercise Not Found error was due to invalid exercise ID being used in testing. Valid exercise IDs work correctly. Exercise Management Dashboard loads properly and Scribe section is accessible with functional interface showing Scribe Tools (Template, Timeline Sheet, Checklist, Digital Form)."
   - task: "Exercise Builder API endpoints"
     implemented: true
     working: true

@@ -2208,6 +2208,19 @@ const ResourcesList = ({ onAddNew, onEdit }) => {
               return (
                 <Card key={resource.id} className="bg-gray-900 border-gray-700 hover:border-orange-500/50 transition-colors">
                   <CardContent className="p-6">
+                    {/* Resource Image */}
+                    {resource.resource_image && (
+                      <div className="mb-4">
+                        <div className="w-full h-32 rounded-lg overflow-hidden bg-gray-800">
+                          <img 
+                            src={resource.resource_image} 
+                            alt={resource.identification}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </div>
+                    )}
+
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex items-center space-x-2">
                         <TypeIcon className={`h-5 w-5 ${color}`} />
@@ -2215,7 +2228,14 @@ const ResourcesList = ({ onAddNew, onEdit }) => {
                           {resource.resource_type}
                         </Badge>
                       </div>
-                      {getStatusBadge(resource)}
+                      <div className="flex flex-col items-end space-y-1">
+                        {getStatusBadge(resource)}
+                        {resource.involved_in_exercise && (
+                          <Badge variant="default" className="text-xs bg-green-600 text-white">
+                            Exercise
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                     
                     <h3 className="text-lg font-semibold text-white mb-2">

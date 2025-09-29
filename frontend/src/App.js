@@ -68,8 +68,8 @@ const API = process.env.REACT_APP_BACKEND_URL + '/api';
 const validateLatitude = (lat) => {
   if (lat === '' || lat === null || lat === undefined) return true; // Allow empty for optional fields
   
-  // Check for proper format: optional sign + digits + optional decimal + up to 4 decimal places
-  const formatRegex = /^[+-]?\d+\.?\d{0,4}$/;
+  // Check for proper format: digits + optional decimal + up to 4 decimal places (no sign required)
+  const formatRegex = /^-?\d+\.?\d{0,4}$/;
   if (!formatRegex.test(lat.toString())) return false;
   
   const num = parseFloat(lat);
@@ -79,8 +79,8 @@ const validateLatitude = (lat) => {
 const validateLongitude = (lng) => {
   if (lng === '' || lng === null || lng === undefined) return true; // Allow empty for optional fields
   
-  // Check for proper format: optional sign + digits + optional decimal + up to 4 decimal places
-  const formatRegex = /^[+-]?\d+\.?\d{0,4}$/;
+  // Check for proper format: digits + optional decimal + up to 4 decimal places (no sign required)
+  const formatRegex = /^-?\d+\.?\d{0,4}$/;
   if (!formatRegex.test(lng.toString())) return false;
   
   const num = parseFloat(lng);

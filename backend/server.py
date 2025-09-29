@@ -531,8 +531,8 @@ class ScribeTemplateCreate(BaseModel):
 class ScribeTemplateUpdate(BaseModel):
     scribe_name: Optional[str] = None
     scribe_signature: Optional[str] = None
-    exercise_start_time: Optional[str] = None
-    exercise_end_time: Optional[str] = None
+    exercise_start_time: Optional[time] = None
+    exercise_end_time: Optional[time] = None
     timeline_events: Optional[List[ScribeTemplateEvent]] = None
     communications: Optional[List[ScribeTemplateCommunication]] = None
     decisions: Optional[List[ScribeTemplateDecision]] = None

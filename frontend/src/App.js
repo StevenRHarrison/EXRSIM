@@ -6208,8 +6208,10 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                   <Button 
                     variant="outline" 
                     className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+                    onClick={loadCoordinators}
+                    disabled={loading}
                   >
-                    Load Coordinators
+                    {loading ? 'Loading...' : 'Load Coordinators'}
                   </Button>
                 </div>
                 <div className="bg-gray-700/50 p-4 rounded">

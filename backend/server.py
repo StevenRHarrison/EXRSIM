@@ -987,6 +987,83 @@ async def delete_scribe_template(template_id: str):
         logger.error(f"Error deleting scribe template {template_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# Resource Management API endpoints
+@api_router.post("/resources", response_model=Resource)
+async def create_resource(resource: ResourceCreate):
+    try:
+        resource_data = resource.dict()
+        resource_data["id"] = str(uuid.uuid4())
+        resource_data["created_at"] = datetime.now(timezone.utc)
+        resource_data["updated_at"] = datetime.now(timezone.utc)
+        
+        await db.resources.insert_one(prepare_for_mongo(resource_data))
+        return Resource(**resource_data)
+    except Exception as e:
+        logger.error(f"Error creating resource: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/resources", response_model=List[Resource])
+async def get_all_resources():
+    try:
+        resources = await db.resources.find().to_list(length=None)
+        return [Resource(**parse_from_mongo(resource)) for resource in resources]
+    except Exception as e:
+        logger.error(f"Error retrieving resources: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/resources/{resource_id}", response_model=Resource)
+async def get_resource(resource_id: str):
+    try:
+        resource = await db.resources.find_one({"id": resource_id})
+        if not resource:
+            raise HTTPException(status_code=404, detail="Resource not found")
+        return Resource(**parse_from_mongo(resource))
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error retrieving resource {resource_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.put("/resources/{resource_id}", response_model=Resource)
+async def update_resource(resource_id: str, resource_update: ResourceUpdate):
+    try:
+        # Get existing resource
+        existing_resource = await db.resources.find_one({"id": resource_id})
+        if not existing_resource:
+            raise HTTPException(status_code=404, detail="Resource not found")
+        
+        # Prepare update data
+        update_data = {k: v for k, v in resource_update.dict().items() if v is not None}
+        update_data["updated_at"] = datetime.now(timezone.utc)
+        
+        # Update resource
+        await db.resources.update_one(
+            {"id": resource_id}, 
+            {"$set": prepare_for_mongo(update_data)}
+        )
+        
+        # Return updated resource
+        updated_resource = await db.resources.find_one({"id": resource_id})
+        return Resource(**parse_from_mongo(updated_resource))
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating resource {resource_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/resources/{resource_id}")
+async def delete_resource(resource_id: str):
+    try:
+        result = await db.resources.delete_one({"id": resource_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Resource not found")
+        return {"message": "Resource deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting resource {resource_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Include the router in the main app
 app.include_router(api_router)
 

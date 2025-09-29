@@ -2061,6 +2061,102 @@ const ResourcesList = ({ onAddNew, onEdit }) => {
     return true; // 'all'
   });
 
+  // Print function for Resources
+  const printResources = () => {
+    const currentDateTime = new Date().toLocaleString();
+    const printContent = `
+      <html>
+        <head>
+          <title>Resource Management Summary</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { border-bottom: 2px solid #333; margin-bottom: 20px; padding-bottom: 10px; }
+            .resource-item { border: 1px solid #ddd; margin-bottom: 15px; padding: 15px; border-radius: 5px; }
+            .resource-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+            .resource-type { font-size: 14px; color: #666; margin-bottom: 8px; }
+            .resource-description { margin-bottom: 10px; color: #555; }
+            .resource-quantities { display: flex; gap: 20px; margin-bottom: 10px; }
+            .quantity-box { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+            .location-contact { margin-top: 10px; font-size: 14px; color: #666; }
+            .status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-bottom: 10px; }
+            .status-sufficient { background-color: #d4edda; color: #155724; }
+            .status-insufficient { background-color: #fff3cd; color: #856404; }
+            .status-unavailable { background-color: #f8d7da; color: #721c24; }
+            .exercise-involved { background-color: #d1ecf1; color: #0c5460; margin-left: 10px; }
+            .footer { 
+              position: fixed; 
+              bottom: 20px; 
+              left: 20px; 
+              right: 20px; 
+              text-align: center; 
+              font-size: 12px; 
+              color: #666; 
+              border-top: 1px solid #ddd; 
+              padding-top: 10px; 
+            }
+            @media print { 
+              body { margin: 0; padding: 20px; } 
+              .no-print { display: none; }
+              .footer { position: fixed; bottom: 0; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>Resource Management Summary</h1>
+            <p>Filter: ${filter === 'all' ? 'All Resources' : filter.charAt(0).toUpperCase() + filter.slice(1)}</p>
+            <p>Generated on: ${new Date().toLocaleDateString()}</p>
+          </div>
+          <div class="resources-content">
+            ${filteredResources.length > 0 ? 
+              filteredResources.map((resource, index) => {
+                const status = resource.quantity_available >= resource.quantity_needed ? 'sufficient' :
+                              resource.quantity_available === 0 ? 'unavailable' : 'insufficient';
+                const statusText = status === 'sufficient' ? 'Sufficient' :
+                                  status === 'unavailable' ? 'Unavailable' : 'Insufficient';
+                
+                return `
+                  <div class="resource-item">
+                    <div class="resource-title">${resource.identification}</div>
+                    <div class="resource-type">${resource.resource_type}</div>
+                    <div class="resource-description">${resource.description}</div>
+                    <div class="status-badge status-${status}">
+                      Status: ${statusText}
+                    </div>
+                    ${resource.involved_in_exercise ? '<span class="status-badge exercise-involved">Exercise Resource</span>' : ''}
+                    <div class="resource-quantities">
+                      <div class="quantity-box">
+                        <strong>Available:</strong> ${resource.quantity_available}
+                      </div>
+                      <div class="quantity-box">
+                        <strong>Needed:</strong> ${resource.quantity_needed}
+                      </div>
+                    </div>
+                    <div class="location-contact">
+                      <div><strong>Location:</strong> ${resource.location}</div>
+                      <div><strong>Contact:</strong> ${resource.contact_person} (${resource.contact_phone})</div>
+                    </div>
+                  </div>
+                `;
+              }).join('') 
+              : '<p>No resources match the current filter criteria.</p>'
+            }
+          </div>
+          <div class="footer">
+            <p>Generated on: ${currentDateTime} | Powered by EXRSIM</p>
+          </div>
+        </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+  };
+
   const getStatusBadge = (resource) => {
     if (resource.quantity_available >= resource.quantity_needed) {
       return <Badge variant="default" className="bg-green-600 text-white">Sufficient</Badge>;

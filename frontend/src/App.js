@@ -7446,17 +7446,83 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
   };
 
   const renderEvaluationsManagement = () => {
+    // Print function for Evaluations
+    const printEvaluations = () => {
+      const currentDateTime = new Date().toLocaleString();
+      const printContent = `
+        <html>
+          <head>
+            <title>Exercise Evaluations - ${exercise.name || 'Exercise'}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              .header { border-bottom: 2px solid #333; margin-bottom: 20px; padding-bottom: 10px; }
+              .evaluation-item { border: 1px solid #ddd; margin-bottom: 15px; padding: 15px; border-radius: 5px; }
+              .evaluation-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+              .evaluation-description { margin-bottom: 10px; color: #666; }
+              .footer { 
+                position: fixed; 
+                bottom: 20px; 
+                left: 20px; 
+                right: 20px; 
+                text-align: center; 
+                font-size: 12px; 
+                color: #666; 
+                border-top: 1px solid #ddd; 
+                padding-top: 10px; 
+              }
+              @media print { 
+                body { margin: 0; padding: 20px; } 
+                .no-print { display: none; }
+                .footer { position: fixed; bottom: 0; }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1>Exercise Evaluations</h1>
+              <h2>${exercise.name || 'Exercise Name'}</h2>
+              <p>Exercise Type: ${exercise.exercise_type || 'N/A'}</p>
+              <p>Generated on: ${new Date().toLocaleDateString()}</p>
+            </div>
+            <div class="evaluations-content">
+              <p>Evaluation data for this exercise will be displayed here.</p>
+            </div>
+            <div class="footer">
+              <p>Generated on: ${currentDateTime} | Powered by EXRSIM</p>
+            </div>
+          </body>
+        </html>
+      `;
+
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    };
+
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-white">Exercise Evaluations</h1>
-          <Button 
-            className="bg-orange-500 hover:bg-orange-600 text-black"
-            onClick={() => {/* Add new evaluation logic */}}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Evaluation
-          </Button>
+          <div className="flex space-x-3">
+            <Button 
+              variant="outline"
+              className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+              onClick={printEvaluations}
+            >
+              <Printer className="h-4 w-4 mr-2" />
+              Print Evaluations
+            </Button>
+            <Button 
+              className="bg-orange-500 hover:bg-orange-600 text-black"
+              onClick={() => {/* Add new evaluation logic */}}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Evaluation
+            </Button>
+          </div>
         </div>
 
         <Card className="bg-gray-800 border-gray-700 border-dashed">

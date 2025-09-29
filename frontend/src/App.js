@@ -7026,17 +7026,91 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
   };
 
   const renderSafetyManagement = () => {
+    // Print function for Safety
+    const printSafety = () => {
+      const currentDateTime = new Date().toLocaleString();
+      const printContent = `
+        <html>
+          <head>
+            <title>Exercise Safety - ${exercise.name || 'Exercise'}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              .header { border-bottom: 2px solid #333; margin-bottom: 20px; padding-bottom: 10px; }
+              .safety-item { border: 1px solid #ddd; margin-bottom: 15px; padding: 15px; border-radius: 5px; }
+              .safety-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+              .safety-description { margin-bottom: 10px; color: #666; }
+              .footer { 
+                position: fixed; 
+                bottom: 20px; 
+                left: 20px; 
+                right: 20px; 
+                text-align: center; 
+                font-size: 12px; 
+                color: #666; 
+                border-top: 1px solid #ddd; 
+                padding-top: 10px; 
+              }
+              @media print { 
+                body { margin: 0; padding: 20px; } 
+                .no-print { display: none; }
+                .footer { position: fixed; bottom: 0; }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1>Exercise Safety Concerns</h1>
+              <h2>${exercise.name || 'Exercise Name'}</h2>
+              <p>Exercise Type: ${exercise.exercise_type || 'N/A'}</p>
+              <p>Generated on: ${new Date().toLocaleDateString()}</p>
+            </div>
+            <div class="safety-content">
+              ${exercise.safetyConcerns && exercise.safetyConcerns.length > 0 ? 
+                exercise.safetyConcerns.map((safety, index) => `
+                  <div class="safety-item">
+                    <div class="safety-title">${index + 1}. ${safety.concern || 'Unnamed Safety Concern'}</div>
+                    <div class="safety-description">${safety.description || 'No description provided'}</div>
+                  </div>
+                `).join('') 
+                : '<p>No safety concerns have been defined for this exercise.</p>'
+              }
+            </div>
+            <div class="footer">
+              <p>Generated on: ${currentDateTime} | Powered by EXRSIM</p>
+            </div>
+          </body>
+        </html>
+      `;
+
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    };
+
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-white">Safety Concerns</h1>
-          <Button 
-            className="bg-red-500 hover:bg-red-600 text-white"
-            onClick={() => {/* Add new safety concern logic */}}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Safety Concern
-          </Button>
+          <div className="flex space-x-3">
+            <Button 
+              variant="outline"
+              className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+              onClick={printSafety}
+            >
+              <Printer className="h-4 w-4 mr-2" />
+              Print Safety
+            </Button>
+            <Button 
+              className="bg-red-500 hover:bg-red-600 text-white"
+              onClick={() => {/* Add new safety concern logic */}}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Safety Concern
+            </Button>
+          </div>
         </div>
 
         {/* Safety Concerns List */}

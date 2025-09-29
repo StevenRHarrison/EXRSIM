@@ -9683,6 +9683,30 @@ function App() {
       window.removeEventListener('popstate', handleHashChange);
     };
   }, []);
+  // Load scribe templates when exercise changes
+  useEffect(() => {
+    if (managingExerciseId && activeMenu === 'manage') {
+      loadScribeTemplates();
+    }
+  }, [managingExerciseId, activeMenu]);
+
+  const loadScribeTemplates = async () => {
+    if (!managingExerciseId) return;
+    
+    try {
+      const response = await fetch(`${API}/scribe-templates/exercise/${managingExerciseId}`);
+      if (response.ok) {
+        const templates = await response.json();
+        setScribeTemplates(templates);
+        if (templates.length > 0) {
+          setCurrentTemplate(templates[0]);
+          setScribeFormData(templates[0]);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading scribe templates:', error);
+    }
+  };
 
   const renderContent = () => {
     switch (activeMenu) {

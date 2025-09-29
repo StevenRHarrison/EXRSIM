@@ -8981,6 +8981,544 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
       </div>
     );
   };
+  const renderScribeFormManagement = () => {
+    const [scribeTemplates, setScribeTemplates] = useState([]);
+    const [currentTemplate, setCurrentTemplate] = useState(null);
+    const [formData, setFormData] = useState({
+      scribe_name: '',
+      scribe_signature: '',
+      exercise_start_time: '',
+      exercise_end_time: '',
+      timeline_events: [],
+      communications: [],
+      decisions: [],
+      issues: [],
+      participant_observations: [],
+      additional_notes: ''
+    });
+    const [loading, setLoading] = useState(false);
+
+    // Load existing templates for this exercise
+    useEffect(() => {
+      loadScribeTemplates();
+    }, []);
+
+    const loadScribeTemplates = async () => {
+      try {
+        const response = await fetch(`${API}/scribe-templates/exercise/${exercise.id}`);
+        if (response.ok) {
+          const templates = await response.json();
+          setScribeTemplates(templates);
+          if (templates.length > 0) {
+            setCurrentTemplate(templates[0]);
+            setFormData(templates[0]);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading scribe templates:', error);
+      }
+    };
+
+    const saveScribeTemplate = async () => {
+      setLoading(true);
+      try {
+        const templateData = {
+          ...formData,
+          exercise_id: exercise.id
+        };
+
+        let response;
+        if (currentTemplate) {
+          // Update existing template
+          response = await fetch(`${API}/scribe-templates/${currentTemplate.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(templateData)
+          });
+        } else {
+          // Create new template
+          response = await fetch(`${API}/scribe-templates`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(templateData)
+          });
+        }
+
+        if (response.ok) {
+          const savedTemplate = await response.json();
+          setCurrentTemplate(savedTemplate);
+          loadScribeTemplates(); // Reload list
+          alert('Scribe template saved successfully!');
+        } else {
+          throw new Error('Failed to save scribe template');
+        }
+      } catch (error) {
+        console.error('Error saving scribe template:', error);
+        alert('Error saving scribe template. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const printFilledTemplate = () => {
+      const currentDateTime = new Date().toLocaleString();
+      const printContent = `
+        <html>
+          <head>
+            <title>Exercise Scribe Notes - ${exercise.exercise_name || 'Exercise'}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.8; }
+              .header { border-bottom: 3px solid #0891b2; margin-bottom: 30px; padding-bottom: 15px; }
+              .section { margin-bottom: 25px; page-break-inside: avoid; }
+              .section-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #0891b2; }
+              .data-table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+              .data-table th, .data-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+              .data-table th { background-color: #f4f4f4; font-weight: bold; }
+              .exercise-info { background: #f0f9ff; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+              .notes-section { background: #f9f9f9; padding: 15px; margin: 15px 0; border: 1px solid #ddd; }
+              .footer { 
+                position: fixed; bottom: 20px; left: 20px; right: 20px; text-align: center; 
+                font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 10px; 
+              }
+              @media print { body { margin: 0; padding: 20px; } .footer { position: fixed; bottom: 0; } }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1>Exercise Scribe Notes</h1>
+              <h2>${exercise.exercise_name || 'Exercise Name'}</h2>
+            </div>
+
+            <div class="exercise-info">
+              <p><strong>Exercise Type:</strong> ${exercise.exercise_type || 'N/A'}</p>
+              <p><strong>Date:</strong> ${exercise.start_date || 'N/A'} - ${exercise.end_date || 'N/A'}</p>
+              <p><strong>Location:</strong> ${exercise.location || 'N/A'}</p>
+              <p><strong>Scribe:</strong> ${formData.scribe_name || 'Not specified'}</p>
+              <p><strong>Exercise Start:</strong> ${formData.exercise_start_time || 'Not specified'}</p>
+              <p><strong>Exercise End:</strong> ${formData.exercise_end_time || 'Not specified'}</p>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Exercise Timeline & Key Events</div>
+              ${formData.timeline_events.length > 0 ? `
+                <table class="data-table">
+                  <thead>
+                    <tr><th>Time</th><th>Event</th><th>Observations</th></tr>
+                  </thead>
+                  <tbody>
+                    ${formData.timeline_events.map(event => `
+                      <tr>
+                        <td>${event.time || ''}</td>
+                        <td>${event.event || ''}</td>
+                        <td>${event.observations || ''}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              ` : '<p><em>No timeline events recorded.</em></p>'}
+            </div>
+
+            <div class="section">
+              <div class="section-title">Communications Log</div>
+              ${formData.communications.length > 0 ? `
+                <table class="data-table">
+                  <thead>
+                    <tr><th>Time</th><th>From</th><th>To</th><th>Message</th><th>Method</th></tr>
+                  </thead>
+                  <tbody>
+                    ${formData.communications.map(comm => `
+                      <tr>
+                        <td>${comm.time || ''}</td>
+                        <td>${comm.from_person || ''}</td>
+                        <td>${comm.to_person || ''}</td>
+                        <td>${comm.message || ''}</td>
+                        <td>${comm.method || ''}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              ` : '<p><em>No communications recorded.</em></p>'}
+            </div>
+
+            <div class="section">
+              <div class="section-title">Decision Points & Actions</div>
+              ${formData.decisions.length > 0 ? `
+                <table class="data-table">
+                  <thead>
+                    <tr><th>Time</th><th>Decision</th><th>Decision Maker</th><th>Rationale</th></tr>
+                  </thead>
+                  <tbody>
+                    ${formData.decisions.map(decision => `
+                      <tr>
+                        <td>${decision.time || ''}</td>
+                        <td>${decision.decision || ''}</td>
+                        <td>${decision.decision_maker || ''}</td>
+                        <td>${decision.rationale || ''}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              ` : '<p><em>No decisions recorded.</em></p>'}
+            </div>
+
+            <div class="section">
+              <div class="section-title">Issues & Challenges</div>
+              ${formData.issues.length > 0 ? `
+                <table class="data-table">
+                  <thead>
+                    <tr><th>Time</th><th>Issue</th><th>Severity</th><th>Resolution</th></tr>
+                  </thead>
+                  <tbody>
+                    ${formData.issues.map(issue => `
+                      <tr>
+                        <td>${issue.time || ''}</td>
+                        <td>${issue.issue || ''}</td>
+                        <td>${issue.severity || ''}</td>
+                        <td>${issue.resolution || ''}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              ` : '<p><em>No issues recorded.</em></p>'}
+            </div>
+
+            <div class="section">
+              <div class="section-title">Participant Performance</div>
+              ${formData.participant_observations.length > 0 ? `
+                <table class="data-table">
+                  <thead>
+                    <tr><th>Participant</th><th>Role</th><th>Performance</th><th>Notes</th></tr>
+                  </thead>
+                  <tbody>
+                    ${formData.participant_observations.map(obs => `
+                      <tr>
+                        <td>${obs.participant || ''}</td>
+                        <td>${obs.role || ''}</td>
+                        <td>${obs.performance || ''}</td>
+                        <td>${obs.notes || ''}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              ` : '<p><em>No participant observations recorded.</em></p>'}
+            </div>
+
+            <div class="section">
+              <div class="section-title">Additional Notes</div>
+              <div class="notes-section">
+                ${formData.additional_notes || '<em>No additional notes.</em>'}
+              </div>
+            </div>
+
+            <div class="footer">
+              <p>Generated on: ${currentDateTime} | Powered by EXRSIM</p>
+            </div>
+          </body>
+        </html>
+      `;
+
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+    };
+
+    // Helper functions to add/remove items from arrays
+    const addTimelineEvent = () => {
+      setFormData(prev => ({
+        ...prev,
+        timeline_events: [...prev.timeline_events, { time: '', event: '', observations: '' }]
+      }));
+    };
+
+    const removeTimelineEvent = (index) => {
+      setFormData(prev => ({
+        ...prev,
+        timeline_events: prev.timeline_events.filter((_, i) => i !== index)
+      }));
+    };
+
+    const updateTimelineEvent = (index, field, value) => {
+      setFormData(prev => ({
+        ...prev,
+        timeline_events: prev.timeline_events.map((item, i) => 
+          i === index ? { ...item, [field]: value } : item
+        )
+      }));
+    };
+
+    const addCommunication = () => {
+      setFormData(prev => ({
+        ...prev,
+        communications: [...prev.communications, { time: '', from_person: '', to_person: '', message: '', method: '' }]
+      }));
+    };
+
+    const removeCommunication = (index) => {
+      setFormData(prev => ({
+        ...prev,
+        communications: prev.communications.filter((_, i) => i !== index)
+      }));
+    };
+
+    const updateCommunication = (index, field, value) => {
+      setFormData(prev => ({
+        ...prev,
+        communications: prev.communications.map((item, i) => 
+          i === index ? { ...item, [field]: value } : item
+        )
+      }));
+    };
+
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">Digital Scribe Form</h1>
+          <div className="flex space-x-3">
+            <Button 
+              variant="outline"
+              className="border-teal-500/50 text-teal-400 hover:bg-teal-500/10"
+              onClick={() => setActiveSection('scribe')}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Tools
+            </Button>
+            <Button 
+              variant="outline"
+              className="border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
+              onClick={printFilledTemplate}
+              disabled={!formData.scribe_name}
+            >
+              <Printer className="h-4 w-4 mr-2" />
+              Print Filled Template
+            </Button>
+            <Button 
+              className="bg-purple-500 hover:bg-purple-600 text-white"
+              onClick={saveScribeTemplate}
+              disabled={loading}
+            >
+              {loading ? 'Saving...' : 'Save Template'}
+            </Button>
+          </div>
+        </div>
+
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-purple-500">Exercise Scribe Data Entry</CardTitle>
+            <CardDescription className="text-gray-400">
+              Enter scribe data digitally and generate a filled template for printing
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Basic Information */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="scribe_name" className="text-gray-300">Scribe Name</Label>
+                <Input
+                  id="scribe_name"
+                  value={formData.scribe_name}
+                  onChange={(e) => setFormData(prev => ({ ...prev, scribe_name: e.target.value }))}
+                  className="bg-gray-700 border-gray-600 text-white"
+                  placeholder="Enter scribe name"
+                />
+              </div>
+              <div>
+                <Label htmlFor="scribe_signature" className="text-gray-300">Scribe Signature</Label>
+                <Input
+                  id="scribe_signature"
+                  value={formData.scribe_signature}
+                  onChange={(e) => setFormData(prev => ({ ...prev, scribe_signature: e.target.value }))}
+                  className="bg-gray-700 border-gray-600 text-white"
+                  placeholder="Enter signature"
+                />
+              </div>
+              <div>
+                <Label htmlFor="start_time" className="text-gray-300">Exercise Start Time</Label>
+                <Input
+                  id="start_time"
+                  value={formData.exercise_start_time}
+                  onChange={(e) => setFormData(prev => ({ ...prev, exercise_start_time: e.target.value }))}
+                  className="bg-gray-700 border-gray-600 text-white"
+                  placeholder="HH:MM"
+                />
+              </div>
+              <div>
+                <Label htmlFor="end_time" className="text-gray-300">Exercise End Time</Label>
+                <Input
+                  id="end_time"
+                  value={formData.exercise_end_time}
+                  onChange={(e) => setFormData(prev => ({ ...prev, exercise_end_time: e.target.value }))}
+                  className="bg-gray-700 border-gray-600 text-white"
+                  placeholder="HH:MM"
+                />
+              </div>
+            </div>
+
+            <Separator className="bg-gray-700" />
+
+            {/* Timeline Events Section */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-white">Timeline Events</h3>
+                <Button 
+                  variant="outline"
+                  size="sm"
+                  onClick={addTimelineEvent}
+                  className="border-teal-500/50 text-teal-400 hover:bg-teal-500/10"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Event
+                </Button>
+              </div>
+              {formData.timeline_events.map((event, index) => (
+                <div key={index} className="bg-gray-700 p-4 rounded border border-gray-600">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                      <Label className="text-gray-300">Time</Label>
+                      <Input
+                        value={event.time}
+                        onChange={(e) => updateTimelineEvent(index, 'time', e.target.value)}
+                        className="bg-gray-600 border-gray-500 text-white"
+                        placeholder="HH:MM"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-gray-300">Event</Label>
+                      <Input
+                        value={event.event}
+                        onChange={(e) => updateTimelineEvent(index, 'event', e.target.value)}
+                        className="bg-gray-600 border-gray-500 text-white"
+                        placeholder="Event description"
+                      />
+                    </div>
+                    <div className="flex items-end space-x-2">
+                      <div className="flex-1">
+                        <Label className="text-gray-300">Observations</Label>
+                        <Input
+                          value={event.observations}
+                          onChange={(e) => updateTimelineEvent(index, 'observations', e.target.value)}
+                          className="bg-gray-600 border-gray-500 text-white"
+                          placeholder="Observations"
+                        />
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removeTimelineEvent(index)}
+                        className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <Separator className="bg-gray-700" />
+
+            {/* Communications Section */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-white">Communications</h3>
+                <Button 
+                  variant="outline"
+                  size="sm"
+                  onClick={addCommunication}
+                  className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Communication
+                </Button>
+              </div>
+              {formData.communications.map((comm, index) => (
+                <div key={index} className="bg-gray-700 p-4 rounded border border-gray-600">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                    <div>
+                      <Label className="text-gray-300">Time</Label>
+                      <Input
+                        value={comm.time}
+                        onChange={(e) => updateCommunication(index, 'time', e.target.value)}
+                        className="bg-gray-600 border-gray-500 text-white"
+                        placeholder="HH:MM"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-gray-300">From</Label>
+                      <Input
+                        value={comm.from_person}
+                        onChange={(e) => updateCommunication(index, 'from_person', e.target.value)}
+                        className="bg-gray-600 border-gray-500 text-white"
+                        placeholder="Sender"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-gray-300">To</Label>
+                      <Input
+                        value={comm.to_person}
+                        onChange={(e) => updateCommunication(index, 'to_person', e.target.value)}
+                        className="bg-gray-600 border-gray-500 text-white"
+                        placeholder="Recipient"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-gray-300">Message</Label>
+                      <Input
+                        value={comm.message}
+                        onChange={(e) => updateCommunication(index, 'message', e.target.value)}
+                        className="bg-gray-600 border-gray-500 text-white"
+                        placeholder="Message content"
+                      />
+                    </div>
+                    <div className="flex items-end space-x-2">
+                      <div className="flex-1">
+                        <Label className="text-gray-300">Method</Label>
+                        <select
+                          value={comm.method}
+                          onChange={(e) => updateCommunication(index, 'method', e.target.value)}
+                          className="w-full bg-gray-600 border border-gray-500 text-white rounded px-3 py-2"
+                        >
+                          <option value="">Select method</option>
+                          <option value="Radio">Radio</option>
+                          <option value="Phone">Phone</option>
+                          <option value="Face-to-face">Face-to-face</option>
+                          <option value="Email">Email</option>
+                          <option value="Text">Text</option>
+                        </select>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removeCommunication(index)}
+                        className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <Separator className="bg-gray-700" />
+
+            {/* Additional Notes */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-white">Additional Notes</h3>
+              <textarea
+                value={formData.additional_notes}
+                onChange={(e) => setFormData(prev => ({ ...prev, additional_notes: e.target.value }))}
+                className="w-full bg-gray-700 border border-gray-600 text-white rounded px-3 py-2"
+                rows="6"
+                placeholder="Enter any additional observations or notes..."
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
 
   if (loading) {
     return (

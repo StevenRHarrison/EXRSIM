@@ -800,10 +800,14 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
                 id="email"
                 type="email"
                 value={formData.email}
-                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                onChange={handleEmailChange}
                 className="bg-gray-700 border-gray-600 text-white"
+                placeholder="stevenharrison@email.com"
                 required
               />
+              {validationErrors.email && (
+                <p className="text-red-500 text-sm mt-1">{validationErrors.email}</p>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

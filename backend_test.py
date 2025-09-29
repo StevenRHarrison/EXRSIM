@@ -754,6 +754,8 @@ def test_performance():
     except Exception as e:
         print(f"❌ Performance Test Error: {e}")
         return False
+
+def test_participant_crud_api():
     """Test Participant CRUD API endpoints comprehensively"""
     print("=" * 60)
     print("TESTING PARTICIPANT CRUD API ENDPOINTS")

@@ -8914,6 +8914,7 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
                 <Button 
                   variant="outline" 
                   className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10 h-auto py-4 flex-col"
+                  onClick={printTimelineSheet}
                 >
                   <Clock className="h-6 w-6 mb-2" />
                   <span className="font-medium">Timeline Sheet</span>
@@ -8923,6 +8924,7 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
                 <Button 
                   variant="outline" 
                   className="border-green-500/50 text-green-400 hover:bg-green-500/10 h-auto py-4 flex-col"
+                  onClick={printScribeChecklist}
                 >
                   <CheckSquare className="h-6 w-6 mb-2" />
                   <span className="font-medium">Checklist</span>

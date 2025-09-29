@@ -2054,7 +2054,6 @@ const ResourcesList = ({ onAddNew, onEdit }) => {
   };
 
   const filteredResources = resources.filter(resource => {
-    if (filter === 'personnel') return resource.resource_type.startsWith('Personnel');
     if (filter === 'equipment') return resource.resource_type.startsWith('Equipment');
     if (filter === 'supplies') return resource.resource_type.startsWith('Supplies');
     if (filter === 'insufficient') return resource.quantity_available < resource.quantity_needed;

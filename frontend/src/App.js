@@ -9775,7 +9775,7 @@ function App() {
       } else if (hashBase === 'builder') {
         setActiveMenu('builder');
         setManagingExerciseId(null);
-      } else if (hashBase && ['dashboard', 'exercises', 'msel', 'hira', 'participants'].includes(hashBase)) {
+      } else if (hashBase && ['dashboard', 'exercises', 'msel', 'hira', 'participants', 'resources'].includes(hashBase)) {
         setActiveMenu(hashBase);
         setManagingExerciseId(null);
       } else if (!hashBase) {

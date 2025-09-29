@@ -6227,6 +6227,52 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                     <li>• Participants with "Coordinator" in position title</li>
                   </ul>
                 </div>
+                
+                {/* Display loaded coordinators */}
+                {(editingExercise?.coordinators?.length > 0 || exerciseData?.coordinators?.length > 0) && (
+                  <Card className="bg-gray-700/50 border-gray-600">
+                    <CardHeader>
+                      <CardTitle className="text-green-400 text-lg">Loaded Coordinators</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {(editingExercise?.coordinators || exerciseData?.coordinators || []).map((coordinator, index) => (
+                          <div key={coordinator.id || index} className="bg-gray-800 p-4 rounded border border-gray-600">
+                            <div className="flex justify-between items-start">
+                              <div className="space-y-2">
+                                <h4 className="font-semibold text-white">{coordinator.name}</h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-300">
+                                  <div><span className="text-gray-400">Role:</span> {coordinator.role}</div>
+                                  <div><span className="text-gray-400">Email:</span> {coordinator.email || 'N/A'}</div>
+                                  <div><span className="text-gray-400">Phone:</span> {coordinator.phone || 'N/A'}</div>
+                                  <div><span className="text-gray-400">Assigned to:</span> {coordinator.assignedTo || 'N/A'}</div>
+                                </div>
+                              </div>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-red-400 border-red-400 hover:bg-red-400 hover:text-white"
+                                onClick={() => {
+                                  const updatedCoordinators = (editingExercise?.coordinators || exerciseData?.coordinators || []).filter((_, i) => i !== index);
+                                  if (editingExercise) {
+                                    setEditingExercise(prev => ({ ...prev, coordinators: updatedCoordinators }));
+                                  } else {
+                                    setExerciseData(prev => ({ ...prev, coordinators: updatedCoordinators }));
+                                  }
+                                }}
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-4 text-sm text-gray-400">
+                        Total coordinators: {(editingExercise?.coordinators || exerciseData?.coordinators || []).length}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
               </CardContent>
             </Card>
             

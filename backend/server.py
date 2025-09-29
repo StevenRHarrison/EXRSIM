@@ -559,76 +559,26 @@ class ScribeTemplateCreate(BaseModel):
     exercise_id: str
     scribe_name: str = ""
     scribe_signature: str = ""
-    exercise_start_time: Optional[Union[time, str]] = None
-    exercise_end_time: Optional[Union[time, str]] = None
+    exercise_start_time: str = ""
+    exercise_end_time: str = ""
     timeline_events: List[ScribeTemplateEvent] = Field(default_factory=list)
     communications: List[ScribeTemplateCommunication] = Field(default_factory=list)
     decisions: List[ScribeTemplateDecision] = Field(default_factory=list)
     issues: List[ScribeTemplateIssue] = Field(default_factory=list)
     participant_observations: List[ScribeTemplateParticipantObs] = Field(default_factory=list)
     additional_notes: str = ""
-    
-    @validator('exercise_start_time', pre=True)
-    def parse_start_time(cls, v):
-        if v is None or v == "":
-            return None
-        if isinstance(v, time):
-            return v
-        if isinstance(v, str):
-            return string_to_time(v)
-        return v
-    
-    @validator('exercise_end_time', pre=True)
-    def parse_end_time(cls, v):
-        if v is None or v == "":
-            return None
-        if isinstance(v, time):
-            return v
-        if isinstance(v, str):
-            return string_to_time(v)
-        return v
-    
-    class Config:
-        json_encoders = {
-            time: time_to_string
-        }
 
 class ScribeTemplateUpdate(BaseModel):
     scribe_name: Optional[str] = None
     scribe_signature: Optional[str] = None
-    exercise_start_time: Optional[Union[time, str]] = None
-    exercise_end_time: Optional[Union[time, str]] = None
+    exercise_start_time: Optional[str] = None
+    exercise_end_time: Optional[str] = None
     timeline_events: Optional[List[ScribeTemplateEvent]] = None
     communications: Optional[List[ScribeTemplateCommunication]] = None
     decisions: Optional[List[ScribeTemplateDecision]] = None
     issues: Optional[List[ScribeTemplateIssue]] = None
     participant_observations: Optional[List[ScribeTemplateParticipantObs]] = None
     additional_notes: Optional[str] = None
-    
-    @validator('exercise_start_time', pre=True)
-    def parse_start_time(cls, v):
-        if v is None or v == "":
-            return None
-        if isinstance(v, time):
-            return v
-        if isinstance(v, str):
-            return string_to_time(v)
-        return v
-    
-    @validator('exercise_end_time', pre=True)
-    def parse_end_time(cls, v):
-        if v is None or v == "":
-            return None
-        if isinstance(v, time):
-            return v
-        if isinstance(v, str):
-            return string_to_time(v)
-        return v
-    
-    class Config:
-        json_encoders = {
-            time: time_to_string
-        }
     
     profileImage: Optional[str] = None
 

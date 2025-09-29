@@ -395,7 +395,9 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
   const [validationErrors, setValidationErrors] = useState({
     email: '',
     homePhone: '',
-    cellPhone: ''
+    cellPhone: '',
+    latitude: '',
+    longitude: ''
   });
 
   const positions = [

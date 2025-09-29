@@ -8982,20 +8982,6 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
     );
   };
   const renderScribeFormManagement = () => {
-    const [scribeTemplates, setScribeTemplates] = useState([]);
-    const [currentTemplate, setCurrentTemplate] = useState(null);
-    const [formData, setFormData] = useState({
-      scribe_name: '',
-      scribe_signature: '',
-      exercise_start_time: '',
-      exercise_end_time: '',
-      timeline_events: [],
-      communications: [],
-      decisions: [],
-      issues: [],
-      participant_observations: [],
-      additional_notes: ''
-    });
     const [loading, setLoading] = useState(false);
 
     // Load existing templates for this exercise
@@ -9011,7 +8997,7 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
           setScribeTemplates(templates);
           if (templates.length > 0) {
             setCurrentTemplate(templates[0]);
-            setFormData(templates[0]);
+            setScribeFormData(templates[0]);
           }
         }
       } catch (error) {
@@ -9023,7 +9009,7 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
       setLoading(true);
       try {
         const templateData = {
-          ...formData,
+          ...scribeFormData,
           exercise_id: exercise.id
         };
 
@@ -9093,20 +9079,20 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
               <p><strong>Exercise Type:</strong> ${exercise.exercise_type || 'N/A'}</p>
               <p><strong>Date:</strong> ${exercise.start_date || 'N/A'} - ${exercise.end_date || 'N/A'}</p>
               <p><strong>Location:</strong> ${exercise.location || 'N/A'}</p>
-              <p><strong>Scribe:</strong> ${formData.scribe_name || 'Not specified'}</p>
-              <p><strong>Exercise Start:</strong> ${formData.exercise_start_time || 'Not specified'}</p>
-              <p><strong>Exercise End:</strong> ${formData.exercise_end_time || 'Not specified'}</p>
+              <p><strong>Scribe:</strong> ${scribeFormData.scribe_name || 'Not specified'}</p>
+              <p><strong>Exercise Start:</strong> ${scribeFormData.exercise_start_time || 'Not specified'}</p>
+              <p><strong>Exercise End:</strong> ${scribeFormData.exercise_end_time || 'Not specified'}</p>
             </div>
 
             <div class="section">
               <div class="section-title">Exercise Timeline & Key Events</div>
-              ${formData.timeline_events.length > 0 ? `
+              ${scribeFormData.timeline_events.length > 0 ? `
                 <table class="data-table">
                   <thead>
                     <tr><th>Time</th><th>Event</th><th>Observations</th></tr>
                   </thead>
                   <tbody>
-                    ${formData.timeline_events.map(event => `
+                    ${scribeFormData.timeline_events.map(event => `
                       <tr>
                         <td>${event.time || ''}</td>
                         <td>${event.event || ''}</td>
@@ -9120,13 +9106,13 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
 
             <div class="section">
               <div class="section-title">Communications Log</div>
-              ${formData.communications.length > 0 ? `
+              ${scribeFormData.communications.length > 0 ? `
                 <table class="data-table">
                   <thead>
                     <tr><th>Time</th><th>From</th><th>To</th><th>Message</th><th>Method</th></tr>
                   </thead>
                   <tbody>
-                    ${formData.communications.map(comm => `
+                    ${scribeFormData.communications.map(comm => `
                       <tr>
                         <td>${comm.time || ''}</td>
                         <td>${comm.from_person || ''}</td>
@@ -9141,72 +9127,9 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
             </div>
 
             <div class="section">
-              <div class="section-title">Decision Points & Actions</div>
-              ${formData.decisions.length > 0 ? `
-                <table class="data-table">
-                  <thead>
-                    <tr><th>Time</th><th>Decision</th><th>Decision Maker</th><th>Rationale</th></tr>
-                  </thead>
-                  <tbody>
-                    ${formData.decisions.map(decision => `
-                      <tr>
-                        <td>${decision.time || ''}</td>
-                        <td>${decision.decision || ''}</td>
-                        <td>${decision.decision_maker || ''}</td>
-                        <td>${decision.rationale || ''}</td>
-                      </tr>
-                    `).join('')}
-                  </tbody>
-                </table>
-              ` : '<p><em>No decisions recorded.</em></p>'}
-            </div>
-
-            <div class="section">
-              <div class="section-title">Issues & Challenges</div>
-              ${formData.issues.length > 0 ? `
-                <table class="data-table">
-                  <thead>
-                    <tr><th>Time</th><th>Issue</th><th>Severity</th><th>Resolution</th></tr>
-                  </thead>
-                  <tbody>
-                    ${formData.issues.map(issue => `
-                      <tr>
-                        <td>${issue.time || ''}</td>
-                        <td>${issue.issue || ''}</td>
-                        <td>${issue.severity || ''}</td>
-                        <td>${issue.resolution || ''}</td>
-                      </tr>
-                    `).join('')}
-                  </tbody>
-                </table>
-              ` : '<p><em>No issues recorded.</em></p>'}
-            </div>
-
-            <div class="section">
-              <div class="section-title">Participant Performance</div>
-              ${formData.participant_observations.length > 0 ? `
-                <table class="data-table">
-                  <thead>
-                    <tr><th>Participant</th><th>Role</th><th>Performance</th><th>Notes</th></tr>
-                  </thead>
-                  <tbody>
-                    ${formData.participant_observations.map(obs => `
-                      <tr>
-                        <td>${obs.participant || ''}</td>
-                        <td>${obs.role || ''}</td>
-                        <td>${obs.performance || ''}</td>
-                        <td>${obs.notes || ''}</td>
-                      </tr>
-                    `).join('')}
-                  </tbody>
-                </table>
-              ` : '<p><em>No participant observations recorded.</em></p>'}
-            </div>
-
-            <div class="section">
               <div class="section-title">Additional Notes</div>
               <div class="notes-section">
-                ${formData.additional_notes || '<em>No additional notes.</em>'}
+                ${scribeFormData.additional_notes || '<em>No additional notes.</em>'}
               </div>
             </div>
 
@@ -9226,21 +9149,21 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
 
     // Helper functions to add/remove items from arrays
     const addTimelineEvent = () => {
-      setFormData(prev => ({
+      setScribeFormData(prev => ({
         ...prev,
         timeline_events: [...prev.timeline_events, { time: '', event: '', observations: '' }]
       }));
     };
 
     const removeTimelineEvent = (index) => {
-      setFormData(prev => ({
+      setScribeFormData(prev => ({
         ...prev,
         timeline_events: prev.timeline_events.filter((_, i) => i !== index)
       }));
     };
 
     const updateTimelineEvent = (index, field, value) => {
-      setFormData(prev => ({
+      setScribeFormData(prev => ({
         ...prev,
         timeline_events: prev.timeline_events.map((item, i) => 
           i === index ? { ...item, [field]: value } : item
@@ -9249,21 +9172,21 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
     };
 
     const addCommunication = () => {
-      setFormData(prev => ({
+      setScribeFormData(prev => ({
         ...prev,
         communications: [...prev.communications, { time: '', from_person: '', to_person: '', message: '', method: '' }]
       }));
     };
 
     const removeCommunication = (index) => {
-      setFormData(prev => ({
+      setScribeFormData(prev => ({
         ...prev,
         communications: prev.communications.filter((_, i) => i !== index)
       }));
     };
 
     const updateCommunication = (index, field, value) => {
-      setFormData(prev => ({
+      setScribeFormData(prev => ({
         ...prev,
         communications: prev.communications.map((item, i) => 
           i === index ? { ...item, [field]: value } : item

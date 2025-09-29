@@ -1380,6 +1380,14 @@ const ParticipantsList = ({ onAddNew, onEdit }) => {
               </SelectContent>
             </Select>
           </div>
+          <Button
+            variant="outline"
+            className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+            onClick={printParticipants}
+          >
+            <Printer className="h-4 w-4 mr-2" />
+            Print Participants
+          </Button>
           <Button 
             onClick={onAddNew}
             className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"

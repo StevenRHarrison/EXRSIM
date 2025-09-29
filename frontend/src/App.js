@@ -817,10 +817,13 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
                   id="homePhone"
                   type="tel"
                   value={formData.homePhone}
-                  onChange={(e) => setFormData(prev => ({ ...prev, homePhone: e.target.value }))}
+                  onChange={handleHomePhoneChange}
                   className="bg-gray-700 border-gray-600 text-white"
-                  placeholder="+1 (555) 123-4567"
+                  placeholder="123-456-7890"
                 />
+                {validationErrors.homePhone && (
+                  <p className="text-red-500 text-sm mt-1">{validationErrors.homePhone}</p>
+                )}
               </div>
               <div>
                 <Label htmlFor="cellPhone" className="text-gray-300">Cell Phone</Label>
@@ -828,10 +831,13 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
                   id="cellPhone"
                   type="tel"
                   value={formData.cellPhone}
-                  onChange={(e) => setFormData(prev => ({ ...prev, cellPhone: e.target.value }))}
+                  onChange={handleCellPhoneChange}
                   className="bg-gray-700 border-gray-600 text-white"
-                  placeholder="+1 (555) 123-4567"
+                  placeholder="123-456-7890"
                 />
+                {validationErrors.cellPhone && (
+                  <p className="text-red-500 text-sm mt-1">{validationErrors.cellPhone}</p>
+                )}
               </div>
             </div>
           </CardContent>

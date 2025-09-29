@@ -9294,7 +9294,7 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
                   Add Event
                 </Button>
               </div>
-              {formData.timeline_events.map((event, index) => (
+              {scribeFormData.timeline_events.map((event, index) => (
                 <div key={index} className="bg-gray-700 p-4 rounded border border-gray-600">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div>

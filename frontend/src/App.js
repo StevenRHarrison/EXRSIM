@@ -8366,6 +8366,236 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
     );
   };
 
+  const renderScribeManagement = () => {
+    // Print function for Scribe Notes
+    const printScribeNotes = () => {
+      const currentDateTime = new Date().toLocaleString();
+      const printContent = `
+        <html>
+          <head>
+            <title>Exercise Scribe Notes - ${exercise.exercise_name || 'Exercise'}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.8; }
+              .header { border-bottom: 3px solid #0891b2; margin-bottom: 30px; padding-bottom: 15px; }
+              .section { margin-bottom: 25px; page-break-inside: avoid; }
+              .section-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #0891b2; }
+              .notes-section { 
+                min-height: 200px; 
+                border: 1px solid #ddd; 
+                padding: 15px; 
+                margin: 15px 0;
+                background: #f9f9f9;
+              }
+              .exercise-info { background: #f0f9ff; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+              .footer { 
+                position: fixed; 
+                bottom: 20px; 
+                left: 20px; 
+                right: 20px; 
+                text-align: center; 
+                font-size: 12px; 
+                color: #666; 
+                border-top: 1px solid #ddd; 
+                padding-top: 10px; 
+              }
+              @media print { 
+                body { margin: 0; padding: 20px; } 
+                .footer { position: fixed; bottom: 0; }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1>Exercise Scribe Notes</h1>
+              <h2>${exercise.exercise_name || 'Exercise Name'}</h2>
+            </div>
+
+            <div class="exercise-info">
+              <p><strong>Exercise Type:</strong> ${exercise.exercise_type || 'N/A'}</p>
+              <p><strong>Date:</strong> ${exercise.start_date || 'N/A'} - ${exercise.end_date || 'N/A'}</p>
+              <p><strong>Location:</strong> ${exercise.location || 'N/A'}</p>
+              <p><strong>Scribe:</strong> ________________________________</p>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Exercise Timeline & Key Events</div>
+              <div class="notes-section">
+                <p><em>Record key events, timings, and observations during the exercise:</em></p>
+                <br><br><br><br><br><br><br><br>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Communications Log</div>
+              <div class="notes-section">
+                <p><em>Track important communications, radio calls, and messages:</em></p>
+                <br><br><br><br><br><br><br><br>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Decision Points & Actions</div>
+              <div class="notes-section">
+                <p><em>Document key decisions made and actions taken:</em></p>
+                <br><br><br><br><br><br><br><br>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Issues & Challenges</div>
+              <div class="notes-section">
+                <p><em>Note any problems, delays, or unexpected situations:</em></p>
+                <br><br><br><br><br><br><br><br>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Participant Performance</div>
+              <div class="notes-section">
+                <p><em>Observations about participant responses and performance:</em></p>
+                <br><br><br><br><br><br><br><br>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Additional Notes</div>
+              <div class="notes-section">
+                <p><em>Any other relevant observations or comments:</em></p>
+                <br><br><br><br><br><br><br><br>
+              </div>
+            </div>
+
+            <div class="footer">
+              <p>Generated on: ${currentDateTime} | Powered by EXRSIM</p>
+            </div>
+          </body>
+        </html>
+      `;
+
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+    };
+
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">Exercise Scribe</h1>
+          <Button 
+            variant="outline"
+            className="border-teal-500/50 text-teal-400 hover:bg-teal-500/10"
+            onClick={printScribeNotes}
+          >
+            <Printer className="h-4 w-4 mr-2" />
+            Print Scribe Sheet
+          </Button>
+        </div>
+
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Scribe Documentation</CardTitle>
+            <CardDescription className="text-gray-400">
+              Generate and manage exercise documentation templates for scribes
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Exercise Information */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-white">Exercise Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-gray-700 p-4 rounded">
+                  <p className="text-sm text-gray-400 mb-1">Exercise Name</p>
+                  <p className="text-white font-medium">{exercise.exercise_name || 'Not specified'}</p>
+                </div>
+                <div className="bg-gray-700 p-4 rounded">
+                  <p className="text-sm text-gray-400 mb-1">Exercise Type</p>
+                  <p className="text-white font-medium">{exercise.exercise_type || 'Not specified'}</p>
+                </div>
+                <div className="bg-gray-700 p-4 rounded">
+                  <p className="text-sm text-gray-400 mb-1">Start Date</p>
+                  <p className="text-white font-medium">{exercise.start_date || 'Not specified'}</p>
+                </div>
+                <div className="bg-gray-700 p-4 rounded">
+                  <p className="text-sm text-gray-400 mb-1">Location</p>
+                  <p className="text-white font-medium">{exercise.location || 'Not specified'}</p>
+                </div>
+              </div>
+            </div>
+
+            <Separator className="bg-gray-700" />
+
+            {/* Scribe Actions */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-white">Scribe Tools</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Button 
+                  variant="outline" 
+                  className="border-teal-500/50 text-teal-400 hover:bg-teal-500/10 h-auto py-4 flex-col"
+                  onClick={printScribeNotes}
+                >
+                  <PenTool className="h-6 w-6 mb-2" />
+                  <span className="font-medium">Scribe Template</span>
+                  <span className="text-xs text-gray-400">Print note-taking template</span>
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10 h-auto py-4 flex-col"
+                >
+                  <Clock className="h-6 w-6 mb-2" />
+                  <span className="font-medium">Timeline Sheet</span>
+                  <span className="text-xs text-gray-400">Event timing template</span>
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="border-green-500/50 text-green-400 hover:bg-green-500/10 h-auto py-4 flex-col"
+                >
+                  <CheckSquare className="h-6 w-6 mb-2" />
+                  <span className="font-medium">Checklist</span>
+                  <span className="text-xs text-gray-400">Scribe duties checklist</span>
+                </Button>
+              </div>
+            </div>
+
+            <Separator className="bg-gray-700" />
+
+            {/* Instructions */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-white">Scribe Instructions</h3>
+              <div className="bg-teal-500/10 border border-teal-500/20 rounded-lg p-4">
+                <div className="space-y-3 text-sm text-gray-300">
+                  <div className="flex items-start space-x-2">
+                    <span className="text-teal-400 font-bold">1.</span>
+                    <span>Print the Scribe Template before the exercise begins</span>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <span className="text-teal-400 font-bold">2.</span>
+                    <span>Record all key events with precise timestamps</span>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <span className="text-teal-400 font-bold">3.</span>
+                    <span>Document important communications and radio traffic</span>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <span className="text-teal-400 font-bold">4.</span>
+                    <span>Note decision points and actions taken by participants</span>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <span className="text-teal-400 font-bold">5.</span>
+                    <span>Track issues, challenges, and unexpected situations</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="p-6 flex items-center justify-center h-64">

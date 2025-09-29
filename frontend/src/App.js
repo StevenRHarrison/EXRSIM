@@ -8997,7 +8997,7 @@ const ExerciseManagementDashboard = ({
       try {
         const templateData = {
           ...scribeFormData,
-          exercise_id: exercise.id
+          exercise_id: exerciseId
         };
 
         let response;

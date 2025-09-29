@@ -3090,6 +3090,12 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
+  // Validation error states
+  const [scenarioValidationErrors, setScenarioValidationErrors] = useState({
+    latitude: '',
+    longitude: ''
+  });
+
   // Dynamic lists for add functionality
   const [goals, setGoals] = useState([]);
   const [objectives, setObjectives] = useState([]);

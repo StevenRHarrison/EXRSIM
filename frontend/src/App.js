@@ -6538,6 +6538,8 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
         return renderCorrectiveActionsManagement();
       case 'final_report':
         return renderFinalReportManagement();
+      case 'scribe':
+        return renderScribeManagement();
       default:
         return renderGenericSectionManagement();
     }

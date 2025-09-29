@@ -7722,17 +7722,29 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
   };
 
   const renderCommentsManagement = () => {
+    const printComments = createPrintFunction('comments', 'Exercise Comments');
+
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-white">Exercise Comments</h1>
-          <Button 
-            className="bg-orange-500 hover:bg-orange-600 text-black"
-            onClick={() => {/* Add new comment logic */}}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Comment
-          </Button>
+          <div className="flex space-x-3">
+            <Button 
+              variant="outline"
+              className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+              onClick={printComments}
+            >
+              <Printer className="h-4 w-4 mr-2" />
+              Print Comments
+            </Button>
+            <Button 
+              className="bg-orange-500 hover:bg-orange-600 text-black"
+              onClick={() => {/* Add new comment logic */}}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Comment
+            </Button>
+          </div>
         </div>
 
         <Card className="bg-gray-800 border-gray-700 border-dashed">

@@ -269,6 +269,132 @@ const Dashboard = () => {
     return timeString || 'Not set';
   };
 
+  const printDashboard = () => {
+    const currentDateTime = new Date().toLocaleString();
+    const printContent = `
+      <html>
+        <head>
+          <title>Exercise Dashboard Summary</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+            .header { border-bottom: 3px solid #f97316; margin-bottom: 30px; padding-bottom: 15px; }
+            .section { margin-bottom: 25px; }
+            .exercise-card { 
+              border: 1px solid #ddd; 
+              padding: 15px; 
+              margin-bottom: 15px; 
+              border-radius: 8px;
+              page-break-inside: avoid;
+            }
+            .exercise-title { font-size: 18px; font-weight: bold; margin-bottom: 8px; color: #333; }
+            .exercise-type { 
+              background: #f97316; 
+              color: white; 
+              padding: 2px 8px; 
+              border-radius: 4px; 
+              font-size: 12px; 
+              display: inline-block; 
+              margin-bottom: 8px;
+            }
+            .exercise-description { color: #666; margin-bottom: 8px; }
+            .exercise-details { font-size: 14px; color: #555; }
+            .footer { 
+              position: fixed; 
+              bottom: 20px; 
+              left: 20px; 
+              right: 20px; 
+              text-align: center; 
+              font-size: 12px; 
+              color: #666; 
+              border-top: 1px solid #ddd; 
+              padding-top: 10px; 
+            }
+            .summary-stats {
+              display: flex;
+              gap: 20px;
+              margin-bottom: 20px;
+              flex-wrap: wrap;
+            }
+            .stat-item {
+              background: #f5f5f5;
+              padding: 10px 15px;
+              border-radius: 5px;
+              text-align: center;
+              min-width: 120px;
+            }
+            .stat-number { font-size: 24px; font-weight: bold; color: #f97316; }
+            .stat-label { font-size: 12px; color: #666; }
+            @media print { 
+              body { margin: 0; padding: 20px; } 
+              .footer { position: fixed; bottom: 0; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>Exercise Dashboard Summary</h1>
+            <p>Complete overview of emergency training exercises</p>
+          </div>
+
+          <div class="section">
+            <div class="summary-stats">
+              <div class="stat-item">
+                <div class="stat-number">${exercises.length}</div>
+                <div class="stat-label">Total Exercises</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">${exercises.filter(ex => ex.exercise_type === 'Full Scale Exercise').length}</div>
+                <div class="stat-label">Full Scale</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">${exercises.filter(ex => ex.exercise_type === 'Table Top').length}</div>
+                <div class="stat-label">Table Top</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">${exercises.filter(ex => ex.exercise_type === 'Functional').length}</div>
+                <div class="stat-label">Functional</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h2>Exercise Details</h2>
+            ${exercises.length > 0 ? 
+              exercises.map(exercise => `
+                <div class="exercise-card">
+                  <div class="exercise-title">${exercise.exercise_name || 'Untitled Exercise'}</div>
+                  <div class="exercise-type">${exercise.exercise_type || 'N/A'}</div>
+                  <div class="exercise-description">${exercise.exercise_description || 'No description available'}</div>
+                  <div class="exercise-details">
+                    <strong>Start Date:</strong> ${exercise.start_date || 'Not set'} | 
+                    <strong>End Date:</strong> ${exercise.end_date || 'Not set'} | 
+                    <strong>Location:</strong> ${exercise.location || 'Not specified'}
+                  </div>
+                  <div class="exercise-details">
+                    <strong>Goals:</strong> ${exercise.goals?.length || 0} | 
+                    <strong>Objectives:</strong> ${exercise.objectives?.length || 0} | 
+                    <strong>Events:</strong> ${exercise.events?.length || 0} | 
+                    <strong>Organizations:</strong> ${exercise.organizations?.length || 0}
+                  </div>
+                </div>
+              `).join('') 
+              : '<div class="exercise-card">No exercises created yet.</div>'
+            }
+          </div>
+
+          <div class="footer">
+            <p>Generated on: ${currentDateTime} | Powered by EXRSIM</p>
+          </div>
+        </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+  };
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">

@@ -456,29 +456,69 @@ class ParticipantCreate(BaseModel):
     involvedInExercise: bool = False
 # Scribe Template Models
 class ScribeTemplateEvent(BaseModel):
-    time: Optional[time] = None
+    time: Optional[Union[time, str]] = None
     event: str = ""
     observations: str = ""
+    
+    @validator('time', pre=True)
+    def parse_time(cls, v):
+        if v is None or v == "":
+            return None
+        if isinstance(v, time):
+            return v
+        if isinstance(v, str):
+            return string_to_time(v)
+        return v
 
 class ScribeTemplateCommunication(BaseModel):
-    time: Optional[time] = None
+    time: Optional[Union[time, str]] = None
     from_person: str = ""
     to_person: str = ""
     message: str = ""
     method: str = ""  # Radio, Phone, Face-to-face, etc.
     content: str = ""  # Longtext field for detailed content
+    
+    @validator('time', pre=True)
+    def parse_time(cls, v):
+        if v is None or v == "":
+            return None
+        if isinstance(v, time):
+            return v
+        if isinstance(v, str):
+            return string_to_time(v)
+        return v
 
 class ScribeTemplateDecision(BaseModel):
-    time: Optional[time] = None
+    time: Optional[Union[time, str]] = None
     decision: str = ""
     decision_maker: str = ""
     rationale: str = ""
+    
+    @validator('time', pre=True)
+    def parse_time(cls, v):
+        if v is None or v == "":
+            return None
+        if isinstance(v, time):
+            return v
+        if isinstance(v, str):
+            return string_to_time(v)
+        return v
 
 class ScribeTemplateIssue(BaseModel):
-    time: Optional[time] = None
+    time: Optional[Union[time, str]] = None
     issue: str = ""
     severity: str = ""  # Low, Medium, High, Critical
     resolution: str = ""
+    
+    @validator('time', pre=True)
+    def parse_time(cls, v):
+        if v is None or v == "":
+            return None
+        if isinstance(v, time):
+            return v
+        if isinstance(v, str):
+            return string_to_time(v)
+        return v
 
 class ScribeTemplateParticipantObs(BaseModel):
     participant: str = ""

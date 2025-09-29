@@ -6491,30 +6491,6 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
                 <Edit className="h-4 w-4 mr-2" />
                 Edit Exercise
               </Button>
-              <Button 
-                variant="outline" 
-                className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
-                onClick={() => setActiveSection('goals')}
-              >
-                <Trophy className="h-4 w-4 mr-2" />
-                Manage Goals
-              </Button>
-              <Button 
-                variant="outline" 
-                className="border-green-500/50 text-green-400 hover:bg-green-500/10"
-                onClick={() => setActiveSection('events')}
-              >
-                <Calendar className="h-4 w-4 mr-2" />
-                Manage Events
-              </Button>
-              <Button 
-                variant="outline" 
-                className="border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
-                onClick={() => setActiveSection('coordinators')}
-              >
-                <Users className="h-4 w-4 mr-2" />
-                Team Coordinators
-              </Button>
             </div>
           </CardContent>
         </Card>

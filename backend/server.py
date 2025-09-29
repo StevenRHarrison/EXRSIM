@@ -466,6 +466,7 @@ class ScribeTemplateCommunication(BaseModel):
     to_person: str = ""
     message: str = ""
     method: str = ""  # Radio, Phone, Face-to-face, etc.
+    content: str = ""  # Longtext field for detailed content
 
 class ScribeTemplateDecision(BaseModel):
     time: str = ""

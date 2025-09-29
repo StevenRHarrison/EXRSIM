@@ -8982,13 +8982,7 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
     );
   };
   const renderScribeFormManagement = () => {
-    const [loading, setLoading] = useState(false);
-
     // Load existing templates for this exercise
-    useEffect(() => {
-      loadScribeTemplates();
-    }, []);
-
     const loadScribeTemplates = async () => {
       try {
         const response = await fetch(`${API}/scribe-templates/exercise/${exercise.id}`);
@@ -9006,7 +9000,7 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
     };
 
     const saveScribeTemplate = async () => {
-      setLoading(true);
+      setScribeFormLoading(true);
       try {
         const templateData = {
           ...scribeFormData,
@@ -9042,7 +9036,7 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
         console.error('Error saving scribe template:', error);
         alert('Error saving scribe template. Please try again.');
       } finally {
-        setLoading(false);
+        setScribeFormLoading(false);
       }
     };
 

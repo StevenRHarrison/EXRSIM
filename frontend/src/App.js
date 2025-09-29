@@ -62,7 +62,7 @@ import {
   CheckSquare
 } from 'lucide-react';
 
-const API = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+const API = process.env.REACT_APP_BACKEND_URL;
 
 // Validation functions
 const validateLatitude = (lat) => {

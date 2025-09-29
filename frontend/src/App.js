@@ -8900,7 +8900,7 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
             {/* Scribe Actions */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-white">Scribe Tools</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Button 
                   variant="outline" 
                   className="border-teal-500/50 text-teal-400 hover:bg-teal-500/10 h-auto py-4 flex-col"
@@ -8929,6 +8929,16 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
                   <CheckSquare className="h-6 w-6 mb-2" />
                   <span className="font-medium">Checklist</span>
                   <span className="text-xs text-gray-400">Scribe duties checklist</span>
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="border-purple-500/50 text-purple-400 hover:bg-purple-500/10 h-auto py-4 flex-col"
+                  onClick={() => setActiveSection('scribe_form')}
+                >
+                  <FileEdit className="h-6 w-6 mb-2" />
+                  <span className="font-medium">Digital Form</span>
+                  <span className="text-xs text-gray-400">Input data digitally</span>
                 </Button>
               </div>
             </div>

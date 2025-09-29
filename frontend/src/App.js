@@ -8038,24 +8038,9 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
             </div>
 
             <div class="section">
-              <div class="section-title">Safety Concerns</div>
-              ${exercise.safetyConcerns && exercise.safetyConcerns.length > 0 ? 
-                exercise.safetyConcerns.map((safety, index) => `
-                  <div class="subsection">
-                    <div class="subsection-title">${index + 1}. ${safety.concern || 'Unnamed Safety Concern'}</div>
-                    <div class="content">${safety.description || 'No description'}</div>
-                  </div>
-                `).join('') 
-                : '<div class="content">No safety concerns defined for this exercise.</div>'
-              }
-            </div>
-
-            <div class="page-break"></div>
-
-            <div class="section">
-              <div class="section-title">Key Events</div>
+              <div class="section-title">Events Summary</div>
               ${exercise.events && exercise.events.length > 0 ? 
-                exercise.events.slice(0, 10).map((event, index) => `
+                exercise.events.map((event, index) => `
                   <div class="subsection">
                     <div class="subsection-title">${index + 1}. ${event.name || 'Unnamed Event'}</div>
                     <div class="content">${event.description || 'No description'}</div>
@@ -8065,6 +8050,189 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
                 `).join('') 
                 : '<div class="content">No events defined for this exercise.</div>'
               }
+            </div>
+
+            <div class="section">
+              <div class="section-title">Functions Summary</div>
+              ${exercise.functions && exercise.functions.length > 0 ? 
+                exercise.functions.map((func, index) => `
+                  <div class="subsection">
+                    <div class="subsection-title">${index + 1}. ${func.name || 'Unnamed Function'}</div>
+                    <div class="content">${func.description || 'No description'}</div>
+                  </div>
+                `).join('') 
+                : '<div class="content">No functions defined for this exercise.</div>'
+              }
+            </div>
+
+            <div class="section">
+              <div class="section-title">Organizations Summary</div>
+              ${exercise.organizations && exercise.organizations.length > 0 ? 
+                exercise.organizations.map((org, index) => `
+                  <div class="subsection">
+                    <div class="subsection-title">${index + 1}. ${org.name || 'Unnamed Organization'}</div>
+                    <div class="content">${org.description || 'No description'}</div>
+                    <div class="content"><strong>Contact:</strong> ${org.contact || 'Not specified'}</div>
+                    <div class="content"><strong>Phone:</strong> ${org.phone || 'Not specified'}</div>
+                  </div>
+                `).join('') 
+                : '<div class="content">No organizations defined for this exercise.</div>'
+              }
+            </div>
+
+            <div class="section">
+              <div class="section-title">Team Coordinators</div>
+              ${exercise.coordinators && exercise.coordinators.length > 0 ? 
+                exercise.coordinators.map((coord, index) => `
+                  <div class="subsection">
+                    <div class="subsection-title">${index + 1}. ${coord.name || 'Unnamed Coordinator'}</div>
+                    <div class="content"><strong>Role:</strong> ${coord.role || 'Not specified'}</div>
+                    <div class="content"><strong>Email:</strong> ${coord.email || 'Not specified'}</div>
+                    <div class="content"><strong>Phone:</strong> ${coord.phone || 'Not specified'}</div>
+                  </div>
+                `).join('') 
+                : '<div class="content">No team coordinators defined for this exercise.</div>'
+              }
+            </div>
+
+            <div class="section">
+              <div class="section-title">Code Words</div>
+              ${exercise.codeWords && exercise.codeWords.length > 0 ? 
+                exercise.codeWords.map((code, index) => `
+                  <div class="subsection">
+                    <div class="subsection-title">${index + 1}. ${code.word || 'Unnamed Code Word'}</div>
+                    <div class="content">${code.meaning || 'No meaning specified'}</div>
+                  </div>
+                `).join('') 
+                : '<div class="content">No code words defined for this exercise.</div>'
+              }
+            </div>
+
+            <div class="section">
+              <div class="section-title">Callsigns</div>
+              ${exercise.callsigns && exercise.callsigns.length > 0 ? 
+                exercise.callsigns.map((call, index) => `
+                  <div class="subsection">
+                    <div class="subsection-title">${index + 1}. ${call.callsign || 'Unnamed Callsign'}</div>
+                    <div class="content"><strong>Unit:</strong> ${call.unit || 'Not specified'}</div>
+                    <div class="content"><strong>Description:</strong> ${call.description || 'No description'}</div>
+                  </div>
+                `).join('') 
+                : '<div class="content">No callsigns defined for this exercise.</div>'
+              }
+            </div>
+
+            <div class="section">
+              <div class="section-title">Communication Frequencies</div>
+              ${exercise.frequencies && exercise.frequencies.length > 0 ? 
+                exercise.frequencies.map((freq, index) => `
+                  <div class="subsection">
+                    <div class="subsection-title">${index + 1}. ${freq.name || 'Unnamed Frequency'}</div>
+                    <div class="content"><strong>Frequency:</strong> ${freq.frequency || 'Not specified'}</div>
+                    <div class="content"><strong>Description:</strong> ${freq.description || 'No description'}</div>
+                  </div>
+                `).join('') 
+                : '<div class="content">No frequencies defined for this exercise.</div>'
+              }
+            </div>
+
+            <div class="section">
+              <div class="section-title">Assumptions</div>
+              ${exercise.assumptions && exercise.assumptions.length > 0 ? 
+                exercise.assumptions.map((assumption, index) => `
+                  <div class="subsection">
+                    <div class="subsection-title">${index + 1}. ${assumption.name || 'Unnamed Assumption'}</div>
+                    <div class="content">${assumption.description || 'No description'}</div>
+                  </div>
+                `).join('') 
+                : '<div class="content">No assumptions defined for this exercise.</div>'
+              }
+            </div>
+
+            <div class="section">
+              <div class="section-title">Artificialities</div>
+              ${exercise.artificialities && exercise.artificialities.length > 0 ? 
+                exercise.artificialities.map((art, index) => `
+                  <div class="subsection">
+                    <div class="subsection-title">${index + 1}. ${art.name || 'Unnamed Artificiality'}</div>
+                    <div class="content">${art.description || 'No description'}</div>
+                  </div>
+                `).join('') 
+                : '<div class="content">No artificialities defined for this exercise.</div>'
+              }
+            </div>
+
+            <div class="section">
+              <div class="section-title">Safety Concerns</div>
+              ${exercise.safetyConcerns && exercise.safetyConcerns.length > 0 ? 
+                exercise.safetyConcerns.map((safety, index) => `
+                  <div class="subsection">
+                    <div class="subsection-title">${index + 1}. ${safety.concern || 'Unnamed Safety Concern'}</div>
+                    <div class="content">${safety.description || 'No description'}</div>
+                    <div class="content"><strong>Safety Officer:</strong> ${safety.officer || 'Not specified'}</div>
+                    <div class="content"><strong>Officer Phone:</strong> ${safety.officerPhone || 'Not specified'}</div>
+                  </div>
+                `).join('') 
+                : '<div class="content">No safety concerns defined for this exercise.</div>'
+              }
+            </div>
+
+            <div class="page-break"></div>
+
+            <div class="section">
+              <div class="section-title">Scope Information</div>
+              <div class="subsection">
+                <div class="subsection-title">Description</div>
+                <div class="content">${exercise.scope_description || 'No scope description provided'}</div>
+              </div>
+              <div class="subsection">
+                <div class="subsection-title">Geographic Area</div>
+                <div class="content">${exercise.scope_geographic_area || 'No geographic area specified'}</div>
+              </div>
+              <div class="subsection">
+                <div class="subsection-title">Functions</div>
+                <div class="content">${exercise.scope_functions || 'No functions specified'}</div>
+              </div>
+              <div class="subsection">
+                <div class="subsection-title">Organizations</div>
+                <div class="content">${exercise.scope_organizations || 'No organizations specified'}</div>
+              </div>
+              <div class="subsection">
+                <div class="subsection-title">Personnel</div>
+                <div class="content">${exercise.scope_personnel || 'No personnel specified'}</div>
+              </div>
+              <div class="subsection">
+                <div class="subsection-title">Hazards</div>
+                <div class="content">${exercise.scope_hazards || 'No hazards specified'}</div>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Purpose Information</div>
+              <div class="content">${exercise.purpose || 'No purpose specified'}</div>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Scenario Information</div>
+              <div class="subsection">
+                <div class="subsection-title">Description</div>
+                <div class="content">${exercise.scenario_description || 'No scenario description provided'}</div>
+              </div>
+              <div class="subsection">
+                <div class="subsection-title">Location</div>
+                <div class="content">${exercise.scenario_location || 'No scenario location specified'}</div>
+              </div>
+              <div class="subsection">
+                <div class="subsection-title">Coordinates</div>
+                <div class="content">
+                  Latitude: ${exercise.scenario_latitude || 'Not specified'}, 
+                  Longitude: ${exercise.scenario_longitude || 'Not specified'}
+                </div>
+              </div>
+              <div class="subsection">
+                <div class="subsection-title">Timeline</div>
+                <div class="content">${exercise.scenario_timeline || 'No timeline specified'}</div>
+              </div>
             </div>
 
             <div class="section">

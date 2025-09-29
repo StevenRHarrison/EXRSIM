@@ -8479,6 +8479,377 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
       printWindow.print();
     };
 
+    // Print function for Timeline Sheet
+    const printTimelineSheet = () => {
+      const currentDateTime = new Date().toLocaleString();
+      const printContent = `
+        <html>
+          <head>
+            <title>Exercise Timeline Sheet - ${exercise.exercise_name || 'Exercise'}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+              .header { border-bottom: 3px solid #3b82f6; margin-bottom: 30px; padding-bottom: 15px; }
+              .timeline-table { 
+                width: 100%; 
+                border-collapse: collapse; 
+                margin: 20px 0;
+              }
+              .timeline-table th, .timeline-table td { 
+                border: 1px solid #333; 
+                padding: 8px; 
+                text-align: left; 
+                vertical-align: top;
+              }
+              .timeline-table th { 
+                background-color: #f4f4f4; 
+                font-weight: bold; 
+                font-size: 14px;
+              }
+              .timeline-table td { 
+                height: 40px; 
+                font-size: 12px;
+              }
+              .exercise-info { background: #eff6ff; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+              .time-col { width: 10%; }
+              .event-col { width: 30%; }
+              .location-col { width: 20%; }
+              .participants-col { width: 20%; }
+              .notes-col { width: 20%; }
+              .footer { 
+                position: fixed; 
+                bottom: 20px; 
+                left: 20px; 
+                right: 20px; 
+                text-align: center; 
+                font-size: 12px; 
+                color: #666; 
+                border-top: 1px solid #ddd; 
+                padding-top: 10px; 
+              }
+              @media print { 
+                body { margin: 0; padding: 20px; } 
+                .footer { position: fixed; bottom: 0; }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1>Exercise Timeline Sheet</h1>
+              <h2>${exercise.exercise_name || 'Exercise Name'}</h2>
+            </div>
+
+            <div class="exercise-info">
+              <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <div><strong>Exercise Type:</strong> ${exercise.exercise_type || 'N/A'}</div>
+                <div><strong>Date:</strong> ${exercise.start_date || 'N/A'}</div>
+                <div><strong>Location:</strong> ${exercise.location || 'N/A'}</div>
+              </div>
+              <div style="margin-top: 10px;">
+                <strong>Scribe:</strong> ________________________________ 
+                <strong style="margin-left: 50px;">Start Time:</strong> ________________________________
+              </div>
+            </div>
+
+            <table class="timeline-table">
+              <thead>
+                <tr>
+                  <th class="time-col">Time</th>
+                  <th class="event-col">Event/Activity</th>
+                  <th class="location-col">Location</th>
+                  <th class="participants-col">Participants</th>
+                  <th class="notes-col">Notes/Observations</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${Array.from({ length: 35 }, (_, i) => `
+                  <tr>
+                    <td class="time-col"></td>
+                    <td class="event-col"></td>
+                    <td class="location-col"></td>
+                    <td class="participants-col"></td>
+                    <td class="notes-col"></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+
+            <div style="margin-top: 30px; page-break-before: always;">
+              <h3 style="color: #3b82f6; border-bottom: 2px solid #3b82f6; padding-bottom: 5px;">Key Milestones & Decision Points</h3>
+              <table class="timeline-table">
+                <thead>
+                  <tr>
+                    <th class="time-col">Time</th>
+                    <th style="width: 40%;">Milestone/Decision</th>
+                    <th style="width: 50%;">Details/Impact</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${Array.from({ length: 15 }, (_, i) => `
+                    <tr>
+                      <td class="time-col"></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="footer">
+              <p>Generated on: ${currentDateTime} | Powered by EXRSIM</p>
+            </div>
+          </body>
+        </html>
+      `;
+
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+    };
+
+    // Print function for Scribe Duties Checklist
+    const printScribeChecklist = () => {
+      const currentDateTime = new Date().toLocaleString();
+      const printContent = `
+        <html>
+          <head>
+            <title>Scribe Duties Checklist - ${exercise.exercise_name || 'Exercise'}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+              .header { border-bottom: 3px solid #22c55e; margin-bottom: 30px; padding-bottom: 15px; }
+              .checklist-section { 
+                margin-bottom: 30px; 
+                page-break-inside: avoid;
+              }
+              .section-title { 
+                font-size: 18px; 
+                font-weight: bold; 
+                margin-bottom: 15px; 
+                color: #22c55e; 
+                border-bottom: 1px solid #22c55e;
+                padding-bottom: 5px;
+              }
+              .checklist-item { 
+                display: flex; 
+                align-items: flex-start; 
+                margin-bottom: 12px; 
+                padding: 8px;
+                border-left: 3px solid #dcfce7;
+                background: #f0fdf4;
+              }
+              .checkbox { 
+                width: 16px; 
+                height: 16px; 
+                border: 2px solid #22c55e; 
+                margin-right: 12px; 
+                margin-top: 2px;
+                flex-shrink: 0;
+              }
+              .checklist-text { 
+                flex-grow: 1; 
+                font-size: 14px;
+              }
+              .time-field { 
+                margin-left: 10px; 
+                border-bottom: 1px solid #ccc; 
+                min-width: 80px; 
+                display: inline-block;
+              }
+              .exercise-info { background: #f0fdf4; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #22c55e; }
+              .footer { 
+                position: fixed; 
+                bottom: 20px; 
+                left: 20px; 
+                right: 20px; 
+                text-align: center; 
+                font-size: 12px; 
+                color: #666; 
+                border-top: 1px solid #ddd; 
+                padding-top: 10px; 
+              }
+              @media print { 
+                body { margin: 0; padding: 20px; } 
+                .footer { position: fixed; bottom: 0; }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1>Scribe Duties Checklist</h1>
+              <h2>${exercise.exercise_name || 'Exercise Name'}</h2>
+            </div>
+
+            <div class="exercise-info">
+              <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <div><strong>Exercise Type:</strong> ${exercise.exercise_type || 'N/A'}</div>
+                <div><strong>Date:</strong> ${exercise.start_date || 'N/A'}</div>
+                <div><strong>Location:</strong> ${exercise.location || 'N/A'}</div>
+              </div>
+              <div style="margin-top: 10px;">
+                <strong>Scribe Name:</strong> ________________________________ 
+                <strong style="margin-left: 30px;">Signature:</strong> ________________________________
+              </div>
+            </div>
+
+            <div class="checklist-section">
+              <div class="section-title">Pre-Exercise Preparation</div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Review exercise plan and objectives</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Print all necessary scribe templates and forms</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Set up scribe station with adequate supplies (pens, clipboards, extra paper)</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Synchronize clock/watch with exercise control time</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Test communication equipment (radios, phones)</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Attend pre-exercise briefing and take notes</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+            </div>
+
+            <div class="checklist-section">
+              <div class="section-title">During Exercise Execution</div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Record exercise start time and initial conditions</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Document all significant events with precise timestamps</div>
+                <div class="time-field">Ongoing</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Log all radio communications and key messages</div>
+                <div class="time-field">Ongoing</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Track participant arrivals and role assignments</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Record all inject delivery times and participant responses</div>
+                <div class="time-field">Ongoing</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Document decision points and rationale</div>
+                <div class="time-field">Ongoing</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Note any deviations from planned scenario</div>
+                <div class="time-field">As needed</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Track issues, problems, or equipment failures</div>
+                <div class="time-field">As needed</div>
+              </div>
+            </div>
+
+            <div class="checklist-section">
+              <div class="section-title">Post-Exercise Activities</div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Record official exercise end time</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Complete final notes and observations</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Organize and review all documentation</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Submit all forms and notes to exercise control</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Participate in hot wash/immediate debrief if required</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Secure and store all exercise materials</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+            </div>
+
+            <div class="checklist-section">
+              <div class="section-title">Quality Control</div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Verify all times are recorded in 24-hour format</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Ensure all forms are legible and complete</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Cross-reference timeline with event log</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+              <div class="checklist-item">
+                <div class="checkbox"></div>
+                <div class="checklist-text">Sign and date all completed forms</div>
+                <div class="time-field">Time: _______</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 30px; border: 2px solid #22c55e; padding: 15px; background: #f0fdf4;">
+              <h3 style="color: #22c55e; margin-top: 0;">Emergency Contacts</h3>
+              <p><strong>Exercise Control:</strong> ________________________________</p>
+              <p><strong>Safety Officer:</strong> ________________________________</p>
+              <p><strong>Exercise Director:</strong> ________________________________</p>
+            </div>
+
+            <div class="footer">
+              <p>Generated on: ${currentDateTime} | Powered by EXRSIM</p>
+            </div>
+          </body>
+        </html>
+      `;
+
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+    };
+
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">

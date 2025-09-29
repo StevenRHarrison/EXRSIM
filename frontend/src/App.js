@@ -4100,7 +4100,7 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                       value={exerciseData.scenario_latitude}
                       onChange={handleScenarioLatitudeChange}
                       className="bg-gray-700 border-gray-600 text-white"
-                      placeholder="+45.1234"
+                      placeholder="45.1234"
                     />
                     {scenarioValidationErrors.latitude && (
                       <p className="text-red-500 text-sm mt-1">{scenarioValidationErrors.latitude}</p>
@@ -4113,7 +4113,7 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                       value={exerciseData.scenario_longitude}
                       onChange={handleScenarioLongitudeChange}
                       className="bg-gray-700 border-gray-600 text-white"
-                      placeholder="-97.0000"
+                      placeholder="97.0000"
                     />
                     {scenarioValidationErrors.longitude && (
                       <p className="text-red-500 text-sm mt-1">{scenarioValidationErrors.longitude}</p>

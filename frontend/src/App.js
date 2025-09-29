@@ -9680,6 +9680,7 @@ function App() {
   const [scribeTemplates, setScribeTemplates] = useState([]);
   const [currentTemplate, setCurrentTemplate] = useState(null);
   const [scribeFormLoading, setScribeFormLoading] = useState(false);
+  const [scribeTimeErrors, setScribeTimeErrors] = useState({});
   const [scribeFormData, setScribeFormData] = useState({
     scribe_name: '',
     scribe_signature: '',

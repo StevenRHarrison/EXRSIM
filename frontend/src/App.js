@@ -143,6 +143,56 @@ const Navigation = () => {
   return (
     <nav className="bg-black border-b border-orange-500/20 px-6 py-4">
       <div className="flex items-center justify-between">
+// Time validation and formatting functions
+const validateTimeFormat = (timeStr) => {
+  if (!timeStr || timeStr.trim() === '') return true; // Allow empty for optional fields
+  
+  // Check format: H:MM AM/PM or HH:MM AM/PM
+  const timeRegex = /^(0?[1-9]|1[0-2]):([0-5][0-9])\s?(AM|PM)$/i;
+  return timeRegex.test(timeStr.trim());
+};
+
+const formatTimeInput = (timeStr) => {
+  if (!timeStr || timeStr.trim() === '') return '';
+  
+  // Clean the input
+  let cleaned = timeStr.trim().toUpperCase();
+  
+  // If no AM/PM specified and it looks like a time, try to add AM/PM
+  if (/^\d{1,2}:\d{2}$/.test(cleaned)) {
+    const [hour, minute] = cleaned.split(':');
+    const hourNum = parseInt(hour);
+    
+    // If hour is 0-11, assume AM. If 12-23, convert to PM. If just 12, assume PM
+    if (hourNum === 0) {
+      return `12:${minute} AM`;
+    } else if (hourNum === 12) {
+      return `12:${minute} PM`;
+    } else if (hourNum < 12) {
+      return `${hourNum}:${minute} AM`;
+    } else if (hourNum < 24) {
+      const hour12 = hourNum - 12;
+      return `${hour12}:${minute} PM`;
+    }
+  }
+  
+  // If it already has AM/PM, validate and normalize format
+  if (validateTimeFormat(cleaned)) {
+    return cleaned;
+  }
+  
+  return timeStr; // Return original if can't format
+};
+
+const timeStringToDisplay = (timeStr) => {
+  if (!timeStr || timeStr === '') return '';
+  return timeStr;
+};
+
+const displayTimeToApiFormat = (timeStr) => {
+  if (!timeStr || timeStr.trim() === '') return '';
+  return formatTimeInput(timeStr);
+};
         <div className="flex items-center space-x-8">
           <Link to="/" className="flex items-center group">
             {/* Custom EXRSIM Logo Design */}

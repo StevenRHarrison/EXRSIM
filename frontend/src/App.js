@@ -2082,7 +2082,7 @@ const ResourcesList = ({ onAddNew, onEdit }) => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-orange-500 mb-2">Resource Management</h1>
-          <p className="text-gray-400">Manage personnel, equipment, and supplies for emergency exercises</p>
+          <p className="text-gray-400">Manage equipment and supplies for emergency exercises</p>
         </div>
         <Button 
           onClick={onAddNew}

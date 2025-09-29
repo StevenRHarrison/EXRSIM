@@ -3095,6 +3095,10 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
     latitude: '',
     longitude: ''
   });
+  const [eventValidationErrors, setEventValidationErrors] = useState({
+    latitude: '',
+    longitude: ''
+  });
 
   // Dynamic lists for add functionality
   const [goals, setGoals] = useState([]);

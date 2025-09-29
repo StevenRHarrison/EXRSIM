@@ -4807,7 +4807,7 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                       type="text"
                       value={currentOrganization.latitude}
                       onChange={handleOrganizationLatitudeChange}
-                      placeholder="+45.1234"
+                      placeholder="45.1234"
                       className="bg-gray-700 border-gray-600 text-white"
                     />
                     {organizationValidationErrors.latitude && (
@@ -4820,7 +4820,7 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                       type="text"
                       value={currentOrganization.longitude}
                       onChange={handleOrganizationLongitudeChange}
-                      placeholder="-97.0000"
+                      placeholder="97.0000"
                       className="bg-gray-700 border-gray-600 text-white"
                     />
                     {organizationValidationErrors.longitude && (

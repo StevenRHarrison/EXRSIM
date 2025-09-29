@@ -3253,7 +3253,7 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
   const validateEventLatitudeField = (lat) => {
     if (lat === '' || lat === 0) return ''; // Field is not required
     if (!validateLatitude(lat)) {
-      return 'Please enter latitude in format +45.1234 (range: -90.0000 to 90.0000)';
+      return 'Please enter latitude in format 45.1234 (range: -90.0000 to 90.0000)';
     }
     return '';
   };
@@ -3261,7 +3261,7 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
   const validateEventLongitudeField = (lng) => {
     if (lng === '' || lng === 0) return ''; // Field is not required
     if (!validateLongitude(lng)) {
-      return 'Please enter longitude in format -97.0000 (range: -180.0000 to +180.0000)';
+      return 'Please enter longitude in format 97.0000 (range: -180.0000 to 180.0000)';
     }
     return '';
   };

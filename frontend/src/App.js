@@ -558,7 +558,7 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
   const validateParticipantLatitudeField = (lat) => {
     if (lat === '' || lat === null || lat === undefined) return ''; // Field is not required
     if (!validateLatitude(lat)) {
-      return 'Please enter latitude in format +45.1234 (range: -90.0000 to 90.0000)';
+      return 'Please enter latitude in format 45.1234 (range: -90.0000 to 90.0000)';
     }
     return '';
   };
@@ -566,7 +566,7 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
   const validateParticipantLongitudeField = (lng) => {
     if (lng === '' || lng === null || lng === undefined) return ''; // Field is not required
     if (!validateLongitude(lng)) {
-      return 'Please enter longitude in format -97.0000 (range: -180.0000 to +180.0000)';
+      return 'Please enter longitude in format 97.0000 (range: -180.0000 to 180.0000)';
     }
     return '';
   };

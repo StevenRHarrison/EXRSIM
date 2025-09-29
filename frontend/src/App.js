@@ -2063,6 +2063,7 @@ const ResourcesList = ({ onAddNew, onEdit }) => {
     if (filter === 'equipment') return resource.resource_type.startsWith('Equipment');
     if (filter === 'supplies') return resource.resource_type.startsWith('Supplies');
     if (filter === 'insufficient') return resource.quantity_available < resource.quantity_needed;
+    if (filter === 'involved') return resource.involved_in_exercise;
     return true; // 'all'
   });
 

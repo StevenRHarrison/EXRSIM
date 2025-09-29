@@ -200,6 +200,7 @@ const Sidebar = ({ onMenuSelect, activeMenu }) => {
     { id: 'msel', label: 'MSEL', icon: ClipboardList },
     { id: 'hira', label: 'HIRA', icon: AlertTriangle },
     { id: 'participants', label: 'Participants', icon: Users },
+    { id: 'resources', label: 'Resources', icon: Package },
     { id: 'builder', label: 'Exercise Builder', icon: BookOpen }
   ];
 

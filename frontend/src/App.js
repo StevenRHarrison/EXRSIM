@@ -494,6 +494,50 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
     'Vietnam'
   ];
 
+  // Validation helper functions
+  const validateEmailField = (email) => {
+    if (!email.trim()) return ''; // Field is not required
+    if (!validateEmail(email)) {
+      return 'Please enter a valid email address (e.g., stevenharrison@email.com)';
+    }
+    return '';
+  };
+
+  const validatePhoneField = (phone) => {
+    if (!phone.trim()) return ''; // Field is not required
+    if (!validatePhone(phone)) {
+      return 'Please enter phone number in format 123-456-7890';
+    }
+    return '';
+  };
+
+  const handleEmailChange = (e) => {
+    const email = e.target.value;
+    setFormData(prev => ({ ...prev, email }));
+    
+    // Real-time validation
+    const error = validateEmailField(email);
+    setValidationErrors(prev => ({ ...prev, email: error }));
+  };
+
+  const handleHomePhoneChange = (e) => {
+    const phone = formatPhone(e.target.value);
+    setFormData(prev => ({ ...prev, homePhone: phone }));
+    
+    // Real-time validation
+    const error = validatePhoneField(phone);
+    setValidationErrors(prev => ({ ...prev, homePhone: error }));
+  };
+
+  const handleCellPhoneChange = (e) => {
+    const phone = formatPhone(e.target.value);
+    setFormData(prev => ({ ...prev, cellPhone: phone }));
+    
+    // Real-time validation
+    const error = validatePhoneField(phone);
+    setValidationErrors(prev => ({ ...prev, cellPhone: error }));
+  };
+
   useEffect(() => {
     if (editingParticipant) {
       setFormData({

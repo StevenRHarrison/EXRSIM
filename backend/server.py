@@ -456,12 +456,12 @@ class ParticipantCreate(BaseModel):
     involvedInExercise: bool = False
 # Scribe Template Models
 class ScribeTemplateEvent(BaseModel):
-    time: str = ""
+    time: Optional[time] = None
     event: str = ""
     observations: str = ""
 
 class ScribeTemplateCommunication(BaseModel):
-    time: str = ""
+    time: Optional[time] = None
     from_person: str = ""
     to_person: str = ""
     message: str = ""
@@ -469,13 +469,13 @@ class ScribeTemplateCommunication(BaseModel):
     content: str = ""  # Longtext field for detailed content
 
 class ScribeTemplateDecision(BaseModel):
-    time: str = ""
+    time: Optional[time] = None
     decision: str = ""
     decision_maker: str = ""
     rationale: str = ""
 
 class ScribeTemplateIssue(BaseModel):
-    time: str = ""
+    time: Optional[time] = None
     issue: str = ""
     severity: str = ""  # Low, Medium, High, Critical
     resolution: str = ""

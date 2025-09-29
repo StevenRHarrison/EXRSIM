@@ -6541,6 +6541,8 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
         return renderFinalReportManagement();
       case 'scribe':
         return renderScribeManagement();
+      case 'scribe_form':
+        return renderScribeFormManagement();
       default:
         return renderGenericSectionManagement();
     }

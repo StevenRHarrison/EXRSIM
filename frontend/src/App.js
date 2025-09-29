@@ -954,6 +954,37 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
                 </SelectContent>
               </Select>
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="latitude" className="text-gray-300">Latitude</Label>
+                <Input
+                  id="latitude"
+                  type="text"
+                  value={formData.latitude}
+                  onChange={handleParticipantLatitudeChange}
+                  className="bg-gray-700 border-gray-600 text-white"
+                  placeholder="+45.1234"
+                />
+                {validationErrors.latitude && (
+                  <p className="text-red-500 text-sm mt-1">{validationErrors.latitude}</p>
+                )}
+              </div>
+              <div>
+                <Label htmlFor="longitude" className="text-gray-300">Longitude</Label>
+                <Input
+                  id="longitude"
+                  type="text"
+                  value={formData.longitude}
+                  onChange={handleParticipantLongitudeChange}
+                  className="bg-gray-700 border-gray-600 text-white"
+                  placeholder="-97.0000"
+                />
+                {validationErrors.longitude && (
+                  <p className="text-red-500 text-sm mt-1">{validationErrors.longitude}</p>
+                )}
+              </div>
+            </div>
           </CardContent>
         </Card>
 

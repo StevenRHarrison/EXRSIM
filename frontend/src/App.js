@@ -3961,9 +3961,12 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                       type="number"
                       step="any"
                       value={exerciseData.scenario_longitude}
-                      onChange={(e) => setExerciseData(prev => ({ ...prev, scenario_longitude: parseFloat(e.target.value) || 0 }))}
+                      onChange={handleScenarioLongitudeChange}
                       className="bg-gray-700 border-gray-600 text-white"
                     />
+                    {scenarioValidationErrors.longitude && (
+                      <p className="text-red-500 text-sm mt-1">{scenarioValidationErrors.longitude}</p>
+                    )}
                   </div>
                 </div>
               </CardContent>

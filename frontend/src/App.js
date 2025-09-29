@@ -1706,7 +1706,9 @@ const ResourceForm = ({ onBack, onSave, editingResource }) => {
         quantity_needed: parseInt(formData.quantity_needed),
         location: formData.location,
         contact_person: formData.contact_person,
-        contact_phone: formData.contact_phone
+        contact_phone: formData.contact_phone,
+        resource_image: formData.resource_image,
+        involved_in_exercise: formData.involved_in_exercise
       };
 
       if (editingResource) {

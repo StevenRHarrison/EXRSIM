@@ -2107,14 +2107,6 @@ const ResourcesList = ({ onAddNew, onEdit }) => {
               Show All ({resources.length})
             </Button>
             <Button
-              variant={filter === 'personnel' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilter('personnel')}
-              className={filter === 'personnel' ? 'bg-orange-500 text-black' : 'text-gray-400 border-gray-600 hover:bg-gray-800 hover:text-white'}
-            >
-              Personnel ({resources.filter(r => r.resource_type.startsWith('Personnel')).length})
-            </Button>
-            <Button
               variant={filter === 'equipment' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilter('equipment')}

@@ -474,9 +474,12 @@
 
 ## test_plan:
   current_focus:
-    - "Field Validation Implementation - Email, Phone, Latitude/Longitude"
+    - "Comprehensive Testing of Recent Complex Features"
+    - "Print functionality with branded footer - All exercise steps"  
+    - "Final Report menu item and summary functionality"
+    - "End-to-End validation system verification"
   stuck_tasks: []
-  test_all: false
+  test_all: true
   test_priority: "high_first"
 
 ## frontend:

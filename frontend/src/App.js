@@ -2024,14 +2024,21 @@ const ResourceForm = ({ onBack, onSave, editingResource }) => {
               <Label htmlFor="location" className="text-white">
                 Current/Assigned Location *
               </Label>
-              <Input
-                id="location"
-                type="text"
-                value={formData.location}
-                onChange={(e) => handleInputChange('location', e.target.value)}
-                placeholder="e.g., Fire Station 1, EOC Warehouse, Mobile Unit 3"
-                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
-              />
+              <Select 
+                value={formData.location} 
+                onValueChange={(value) => handleInputChange('location', value)}
+              >
+                <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                  <SelectValue placeholder="Select location" />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-800 border-gray-700">
+                  {assignedToOptions.map((location) => (
+                    <SelectItem key={location} value={location} className="text-white hover:bg-gray-700">
+                      {location}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {errors.location && (
                 <p className="text-red-400 text-sm mt-1">{errors.location}</p>
               )}

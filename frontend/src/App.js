@@ -1649,6 +1649,45 @@ const ResourceForm = ({ onBack, onSave, editingResource }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageData = e.target.result;
+        setImagePreview(imageData);
+        setFormData(prev => ({ ...prev, resource_image: imageData }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCameraCapture = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.play();
+      
+      video.addEventListener('loadedmetadata', () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0);
+        
+        const imageData = canvas.toDataURL('image/jpeg');
+        setImagePreview(imageData);
+        setFormData(prev => ({ ...prev, resource_image: imageData }));
+        
+        stream.getTracks().forEach(track => track.stop());
+      });
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      alert('Unable to access camera. Please use file upload instead.');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     

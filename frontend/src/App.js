@@ -7804,6 +7804,273 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
     );
   };
 
+  const renderFinalReportManagement = () => {
+    // Print function for Final Report
+    const printFinalReport = () => {
+      const currentDateTime = new Date().toLocaleString();
+      const printContent = `
+        <html>
+          <head>
+            <title>Final Exercise Report - ${exercise.name || 'Exercise'}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+              .header { border-bottom: 3px solid #333; margin-bottom: 30px; padding-bottom: 15px; }
+              .section { margin-bottom: 25px; }
+              .section-title { font-size: 20px; font-weight: bold; margin-bottom: 15px; color: #333; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+              .subsection { margin-bottom: 15px; margin-left: 20px; }
+              .subsection-title { font-size: 16px; font-weight: bold; margin-bottom: 8px; color: #555; }
+              .content { margin-bottom: 10px; color: #666; }
+              .summary-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+              .summary-table th, .summary-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+              .summary-table th { background-color: #f4f4f4; font-weight: bold; }
+              .footer { 
+                position: fixed; 
+                bottom: 20px; 
+                left: 20px; 
+                right: 20px; 
+                text-align: center; 
+                font-size: 12px; 
+                color: #666; 
+                border-top: 1px solid #ddd; 
+                padding-top: 10px; 
+              }
+              @media print { 
+                body { margin: 0; padding: 20px; } 
+                .footer { position: fixed; bottom: 0; }
+                .page-break { page-break-after: always; }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1>Final Exercise Report</h1>
+              <h2>${exercise.name || 'Exercise Name'}</h2>
+              <table class="summary-table">
+                <tr>
+                  <th>Exercise Type</th>
+                  <td>${exercise.exercise_type || 'N/A'}</td>
+                  <th>Start Date</th>
+                  <td>${exercise.start_date || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <th>End Date</th>
+                  <td>${exercise.end_date || 'N/A'}</td>
+                  <th>Duration</th>
+                  <td>${exercise.start_date && exercise.end_date ? 
+                    Math.ceil((new Date(exercise.end_date) - new Date(exercise.start_date)) / (1000 * 60 * 60 * 24)) + ' days' : 
+                    'N/A'}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Exercise Overview</div>
+              <div class="content">${exercise.description || 'No description provided'}</div>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Goals Summary</div>
+              ${exercise.goals && exercise.goals.length > 0 ? 
+                exercise.goals.map((goal, index) => `
+                  <div class="subsection">
+                    <div class="subsection-title">${index + 1}. ${goal.name || 'Unnamed Goal'}</div>
+                    <div class="content">${goal.description || 'No description'}</div>
+                    <div class="content"><strong>Status:</strong> ${goal.achieved || 'No'}</div>
+                  </div>
+                `).join('') 
+                : '<div class="content">No goals defined for this exercise.</div>'
+              }
+            </div>
+
+            <div class="section">
+              <div class="section-title">Objectives Summary</div>
+              ${exercise.objectives && exercise.objectives.length > 0 ? 
+                exercise.objectives.map((obj, index) => `
+                  <div class="subsection">
+                    <div class="subsection-title">${index + 1}. ${obj.name || 'Unnamed Objective'}</div>
+                    <div class="content">${obj.description || 'No description'}</div>
+                    <div class="content"><strong>Status:</strong> ${obj.achieved || 'No'}</div>
+                  </div>
+                `).join('') 
+                : '<div class="content">No objectives defined for this exercise.</div>'
+              }
+            </div>
+
+            <div class="section">
+              <div class="section-title">Safety Concerns</div>
+              ${exercise.safetyConcerns && exercise.safetyConcerns.length > 0 ? 
+                exercise.safetyConcerns.map((safety, index) => `
+                  <div class="subsection">
+                    <div class="subsection-title">${index + 1}. ${safety.concern || 'Unnamed Safety Concern'}</div>
+                    <div class="content">${safety.description || 'No description'}</div>
+                  </div>
+                `).join('') 
+                : '<div class="content">No safety concerns defined for this exercise.</div>'
+              }
+            </div>
+
+            <div class="page-break"></div>
+
+            <div class="section">
+              <div class="section-title">Key Events</div>
+              ${exercise.events && exercise.events.length > 0 ? 
+                exercise.events.slice(0, 10).map((event, index) => `
+                  <div class="subsection">
+                    <div class="subsection-title">${index + 1}. ${event.name || 'Unnamed Event'}</div>
+                    <div class="content">${event.description || 'No description'}</div>
+                    <div class="content"><strong>Time:</strong> ${event.time || 'Not specified'}</div>
+                    <div class="content"><strong>Location:</strong> ${event.location || 'Not specified'}</div>
+                  </div>
+                `).join('') 
+                : '<div class="content">No events defined for this exercise.</div>'
+              }
+            </div>
+
+            <div class="section">
+              <div class="section-title">Exercise Conclusion</div>
+              <div class="content">
+                This exercise report provides a comprehensive overview of the exercise activities, 
+                objectives achievement, and key outcomes. For detailed analysis and follow-up actions, 
+                please refer to the individual section reports available in the exercise management system.
+              </div>
+            </div>
+
+            <div class="footer">
+              <p>Generated on: ${currentDateTime} | Powered by EXRSIM</p>
+            </div>
+          </body>
+        </html>
+      `;
+
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    };
+
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">Final Exercise Report</h1>
+          <Button 
+            variant="outline"
+            className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+            onClick={printFinalReport}
+          >
+            <Printer className="h-4 w-4 mr-2" />
+            Print Final Report
+          </Button>
+        </div>
+
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Exercise Summary</CardTitle>
+            <CardDescription className="text-gray-400">
+              Comprehensive overview of exercise execution and results
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Exercise Basic Information */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <h3 className="text-lg font-semibold text-white">Exercise Details</h3>
+                <div className="text-sm text-gray-300">
+                  <p><span className="font-medium">Name:</span> {exercise.name}</p>
+                  <p><span className="font-medium">Type:</span> {exercise.exercise_type || 'N/A'}</p>
+                  <p><span className="font-medium">Start Date:</span> {exercise.start_date || 'N/A'}</p>
+                  <p><span className="font-medium">End Date:</span> {exercise.end_date || 'N/A'}</p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-lg font-semibold text-white">Status Overview</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="bg-gray-700 p-3 rounded">
+                    <p className="text-orange-500 font-medium">Goals</p>
+                    <p className="text-gray-300">{exercise.goals?.length || 0} defined</p>
+                  </div>
+                  <div className="bg-gray-700 p-3 rounded">
+                    <p className="text-orange-500 font-medium">Objectives</p>
+                    <p className="text-gray-300">{exercise.objectives?.length || 0} defined</p>
+                  </div>
+                  <div className="bg-gray-700 p-3 rounded">
+                    <p className="text-orange-500 font-medium">Events</p>
+                    <p className="text-gray-300">{exercise.events?.length || 0} planned</p>
+                  </div>
+                  <div className="bg-gray-700 p-3 rounded">
+                    <p className="text-orange-500 font-medium">Organizations</p>
+                    <p className="text-gray-300">{exercise.organizations?.length || 0} participating</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <Separator className="bg-gray-700" />
+
+            {/* Goals Achievement Summary */}
+            {exercise.goals && exercise.goals.length > 0 && (
+              <div className="space-y-3">
+                <h3 className="text-lg font-semibold text-white">Goals Achievement</h3>
+                <div className="space-y-2">
+                  {exercise.goals.slice(0, 5).map((goal, index) => (
+                    <div key={index} className="flex items-center justify-between bg-gray-700 p-3 rounded">
+                      <div>
+                        <p className="font-medium text-white">{goal.name}</p>
+                        <p className="text-sm text-gray-400">{goal.description}</p>
+                      </div>
+                      <Badge className={
+                        goal.achieved === 'Yes' ? 'bg-green-500/20 text-green-300' :
+                        goal.achieved === 'Partial' ? 'bg-yellow-500/20 text-yellow-300' :
+                        'bg-red-500/20 text-red-300'
+                      }>
+                        {goal.achieved || 'No'}
+                      </Badge>
+                    </div>
+                  ))}
+                  {exercise.goals.length > 5 && (
+                    <p className="text-sm text-gray-400">...and {exercise.goals.length - 5} more goals</p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            <Separator className="bg-gray-700" />
+
+            {/* Report Actions */}
+            <div className="space-y-3">
+              <h3 className="text-lg font-semibold text-white">Report Actions</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Button 
+                  variant="outline" 
+                  className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                  onClick={printFinalReport}
+                >
+                  <FileText className="h-4 w-4 mr-2" />
+                  Generate Full Report
+                </Button>
+                <Button 
+                  variant="outline"
+                  className="border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
+                >
+                  <Trophy className="h-4 w-4 mr-2" />
+                  Goals Summary
+                </Button>
+                <Button 
+                  variant="outline"
+                  className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
+                >
+                  <ShieldAlert className="h-4 w-4 mr-2" />
+                  Safety Summary
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="p-6 flex items-center justify-center h-64">

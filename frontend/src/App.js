@@ -2072,7 +2072,6 @@ const ResourcesList = ({ onAddNew, onEdit }) => {
   };
 
   const getResourceTypeCategory = (type) => {
-    if (type.startsWith('Personnel')) return { icon: Users, color: 'text-blue-400' };
     if (type.startsWith('Equipment')) return { icon: Settings, color: 'text-green-400' };
     if (type.startsWith('Supplies')) return { icon: Package, color: 'text-orange-400' };
     return { icon: Package, color: 'text-gray-400' };

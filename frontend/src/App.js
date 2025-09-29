@@ -1561,8 +1561,11 @@ const ResourceForm = ({ onBack, onSave, editingResource }) => {
     quantity_needed: 0,
     location: '',
     contact_person: '',
-    contact_phone: ''
+    contact_phone: '',
+    resource_image: null,
+    involved_in_exercise: false
   });
+  const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 

@@ -2649,12 +2649,11 @@ const HIRAForm = ({ onBack, onSave, editingEntry = null }) => {
                 <Label htmlFor="latitude" className="text-gray-300">Latitude</Label>
                 <Input
                   id="latitude"
-                  type="number"
-                  step="any"
+                  type="text"
                   value={formData.latitude}
                   onChange={handleLatitudeChange}
                   className="bg-gray-700 border-gray-600 text-white"
-                  placeholder="49.2827"
+                  placeholder="+45.1234"
                 />
                 {validationErrors.latitude && (
                   <p className="text-red-500 text-sm mt-1">{validationErrors.latitude}</p>
@@ -2664,12 +2663,11 @@ const HIRAForm = ({ onBack, onSave, editingEntry = null }) => {
                 <Label htmlFor="longitude" className="text-gray-300">Longitude</Label>
                 <Input
                   id="longitude"
-                  type="number"
-                  step="any"
+                  type="text"
                   value={formData.longitude}
                   onChange={handleLongitudeChange}
                   className="bg-gray-700 border-gray-600 text-white"
-                  placeholder="-123.1207"
+                  placeholder="-97.0000"
                 />
                 {validationErrors.longitude && (
                   <p className="text-red-500 text-sm mt-1">{validationErrors.longitude}</p>

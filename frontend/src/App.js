@@ -8982,23 +8982,6 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
     );
   };
   const renderScribeFormManagement = () => {
-    // Load existing templates for this exercise
-    const loadScribeTemplates = async () => {
-      try {
-        const response = await fetch(`${API}/scribe-templates/exercise/${exercise.id}`);
-        if (response.ok) {
-          const templates = await response.json();
-          setScribeTemplates(templates);
-          if (templates.length > 0) {
-            setCurrentTemplate(templates[0]);
-            setScribeFormData(templates[0]);
-          }
-        }
-      } catch (error) {
-        console.error('Error loading scribe templates:', error);
-      }
-    };
-
     const saveScribeTemplate = async () => {
       setScribeFormLoading(true);
       try {

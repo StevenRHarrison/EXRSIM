@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 import sys
 
 # Get backend URL from frontend .env
-BACKEND_URL = "https://exrsim-platform-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://emergency-sim-3.preview.emergentagent.com/api"
 
 def investigate_existing_exercises():
     """Check existing exercises in database and examine their dynamic collections"""

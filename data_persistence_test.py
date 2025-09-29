@@ -11,7 +11,7 @@ import sys
 import os
 
 # Get backend URL from frontend .env
-BACKEND_URL = "https://exrsim-platform-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://emergency-sim-3.preview.emergentagent.com/api"
 
 def test_complete_data_flow():
     """Test complete data flow from Exercise Builder to Exercise Management Dashboard"""

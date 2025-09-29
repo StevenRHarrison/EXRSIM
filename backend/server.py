@@ -595,6 +595,8 @@ class Resource(BaseModel):
     location: str
     contact_person: str
     contact_phone: str
+    resource_image: Optional[str] = None  # Base64 encoded image
+    involved_in_exercise: bool = False
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -607,6 +609,8 @@ class ResourceCreate(BaseModel):
     location: str
     contact_person: str
     contact_phone: str
+    resource_image: Optional[str] = None
+    involved_in_exercise: bool = False
 
 class ResourceUpdate(BaseModel):
     resource_type: Optional[str] = None
@@ -617,6 +621,8 @@ class ResourceUpdate(BaseModel):
     location: Optional[str] = None
     contact_person: Optional[str] = None
     contact_phone: Optional[str] = None
+    resource_image: Optional[str] = None
+    involved_in_exercise: Optional[bool] = None
 
 # Helper functions
 def prepare_for_mongo(data):

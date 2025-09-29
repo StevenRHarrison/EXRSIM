@@ -3133,6 +3133,41 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
     concern: '', safety_officer: '', phone: '', description: '' 
   });
 
+  // Validation helper functions for scenario section
+  const validateScenarioLatitudeField = (lat) => {
+    if (lat === '' || lat === 0) return ''; // Field is not required
+    if (!validateLatitude(lat)) {
+      return 'Please enter latitude in format +45.1234 (range: -90.0000 to 90.0000)';
+    }
+    return '';
+  };
+
+  const validateScenarioLongitudeField = (lng) => {
+    if (lng === '' || lng === 0) return ''; // Field is not required
+    if (!validateLongitude(lng)) {
+      return 'Please enter longitude in format -97.0000 (range: -180.0000 to +180.0000)';
+    }
+    return '';
+  };
+
+  const handleScenarioLatitudeChange = (e) => {
+    const lat = e.target.value;
+    setExerciseData(prev => ({ ...prev, scenario_latitude: lat }));
+    
+    // Real-time validation
+    const error = validateScenarioLatitudeField(lat);
+    setScenarioValidationErrors(prev => ({ ...prev, latitude: error }));
+  };
+
+  const handleScenarioLongitudeChange = (e) => {
+    const lng = e.target.value;
+    setExerciseData(prev => ({ ...prev, scenario_longitude: lng }));
+    
+    // Real-time validation
+    const error = validateScenarioLongitudeField(lng);
+    setScenarioValidationErrors(prev => ({ ...prev, longitude: error }));
+  };
+
   // Load existing exercise data when editing
   useEffect(() => {
     if (editingExercise) {

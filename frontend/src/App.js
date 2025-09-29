@@ -9096,7 +9096,7 @@ const ExerciseManagementDashboard = ({
               ${scribeFormData.communications.length > 0 ? `
                 <table class="data-table">
                   <thead>
-                    <tr><th>Time</th><th>From</th><th>To</th><th>Message</th><th>Method</th></tr>
+                    <tr><th>Time</th><th>From</th><th>To</th><th>Message</th><th>Method</th><th>Content</th></tr>
                   </thead>
                   <tbody>
                     ${scribeFormData.communications.map(comm => `
@@ -9106,6 +9106,7 @@ const ExerciseManagementDashboard = ({
                         <td>${comm.to_person || ''}</td>
                         <td>${comm.message || ''}</td>
                         <td>${comm.method || ''}</td>
+                        <td>${comm.content || ''}</td>
                       </tr>
                     `).join('')}
                   </tbody>

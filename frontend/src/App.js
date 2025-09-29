@@ -6282,9 +6282,11 @@ const ExerciseManagementDashboard = ({
   currentTemplate, 
   scribeFormData, 
   scribeFormLoading, 
+  scribeTimeErrors,
   setCurrentTemplate, 
   setScribeFormData, 
   setScribeFormLoading, 
+  setScribeTimeErrors,
   loadScribeTemplates 
 }) => {
   const [exercise, setExercise] = useState(null);

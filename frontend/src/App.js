@@ -4799,6 +4799,58 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
   const removeArtificiality = (id) => setArtificialities(prev => prev.filter(item => item.id !== id));
   const removeSafetyConcern = (id) => setSafetyConcerns(prev => prev.filter(item => item.id !== id));
 
+  // Load coordinators from participants
+  const loadCoordinators = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch all participants
+      const response = await axios.get(`${API}/participants`);
+      const participants = response.data;
+      
+      // Filter participants who:
+      // 1. Have position "Team Coordinator"
+      // 2. Are participating in current exercise (involvedInExercise = true)
+      const eligibleCoordinators = participants.filter(participant => 
+        participant.position === 'Team Coordinator' && 
+        participant.involvedInExercise === true
+      );
+      
+      // Transform participants to coordinator format
+      const coordinators = eligibleCoordinators.map(participant => ({
+        id: participant.id || Date.now() + Math.random(),
+        name: participant.name || `${participant.firstName} ${participant.lastName}` || 'Unknown',
+        role: participant.position || 'Team Coordinator',
+        email: participant.email || '',
+        phone: participant.cellPhone || participant.homePhone || participant.phone || '',
+        organization: participant.organization || '',
+        assignedTo: participant.assignedTo || ''
+      }));
+      
+      // Update the exercise data with loaded coordinators
+      if (editingExercise) {
+        setEditingExercise(prev => ({
+          ...prev,
+          coordinators: coordinators
+        }));
+      } else {
+        // For new exercise, update exerciseData
+        setExerciseData(prev => ({
+          ...prev,
+          coordinators: coordinators
+        }));
+      }
+      
+      console.log(`Loaded ${coordinators.length} coordinators:`, coordinators);
+      
+    } catch (error) {
+      console.error('Error loading coordinators:', error);
+      alert('Failed to load coordinators. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Save current step as draft
   const saveStepDraft = async () => {
     setLoading(true);

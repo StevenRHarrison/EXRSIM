@@ -4304,24 +4304,28 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                   <div>
                     <Label className="text-gray-300">Latitude</Label>
                     <Input
-                      type="number"
-                      step="any"
+                      type="text"
                       value={currentEvent.latitude}
-                      onChange={(e) => setCurrentEvent(prev => ({ ...prev, latitude: parseFloat(e.target.value) || 0 }))}
-                      placeholder="0.0"
+                      onChange={handleEventLatitudeChange}
+                      placeholder="+45.1234"
                       className="bg-gray-700 border-gray-600 text-white"
                     />
+                    {eventValidationErrors.latitude && (
+                      <p className="text-red-500 text-sm mt-1">{eventValidationErrors.latitude}</p>
+                    )}
                   </div>
                   <div>
                     <Label className="text-gray-300">Longitude</Label>
                     <Input
-                      type="number"
-                      step="any"
+                      type="text"
                       value={currentEvent.longitude}
-                      onChange={(e) => setCurrentEvent(prev => ({ ...prev, longitude: parseFloat(e.target.value) || 0 }))}
-                      placeholder="0.0"
+                      onChange={handleEventLongitudeChange}
+                      placeholder="-97.0000"
                       className="bg-gray-700 border-gray-600 text-white"
                     />
+                    {eventValidationErrors.longitude && (
+                      <p className="text-red-500 text-sm mt-1">{eventValidationErrors.longitude}</p>
+                    )}
                   </div>
                 </div>
 

@@ -456,7 +456,7 @@
 
 ## test_plan:
   current_focus:
-    - "Exercise Management Dashboard Improvement Hierarchical Menu Section"
+    - "Field Validation Implementation - Email, Phone, Latitude/Longitude"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"

@@ -1181,7 +1181,7 @@ def test_health_check():
         return False
 
 if __name__ == "__main__":
-    print("EXRSIM Backend API Testing - Participant CRUD")
+    print("EXRSIM Backend API Comprehensive Testing")
     print(f"Backend URL: {BACKEND_URL}")
     print("=" * 60)
     
@@ -1190,12 +1190,65 @@ if __name__ == "__main__":
         print("❌ API is not responding. Cannot proceed with tests.")
         sys.exit(1)
     
-    # Test Participant CRUD API
-    success = test_participant_crud_api()
+    # Run all comprehensive tests
+    test_results = []
     
-    if success:
-        print("\n🎉 ALL PARTICIPANT CRUD TESTS COMPLETED SUCCESSFULLY")
+    print("\n🚀 STARTING COMPREHENSIVE BACKEND API TESTING")
+    print("=" * 60)
+    
+    # Test 1: Exercise Builder APIs
+    print("\n📋 Testing Exercise Builder APIs...")
+    test_results.append(("Exercise Builder API", test_exercise_builder_api()))
+    
+    # Test 2: Participant Management APIs  
+    print("\n👥 Testing Participant Management APIs...")
+    test_results.append(("Participant CRUD API", test_participant_crud_api()))
+    
+    # Test 3: HIRA Management APIs
+    print("\n⚠️ Testing HIRA Management APIs...")
+    test_results.append(("HIRA Management API", test_hira_api()))
+    
+    # Test 4: MSEL Management APIs
+    print("\n📝 Testing MSEL Management APIs...")
+    test_results.append(("MSEL Management API", test_msel_api()))
+    
+    # Test 5: Data Validation
+    print("\n🔍 Testing Data Validation...")
+    test_results.append(("Data Validation", test_data_validation()))
+    
+    # Test 6: Edge Cases
+    print("\n🎯 Testing Edge Cases...")
+    test_results.append(("Edge Cases", test_edge_cases()))
+    
+    # Test 7: Performance Testing
+    print("\n⚡ Testing Performance...")
+    test_results.append(("Performance", test_performance()))
+    
+    # Summary
+    print("\n" + "=" * 60)
+    print("🎉 COMPREHENSIVE TESTING SUMMARY")
+    print("=" * 60)
+    
+    passed_tests = 0
+    failed_tests = 0
+    
+    for test_name, result in test_results:
+        if result:
+            print(f"✅ {test_name}: PASSED")
+            passed_tests += 1
+        else:
+            print(f"❌ {test_name}: FAILED")
+            failed_tests += 1
+    
+    print(f"\nTotal Tests: {len(test_results)}")
+    print(f"Passed: {passed_tests}")
+    print(f"Failed: {failed_tests}")
+    
+    if failed_tests == 0:
+        print("\n🎉 ALL COMPREHENSIVE BACKEND TESTS COMPLETED SUCCESSFULLY")
+        print("✅ EXRSIM Emergency Training Platform Backend APIs are fully functional")
         sys.exit(0)
     else:
-        print("\n💥 SOME PARTICIPANT CRUD TESTS FAILED")
+        print(f"\n💥 {failed_tests} TEST(S) FAILED")
+        print("❌ Some backend functionality needs attention")
         sys.exit(1)

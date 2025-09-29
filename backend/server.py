@@ -709,6 +709,12 @@ class ScribeTemplateUpdate(BaseModel):
         if isinstance(v, str):
             return string_to_time(v)
         return v
+    
+    class Config:
+        json_encoders = {
+            time: time_to_string
+        }
+    
     profileImage: Optional[str] = None
 
 # Helper functions

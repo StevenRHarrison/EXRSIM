@@ -3948,9 +3948,12 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                       type="number"
                       step="any"
                       value={exerciseData.scenario_latitude}
-                      onChange={(e) => setExerciseData(prev => ({ ...prev, scenario_latitude: parseFloat(e.target.value) || 0 }))}
+                      onChange={handleScenarioLatitudeChange}
                       className="bg-gray-700 border-gray-600 text-white"
                     />
+                    {scenarioValidationErrors.latitude && (
+                      <p className="text-red-500 text-sm mt-1">{scenarioValidationErrors.latitude}</p>
+                    )}
                   </div>
                   <div>
                     <Label className="text-gray-300">Longitude</Label>

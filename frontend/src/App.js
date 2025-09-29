@@ -1598,8 +1598,13 @@ const ResourceForm = ({ onBack, onSave, editingResource }) => {
         quantity_needed: editingResource.quantity_needed || 0,
         location: editingResource.location || '',
         contact_person: editingResource.contact_person || '',
-        contact_phone: editingResource.contact_phone || ''
+        contact_phone: editingResource.contact_phone || '',
+        resource_image: editingResource.resource_image || null,
+        involved_in_exercise: editingResource.involved_in_exercise || false
       });
+      if (editingResource.resource_image) {
+        setImagePreview(editingResource.resource_image);
+      }
     }
   }, [editingResource]);
 

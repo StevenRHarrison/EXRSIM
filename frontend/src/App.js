@@ -59,7 +59,6 @@ import {
   Lightbulb,
   AlertCircle,
   Zap,
-  Printer,
   MessageCircle,
   CheckSquare
 } from 'lucide-react';

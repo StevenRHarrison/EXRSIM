@@ -22,6 +22,7 @@ import {
   AlertTriangle, 
   ClipboardList, 
   Plus, 
+  Printer,
   Settings,
   Home,
   BookOpen,

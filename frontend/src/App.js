@@ -66,13 +66,25 @@ const API = process.env.REACT_APP_BACKEND_URL + '/api';
 
 // Validation functions
 const validateLatitude = (lat) => {
+  if (lat === '' || lat === null || lat === undefined) return true; // Allow empty for optional fields
+  
+  // Check for proper format: optional sign + digits + optional decimal + up to 4 decimal places
+  const formatRegex = /^[+-]?\d+\.?\d{0,4}$/;
+  if (!formatRegex.test(lat.toString())) return false;
+  
   const num = parseFloat(lat);
-  return !isNaN(num) && num >= -90 && num <= 90;
+  return !isNaN(num) && num >= -90.0000 && num <= 90.0000;
 };
 
 const validateLongitude = (lng) => {
+  if (lng === '' || lng === null || lng === undefined) return true; // Allow empty for optional fields
+  
+  // Check for proper format: optional sign + digits + optional decimal + up to 4 decimal places
+  const formatRegex = /^[+-]?\d+\.?\d{0,4}$/;
+  if (!formatRegex.test(lng.toString())) return false;
+  
   const num = parseFloat(lng);
-  return !isNaN(num) && num >= -180 && num <= 180;
+  return !isNaN(num) && num >= -180.0000 && num <= 180.0000;
 };
 
 const validateEmail = (email) => {

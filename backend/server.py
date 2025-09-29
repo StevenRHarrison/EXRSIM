@@ -614,6 +614,11 @@ class ScribeTemplate(BaseModel):
             return string_to_time(v)
         return v
     
+    class Config:
+        json_encoders = {
+            time: time_to_string
+        }
+    
     # Timeline & Key Events
     timeline_events: List[ScribeTemplateEvent] = Field(default_factory=list)
     

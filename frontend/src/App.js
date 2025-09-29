@@ -61,7 +61,8 @@ import {
   Zap,
   MessageCircle,
   CheckSquare,
-  PenTool
+  PenTool,
+  FileEdit
 } from 'lucide-react';
 
 const API = process.env.REACT_APP_BACKEND_URL + '/api';

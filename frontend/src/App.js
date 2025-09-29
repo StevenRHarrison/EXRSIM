@@ -4799,6 +4799,35 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                     className="bg-gray-700 border-gray-600 text-white"
                   />
                 </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-300">Latitude</Label>
+                    <Input
+                      type="text"
+                      value={currentOrganization.latitude}
+                      onChange={handleOrganizationLatitudeChange}
+                      placeholder="+45.1234"
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                    {organizationValidationErrors.latitude && (
+                      <p className="text-red-500 text-sm mt-1">{organizationValidationErrors.latitude}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="text-gray-300">Longitude</Label>
+                    <Input
+                      type="text"
+                      value={currentOrganization.longitude}
+                      onChange={handleOrganizationLongitudeChange}
+                      placeholder="-97.0000"
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                    {organizationValidationErrors.longitude && (
+                      <p className="text-red-500 text-sm mt-1">{organizationValidationErrors.longitude}</p>
+                    )}
+                  </div>
+                </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>

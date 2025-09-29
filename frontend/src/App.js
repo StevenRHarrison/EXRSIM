@@ -9706,7 +9706,17 @@ function App() {
       case 'builder':
         return <ExerciseBuilder />;
       case 'manage':
-        return <ExerciseManagementDashboard exerciseId={managingExerciseId} />;
+        return <ExerciseManagementDashboard 
+          exerciseId={managingExerciseId} 
+          scribeTemplates={scribeTemplates}
+          currentTemplate={currentTemplate}
+          scribeFormData={scribeFormData}
+          scribeFormLoading={scribeFormLoading}
+          setCurrentTemplate={setCurrentTemplate}
+          setScribeFormData={setScribeFormData}
+          setScribeFormLoading={setScribeFormLoading}
+          loadScribeTemplates={loadScribeTemplates}
+        />;
       default:
         return <Dashboard />;
     }

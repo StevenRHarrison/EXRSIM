@@ -62,9 +62,7 @@ import {
   MessageCircle,
   CheckSquare,
   PenTool,
-  FileEdit,
-  ArrowLeft,
-  X
+  FileEdit
 } from 'lucide-react';
 
 const API = process.env.REACT_APP_BACKEND_URL + '/api';

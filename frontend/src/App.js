@@ -2198,9 +2198,6 @@ const ResourcesList = ({ onAddNew, onEdit }) => {
         </Card>
       ) : (
         <>
-          <div className="text-sm text-gray-400 mb-4">
-            Showing {filteredResources.length} of {resources.length} resources
-          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredResources.map((resource) => {
               const { icon: TypeIcon, color } = getResourceTypeCategory(resource.resource_type);

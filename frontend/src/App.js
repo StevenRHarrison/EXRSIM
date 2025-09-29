@@ -6413,6 +6413,8 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
         return renderCommentsManagement();
       case 'corrective_actions':
         return renderCorrectiveActionsManagement();
+      case 'final_report':
+        return renderFinalReportManagement();
       default:
         return renderGenericSectionManagement();
     }

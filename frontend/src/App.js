@@ -1507,6 +1507,651 @@ const ParticipantsView = () => {
   );
 };
 
+// Resources Management
+const ResourcesView = () => {
+  const [view, setView] = useState('list'); // 'list', 'add', 'edit'
+  const [editingResource, setEditingResource] = useState(null);
+
+  const handleAddNew = () => {
+    setEditingResource(null);
+    setView('add');
+  };
+
+  const handleEdit = (resource) => {
+    setEditingResource(resource);
+    setView('edit');
+  };
+
+  const handleBack = () => {
+    setView('list');
+    setEditingResource(null);
+  };
+
+  const handleSave = () => {
+    setView('list');
+    setEditingResource(null);
+    // The list will automatically refresh via useEffect
+  };
+
+  if (view === 'add' || view === 'edit') {
+    return (
+      <ResourceForm
+        onBack={handleBack}
+        onSave={handleSave}
+        editingResource={editingResource}
+      />
+    );
+  }
+
+  return (
+    <ResourcesList
+      onAddNew={handleAddNew}
+      onEdit={handleEdit}
+    />
+  );
+};
+
+// Resource Form Component
+const ResourceForm = ({ onBack, onSave, editingResource }) => {
+  const [formData, setFormData] = useState({
+    resource_type: '',
+    identification: '',
+    description: '',
+    quantity_available: 0,
+    quantity_needed: 0,
+    location: '',
+    contact_person: '',
+    contact_phone: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  // Resource type options
+  const resourceTypes = [
+    'Personnel - Medical',
+    'Personnel - Communication', 
+    'Personnel - Logistics',
+    'Personnel - Command',
+    'Personnel - Security',
+    'Equipment - Vehicles',
+    'Equipment - Generators',
+    'Equipment - Communication',
+    'Equipment - Medical',
+    'Equipment - Search & Rescue',
+    'Supplies - Food',
+    'Supplies - Water',
+    'Supplies - First Aid',
+    'Supplies - Shelter',
+    'Supplies - Fuel'
+  ];
+
+  useEffect(() => {
+    if (editingResource) {
+      setFormData({
+        resource_type: editingResource.resource_type || '',
+        identification: editingResource.identification || '',
+        description: editingResource.description || '',
+        quantity_available: editingResource.quantity_available || 0,
+        quantity_needed: editingResource.quantity_needed || 0,
+        location: editingResource.location || '',
+        contact_person: editingResource.contact_person || '',
+        contact_phone: editingResource.contact_phone || ''
+      });
+    }
+  }, [editingResource]);
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.resource_type.trim()) {
+      newErrors.resource_type = 'Resource type is required';
+    }
+
+    if (!formData.identification.trim()) {
+      newErrors.identification = 'Resource identification is required';
+    }
+
+    if (!formData.description.trim()) {
+      newErrors.description = 'Description is required';
+    }
+
+    if (formData.quantity_available < 0) {
+      newErrors.quantity_available = 'Quantity available cannot be negative';
+    }
+
+    if (formData.quantity_needed < 0) {
+      newErrors.quantity_needed = 'Quantity needed cannot be negative';
+    }
+
+    if (!formData.location.trim()) {
+      newErrors.location = 'Location is required';
+    }
+
+    if (!formData.contact_person.trim()) {
+      newErrors.contact_person = 'Contact person is required';
+    }
+
+    if (!formData.contact_phone.trim()) {
+      newErrors.contact_phone = 'Contact phone is required';
+    } else if (!/^\d{3}-\d{3}-\d{4}$/.test(formData.contact_phone)) {
+      newErrors.contact_phone = 'Phone must be in format: 123-456-7890';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      const resourceData = {
+        resource_type: formData.resource_type,
+        identification: formData.identification,
+        description: formData.description,
+        quantity_available: parseInt(formData.quantity_available),
+        quantity_needed: parseInt(formData.quantity_needed),
+        location: formData.location,
+        contact_person: formData.contact_person,
+        contact_phone: formData.contact_phone
+      };
+
+      if (editingResource) {
+        const response = await axios.put(`${API}/resources/${editingResource.id}`, resourceData);
+      } else {
+        const response = await axios.post(`${API}/resources`, resourceData);
+      }
+      
+      onSave();
+    } catch (error) {
+      console.error('Error saving resource:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({
+        ...prev,
+        [field]: ''
+      }));
+    }
+  };
+
+  // Phone number formatting
+  const handlePhoneChange = (value) => {
+    // Remove all non-digits
+    const digits = value.replace(/\D/g, '');
+    
+    // Format as XXX-XXX-XXXX
+    let formatted = digits;
+    if (digits.length >= 6) {
+      formatted = `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+    } else if (digits.length >= 3) {
+      formatted = `${digits.slice(0, 3)}-${digits.slice(3)}`;
+    }
+    
+    handleInputChange('contact_phone', formatted);
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-orange-500 mb-2">
+            {editingResource ? 'Edit Resource' : 'Add New Resource'}
+          </h1>
+          <p className="text-gray-400">
+            {editingResource ? 'Update resource information' : 'Enter details for the new resource'}
+          </p>
+        </div>
+        <Button 
+          variant="outline" 
+          onClick={onBack}
+          className="text-orange-500 border-orange-500 hover:bg-orange-500 hover:text-black"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Resources
+        </Button>
+      </div>
+
+      <Card className="bg-gray-900 border-gray-700">
+        <CardContent className="p-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Resource Type & Identification */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="resource_type" className="text-white">
+                  Resource Type *
+                </Label>
+                <Select
+                  value={formData.resource_type}
+                  onValueChange={(value) => handleInputChange('resource_type', value)}
+                >
+                  <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                    <SelectValue placeholder="Select resource type" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-800 border-gray-700">
+                    {resourceTypes.map((type) => (
+                      <SelectItem key={type} value={type} className="text-white hover:bg-gray-700">
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.resource_type && (
+                  <p className="text-red-400 text-sm mt-1">{errors.resource_type}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="identification" className="text-white">
+                  Resource ID/Name *
+                </Label>
+                <Input
+                  id="identification"
+                  type="text"
+                  value={formData.identification}
+                  onChange={(e) => handleInputChange('identification', e.target.value)}
+                  placeholder="e.g., AMB-001, TRUCK-ALPHA, MEDKIT-123"
+                  className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+                />
+                {errors.identification && (
+                  <p className="text-red-400 text-sm mt-1">{errors.identification}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Description */}
+            <div>
+              <Label htmlFor="description" className="text-white">
+                Description *
+              </Label>
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => handleInputChange('description', e.target.value)}
+                placeholder="Detailed description of the resource, its purpose, and unique features..."
+                rows={3}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+              {errors.description && (
+                <p className="text-red-400 text-sm mt-1">{errors.description}</p>
+              )}
+            </div>
+
+            {/* Quantities */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="quantity_available" className="text-white">
+                  Quantity Available *
+                </Label>
+                <Input
+                  id="quantity_available"
+                  type="number"
+                  min="0"
+                  value={formData.quantity_available}
+                  onChange={(e) => handleInputChange('quantity_available', e.target.value)}
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+                {errors.quantity_available && (
+                  <p className="text-red-400 text-sm mt-1">{errors.quantity_available}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="quantity_needed" className="text-white">
+                  Quantity Needed for Exercise *
+                </Label>
+                <Input
+                  id="quantity_needed"
+                  type="number"
+                  min="0"
+                  value={formData.quantity_needed}
+                  onChange={(e) => handleInputChange('quantity_needed', e.target.value)}
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+                {errors.quantity_needed && (
+                  <p className="text-red-400 text-sm mt-1">{errors.quantity_needed}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Location */}
+            <div>
+              <Label htmlFor="location" className="text-white">
+                Current/Assigned Location *
+              </Label>
+              <Input
+                id="location"
+                type="text"
+                value={formData.location}
+                onChange={(e) => handleInputChange('location', e.target.value)}
+                placeholder="e.g., Fire Station 1, EOC Warehouse, Mobile Unit 3"
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+              {errors.location && (
+                <p className="text-red-400 text-sm mt-1">{errors.location}</p>
+              )}
+            </div>
+
+            {/* Contact Information */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="contact_person" className="text-white">
+                  Contact Person *
+                </Label>
+                <Input
+                  id="contact_person"
+                  type="text"
+                  value={formData.contact_person}
+                  onChange={(e) => handleInputChange('contact_person', e.target.value)}
+                  placeholder="Primary contact person name"
+                  className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+                />
+                {errors.contact_person && (
+                  <p className="text-red-400 text-sm mt-1">{errors.contact_person}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="contact_phone" className="text-white">
+                  Contact Phone *
+                </Label>
+                <Input
+                  id="contact_phone"
+                  type="tel"
+                  value={formData.contact_phone}
+                  onChange={(e) => handlePhoneChange(e.target.value)}
+                  placeholder="123-456-7890"
+                  maxLength="12"
+                  className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+                />
+                {errors.contact_phone && (
+                  <p className="text-red-400 text-sm mt-1">{errors.contact_phone}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="flex justify-end space-x-4 pt-6">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onBack}
+                className="text-gray-400 border-gray-600 hover:bg-gray-800 hover:text-white"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
+              >
+                {loading ? 'Saving...' : (editingResource ? 'Update Resource' : 'Add Resource')}
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+// Resources List Component
+const ResourcesList = ({ onAddNew, onEdit }) => {
+  const [resources, setResources] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all');
+
+  useEffect(() => {
+    fetchResources();
+  }, []);
+
+  const fetchResources = async () => {
+    try {
+      const response = await axios.get(`${API}/resources`);
+      setResources(response.data);
+    } catch (error) {
+      console.error('Error fetching resources:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (resourceId) => {
+    if (window.confirm('Are you sure you want to delete this resource?')) {
+      try {
+        await axios.delete(`${API}/resources/${resourceId}`);
+        setResources(prev => prev.filter(r => r.id !== resourceId));
+      } catch (error) {
+        console.error('Error deleting resource:', error);
+      }
+    }
+  };
+
+  const filteredResources = resources.filter(resource => {
+    if (filter === 'personnel') return resource.resource_type.startsWith('Personnel');
+    if (filter === 'equipment') return resource.resource_type.startsWith('Equipment');
+    if (filter === 'supplies') return resource.resource_type.startsWith('Supplies');
+    if (filter === 'insufficient') return resource.quantity_available < resource.quantity_needed;
+    return true; // 'all'
+  });
+
+  const getStatusBadge = (resource) => {
+    if (resource.quantity_available >= resource.quantity_needed) {
+      return <Badge variant="default" className="bg-green-600 text-white">Sufficient</Badge>;
+    } else if (resource.quantity_available === 0) {
+      return <Badge variant="destructive" className="bg-red-600 text-white">Unavailable</Badge>;
+    } else {
+      return <Badge variant="secondary" className="bg-yellow-600 text-black">Insufficient</Badge>;
+    }
+  };
+
+  const getResourceTypeCategory = (type) => {
+    if (type.startsWith('Personnel')) return { icon: Users, color: 'text-blue-400' };
+    if (type.startsWith('Equipment')) return { icon: Settings, color: 'text-green-400' };
+    if (type.startsWith('Supplies')) return { icon: Package, color: 'text-orange-400' };
+    return { icon: Package, color: 'text-gray-400' };
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-orange-500 mb-2">Resource Management</h1>
+          <p className="text-gray-400">Manage personnel, equipment, and supplies for emergency exercises</p>
+        </div>
+        <Button 
+          onClick={onAddNew}
+          className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Add Resource
+        </Button>
+      </div>
+
+      {/* Filters */}
+      <Card className="bg-gray-900 border-gray-700">
+        <CardContent className="p-4">
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant={filter === 'all' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('all')}
+              className={filter === 'all' ? 'bg-orange-500 text-black' : 'text-gray-400 border-gray-600 hover:bg-gray-800 hover:text-white'}
+            >
+              Show All ({resources.length})
+            </Button>
+            <Button
+              variant={filter === 'personnel' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('personnel')}
+              className={filter === 'personnel' ? 'bg-orange-500 text-black' : 'text-gray-400 border-gray-600 hover:bg-gray-800 hover:text-white'}
+            >
+              Personnel ({resources.filter(r => r.resource_type.startsWith('Personnel')).length})
+            </Button>
+            <Button
+              variant={filter === 'equipment' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('equipment')}
+              className={filter === 'equipment' ? 'bg-orange-500 text-black' : 'text-gray-400 border-gray-600 hover:bg-gray-800 hover:text-white'}
+            >
+              Equipment ({resources.filter(r => r.resource_type.startsWith('Equipment')).length})
+            </Button>
+            <Button
+              variant={filter === 'supplies' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('supplies')}
+              className={filter === 'supplies' ? 'bg-orange-500 text-black' : 'text-gray-400 border-gray-600 hover:bg-gray-800 hover:text-white'}
+            >
+              Supplies ({resources.filter(r => r.resource_type.startsWith('Supplies')).length})
+            </Button>
+            <Button
+              variant={filter === 'insufficient' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('insufficient')}
+              className={filter === 'insufficient' ? 'bg-orange-500 text-black' : 'text-gray-400 border-gray-600 hover:bg-gray-800 hover:text-white'}
+            >
+              Insufficient ({resources.filter(r => r.quantity_available < r.quantity_needed).length})
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {loading ? (
+        <Card className="bg-gray-900 border-gray-700">
+          <CardContent className="p-12 text-center">
+            <div className="text-gray-400">Loading resources...</div>
+          </CardContent>
+        </Card>
+      ) : filteredResources.length === 0 && filter !== 'all' ? (
+        <Card className="bg-gray-900 border-gray-700">
+          <CardContent className="p-12 text-center">
+            <Package className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-300 mb-2">No Resources Found</h3>
+            <p className="text-gray-400 mb-6">
+              No resources match the current filter criteria.
+            </p>
+            <Button 
+              variant="outline"
+              onClick={() => setFilter('all')}
+              className="text-orange-500 border-orange-500 hover:bg-orange-500 hover:text-black"
+            >
+              Show All Resources
+            </Button>
+          </CardContent>
+        </Card>
+      ) : filteredResources.length === 0 ? (
+        <Card className="bg-gray-900 border-gray-700">
+          <CardContent className="p-12 text-center">
+            <Package className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-300 mb-2">No Resources Yet</h3>
+            <p className="text-gray-400 mb-6">
+              Get started by adding your first resource for emergency exercises.
+            </p>
+            <Button 
+              onClick={onAddNew}
+              className="bg-orange-500 hover:bg-orange-600 text-black"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add First Resource
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+          <div className="text-sm text-gray-400 mb-4">
+            Showing {filteredResources.length} of {resources.length} resources
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredResources.map((resource) => {
+              const { icon: TypeIcon, color } = getResourceTypeCategory(resource.resource_type);
+              
+              return (
+                <Card key={resource.id} className="bg-gray-900 border-gray-700 hover:border-orange-500/50 transition-colors">
+                  <CardContent className="p-6">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex items-center space-x-2">
+                        <TypeIcon className={`h-5 w-5 ${color}`} />
+                        <Badge variant="outline" className="text-xs">
+                          {resource.resource_type}
+                        </Badge>
+                      </div>
+                      {getStatusBadge(resource)}
+                    </div>
+                    
+                    <h3 className="text-lg font-semibold text-white mb-2">
+                      {resource.identification}
+                    </h3>
+                    
+                    <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+                      {resource.description}
+                    </p>
+                    
+                    <div className="space-y-2 mb-4">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-400">Available:</span>
+                        <span className="text-white font-semibold">{resource.quantity_available}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-400">Needed:</span>
+                        <span className="text-white font-semibold">{resource.quantity_needed}</span>
+                      </div>
+                      <div className="flex items-center text-sm">
+                        <MapPin className="h-3 w-3 text-gray-400 mr-1" />
+                        <span className="text-gray-400 truncate">{resource.location}</span>
+                      </div>
+                      <div className="flex items-center text-sm">
+                        <Phone className="h-3 w-3 text-gray-400 mr-1" />
+                        <span className="text-gray-400">{resource.contact_person}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-end space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onEdit(resource)}
+                        className="text-orange-500 border-orange-500 hover:bg-orange-500 hover:text-black"
+                      >
+                        <Edit className="h-3 w-3 mr-1" />
+                        Edit
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDelete(resource.id)}
+                        className="text-red-400 border-red-400 hover:bg-red-400 hover:text-white"
+                      >
+                        <Trash2 className="h-3 w-3 mr-1" />
+                        Delete
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
 // Exercise List View (separate from Dashboard)
 const ExerciseListView = () => {
   const [exercises, setExercises] = useState([]);

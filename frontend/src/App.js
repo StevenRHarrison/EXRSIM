@@ -9840,9 +9840,11 @@ function App() {
           currentTemplate={currentTemplate}
           scribeFormData={scribeFormData}
           scribeFormLoading={scribeFormLoading}
+          scribeTimeErrors={scribeTimeErrors}
           setCurrentTemplate={setCurrentTemplate}
           setScribeFormData={setScribeFormData}
           setScribeFormLoading={setScribeFormLoading}
+          setScribeTimeErrors={setScribeTimeErrors}
           loadScribeTemplates={loadScribeTemplates}
         />;
       default:

@@ -9446,11 +9446,20 @@ const ExerciseManagementDashboard = ({
                     <div>
                       <Label className="text-gray-300">Time</Label>
                       <Input
-                        value={comm.time}
+                        value={comm.time || ''}
                         onChange={(e) => updateCommunication(index, 'time', e.target.value)}
-                        className="bg-gray-600 border-gray-500 text-white"
-                        placeholder="HH:MM"
+                        onBlur={(e) => {
+                          const formatted = formatTimeInput(e.target.value);
+                          if (formatted !== e.target.value) {
+                            updateCommunication(index, 'time', formatted);
+                          }
+                        }}
+                        className={`bg-gray-600 border-gray-500 text-white ${comm.time && !validateTimeFormat(comm.time) ? 'border-red-500' : ''}`}
+                        placeholder="10:00 AM"
                       />
+                      {comm.time && !validateTimeFormat(comm.time) && (
+                        <p className="text-red-500 text-xs mt-1">Format: 10:00 AM</p>
+                      )}
                     </div>
                     <div>
                       <Label className="text-gray-300">From</Label>

@@ -6492,6 +6492,14 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
                 <Edit className="h-4 w-4 mr-2" />
                 Edit Exercise
               </Button>
+              <Button 
+                variant="outline" 
+                className="border-teal-500/50 text-teal-400 hover:bg-teal-500/10"
+                onClick={() => setActiveSection('scribe')}
+              >
+                <PenTool className="h-4 w-4 mr-2" />
+                Scribe
+              </Button>
             </div>
           </CardContent>
         </Card>

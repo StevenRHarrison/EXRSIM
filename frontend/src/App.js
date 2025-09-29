@@ -9430,8 +9430,8 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-white">Additional Notes</h3>
               <textarea
-                value={formData.additional_notes}
-                onChange={(e) => setFormData(prev => ({ ...prev, additional_notes: e.target.value }))}
+                value={scribeFormData.additional_notes}
+                onChange={(e) => setScribeFormData(prev => ({ ...prev, additional_notes: e.target.value }))}
                 className="w-full bg-gray-700 border border-gray-600 text-white rounded px-3 py-2"
                 rows="6"
                 placeholder="Enter any additional observations or notes..."

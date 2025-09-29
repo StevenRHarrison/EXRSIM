@@ -928,6 +928,84 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Helper functions for time handling
+def time_to_string(time_obj: Optional[time]) -> str:
+    """Convert time object to string format for storage"""
+    if time_obj is None:
+        return ""
+    # Convert to 12-hour format with AM/PM
+    hour = time_obj.hour
+    minute = time_obj.minute
+    am_pm = "AM" if hour < 12 else "PM"
+    hour_12 = hour if hour <= 12 else hour - 12
+    hour_12 = 12 if hour_12 == 0 else hour_12
+    return f"{hour_12}:{minute:02d} {am_pm}"
+
+def string_to_time(time_str: str) -> Optional[time]:
+    """Convert string format to time object"""
+    if not time_str or time_str == "":
+        return None
+    try:
+        # Parse formats like "10:30 AM" or "2:15 PM"
+        time_str = time_str.strip()
+        if " " in time_str:
+            time_part, am_pm = time_str.rsplit(" ", 1)
+            hour_str, minute_str = time_part.split(":")
+            hour = int(hour_str)
+            minute = int(minute_str)
+            
+            # Convert to 24-hour format
+            if am_pm.upper() == "PM" and hour != 12:
+                hour += 12
+            elif am_pm.upper() == "AM" and hour == 12:
+                hour = 0
+                
+            return time(hour, minute)
+        else:
+            # Handle format without AM/PM (assume 24-hour format)
+            hour_str, minute_str = time_str.split(":")
+            return time(int(hour_str), int(minute_str))
+    except (ValueError, AttributeError):
+        return None
+
+def prepare_scribe_data_for_mongo(data: dict) -> dict:
+    """Convert time objects to strings for MongoDB storage"""
+    prepared_data = data.copy()
+    
+    # Convert main time fields
+    if 'exercise_start_time' in prepared_data:
+        prepared_data['exercise_start_time'] = time_to_string(prepared_data['exercise_start_time'])
+    if 'exercise_end_time' in prepared_data:
+        prepared_data['exercise_end_time'] = time_to_string(prepared_data['exercise_end_time'])
+    
+    # Convert nested time fields
+    for field_name in ['timeline_events', 'communications', 'decisions', 'issues']:
+        if field_name in prepared_data and prepared_data[field_name]:
+            for item in prepared_data[field_name]:
+                if 'time' in item:
+                    item['time'] = time_to_string(item['time'])
+    
+    return prepared_data
+
+def parse_scribe_data_from_mongo(data: dict) -> dict:
+    """Convert string time fields back to time objects"""
+    parsed_data = data.copy()
+    
+    # Convert main time fields
+    if 'exercise_start_time' in parsed_data:
+        parsed_data['exercise_start_time'] = string_to_time(parsed_data['exercise_start_time'])
+    if 'exercise_end_time' in parsed_data:
+        parsed_data['exercise_end_time'] = string_to_time(parsed_data['exercise_end_time'])
+    
+    # Convert nested time fields
+    for field_name in ['timeline_events', 'communications', 'decisions', 'issues']:
+        if field_name in parsed_data and parsed_data[field_name]:
+            for item in parsed_data[field_name]:
+                if 'time' in item:
+                    item['time'] = string_to_time(item['time'])
+    
+    return parsed_data
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()

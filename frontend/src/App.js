@@ -1251,6 +1251,90 @@ const ParticipantsList = ({ onAddNew, onEdit }) => {
     return true; // 'all' - show all participants
   });
 
+  // Print function for Participants
+  const printParticipants = () => {
+    const currentDateTime = new Date().toLocaleString();
+    const printContent = `
+      <html>
+        <head>
+          <title>Exercise Participants Summary</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { border-bottom: 2px solid #333; margin-bottom: 20px; padding-bottom: 10px; }
+            .participant-item { border: 1px solid #ddd; margin-bottom: 15px; padding: 15px; border-radius: 5px; }
+            .participant-name { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+            .participant-position { font-size: 14px; color: #666; margin-bottom: 8px; }
+            .participant-contact { margin-bottom: 10px; color: #555; }
+            .participant-organization { margin-bottom: 10px; color: #555; }
+            .status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-bottom: 10px; }
+            .status-participating { background-color: #d4edda; color: #155724; }
+            .status-not-participating { background-color: #f8f9fa; color: #6c757d; }
+            .contact-info { display: flex; gap: 20px; margin-top: 10px; font-size: 14px; }
+            .contact-box { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+            .footer { 
+              position: fixed; 
+              bottom: 20px; 
+              left: 20px; 
+              right: 20px; 
+              text-align: center; 
+              font-size: 12px; 
+              color: #666; 
+              border-top: 1px solid #ddd; 
+              padding-top: 10px; 
+            }
+            @media print { 
+              body { margin: 0; padding: 20px; } 
+              .no-print { display: none; }
+              .footer { position: fixed; bottom: 0; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>Exercise Participants Summary</h1>
+            <p>Filter: ${filter === 'all' ? 'All Participants' : 'Active Exercise Participants'}</p>
+            <p>Generated on: ${new Date().toLocaleDateString()}</p>
+          </div>
+          <div class="participants-content">
+            ${filteredParticipants.length > 0 ? 
+              filteredParticipants.map((participant, index) => {
+                return `
+                  <div class="participant-item">
+                    <div class="participant-name">${participant.name || 'Unnamed Participant'}</div>
+                    <div class="participant-position">${participant.position || 'Position not specified'}</div>
+                    <div class="participant-organization"><strong>Organization:</strong> ${participant.organization || 'N/A'}</div>
+                    <div class="status-badge ${participant.involvedInExercise ? 'status-participating' : 'status-not-participating'}">
+                      ${participant.involvedInExercise ? 'Active in Exercise' : 'Not Participating'}
+                    </div>
+                    <div class="contact-info">
+                      <div class="contact-box">
+                        <strong>Email:</strong> ${participant.email || 'N/A'}
+                      </div>
+                      <div class="contact-box">
+                        <strong>Phone:</strong> ${participant.phone || 'N/A'}
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('') 
+              : '<p>No participants match the current filter criteria.</p>'
+            }
+          </div>
+          <div class="footer">
+            <p>Generated on: ${currentDateTime} | Powered by EXRSIM</p>
+          </div>
+        </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+  };
+
   const deleteParticipant = async (participantId) => {
     if (window.confirm('Are you sure you want to delete this participant?')) {
       try {

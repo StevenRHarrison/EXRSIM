@@ -383,6 +383,8 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
     homePhone: '',
     cellPhone: '',
     email: '',
+    latitude: '',
+    longitude: '',
     involvedInExercise: false,
     profileImage: null
   });

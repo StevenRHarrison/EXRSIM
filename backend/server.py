@@ -6,7 +6,7 @@ import os
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, validator
-from typing import List, Optional
+from typing import List, Optional, Union
 import uuid
 from datetime import datetime, timezone, time
 from enum import Enum

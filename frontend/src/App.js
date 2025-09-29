@@ -1571,11 +1571,6 @@ const ResourceForm = ({ onBack, onSave, editingResource }) => {
 
   // Resource type options
   const resourceTypes = [
-    'Personnel - Medical',
-    'Personnel - Communication', 
-    'Personnel - Logistics',
-    'Personnel - Command',
-    'Personnel - Security',
     'Equipment - Vehicles',
     'Equipment - Generators',
     'Equipment - Communication',

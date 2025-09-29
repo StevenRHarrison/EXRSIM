@@ -2640,9 +2640,13 @@ const HIRAForm = ({ onBack, onSave, editingEntry = null }) => {
                   type="number"
                   step="any"
                   value={formData.latitude}
-                  onChange={(e) => setFormData(prev => ({ ...prev, latitude: parseFloat(e.target.value) || 0 }))}
+                  onChange={handleLatitudeChange}
                   className="bg-gray-700 border-gray-600 text-white"
+                  placeholder="49.2827"
                 />
+                {validationErrors.latitude && (
+                  <p className="text-red-500 text-sm mt-1">{validationErrors.latitude}</p>
+                )}
               </div>
               <div>
                 <Label htmlFor="longitude" className="text-gray-300">Longitude</Label>
@@ -2651,9 +2655,13 @@ const HIRAForm = ({ onBack, onSave, editingEntry = null }) => {
                   type="number"
                   step="any"
                   value={formData.longitude}
-                  onChange={(e) => setFormData(prev => ({ ...prev, longitude: parseFloat(e.target.value) || 0 }))}
+                  onChange={handleLongitudeChange}
                   className="bg-gray-700 border-gray-600 text-white"
+                  placeholder="-123.1207"
                 />
+                {validationErrors.longitude && (
+                  <p className="text-red-500 text-sm mt-1">{validationErrors.longitude}</p>
+                )}
               </div>
             </div>
           </CardContent>

@@ -603,6 +603,8 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
         homePhone: editingParticipant.homePhone || '',
         cellPhone: editingParticipant.cellPhone || '',
         email: editingParticipant.email || '',
+        latitude: editingParticipant.latitude || '',
+        longitude: editingParticipant.longitude || '',
         involvedInExercise: editingParticipant.involvedInExercise || false,
         profileImage: editingParticipant.profileImage || null
       });

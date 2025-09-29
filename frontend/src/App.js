@@ -3196,7 +3196,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
   const [currentFunction, setCurrentFunction] = useState({ name: '', description: '', achieved: 'No' });
   const [currentOrganization, setCurrentOrganization] = useState({ 
     name: '', description: '', home_base: '', contact_first_name: '', 
-    contact_last_name: '', contact_phone: '', contact_email: '' 
+    contact_last_name: '', contact_phone: '', contact_email: '',
+    latitude: '', longitude: ''
   });
   const [currentCodeWord, setCurrentCodeWord] = useState({ word: '', meaning: '' });
   const [currentCallsign, setCurrentCallsign] = useState({ callsign: '', description: '' });

@@ -840,6 +840,92 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+# Scribe Template endpoints
+@api_router.post("/scribe-templates", response_model=ScribeTemplate)
+async def create_scribe_template(template: ScribeTemplateCreate):
+    try:
+        template_dict = template.dict()
+        template_dict['id'] = str(uuid.uuid4())
+        template_dict['created_at'] = datetime.now(timezone.utc)
+        template_dict['updated_at'] = datetime.now(timezone.utc)
+        
+        result = await db.scribe_templates.insert_one(template_dict)
+        
+        if result.inserted_id:
+            created_template = await db.scribe_templates.find_one({"id": template_dict['id']})
+            return ScribeTemplate(**created_template)
+        else:
+            raise HTTPException(status_code=400, detail="Failed to create scribe template")
+    except Exception as e:
+        logger.error(f"Error creating scribe template: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/scribe-templates", response_model=List[ScribeTemplate])
+async def get_scribe_templates():
+    try:
+        templates = await db.scribe_templates.find().to_list(length=None)
+        return [ScribeTemplate(**template) for template in templates]
+    except Exception as e:
+        logger.error(f"Error fetching scribe templates: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/scribe-templates/exercise/{exercise_id}", response_model=List[ScribeTemplate])
+async def get_scribe_templates_by_exercise(exercise_id: str):
+    try:
+        templates = await db.scribe_templates.find({"exercise_id": exercise_id}).to_list(length=None)
+        return [ScribeTemplate(**template) for template in templates]
+    except Exception as e:
+        logger.error(f"Error fetching scribe templates for exercise {exercise_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/scribe-templates/{template_id}", response_model=ScribeTemplate)
+async def get_scribe_template(template_id: str):
+    try:
+        template = await db.scribe_templates.find_one({"id": template_id})
+        if not template:
+            raise HTTPException(status_code=404, detail="Scribe template not found")
+        return ScribeTemplate(**template)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching scribe template {template_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.put("/scribe-templates/{template_id}", response_model=ScribeTemplate)
+async def update_scribe_template(template_id: str, template_update: ScribeTemplateUpdate):
+    try:
+        update_data = {k: v for k, v in template_update.dict().items() if v is not None}
+        update_data['updated_at'] = datetime.now(timezone.utc)
+        
+        result = await db.scribe_templates.update_one(
+            {"id": template_id},
+            {"$set": update_data}
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Scribe template not found")
+        
+        updated_template = await db.scribe_templates.find_one({"id": template_id})
+        return ScribeTemplate(**updated_template)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating scribe template {template_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/scribe-templates/{template_id}")
+async def delete_scribe_template(template_id: str):
+    try:
+        result = await db.scribe_templates.delete_one({"id": template_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Scribe template not found")
+        return {"message": "Scribe template deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting scribe template {template_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():

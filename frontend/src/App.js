@@ -9213,9 +9213,9 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
             <Button 
               className="bg-purple-500 hover:bg-purple-600 text-white"
               onClick={saveScribeTemplate}
-              disabled={loading}
+              disabled={scribeFormLoading}
             >
-              {loading ? 'Saving...' : 'Save Template'}
+              {scribeFormLoading ? 'Saving...' : 'Save Template'}
             </Button>
           </div>
         </div>

@@ -7681,17 +7681,29 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
   };
 
   const renderNearMissesManagement = () => {
+    const printNearMisses = createPrintFunction('nearmisses', 'Exercise Near Misses');
+
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-white">Near Misses</h1>
-          <Button 
-            className="bg-orange-500 hover:bg-orange-600 text-black"
-            onClick={() => {/* Add new near miss logic */}}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Near Miss
-          </Button>
+          <div className="flex space-x-3">
+            <Button 
+              variant="outline"
+              className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+              onClick={printNearMisses}
+            >
+              <Printer className="h-4 w-4 mr-2" />
+              Print Near Misses
+            </Button>
+            <Button 
+              className="bg-orange-500 hover:bg-orange-600 text-black"
+              onClick={() => {/* Add new near miss logic */}}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Near Miss
+            </Button>
+          </div>
         </div>
 
         <Card className="bg-gray-800 border-gray-700 border-dashed">

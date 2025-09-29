@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend API Testing for EXRSIM Participant CRUD
-Tests participant CRUD functionality comprehensively to identify any issues with data persistence across ALL fields
-As requested in the comprehensive testing review
+Comprehensive Backend API Testing for EXRSIM Emergency Training Platform
+Tests all major API endpoints including Exercise Builder, Participants, HIRA, and MSEL
+Includes data validation, edge cases, and performance testing as requested
 """
 
 import requests
@@ -11,6 +11,8 @@ from datetime import datetime, timezone
 import sys
 import os
 import base64
+import time
+import uuid
 
 # Get backend URL from frontend .env
 BACKEND_URL = "https://exrsim-platform-1.preview.emergentagent.com/api"

@@ -496,89 +496,29 @@ class ParticipantCreate(BaseModel):
     involvedInExercise: bool = False
 # Scribe Template Models
 class ScribeTemplateEvent(BaseModel):
-    time: Optional[Union[time, str]] = None
+    time: str = ""
     event: str = ""
     observations: str = ""
-    
-    @validator('time', pre=True)
-    def parse_time(cls, v):
-        if v is None or v == "":
-            return None
-        if isinstance(v, time):
-            return v
-        if isinstance(v, str):
-            return string_to_time(v)
-        return v
-    
-    class Config:
-        json_encoders = {
-            time: time_to_string
-        }
 
 class ScribeTemplateCommunication(BaseModel):
-    time: Optional[Union[time, str]] = None
+    time: str = ""
     from_person: str = ""
     to_person: str = ""
     message: str = ""
     method: str = ""  # Radio, Phone, Face-to-face, etc.
     content: str = ""  # Longtext field for detailed content
-    
-    @validator('time', pre=True)
-    def parse_time(cls, v):
-        if v is None or v == "":
-            return None
-        if isinstance(v, time):
-            return v
-        if isinstance(v, str):
-            return string_to_time(v)
-        return v
-    
-    class Config:
-        json_encoders = {
-            time: time_to_string
-        }
 
 class ScribeTemplateDecision(BaseModel):
-    time: Optional[Union[time, str]] = None
+    time: str = ""
     decision: str = ""
     decision_maker: str = ""
     rationale: str = ""
-    
-    @validator('time', pre=True)
-    def parse_time(cls, v):
-        if v is None or v == "":
-            return None
-        if isinstance(v, time):
-            return v
-        if isinstance(v, str):
-            return string_to_time(v)
-        return v
-    
-    class Config:
-        json_encoders = {
-            time: time_to_string
-        }
 
 class ScribeTemplateIssue(BaseModel):
-    time: Optional[Union[time, str]] = None
+    time: str = ""
     issue: str = ""
     severity: str = ""  # Low, Medium, High, Critical
     resolution: str = ""
-    
-    @validator('time', pre=True)
-    def parse_time(cls, v):
-        if v is None or v == "":
-            return None
-        if isinstance(v, time):
-            return v
-        if isinstance(v, str):
-            return string_to_time(v)
-        return v
-    
-    class Config:
-        json_encoders = {
-            time: time_to_string
-        }
 
 class ScribeTemplateParticipantObs(BaseModel):
     participant: str = ""

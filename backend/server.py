@@ -509,6 +509,11 @@ class ScribeTemplateEvent(BaseModel):
         if isinstance(v, str):
             return string_to_time(v)
         return v
+    
+    class Config:
+        json_encoders = {
+            time: time_to_string
+        }
 
 class ScribeTemplateCommunication(BaseModel):
     time: Optional[Union[time, str]] = None

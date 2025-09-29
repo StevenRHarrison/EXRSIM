@@ -20,6 +20,46 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
+# Helper functions for time handling
+def time_to_string(time_obj: Optional[time]) -> str:
+    """Convert time object to string format for storage"""
+    if time_obj is None:
+        return ""
+    # Convert to 12-hour format with AM/PM
+    hour = time_obj.hour
+    minute = time_obj.minute
+    am_pm = "AM" if hour < 12 else "PM"
+    hour_12 = hour if hour <= 12 else hour - 12
+    hour_12 = 12 if hour_12 == 0 else hour_12
+    return f"{hour_12}:{minute:02d} {am_pm}"
+
+def string_to_time(time_str: str) -> Optional[time]:
+    """Convert string format to time object"""
+    if not time_str or time_str == "":
+        return None
+    try:
+        # Parse formats like "10:30 AM" or "2:15 PM"
+        time_str = time_str.strip()
+        if " " in time_str:
+            time_part, am_pm = time_str.rsplit(" ", 1)
+            hour_str, minute_str = time_part.split(":")
+            hour = int(hour_str)
+            minute = int(minute_str)
+            
+            # Convert to 24-hour format
+            if am_pm.upper() == "PM" and hour != 12:
+                hour += 12
+            elif am_pm.upper() == "AM" and hour == 12:
+                hour = 0
+                
+            return time(hour, minute)
+        else:
+            # Handle format without AM/PM (assume 24-hour format)
+            hour_str, minute_str = time_str.split(":")
+            return time(int(hour_str), int(minute_str))
+    except (ValueError, AttributeError):
+        return None
+
 # Create the main app without a prefix
 app = FastAPI()
 

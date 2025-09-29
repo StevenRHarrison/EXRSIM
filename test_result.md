@@ -534,10 +534,10 @@
 
 ## test_plan:
   current_focus:
-    - "Comprehensive Testing of Recent Complex Features"
-    - "Print functionality with branded footer - All exercise steps"  
-    - "Final Report menu item and summary functionality"
-    - "End-to-End validation system verification"
+    - "Digital Scribe Form Investigation - Exercise Not Found Error"
+    - "Digital Scribe Form Time Validation Testing (HH:MM AM/PM)"
+    - "End-to-End Scribe Template CRUD Operations"
+    - "Scribe Form Data Persistence and Retrieval"
   stuck_tasks: []
   test_all: true
   test_priority: "high_first"

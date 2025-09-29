@@ -9848,6 +9848,8 @@ function App() {
         return <HIRAView />;
       case 'participants':
         return <ParticipantsView />;
+      case 'resources':
+        return <ResourcesView />;
       case 'builder':
         return <ExerciseBuilder />;
       case 'manage':

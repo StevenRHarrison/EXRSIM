@@ -426,6 +426,8 @@ class Participant(BaseModel):
     country: str = "Canada"
     homePhone: str = ""
     cellPhone: str = ""
+    latitude: str = ""
+    longitude: str = ""
     involvedInExercise: bool = False
     profileImage: Optional[str] = None  # Base64 encoded image
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

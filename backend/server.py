@@ -494,6 +494,8 @@ class ParticipantCreate(BaseModel):
     latitude: str = ""
     longitude: str = ""
     involvedInExercise: bool = False
+    profileImage: Optional[str] = None  # Base64 encoded image
+
 # Scribe Template Models
 class ScribeTemplateEvent(BaseModel):
     time: str = ""

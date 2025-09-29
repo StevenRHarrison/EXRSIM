@@ -584,6 +584,40 @@ class ScribeTemplateUpdate(BaseModel):
     
     profileImage: Optional[str] = None
 
+# Resource Management Models
+class Resource(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    resource_type: str
+    identification: str
+    description: str
+    quantity_available: int
+    quantity_needed: int
+    location: str
+    contact_person: str
+    contact_phone: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ResourceCreate(BaseModel):
+    resource_type: str
+    identification: str
+    description: str
+    quantity_available: int
+    quantity_needed: int
+    location: str
+    contact_person: str
+    contact_phone: str
+
+class ResourceUpdate(BaseModel):
+    resource_type: Optional[str] = None
+    identification: Optional[str] = None
+    description: Optional[str] = None
+    quantity_available: Optional[int] = None
+    quantity_needed: Optional[int] = None
+    location: Optional[str] = None
+    contact_person: Optional[str] = None
+    contact_phone: Optional[str] = None
+
 # Helper functions
 def prepare_for_mongo(data):
     if isinstance(data, dict):

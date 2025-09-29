@@ -13,7 +13,7 @@ import os
 import base64
 
 # Get backend URL from frontend .env
-BACKEND_URL = "https://crisis-simulator-2.preview.emergentagent.com/api"
+BACKEND_URL = "https://exrsim-platform-1.preview.emergentagent.com/api"
 
 def test_participant_crud_api():
     """Test Participant CRUD API endpoints comprehensively"""

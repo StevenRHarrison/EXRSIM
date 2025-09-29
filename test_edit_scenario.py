@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 import sys
 
 # Get backend URL from frontend .env
-BACKEND_URL = "https://crisis-simulator-2.preview.emergentagent.com/api"
+BACKEND_URL = "https://exrsim-platform-1.preview.emergentagent.com/api"
 
 def test_edit_exercise_scenario():
     """Test the exact scenario: fetch exercise for editing and examine dynamic collections"""

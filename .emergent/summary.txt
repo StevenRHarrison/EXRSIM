@@ -1,22 +1,23 @@
 <analysis>
-The AI engineer systematically developed the EXRSIM application, focusing on critical features and bug fixes. Initial work involved configuring the stack and implementing core modules like Participants, HIRA, MSEL, and the 17-step Exercise Builder. Key issues addressed included the Exercise Builder's save functionality and add buttons, which were fixed via frontend agent. A major challenge was enabling the edit exercise workflow, requiring significant refactoring of frontend routing and data loading to handle existing exercise data. Subsequently, a persistent bug arose where dynamic exercise data (goals, objectives) was not being saved or loaded correctly, necessitating backend model updates and further frontend adjustments for persistence. The current focus is on debugging the frontend's failure to load these dynamic collections when an exercise is opened for editing, despite backend confirmation of data saving.
+The AI engineer systematically developed the EXRSIM application, addressing critical features and bug fixes. Initial efforts focused on configuring the tech stack, implementing core modules like Participants, HIRA, MSEL, and the 17-step Exercise Builder. Key challenges involved fixing the Exercise Builder's save and add functionalities, enabling the edit exercise workflow, and resolving a persistent bug where dynamic exercise data (goals, objectives) was not saving or loading correctly. This required significant refactoring of frontend routing, data loading, backend model updates, and form data collection. Subsequent work included adding an Assigned to field for participants, creating a comprehensive Exercise Management Dashboard with CRUD capabilities for individual steps, and implementing hierarchical sidebar menus. The engineer also tackled pervasive add button functionality issues across multiple steps in the Exercise Builder. The current task involves implementing validation for latitude/longitude, email, and phone number fields throughout the application.
 </analysis>
 
 <product_requirements>
-The EXRSIM application is an emergency training platform based on the Canadian Incident Command System. It features a top navigation bar with EXRSIM branding (orange font on black, dark theme), a main dashboard listing selectable exercises (name, description, date/times), and a left-side menu with links to MSEL, HIRA, Participants, and a step-by-step Exercise Builder. The HIRA module allows identifying and assessing threat levels of hazards, while Participants includes CRUD for contact information, position, and involvement in the current exercise, including image uploads and filtering. The Exercise Builder is a 17-step wizard for developing an exercise, encompassing details like exercise type, scope, purpose, scenario, goals, objectives, events (with tier scale and escalation values), functions, injections (from MSEL), organizations, team coordinators (from participant list), code words, callsigns, communication frequencies, assumptions, artificialities, and safety concerns (including identifying Safety Officer). The application should be easy to use and clear.
+The EXRSIM application is an emergency training platform based on the Canadian Incident Command System. It features a dark-themed UI with an orange and black branded top navigation. The main dashboard lists selectable exercises with details. A left-side menu provides access to MSEL, HIRA, Participants, and a 17-step Exercise Builder. HIRA manages hazard threat levels, while Participants handles CRUD for contact information, position (now with an expanded list), and exercise involvement, including image uploads and a new Assigned to field. The Exercise Builder allows creating exercises with comprehensive dynamic data across 17 steps (type, scope, purpose, scenario, goals, objectives, events, functions, injections, organizations, team coordinators, code words, callsigns, communication frequencies, assumptions, artificialities, safety concerns). After creation, exercises can be managed from a dedicated dashboard with menu items mirroring builder steps, allowing CRUD operations on retained data. This dashboard now includes hierarchical Exercise Steps and Improvement (Evaluations, Lessons Learned, Deficiencies, Near Misses, Comments, Corrective Actions) menus, and features like scope management with a modal. The application prioritizes ease of use, data persistence, and clarity.
 </product_requirements>
 
 <key_technical_concepts>
 - **Full-stack Development:** React frontend, FastAPI backend, MongoDB database.
-- **UI Frameworks:** Shadcn UI components, Tailwind CSS for styling.
-- **Data Handling:** Pydantic models, UUIDs for MongoDB IDs.
-- **API Communication:** Axios, .
-- **Frontend State Management:** , .
-- **Environment Management:**  files, backend                          STARTING  
-code-server                      STARTING  
-frontend                         STOPPED   Sep 26 06:49 PM
-mongodb                          STARTING  
-supervisor> .
+- **UI Frameworks:** Shadcn UI components, Tailwind CSS.
+- **Data Handling:** Pydantic models, UUIDs, , .
+- **API Communication:** Axios for HTTP requests,  for testing.
+- **Environment Management:**  files, backend                          RUNNING   pid 42, uptime 0:00:01
+code-server                      RUNNING   pid 45, uptime 0:00:01
+frontend                         STOPPED   Sep 29 03:12 PM
+mongodb                          RUNNING   pid 49, uptime 0:00:01
+supervisor>  for service control.
+- **Data Persistence:** Ensuring dynamic collections save/load correctly.
+- **Form Validation:** Implementing field-specific validation (latitude/longitude, email, phone).
 </key_technical_concepts>
 
 <code_architecture>
@@ -26,32 +27,43 @@ The application follows a standard full-stack architecture with a React frontend
 
 -   ****:
     -   **Importance**: Main FastAPI application file defining API routes and interacting with MongoDB.
-    -   **Changes**: The , , and  Pydantic models were significantly expanded. Initially, they contained basic exercise metadata. They were later modified to include comprehensive lists of dynamic data for all 17 steps, such as , , , , , , , , , , , , and . This enabled the backend to store the complex step-by-step exercise data.
+    -   **Changes**:
+        -   Expanded , , and  Pydantic models to include comprehensive lists of dynamic data for all 17 steps (e.g., , , , , , , , , , , , , ). This enabled the backend to store complex step-by-step exercise data.
+        -   Modified  and  models to include the new  field.
+        -   Updated  model to change  field from a restrictive  Enum to a regular string () to allow more flexible participant positions.
 -   ****:
-    -   **Importance**: Acts as the central hub for the React frontend, handling global state, routing, and incorporating major components, including the .
-    -   **Changes**: The  component, initially intended as a separate file, was directly embedded and extensively modified within . Key changes include:
-        -   **Edit Functionality**: Modified to accept an  prop.
-        -   **Save Logic**: Updated the  function to use  for new exercises and  for updates, dynamically checking for an .
-        -   **Routing**: Added a  to the main  component to parse URL hash parameters (e.g., ) to detect edit mode, fetch the corresponding exercise from the backend, and pass it as  to the wizard.
-        -   **Dynamic Data Management**: Introduced  hooks within  to manage dynamic lists (e.g., , , ).
-        -   **Add Buttons**: Implemented ,  functions and other similar handlers to dynamically add items to the respective state arrays.
-        -   **Step Saving**: Created a  function to handle saving individual step data.
-        -   **Data Loading**: Added a  within the  to populate its internal state with dynamic data from the  prop when an existing exercise is loaded for editing. Debug logs were recently added to this  to trace loading issues.
+    -   **Importance**: Acts as the central hub for the React frontend, handling global state, routing, and incorporating major components.
+    -   **Changes**:
+        -   **Exercise Builder**:
+            -   The  component was directly embedded and extensively modified.
+            -   **Edit Functionality**: Modified  to correctly load dynamic data (goals, objectives, events, etc.) into respective  hooks when an existing exercise is opened for editing.
+            -   **Save Logic**: Updated  function to explicitly include all dynamic collections (, , , etc.) in the payload sent to the backend, fixing a critical data persistence bug.
+            -   **Individual Step Saves**: Implemented Save Step buttons for all 17 steps within the  function.
+            -   **Add Buttons**: Fixed the add button functionality for Steps 7-17 (Events, Functions, Organizations, Code Words, Callsigns, Comm Frequencies, Assumptions, Artificialities, Safety) by connecting form fields to  state variables, adding  handlers, and ensuring dynamic data display.
+        -   **Participants**:
+            -   Updated the  array with a new, extended list of emergency exercise roles.
+            -   Added a new  field to the  component, including its dropdown  list.
+            -   Modified  in  to include  in the payload and updated  to load  for editing participants.
+            -   Adjusted  to display the new  field.
+        -   **Exercise Management Dashboard**:
+            -   Introduced a new  component and configured routing to .
+            -   Modified exercise cards in the main  to redirect to this new management dashboard.
+            -   Implemented initial CRUD components for Goals, Objectives, and Events within the management dashboard.
+            -   Added a  component with full CRUD functionality for the Scope section, handling its state and API interactions.
+            -   Refactored the sidebar menu to a hierarchical structure with collapsible Exercise Steps and Improvement sections, including sub-menu items (Evaluations, Lessons Learned, Deficiencies, etc.), and integrated necessary icons (, ).
+        -   **Global**: Added validation helper functions (, , , ) at the top for future field integration.
 </code_architecture>
 
 <pending_tasks>
--   Debug and fix the issue where dynamic collections (goals, objectives, events, etc.) are not being loaded into the  state when an existing exercise is opened for editing.
--   Implement individual Save buttons for each step (1-17) of the Exercise Builder.
+- Integrate latitude/longitude, email, and phone number validation functions into all relevant frontend form fields, adding placeholders and user feedback for incorrect entries (as these are not required fields).
 </pending_tasks>
 
 <current_work>
-The immediate focus is on a critical bug in the Exercise Builder's edit workflow: when a user attempts to edit a previously saved exercise, the dynamic collections (such as goals, objectives, events, functions, etc.) are not being loaded and pre-populated into the respective form fields, leading to data loss upon re-saving.
+The current work involves implementing proper validation and formatting for latitude/longitude, email, and phone number fields throughout the EXRSIM application. The previous AI engineer has completed the initial step of this task, which was to identify all occurrences of these fields in the  file and then create the necessary validation helper functions: , , , and . These functions have been successfully added to the top of .
 
-Previous testing confirmed that the backend () has been updated successfully to persist all dynamic collections and that the backend API is correctly saving and retrieving this data. The problem has been isolated to the frontend, specifically within the  hook in  that is responsible for populating the 's internal state with the  data.
-
-The AI engineer has added debug logging to this  (around line 2890 in ) to trace the flow of data loading. Recent observations from backend API calls confirmed that saved exercises *do* contain dynamic data, indicating the issue is solely a frontend loading/state-setting problem.
+The immediate next step is to integrate these validation functions into the actual form fields. Specifically, the task is to start with the participant form fields (which include email and phone numbers) to apply the validation, add appropriate placeholders (e.g., stevenharrison@email.com for email, 123-456-7890 for phone), and provide user feedback if an incorrect format is entered. These fields are explicitly stated as not required, so the validation should only apply if a value is present.
 </current_work>
 
 <optional_next_step>
-Analyze the debug logs from the  in  to determine why dynamic collections aren't loading.
+Update the participant form fields in  to use the new email and phone number validation functions.
 </optional_next_step>

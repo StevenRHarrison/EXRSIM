@@ -12,7 +12,7 @@ import sys
 import os
 
 # Get backend URL from frontend .env
-BACKEND_URL = "https://crisis-simulator-2.preview.emergentagent.com/api"
+BACKEND_URL = "https://exrsim-platform-1.preview.emergentagent.com/api"
 
 def create_comprehensive_test_data():
     """Create comprehensive test data covering ALL 17 steps as specified in review request"""

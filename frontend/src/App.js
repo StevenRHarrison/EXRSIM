@@ -6426,6 +6426,98 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
                     exercise?.scope_geographic_area || exercise?.scope_functions || 
                     exercise?.scope_organizations || exercise?.scope_personnel;
 
+    // Print function for Scope
+    const printScope = () => {
+      const currentDateTime = new Date().toLocaleString();
+      const printContent = `
+        <html>
+          <head>
+            <title>Exercise Scope - ${exercise.name || 'Exercise'}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              .header { border-bottom: 2px solid #333; margin-bottom: 20px; padding-bottom: 10px; }
+              .scope-section { border: 1px solid #ddd; margin-bottom: 15px; padding: 15px; border-radius: 5px; }
+              .scope-title { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: #333; }
+              .scope-content { margin-bottom: 10px; color: #666; line-height: 1.6; }
+              .footer { 
+                position: fixed; 
+                bottom: 20px; 
+                left: 20px; 
+                right: 20px; 
+                text-align: center; 
+                font-size: 12px; 
+                color: #666; 
+                border-top: 1px solid #ddd; 
+                padding-top: 10px; 
+              }
+              @media print { 
+                body { margin: 0; padding: 20px; } 
+                .no-print { display: none; }
+                .footer { position: fixed; bottom: 0; }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1>Exercise Scope</h1>
+              <h2>${exercise.name || 'Exercise Name'}</h2>
+              <p>Exercise Type: ${exercise.exercise_type || 'N/A'}</p>
+              <p>Generated on: ${new Date().toLocaleDateString()}</p>
+            </div>
+            <div class="scope-content">
+              ${exercise.scope_description ? `
+                <div class="scope-section">
+                  <div class="scope-title">Description</div>
+                  <div class="scope-content">${exercise.scope_description}</div>
+                </div>
+              ` : ''}
+              ${exercise.scope_hazards ? `
+                <div class="scope-section">
+                  <div class="scope-title">Hazards</div>
+                  <div class="scope-content">${exercise.scope_hazards}</div>
+                </div>
+              ` : ''}
+              ${exercise.scope_geographic_area ? `
+                <div class="scope-section">
+                  <div class="scope-title">Geographic Area</div>
+                  <div class="scope-content">${exercise.scope_geographic_area}</div>
+                </div>
+              ` : ''}
+              ${exercise.scope_functions ? `
+                <div class="scope-section">
+                  <div class="scope-title">Functions</div>
+                  <div class="scope-content">${exercise.scope_functions}</div>
+                </div>
+              ` : ''}
+              ${exercise.scope_organizations ? `
+                <div class="scope-section">
+                  <div class="scope-title">Organizations</div>
+                  <div class="scope-content">${exercise.scope_organizations}</div>
+                </div>
+              ` : ''}
+              ${exercise.scope_personnel ? `
+                <div class="scope-section">
+                  <div class="scope-title">Personnel</div>
+                  <div class="scope-content">${exercise.scope_personnel}</div>
+                </div>
+              ` : ''}
+              ${!hasScope ? '<p>No scope information has been defined for this exercise.</p>' : ''}
+            </div>
+            <div class="footer">
+              <p>Generated on: ${currentDateTime} | Powered by EXRSIM</p>
+            </div>
+          </body>
+        </html>
+      `;
+
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    };
+
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">

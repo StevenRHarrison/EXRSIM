@@ -2353,7 +2353,7 @@ const HIRAForm = ({ onBack, onSave, editingEntry = null }) => {
   const validateLatitudeField = (lat) => {
     if (lat === '' || lat === 0) return ''; // Field is not required
     if (!validateLatitude(lat)) {
-      return 'Please enter a valid latitude (-90 to 90)';
+      return 'Please enter latitude in format +45.1234 (range: -90.0000 to 90.0000)';
     }
     return '';
   };
@@ -2361,13 +2361,13 @@ const HIRAForm = ({ onBack, onSave, editingEntry = null }) => {
   const validateLongitudeField = (lng) => {
     if (lng === '' || lng === 0) return ''; // Field is not required
     if (!validateLongitude(lng)) {
-      return 'Please enter a valid longitude (-180 to 180)';
+      return 'Please enter longitude in format -97.0000 (range: -180.0000 to +180.0000)';
     }
     return '';
   };
 
   const handleLatitudeChange = (e) => {
-    const lat = parseFloat(e.target.value) || 0;
+    const lat = e.target.value;
     setFormData(prev => ({ ...prev, latitude: lat }));
     
     // Real-time validation
@@ -2376,7 +2376,7 @@ const HIRAForm = ({ onBack, onSave, editingEntry = null }) => {
   };
 
   const handleLongitudeChange = (e) => {
-    const lng = parseFloat(e.target.value) || 0;
+    const lng = e.target.value;
     setFormData(prev => ({ ...prev, longitude: lng }));
     
     // Real-time validation

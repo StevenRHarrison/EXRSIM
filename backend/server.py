@@ -454,6 +454,90 @@ class ParticipantCreate(BaseModel):
     latitude: str = ""
     longitude: str = ""
     involvedInExercise: bool = False
+# Scribe Template Models
+class ScribeTemplateEvent(BaseModel):
+    time: str = ""
+    event: str = ""
+    observations: str = ""
+
+class ScribeTemplateCommunication(BaseModel):
+    time: str = ""
+    from_person: str = ""
+    to_person: str = ""
+    message: str = ""
+    method: str = ""  # Radio, Phone, Face-to-face, etc.
+
+class ScribeTemplateDecision(BaseModel):
+    time: str = ""
+    decision: str = ""
+    decision_maker: str = ""
+    rationale: str = ""
+
+class ScribeTemplateIssue(BaseModel):
+    time: str = ""
+    issue: str = ""
+    severity: str = ""  # Low, Medium, High, Critical
+    resolution: str = ""
+
+class ScribeTemplateParticipantObs(BaseModel):
+    participant: str = ""
+    role: str = ""
+    performance: str = ""
+    notes: str = ""
+
+class ScribeTemplate(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    exercise_id: str
+    scribe_name: str = ""
+    scribe_signature: str = ""
+    exercise_start_time: str = ""
+    exercise_end_time: str = ""
+    
+    # Timeline & Key Events
+    timeline_events: List[ScribeTemplateEvent] = Field(default_factory=list)
+    
+    # Communications Log
+    communications: List[ScribeTemplateCommunication] = Field(default_factory=list)
+    
+    # Decision Points & Actions
+    decisions: List[ScribeTemplateDecision] = Field(default_factory=list)
+    
+    # Issues & Challenges
+    issues: List[ScribeTemplateIssue] = Field(default_factory=list)
+    
+    # Participant Performance
+    participant_observations: List[ScribeTemplateParticipantObs] = Field(default_factory=list)
+    
+    # Additional Notes
+    additional_notes: str = ""
+    
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ScribeTemplateCreate(BaseModel):
+    exercise_id: str
+    scribe_name: str = ""
+    scribe_signature: str = ""
+    exercise_start_time: str = ""
+    exercise_end_time: str = ""
+    timeline_events: List[ScribeTemplateEvent] = Field(default_factory=list)
+    communications: List[ScribeTemplateCommunication] = Field(default_factory=list)
+    decisions: List[ScribeTemplateDecision] = Field(default_factory=list)
+    issues: List[ScribeTemplateIssue] = Field(default_factory=list)
+    participant_observations: List[ScribeTemplateParticipantObs] = Field(default_factory=list)
+    additional_notes: str = ""
+
+class ScribeTemplateUpdate(BaseModel):
+    scribe_name: Optional[str] = None
+    scribe_signature: Optional[str] = None
+    exercise_start_time: Optional[str] = None
+    exercise_end_time: Optional[str] = None
+    timeline_events: Optional[List[ScribeTemplateEvent]] = None
+    communications: Optional[List[ScribeTemplateCommunication]] = None
+    decisions: Optional[List[ScribeTemplateDecision]] = None
+    issues: Optional[List[ScribeTemplateIssue]] = None
+    participant_observations: Optional[List[ScribeTemplateParticipantObs]] = None
+    additional_notes: Optional[str] = None
     profileImage: Optional[str] = None
 
 # Helper functions

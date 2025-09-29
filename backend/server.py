@@ -451,6 +451,8 @@ class ParticipantCreate(BaseModel):
     country: str = "Canada"
     homePhone: str = ""
     cellPhone: str = ""
+    latitude: str = ""
+    longitude: str = ""
     involvedInExercise: bool = False
     profileImage: Optional[str] = None
 

@@ -376,6 +376,13 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
   });
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  
+  // Validation error states
+  const [validationErrors, setValidationErrors] = useState({
+    email: '',
+    homePhone: '',
+    cellPhone: ''
+  });
 
   const positions = [
     'Exercise Evaluator',

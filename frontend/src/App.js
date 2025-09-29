@@ -6572,6 +6572,7 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
   const renderGoalsManagement = () => {
     // Print function for Goals
     const printGoals = () => {
+      const currentDateTime = new Date().toLocaleString();
       const printContent = `
         <html>
           <head>
@@ -6586,9 +6587,21 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
               .status-yes { background-color: #d4edda; color: #155724; }
               .status-partial { background-color: #fff3cd; color: #856404; }
               .status-no { background-color: #f8d7da; color: #721c24; }
+              .footer { 
+                position: fixed; 
+                bottom: 20px; 
+                left: 20px; 
+                right: 20px; 
+                text-align: center; 
+                font-size: 12px; 
+                color: #666; 
+                border-top: 1px solid #ddd; 
+                padding-top: 10px; 
+              }
               @media print { 
-                body { margin: 0; } 
+                body { margin: 0; padding: 20px; } 
                 .no-print { display: none; }
+                .footer { position: fixed; bottom: 0; }
               }
             </style>
           </head>
@@ -6616,6 +6629,9 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
                 `).join('') 
                 : '<p>No goals have been defined for this exercise.</p>'
               }
+            </div>
+            <div class="footer">
+              <p>Generated on: ${currentDateTime} | Powered by EXRSIM</p>
             </div>
           </body>
         </html>

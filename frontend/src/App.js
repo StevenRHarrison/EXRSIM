@@ -6119,8 +6119,7 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
   };
 
   const topLevelMenuItems = [
-    { id: 'overview', title: 'Exercise Overview', icon: Shield },
-    { id: 'final_report', title: 'Final Report', icon: FileText }
+    { id: 'overview', title: 'Exercise Overview', icon: Shield }
   ];
 
   const exerciseStepsMenuItems = [

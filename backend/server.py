@@ -853,7 +853,9 @@ async def create_scribe_template(template: ScribeTemplateCreate):
 async def get_scribe_templates():
     try:
         templates = await db.scribe_templates.find().to_list(length=None)
-        return [ScribeTemplate(**template) for template in templates]
+        # Convert time strings back to time objects for each template
+        parsed_templates = [parse_scribe_data_from_mongo(template) for template in templates]
+        return [ScribeTemplate(**template) for template in parsed_templates]
     except Exception as e:
         logger.error(f"Error fetching scribe templates: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -862,7 +864,9 @@ async def get_scribe_templates():
 async def get_scribe_templates_by_exercise(exercise_id: str):
     try:
         templates = await db.scribe_templates.find({"exercise_id": exercise_id}).to_list(length=None)
-        return [ScribeTemplate(**template) for template in templates]
+        # Convert time strings back to time objects for each template
+        parsed_templates = [parse_scribe_data_from_mongo(template) for template in templates]
+        return [ScribeTemplate(**template) for template in parsed_templates]
     except Exception as e:
         logger.error(f"Error fetching scribe templates for exercise {exercise_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -873,7 +877,9 @@ async def get_scribe_template(template_id: str):
         template = await db.scribe_templates.find_one({"id": template_id})
         if not template:
             raise HTTPException(status_code=404, detail="Scribe template not found")
-        return ScribeTemplate(**template)
+        # Convert time strings back to time objects
+        response_data = parse_scribe_data_from_mongo(template)
+        return ScribeTemplate(**response_data)
     except HTTPException:
         raise
     except Exception as e:

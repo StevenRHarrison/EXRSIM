@@ -1988,6 +1988,19 @@ const ResourceForm = ({ onBack, onSave, editingResource }) => {
               </div>
             </div>
 
+            {/* Exercise Involvement */}
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="involved_in_exercise"
+                checked={formData.involved_in_exercise}
+                onCheckedChange={(checked) => handleInputChange('involved_in_exercise', checked)}
+                className="border-gray-600 data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500"
+              />
+              <Label htmlFor="involved_in_exercise" className="text-white text-sm">
+                This resource is involved in the current exercise
+              </Label>
+            </div>
+
             {/* Submit Button */}
             <div className="flex justify-end space-x-4 pt-6">
               <Button

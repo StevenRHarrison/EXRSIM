@@ -2240,6 +2240,12 @@ const HIRAForm = ({ onBack, onSave, editingEntry = null }) => {
   });
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  
+  // Validation error states
+  const [validationErrors, setValidationErrors] = useState({
+    latitude: '',
+    longitude: ''
+  });
 
   const disasterTypes = [
     // Manmade disasters

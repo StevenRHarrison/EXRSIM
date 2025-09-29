@@ -491,8 +491,8 @@ class ScribeTemplate(BaseModel):
     exercise_id: str
     scribe_name: str = ""
     scribe_signature: str = ""
-    exercise_start_time: str = ""
-    exercise_end_time: str = ""
+    exercise_start_time: Optional[time] = None
+    exercise_end_time: Optional[time] = None
     
     # Timeline & Key Events
     timeline_events: List[ScribeTemplateEvent] = Field(default_factory=list)
@@ -519,8 +519,8 @@ class ScribeTemplateCreate(BaseModel):
     exercise_id: str
     scribe_name: str = ""
     scribe_signature: str = ""
-    exercise_start_time: str = ""
-    exercise_end_time: str = ""
+    exercise_start_time: Optional[time] = None
+    exercise_end_time: Optional[time] = None
     timeline_events: List[ScribeTemplateEvent] = Field(default_factory=list)
     communications: List[ScribeTemplateCommunication] = Field(default_factory=list)
     decisions: List[ScribeTemplateDecision] = Field(default_factory=list)

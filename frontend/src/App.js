@@ -62,8 +62,66 @@ import {
   CheckSquare
 } from 'lucide-react';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const API = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+
+// Validation functions
+const validateLatitude = (lat) => {
+  const num = parseFloat(lat);
+  return !isNaN(num) && num >= -90 && num <= 90;
+};
+
+const validateLongitude = (lng) => {
+  const num = parseFloat(lng);
+  return !isNaN(num) && num >= -180 && num <= 180;
+};
+
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const validatePhone = (phone) => {
+  const phoneRegex = /^\d{3}-\d{3}-\d{4}$/;
+  return phoneRegex.test(phone);
+};
+
+const formatPhone = (input) => {
+  // Remove all non-digit characters
+  const digits = input.replace(/\D/g, '');
+  
+  // Format as XXX-XXX-XXXX
+  if (digits.length <= 3) {
+    return digits;
+  } else if (digits.length <= 6) {
+    return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+  } else {
+    return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+  }
+};
+
+const formatCoordinate = (input, type) => {
+  // Remove any non-digit, non-decimal, non-minus characters
+  const cleaned = input.replace(/[^0-9.-]/g, '');
+  
+  // Ensure only one decimal point and one minus sign at the beginning
+  let formatted = cleaned;
+  const decimalCount = (formatted.match(/\./g) || []).length;
+  const minusCount = (formatted.match(/-/g) || []).length;
+  
+  if (decimalCount > 1) {
+    const firstDecimalIndex = formatted.indexOf('.');
+    formatted = formatted.substring(0, firstDecimalIndex + 1) + formatted.substring(firstDecimalIndex + 1).replace(/\./g, '');
+  }
+  
+  if (minusCount > 1 || (minusCount === 1 && formatted.indexOf('-') !== 0)) {
+    formatted = formatted.replace(/-/g, '');
+    if (input.startsWith('-')) {
+      formatted = '-' + formatted;
+    }
+  }
+  
+  return formatted;
+};
 
 // Navigation Component
 const Navigation = () => {

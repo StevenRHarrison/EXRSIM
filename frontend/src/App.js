@@ -275,14 +275,25 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold text-orange-500 mb-2">Exercise Dashboard</h1>
           <p className="text-gray-400">Manage your emergency training exercises</p>
         </div>
-        <Button 
-          className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
-          onClick={() => window.location.href = '#builder'}
-          data-testid="new-exercise-btn"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          New Exercise
-        </Button>
+        <div className="flex items-center space-x-3">
+          <Button 
+            variant="outline" 
+            className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-orange-500"
+            onClick={() => printDashboard()}
+            title="Print Exercises Summary"
+          >
+            <Printer className="h-4 w-4 mr-2" />
+            Print Summary
+          </Button>
+          <Button 
+            className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
+            onClick={() => window.location.href = '#builder'}
+            data-testid="new-exercise-btn"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            New Exercise
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

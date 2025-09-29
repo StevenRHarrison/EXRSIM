@@ -418,6 +418,7 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
     'Medical',
     'Supervisor',
     'Security',
+    'Safety Officer',
     'Facilitator',
     'Umpire',
     'Scribe',

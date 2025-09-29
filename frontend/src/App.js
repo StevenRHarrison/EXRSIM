@@ -2144,6 +2144,14 @@ const ResourcesList = ({ onAddNew, onEdit }) => {
             >
               Insufficient ({resources.filter(r => r.quantity_available < r.quantity_needed).length})
             </Button>
+            <Button
+              variant={filter === 'involved' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('involved')}
+              className={filter === 'involved' ? 'bg-orange-500 text-black' : 'text-gray-400 border-gray-600 hover:bg-gray-800 hover:text-white'}
+            >
+              Involved ({resources.filter(r => r.involved_in_exercise).length})
+            </Button>
           </div>
         </CardContent>
       </Card>

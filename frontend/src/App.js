@@ -9211,7 +9211,7 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
               variant="outline"
               className="border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
               onClick={printFilledTemplate}
-              disabled={!formData.scribe_name}
+              disabled={!scribeFormData.scribe_name}
             >
               <Printer className="h-4 w-4 mr-2" />
               Print Filled Template

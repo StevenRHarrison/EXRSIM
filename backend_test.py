@@ -1640,7 +1640,11 @@ if __name__ == "__main__":
     print("\n📝 Testing MSEL Management APIs...")
     test_results.append(("MSEL Management API", test_msel_api()))
     
-    # Test 5: Data Validation
+    # Test 5: Digital Scribe Template APIs (HIGH PRIORITY)
+    print("\n📋 Testing Digital Scribe Template APIs...")
+    test_results.append(("Digital Scribe Template API", test_scribe_template_api()))
+    
+    # Test 6: Data Validation
     print("\n🔍 Testing Data Validation...")
     test_results.append(("Data Validation", test_data_validation()))
     

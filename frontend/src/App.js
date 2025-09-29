@@ -9240,8 +9240,8 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
                 <Label htmlFor="scribe_name" className="text-gray-300">Scribe Name</Label>
                 <Input
                   id="scribe_name"
-                  value={formData.scribe_name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, scribe_name: e.target.value }))}
+                  value={scribeFormData.scribe_name}
+                  onChange={(e) => setScribeFormData(prev => ({ ...prev, scribe_name: e.target.value }))}
                   className="bg-gray-700 border-gray-600 text-white"
                   placeholder="Enter scribe name"
                 />
@@ -9250,8 +9250,8 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
                 <Label htmlFor="scribe_signature" className="text-gray-300">Scribe Signature</Label>
                 <Input
                   id="scribe_signature"
-                  value={formData.scribe_signature}
-                  onChange={(e) => setFormData(prev => ({ ...prev, scribe_signature: e.target.value }))}
+                  value={scribeFormData.scribe_signature}
+                  onChange={(e) => setScribeFormData(prev => ({ ...prev, scribe_signature: e.target.value }))}
                   className="bg-gray-700 border-gray-600 text-white"
                   placeholder="Enter signature"
                 />
@@ -9260,8 +9260,8 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
                 <Label htmlFor="start_time" className="text-gray-300">Exercise Start Time</Label>
                 <Input
                   id="start_time"
-                  value={formData.exercise_start_time}
-                  onChange={(e) => setFormData(prev => ({ ...prev, exercise_start_time: e.target.value }))}
+                  value={scribeFormData.exercise_start_time}
+                  onChange={(e) => setScribeFormData(prev => ({ ...prev, exercise_start_time: e.target.value }))}
                   className="bg-gray-700 border-gray-600 text-white"
                   placeholder="HH:MM"
                 />
@@ -9270,8 +9270,8 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
                 <Label htmlFor="end_time" className="text-gray-300">Exercise End Time</Label>
                 <Input
                   id="end_time"
-                  value={formData.exercise_end_time}
-                  onChange={(e) => setFormData(prev => ({ ...prev, exercise_end_time: e.target.value }))}
+                  value={scribeFormData.exercise_end_time}
+                  onChange={(e) => setScribeFormData(prev => ({ ...prev, exercise_end_time: e.target.value }))}
                   className="bg-gray-700 border-gray-600 text-white"
                   placeholder="HH:MM"
                 />

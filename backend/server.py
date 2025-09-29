@@ -922,21 +922,16 @@ async def update_scribe_template(template_id: str, template_update: ScribeTempla
         update_data = {k: v for k, v in template_update.dict().items() if v is not None}
         update_data['updated_at'] = datetime.now(timezone.utc)
         
-        # Convert time objects to strings for MongoDB storage
-        mongo_update_data = prepare_scribe_data_for_mongo(update_data)
-        
         result = await db.scribe_templates.update_one(
             {"id": template_id},
-            {"$set": mongo_update_data}
+            {"$set": update_data}
         )
         
         if result.modified_count == 0:
             raise HTTPException(status_code=404, detail="Scribe template not found")
         
         updated_template = await db.scribe_templates.find_one({"id": template_id})
-        # Convert time strings back to time objects for response
-        response_data = parse_scribe_data_from_mongo(updated_template)
-        return ScribeTemplate(**response_data)
+        return ScribeTemplate(**updated_template)
     except HTTPException:
         raise
     except Exception as e:

@@ -6570,17 +6570,86 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
   };
 
   const renderGoalsManagement = () => {
+    // Print function for Goals
+    const printGoals = () => {
+      const printContent = `
+        <html>
+          <head>
+            <title>Exercise Goals - ${exercise.name || 'Exercise'}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              .header { border-bottom: 2px solid #333; margin-bottom: 20px; padding-bottom: 10px; }
+              .goal-item { border: 1px solid #ddd; margin-bottom: 15px; padding: 15px; border-radius: 5px; }
+              .goal-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+              .goal-description { margin-bottom: 10px; color: #666; }
+              .goal-status { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+              .status-yes { background-color: #d4edda; color: #155724; }
+              .status-partial { background-color: #fff3cd; color: #856404; }
+              .status-no { background-color: #f8d7da; color: #721c24; }
+              @media print { 
+                body { margin: 0; } 
+                .no-print { display: none; }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1>Exercise Goals</h1>
+              <h2>${exercise.name || 'Exercise Name'}</h2>
+              <p>Exercise Type: ${exercise.exercise_type || 'N/A'}</p>
+              <p>Generated on: ${new Date().toLocaleDateString()}</p>
+            </div>
+            <div class="goals-content">
+              ${exercise.goals && exercise.goals.length > 0 ? 
+                exercise.goals.map((goal, index) => `
+                  <div class="goal-item">
+                    <div class="goal-title">${index + 1}. ${goal.name || 'Unnamed Goal'}</div>
+                    <div class="goal-description">${goal.description || 'No description provided'}</div>
+                    <div class="goal-status ${
+                      goal.achieved === 'Yes' ? 'status-yes' :
+                      goal.achieved === 'Partial' ? 'status-partial' :
+                      'status-no'
+                    }">
+                      Status: ${goal.achieved || 'No'}
+                    </div>
+                  </div>
+                `).join('') 
+                : '<p>No goals have been defined for this exercise.</p>'
+              }
+            </div>
+          </body>
+        </html>
+      `;
+
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    };
+
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-white">Exercise Goals</h1>
-          <Button 
-            className="bg-orange-500 hover:bg-orange-600 text-black"
-            onClick={() => {/* Add new goal logic */}}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Goal
-          </Button>
+          <div className="flex space-x-3">
+            <Button 
+              variant="outline"
+              className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+              onClick={printGoals}
+            >
+              <Printer className="h-4 w-4 mr-2" />
+              Print Goals
+            </Button>
+            <Button 
+              className="bg-orange-500 hover:bg-orange-600 text-black"
+              onClick={() => {/* Add new goal logic */}}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Goal
+            </Button>
+          </div>
         </div>
 
         {/* Goals List */}

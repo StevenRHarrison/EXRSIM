@@ -7763,17 +7763,29 @@ const ExerciseManagementDashboard = ({ exerciseId }) => {
   };
 
   const renderCorrectiveActionsManagement = () => {
+    const printCorrectiveActions = createPrintFunction('corrective', 'Exercise Corrective Actions');
+
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-white">Corrective Actions</h1>
-          <Button 
-            className="bg-orange-500 hover:bg-orange-600 text-black"
-            onClick={() => {/* Add new corrective action logic */}}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Corrective Action
-          </Button>
+          <div className="flex space-x-3">
+            <Button 
+              variant="outline"
+              className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+              onClick={printCorrectiveActions}
+            >
+              <Printer className="h-4 w-4 mr-2" />
+              Print Corrective Actions
+            </Button>
+            <Button 
+              className="bg-orange-500 hover:bg-orange-600 text-black"
+              onClick={() => {/* Add new corrective action logic */}}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Corrective Action
+            </Button>
+          </div>
         </div>
 
         <Card className="bg-gray-800 border-gray-700 border-dashed">

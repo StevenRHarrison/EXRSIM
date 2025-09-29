@@ -554,6 +554,41 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
     setValidationErrors(prev => ({ ...prev, cellPhone: error }));
   };
 
+  // Validation helper functions for participant coordinates
+  const validateParticipantLatitudeField = (lat) => {
+    if (lat === '' || lat === null || lat === undefined) return ''; // Field is not required
+    if (!validateLatitude(lat)) {
+      return 'Please enter latitude in format +45.1234 (range: -90.0000 to 90.0000)';
+    }
+    return '';
+  };
+
+  const validateParticipantLongitudeField = (lng) => {
+    if (lng === '' || lng === null || lng === undefined) return ''; // Field is not required
+    if (!validateLongitude(lng)) {
+      return 'Please enter longitude in format -97.0000 (range: -180.0000 to +180.0000)';
+    }
+    return '';
+  };
+
+  const handleParticipantLatitudeChange = (e) => {
+    const lat = e.target.value;
+    setFormData(prev => ({ ...prev, latitude: lat }));
+    
+    // Real-time validation
+    const error = validateParticipantLatitudeField(lat);
+    setValidationErrors(prev => ({ ...prev, latitude: error }));
+  };
+
+  const handleParticipantLongitudeChange = (e) => {
+    const lng = e.target.value;
+    setFormData(prev => ({ ...prev, longitude: lng }));
+    
+    // Real-time validation
+    const error = validateParticipantLongitudeField(lng);
+    setValidationErrors(prev => ({ ...prev, longitude: error }));
+  };
+
   useEffect(() => {
     if (editingParticipant) {
       setFormData({

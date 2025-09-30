@@ -9513,7 +9513,7 @@ const ExerciseManagementDashboard = ({
             {/* Report Actions */}
             <div className="space-y-3">
               <h3 className="text-lg font-semibold text-white">Report Actions</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex space-x-4">
                 <Button 
                   variant="outline" 
                   className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
@@ -9521,20 +9521,6 @@ const ExerciseManagementDashboard = ({
                 >
                   <FileText className="h-4 w-4 mr-2" />
                   Generate Full Report
-                </Button>
-                <Button 
-                  variant="outline"
-                  className="border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
-                >
-                  <Trophy className="h-4 w-4 mr-2" />
-                  Goals Summary
-                </Button>
-                <Button 
-                  variant="outline"
-                  className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
-                >
-                  <ShieldAlert className="h-4 w-4 mr-2" />
-                  Safety Summary
                 </Button>
               </div>
             </div>

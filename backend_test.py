@@ -1608,6 +1608,419 @@ def test_health_check():
         print(f"❌ Health check failed: {e}")
         return False
 
+def test_evaluation_report_crud_api():
+    """Test Evaluation Report CRUD API endpoints with comprehensive rating system testing"""
+    print("=" * 60)
+    print("TESTING EVALUATION REPORT CRUD API ENDPOINTS - RATING PERSISTENCE VERIFICATION")
+    print("=" * 60)
+    
+    # Test data with comprehensive rating system as specified in review request
+    test_evaluation_data = {
+        "exercise_id": "4bb39755-0b97-4ded-902d-7f9325f3d9a9",  # Valid exercise ID
+        "report_title": "Emergency Response Exercise Evaluation",
+        "evaluator_name": "Dr. Sarah Wilson",
+        "evaluator_organization": "Emergency Management Institute",
+        "evaluation_date": "2024-03-15",
+        
+        # Main sections
+        "exercise_overview": "Comprehensive emergency response exercise testing multi-agency coordination",
+        "summary_of_findings": "Overall performance was excellent with strong coordination between agencies",
+        "strengths": "Excellent communication protocols and rapid response times",
+        "areas_for_improvement": "Resource allocation could be optimized for better efficiency",
+        "key_findings_narrative": "The exercise demonstrated effective emergency response capabilities",
+        "recommendations": "Continue regular training exercises and improve resource tracking systems",
+        "appendices": "Supporting documentation and detailed logs attached",
+        
+        # Key Areas Assessment with NEW RATING SYSTEM
+        "command_and_control": {
+            "area_name": "Command and Control",
+            "rating": "Excellent",
+            "comments": "Outstanding leadership and clear command structure maintained throughout"
+        },
+        "communication": {
+            "area_name": "Communication",
+            "rating": "Satisfactory", 
+            "comments": "Good overall communication with minor delays in some transmissions"
+        },
+        "resource_management": {
+            "area_name": "Resource Management",
+            "rating": "Needs Improvement",
+            "comments": "Resource allocation was slow and could be more efficient"
+        },
+        "safety_and_security": {
+            "area_name": "Safety and Security",
+            "rating": "Excellent",
+            "comments": "All safety protocols followed perfectly with no incidents"
+        },
+        "operational_effectiveness": {
+            "area_name": "Operational Effectiveness",
+            "rating": "Satisfactory",
+            "comments": "Operations were effective but some procedures could be streamlined"
+        },
+        "training_and_readiness": {
+            "area_name": "Training and Readiness",
+            "rating": "Not Rated",
+            "comments": "Training assessment was not part of this exercise scope"
+        },
+        "plan_adherence_adaptability": {
+            "area_name": "Plan Adherence and Adaptability",
+            "rating": "Needs Improvement",
+            "comments": "Some deviations from plan were necessary but adaptation was slow"
+        },
+        
+        # Supporting documents
+        "evaluation_images": ["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="]
+    }
+    
+    created_report_id = None
+    
+    try:
+        # Test 1: GET /api/evaluation-reports (Get all evaluation reports)
+        print("\n1. Testing GET /api/evaluation-reports")
+        response = requests.get(f"{BACKEND_URL}/evaluation-reports")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            initial_reports = response.json()
+            print(f"✅ Successfully retrieved {len(initial_reports)} existing evaluation reports")
+        else:
+            print(f"❌ Failed to get evaluation reports: {response.text}")
+            return False
+            
+        # Test 2: POST /api/evaluation-reports (Create evaluation report with comprehensive ratings)
+        print("\n2. Testing POST /api/evaluation-reports (CREATE with comprehensive rating data)")
+        print("   📊 Creating evaluation report with ratings:")
+        print("   - Command and Control: 'Excellent'")
+        print("   - Communication: 'Satisfactory'")
+        print("   - Resource Management: 'Needs Improvement'")
+        print("   - Safety and Security: 'Excellent'")
+        print("   - Operational Effectiveness: 'Satisfactory'")
+        print("   - Training and Readiness: 'Not Rated'")
+        print("   - Plan Adherence and Adaptability: 'Needs Improvement'")
+        
+        response = requests.post(
+            f"{BACKEND_URL}/evaluation-reports",
+            json=test_evaluation_data,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            created_report = response.json()
+            created_report_id = created_report.get("id")
+            print(f"✅ Successfully created evaluation report with ID: {created_report_id}")
+            
+            # Verify ALL 7 assessment area ratings are preserved exactly
+            print("\n   🔍 Verifying ALL 7 assessment area ratings persistence:")
+            
+            assessment_areas = [
+                ("command_and_control", "Excellent"),
+                ("communication", "Satisfactory"),
+                ("resource_management", "Needs Improvement"),
+                ("safety_and_security", "Excellent"),
+                ("operational_effectiveness", "Satisfactory"),
+                ("training_and_readiness", "Not Rated"),
+                ("plan_adherence_adaptability", "Needs Improvement")
+            ]
+            
+            for area_key, expected_rating in assessment_areas:
+                area_data = created_report.get(area_key, {})
+                actual_rating = area_data.get("rating")
+                area_name = area_data.get("area_name")
+                comments = area_data.get("comments", "")
+                
+                if actual_rating == expected_rating:
+                    print(f"   ✅ {area_name}: '{actual_rating}' (preserved exactly)")
+                else:
+                    print(f"   ❌ {area_name}: Expected '{expected_rating}', Got '{actual_rating}'")
+                    return False
+                    
+                # Verify rating structure includes all required fields
+                if not area_name or not isinstance(comments, str):
+                    print(f"   ❌ {area_name}: Rating structure incomplete")
+                    return False
+                    
+            print("   ✅ ALL 7 ASSESSMENT AREA RATINGS VERIFIED IN CREATE RESPONSE")
+            
+        else:
+            print(f"❌ Failed to create evaluation report: {response.text}")
+            return False
+            
+        # Test 3: GET /api/evaluation-reports/{id} (READ - Verify rating persistence)
+        print(f"\n3. Testing GET /api/evaluation-reports/{created_report_id} (READ - Rating Persistence)")
+        response = requests.get(f"{BACKEND_URL}/evaluation-reports/{created_report_id}")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            retrieved_report = response.json()
+            print(f"✅ Successfully retrieved evaluation report: {retrieved_report.get('report_title')}")
+            
+            # Verify ALL 7 assessment area ratings are preserved exactly after retrieval
+            print("\n   🔍 Verifying rating persistence after database retrieval:")
+            
+            assessment_areas = [
+                ("command_and_control", "Excellent"),
+                ("communication", "Satisfactory"),
+                ("resource_management", "Needs Improvement"),
+                ("safety_and_security", "Excellent"),
+                ("operational_effectiveness", "Satisfactory"),
+                ("training_and_readiness", "Not Rated"),
+                ("plan_adherence_adaptability", "Needs Improvement")
+            ]
+            
+            for area_key, expected_rating in assessment_areas:
+                area_data = retrieved_report.get(area_key, {})
+                actual_rating = area_data.get("rating")
+                area_name = area_data.get("area_name")
+                comments = area_data.get("comments", "")
+                
+                if actual_rating == expected_rating:
+                    print(f"   ✅ {area_name}: '{actual_rating}' (persisted correctly)")
+                else:
+                    print(f"   ❌ {area_name}: Expected '{expected_rating}', Got '{actual_rating}' - DATA LOSS!")
+                    return False
+                    
+                # Verify "Not Rated" areas are handled correctly
+                if expected_rating == "Not Rated" and actual_rating == "Not Rated":
+                    print(f"   ✅ {area_name}: 'Not Rated' handled correctly")
+                    
+            print("   ✅ ALL RATING VALUES PRESERVED EXACTLY - NO DATA LOSS")
+            
+        else:
+            print(f"❌ Failed to get specific evaluation report: {response.text}")
+            return False
+            
+        # Test 4: PUT /api/evaluation-reports/{id} (UPDATE with different ratings)
+        print(f"\n4. Testing PUT /api/evaluation-reports/{created_report_id} (UPDATE with rating changes)")
+        
+        # Update with different ratings as specified in review request
+        update_data = {
+            "report_title": "Updated Emergency Response Exercise Evaluation",
+            "command_and_control": {
+                "area_name": "Command and Control",
+                "rating": "Satisfactory",  # Changed from "Excellent"
+                "comments": "Good command structure but some coordination delays observed"
+            },
+            "communication": {
+                "area_name": "Communication",
+                "rating": "Needs Improvement",  # Changed from "Satisfactory"
+                "comments": "Communication delays affected response times"
+            },
+            "training_and_readiness": {
+                "area_name": "Training and Readiness",
+                "rating": "Excellent",  # Changed from "Not Rated"
+                "comments": "All personnel demonstrated excellent training and readiness"
+            }
+            # Other ratings remain unchanged to test partial updates
+        }
+        
+        print("   📊 Updating ratings:")
+        print("   - Command and Control: 'Excellent' → 'Satisfactory'")
+        print("   - Communication: 'Satisfactory' → 'Needs Improvement'")
+        print("   - Training and Readiness: 'Not Rated' → 'Excellent'")
+        print("   - Other ratings should remain unchanged")
+        
+        response = requests.put(
+            f"{BACKEND_URL}/evaluation-reports/{created_report_id}",
+            json=update_data,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            updated_report = response.json()
+            print("✅ Successfully updated evaluation report")
+            
+            # Verify specific rating changes persisted
+            print("\n   🔍 Verifying rating changes persisted:")
+            
+            # Check changed ratings
+            changed_ratings = [
+                ("command_and_control", "Satisfactory"),
+                ("communication", "Needs Improvement"),
+                ("training_and_readiness", "Excellent")
+            ]
+            
+            for area_key, expected_rating in changed_ratings:
+                area_data = updated_report.get(area_key, {})
+                actual_rating = area_data.get("rating")
+                area_name = area_data.get("area_name")
+                
+                if actual_rating == expected_rating:
+                    print(f"   ✅ {area_name}: Updated to '{actual_rating}' (change persisted)")
+                else:
+                    print(f"   ❌ {area_name}: Expected '{expected_rating}', Got '{actual_rating}' - UPDATE FAILED!")
+                    return False
+                    
+            # Check unchanged ratings remain intact
+            unchanged_ratings = [
+                ("resource_management", "Needs Improvement"),
+                ("safety_and_security", "Excellent"),
+                ("operational_effectiveness", "Satisfactory"),
+                ("plan_adherence_adaptability", "Needs Improvement")
+            ]
+            
+            for area_key, expected_rating in unchanged_ratings:
+                area_data = updated_report.get(area_key, {})
+                actual_rating = area_data.get("rating")
+                area_name = area_data.get("area_name")
+                
+                if actual_rating == expected_rating:
+                    print(f"   ✅ {area_name}: '{actual_rating}' (unchanged, preserved)")
+                else:
+                    print(f"   ❌ {area_name}: Expected '{expected_rating}', Got '{actual_rating}' - UNCHANGED DATA LOST!")
+                    return False
+                    
+            print("   ✅ ALL RATING CHANGES PERSISTED AND UNCHANGED RATINGS PRESERVED")
+            
+        else:
+            print(f"❌ Failed to update evaluation report: {response.text}")
+            return False
+            
+        # Test 5: Verify persistence by retrieving updated report
+        print(f"\n5. Testing persistence verification - GET updated report")
+        response = requests.get(f"{BACKEND_URL}/evaluation-reports/{created_report_id}")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            final_report = response.json()
+            
+            # Verify all changes persisted correctly
+            if (final_report.get("command_and_control", {}).get("rating") == "Satisfactory" and
+                final_report.get("communication", {}).get("rating") == "Needs Improvement" and
+                final_report.get("training_and_readiness", {}).get("rating") == "Excellent"):
+                print("✅ All rating updates properly persisted in database")
+            else:
+                print("❌ Rating updates NOT persisted in database")
+                return False
+                
+        else:
+            print(f"❌ Failed to verify persistence: {response.text}")
+            return False
+            
+        # Test 6: Data Integrity Testing - Edge cases
+        print(f"\n6. Testing data integrity - Edge cases")
+        
+        # Test all ratings set to same value
+        same_rating_data = {
+            "command_and_control": {"area_name": "Command and Control", "rating": "Satisfactory", "comments": "Test"},
+            "communication": {"area_name": "Communication", "rating": "Satisfactory", "comments": "Test"},
+            "resource_management": {"area_name": "Resource Management", "rating": "Satisfactory", "comments": "Test"},
+            "safety_and_security": {"area_name": "Safety and Security", "rating": "Satisfactory", "comments": "Test"},
+            "operational_effectiveness": {"area_name": "Operational Effectiveness", "rating": "Satisfactory", "comments": "Test"},
+            "training_and_readiness": {"area_name": "Training and Readiness", "rating": "Satisfactory", "comments": "Test"},
+            "plan_adherence_adaptability": {"area_name": "Plan Adherence and Adaptability", "rating": "Satisfactory", "comments": "Test"}
+        }
+        
+        response = requests.put(
+            f"{BACKEND_URL}/evaluation-reports/{created_report_id}",
+            json=same_rating_data,
+            headers={"Content-Type": "application/json"}
+        )
+        
+        if response.status_code == 200:
+            print("✅ Edge case: All ratings set to same value - handled correctly")
+        else:
+            print(f"⚠️  Edge case: All same ratings - issue: {response.text}")
+            
+        # Test mixed scenario with some "Not Rated"
+        mixed_rating_data = {
+            "command_and_control": {"area_name": "Command and Control", "rating": "Excellent", "comments": "Test"},
+            "communication": {"area_name": "Communication", "rating": "Not Rated", "comments": "Not assessed"},
+            "resource_management": {"area_name": "Resource Management", "rating": "Needs Improvement", "comments": "Test"},
+            "safety_and_security": {"area_name": "Safety and Security", "rating": "Not Rated", "comments": "Not assessed"},
+            "operational_effectiveness": {"area_name": "Operational Effectiveness", "rating": "Satisfactory", "comments": "Test"},
+            "training_and_readiness": {"area_name": "Training and Readiness", "rating": "Not Rated", "comments": "Not assessed"},
+            "plan_adherence_adaptability": {"area_name": "Plan Adherence and Adaptability", "rating": "Excellent", "comments": "Test"}
+        }
+        
+        response = requests.put(
+            f"{BACKEND_URL}/evaluation-reports/{created_report_id}",
+            json=mixed_rating_data,
+            headers={"Content-Type": "application/json"}
+        )
+        
+        if response.status_code == 200:
+            print("✅ Edge case: Mixed scenario with some 'Not Rated' - handled correctly")
+        else:
+            print(f"⚠️  Edge case: Mixed ratings - issue: {response.text}")
+            
+        # Test 7: Invalid rating values (should be rejected)
+        print(f"\n7. Testing invalid rating values rejection")
+        invalid_rating_data = {
+            "command_and_control": {
+                "area_name": "Command and Control",
+                "rating": "Invalid Rating",  # Should be rejected
+                "comments": "Test"
+            }
+        }
+        
+        response = requests.put(
+            f"{BACKEND_URL}/evaluation-reports/{created_report_id}",
+            json=invalid_rating_data,
+            headers={"Content-Type": "application/json"}
+        )
+        
+        if response.status_code in [400, 422]:
+            print("✅ Invalid rating values properly rejected")
+        else:
+            print(f"⚠️  Invalid rating values not properly validated (Status: {response.status_code})")
+            
+        # Test 8: GET all reports to verify our report appears
+        print(f"\n8. Testing GET all reports - verify report appears in list")
+        response = requests.get(f"{BACKEND_URL}/evaluation-reports")
+        
+        if response.status_code == 200:
+            all_reports = response.json()
+            report_found = any(r.get('id') == created_report_id for r in all_reports)
+            if report_found:
+                print("✅ Created report appears in GET all reports list")
+            else:
+                print("❌ Created report NOT found in GET all reports list")
+                return False
+        else:
+            print(f"❌ Failed to get all reports: {response.text}")
+            return False
+            
+        # Test 9: DELETE /api/evaluation-reports/{id} (Clean up)
+        print(f"\n9. Testing DELETE /api/evaluation-reports/{created_report_id}")
+        response = requests.delete(f"{BACKEND_URL}/evaluation-reports/{created_report_id}")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            print("✅ Successfully deleted evaluation report")
+            
+            # Verify deletion
+            response = requests.get(f"{BACKEND_URL}/evaluation-reports/{created_report_id}")
+            if response.status_code == 404:
+                print("✅ Evaluation report deletion verified")
+            else:
+                print("❌ Evaluation report still exists after deletion")
+                return False
+        else:
+            print(f"❌ Failed to delete evaluation report: {response.text}")
+            return False
+            
+        print("\n" + "=" * 60)
+        print("🎉 EVALUATION REPORT CRUD TESTING COMPLETED - ALL RATING PERSISTENCE TESTS PASSED")
+        print("✅ New rating system ('Not Rated', 'Needs Improvement', 'Satisfactory', 'Excellent') working perfectly")
+        print("✅ All 7 assessment area ratings preserved exactly across CRUD operations")
+        print("✅ Rating field structure consistent and complete")
+        print("✅ Database persistence verified - no data loss")
+        print("=" * 60)
+        return True
+        
+    except requests.exceptions.ConnectionError as e:
+        print(f"❌ Connection Error: Cannot connect to {BACKEND_URL}")
+        print(f"Error: {e}")
+        return False
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Request Error: {e}")
+        return False
+    except Exception as e:
+        print(f"❌ Unexpected Error: {e}")
+        return False
+
 if __name__ == "__main__":
     print("EXRSIM Backend API Comprehensive Testing")
     print(f"Backend URL: {BACKEND_URL}")

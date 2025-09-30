@@ -8752,19 +8752,76 @@ const ExerciseManagementDashboard = ({
   };
 
   const renderEvaluationsManagement = () => {
+    const [evaluationReports, setEvaluationReports] = useState([]);
+    const [showAddReport, setShowAddReport] = useState(false);
+    const [editingReport, setEditingReport] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const fetchEvaluationReports = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`${API}/evaluation-reports/exercise/${exerciseId}`);
+        setEvaluationReports(response.data);
+      } catch (error) {
+        console.error('Error fetching evaluation reports:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    useEffect(() => {
+      fetchEvaluationReports();
+    }, [exerciseId]);
+
+    const handleAddNew = () => {
+      setEditingReport(null);
+      setShowAddReport(true);
+    };
+
+    const handleEdit = (report) => {
+      setEditingReport(report);
+      setShowAddReport(true);
+    };
+
+    const handleBack = () => {
+      setShowAddReport(false);
+      setEditingReport(null);
+    };
+
+    const handleSave = () => {
+      setShowAddReport(false);
+      setEditingReport(null);
+      fetchEvaluationReports(); // Refresh the list
+    };
+
+    const handleDelete = async (reportId) => {
+      if (window.confirm('Are you sure you want to delete this evaluation report?')) {
+        try {
+          await axios.delete(`${API}/evaluation-reports/${reportId}`);
+          setEvaluationReports(prev => prev.filter(report => report.id !== reportId));
+        } catch (error) {
+          console.error('Error deleting evaluation report:', error);
+        }
+      }
+    };
+
     // Print function for Evaluations
     const printEvaluations = () => {
       const currentDateTime = new Date().toLocaleString();
       const printContent = `
         <html>
           <head>
-            <title>Exercise Evaluations - ${exercise.name || 'Exercise'}</title>
+            <title>Exercise Evaluation Reports - ${exercise.name || 'Exercise'}</title>
             <style>
-              body { font-family: Arial, sans-serif; margin: 20px; }
-              .header { border-bottom: 2px solid #333; margin-bottom: 20px; padding-bottom: 10px; }
-              .evaluation-item { border: 1px solid #ddd; margin-bottom: 15px; padding: 15px; border-radius: 5px; }
-              .evaluation-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
-              .evaluation-description { margin-bottom: 10px; color: #666; }
+              body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+              .header { border-bottom: 3px solid #333; margin-bottom: 30px; padding-bottom: 15px; }
+              .report-item { border: 1px solid #ddd; margin-bottom: 25px; padding: 20px; border-radius: 8px; page-break-inside: avoid; }
+              .report-title { font-size: 20px; font-weight: bold; margin-bottom: 15px; color: #333; }
+              .section-title { font-size: 16px; font-weight: bold; margin: 20px 0 10px 0; color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+              .content { margin-bottom: 15px; color: #666; }
+              .assessment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 10px 0; }
+              .assessment-item { padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+              .rating { font-weight: bold; color: #333; }
               .footer { 
                 position: fixed; 
                 bottom: 20px; 
@@ -8785,13 +8842,88 @@ const ExerciseManagementDashboard = ({
           </head>
           <body>
             <div class="header">
-              <h1>Exercise Evaluations</h1>
+              <h1>Exercise Evaluation Reports</h1>
               <h2>${exercise.name || 'Exercise Name'}</h2>
-              <p>Exercise Type: ${exercise.exercise_type || 'N/A'}</p>
-              <p>Generated on: ${new Date().toLocaleDateString()}</p>
+              <p><strong>Exercise Type:</strong> ${exercise.exercise_type || 'N/A'}</p>
+              <p><strong>Generated on:</strong> ${new Date().toLocaleDateString()}</p>
             </div>
-            <div class="evaluations-content">
-              <p>Evaluation data for this exercise will be displayed here.</p>
+            <div class="reports-content">
+              ${evaluationReports.length > 0 ? 
+                evaluationReports.map((report, index) => `
+                  <div class="report-item">
+                    <div class="report-title">${report.report_title}</div>
+                    <div class="content">
+                      <strong>Evaluator:</strong> ${report.evaluator_name} ${report.evaluator_organization ? '(' + report.evaluator_organization + ')' : ''}<br>
+                      <strong>Evaluation Date:</strong> ${report.evaluation_date}
+                    </div>
+                    
+                    ${report.exercise_overview ? `
+                      <div class="section-title">Exercise Overview</div>
+                      <div class="content">${report.exercise_overview}</div>
+                    ` : ''}
+                    
+                    ${report.summary_of_findings ? `
+                      <div class="section-title">Summary of Findings</div>
+                      <div class="content">${report.summary_of_findings}</div>
+                    ` : ''}
+                    
+                    ${report.strengths ? `
+                      <div class="section-title">Strengths</div>
+                      <div class="content">${report.strengths}</div>
+                    ` : ''}
+                    
+                    ${report.areas_for_improvement ? `
+                      <div class="section-title">Areas for Improvement</div>
+                      <div class="content">${report.areas_for_improvement}</div>
+                    ` : ''}
+                    
+                    <div class="section-title">Key Areas Assessment</div>
+                    <div class="assessment-grid">
+                      <div class="assessment-item">
+                        <strong>Command and Control</strong><br>
+                        <span class="rating">Rating: ${report.command_and_control?.rating || 'Not Rated'}</span><br>
+                        ${report.command_and_control?.comments || 'No comments'}
+                      </div>
+                      <div class="assessment-item">
+                        <strong>Communication</strong><br>
+                        <span class="rating">Rating: ${report.communication?.rating || 'Not Rated'}</span><br>
+                        ${report.communication?.comments || 'No comments'}
+                      </div>
+                      <div class="assessment-item">
+                        <strong>Resource Management</strong><br>
+                        <span class="rating">Rating: ${report.resource_management?.rating || 'Not Rated'}</span><br>
+                        ${report.resource_management?.comments || 'No comments'}
+                      </div>
+                      <div class="assessment-item">
+                        <strong>Safety and Security</strong><br>
+                        <span class="rating">Rating: ${report.safety_and_security?.rating || 'Not Rated'}</span><br>
+                        ${report.safety_and_security?.comments || 'No comments'}
+                      </div>
+                      <div class="assessment-item">
+                        <strong>Operational Effectiveness</strong><br>
+                        <span class="rating">Rating: ${report.operational_effectiveness?.rating || 'Not Rated'}</span><br>
+                        ${report.operational_effectiveness?.comments || 'No comments'}
+                      </div>
+                      <div class="assessment-item">
+                        <strong>Training and Readiness</strong><br>
+                        <span class="rating">Rating: ${report.training_and_readiness?.rating || 'Not Rated'}</span><br>
+                        ${report.training_and_readiness?.comments || 'No comments'}
+                      </div>
+                    </div>
+                    
+                    ${report.key_findings_narrative ? `
+                      <div class="section-title">Key Findings (Narrative)</div>
+                      <div class="content">${report.key_findings_narrative}</div>
+                    ` : ''}
+                    
+                    ${report.recommendations ? `
+                      <div class="section-title">Recommendations</div>
+                      <div class="content">${report.recommendations}</div>
+                    ` : ''}
+                  </div>
+                `).join('') 
+                : '<p>No evaluation reports available for this exercise.</p>'
+              }
             </div>
             <div class="footer">
               <p>Generated on: ${currentDateTime} | Powered by EXRSIM</p>
@@ -8808,6 +8940,17 @@ const ExerciseManagementDashboard = ({
       printWindow.close();
     };
 
+    if (showAddReport) {
+      return (
+        <EvaluationReportForm
+          exerciseId={exerciseId}
+          editingReport={editingReport}
+          onBack={handleBack}
+          onSave={handleSave}
+        />
+      );
+    }
+
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
@@ -8823,7 +8966,7 @@ const ExerciseManagementDashboard = ({
             </Button>
             <Button 
               className="bg-orange-500 hover:bg-orange-600 text-black"
-              onClick={() => {/* Add new evaluation logic */}}
+              onClick={handleAddNew}
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Evaluation
@@ -8831,17 +8974,101 @@ const ExerciseManagementDashboard = ({
           </div>
         </div>
 
-        <Card className="bg-gray-800 border-gray-700 border-dashed">
-          <CardContent className="p-12 text-center">
-            <Star className="h-12 w-12 text-gray-500 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-300 mb-2">No Evaluations Yet</h3>
-            <p className="text-gray-500 mb-4">Add exercise evaluations to track performance and effectiveness.</p>
-            <Button className="bg-orange-500 hover:bg-orange-600 text-black">
-              <Plus className="h-4 w-4 mr-2" />
-              Add First Evaluation
-            </Button>
-          </CardContent>
-        </Card>
+        {loading ? (
+          <Card className="bg-gray-800 border-gray-700">
+            <CardContent className="p-12 text-center">
+              <div className="text-gray-400">Loading evaluation reports...</div>
+            </CardContent>
+          </Card>
+        ) : evaluationReports.length === 0 ? (
+          <Card className="bg-gray-800 border-gray-700 border-dashed">
+            <CardContent className="p-12 text-center">
+              <Star className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-300 mb-2">No Evaluations Yet</h3>
+              <p className="text-gray-500 mb-4">Add exercise evaluations to track performance and effectiveness.</p>
+              <Button 
+                className="bg-orange-500 hover:bg-orange-600 text-black"
+                onClick={handleAddNew}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add First Evaluation
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 gap-6">
+            {evaluationReports.map((report) => (
+              <Card key={report.id} className="bg-gray-800 border-gray-700">
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-white text-lg">{report.report_title}</CardTitle>
+                      <CardDescription className="text-gray-400">
+                        By {report.evaluator_name} {report.evaluator_organization && `(${report.evaluator_organization})`} • {report.evaluation_date}
+                      </CardDescription>
+                    </div>
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-orange-500 border-orange-500 hover:bg-orange-500 hover:text-black"
+                        onClick={() => handleEdit(report)}
+                      >
+                        <Edit className="h-3 w-3 mr-1" />
+                        Edit
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-red-400 border-red-400 hover:bg-red-400 hover:text-white"
+                        onClick={() => handleDelete(report.id)}
+                      >
+                        <Trash2 className="h-3 w-3 mr-1" />
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {report.summary_of_findings && (
+                    <div>
+                      <h4 className="font-semibold text-white mb-2">Summary of Findings</h4>
+                      <p className="text-gray-300 text-sm">{report.summary_of_findings}</p>
+                    </div>
+                  )}
+                  
+                  <div>
+                    <h4 className="font-semibold text-white mb-2">Key Areas Assessment</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                      {[
+                        { label: 'Command & Control', data: report.command_and_control },
+                        { label: 'Communication', data: report.communication },
+                        { label: 'Resource Management', data: report.resource_management },
+                        { label: 'Safety & Security', data: report.safety_and_security },
+                        { label: 'Operational Effectiveness', data: report.operational_effectiveness },
+                        { label: 'Training & Readiness', data: report.training_and_readiness },
+                        { label: 'Plan Adherence', data: report.plan_adherence_adaptability }
+                      ].map((area, index) => (
+                        <div key={index} className="bg-gray-700 p-2 rounded text-center">
+                          <div className="text-xs text-gray-400 mb-1">{area.label}</div>
+                          <div className={`text-xs font-semibold ${
+                            area.data?.rating === 'Excellent' ? 'text-green-400' :
+                            area.data?.rating === 'Good' ? 'text-blue-400' :
+                            area.data?.rating === 'Fair' ? 'text-yellow-400' :
+                            area.data?.rating === 'Poor' ? 'text-red-400' :
+                            'text-gray-500'
+                          }`}>
+                            {area.data?.rating || 'Not Rated'}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     );
   };

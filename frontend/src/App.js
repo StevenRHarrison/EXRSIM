@@ -9478,46 +9478,52 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
         <Card className="bg-gray-900 border-gray-700">
           <CardHeader>
             <CardTitle className="text-orange-500">Key Areas Assessment</CardTitle>
+            <CardDescription className="text-gray-400">
+              Evaluate critical operational areas during the exercise
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {[
-              { key: 'command_and_control', label: 'Command and Control' },
-              { key: 'communication', label: 'Communication' },
-              { key: 'resource_management', label: 'Resource Management' },
-              { key: 'safety_and_security', label: 'Safety and Security' },
-              { key: 'operational_effectiveness', label: 'Operational Effectiveness' },
-              { key: 'training_and_readiness', label: 'Training and Readiness' },
-              { key: 'plan_adherence_adaptability', label: 'Plan Adherence and Adaptability' }
+              { key: 'command_and_control', title: 'Command and Control', description: 'Leadership, decision-making processes, and clarity of roles and responsibilities' },
+              { key: 'communication', title: 'Communication', description: 'Internal and external communication, information dissemination to relevant parties and emergency services' },
+              { key: 'resource_management', title: 'Resource Management', description: 'Availability, allocation, and effectiveness of personnel, equipment, and supplies' },
+              { key: 'safety_and_security', title: 'Safety and Security', description: 'Personnel protection, first aid, hazardous materials management, and overall security' },
+              { key: 'operational_effectiveness', title: 'Operational Effectiveness', description: 'Execution of emergency procedures, evacuation plans, shelter-in-place, and site-specific responses' },
+              { key: 'training_and_readiness', title: 'Training and Readiness', description: 'Staff training adequacy and preparedness to carry out assigned roles' },
+              { key: 'plan_adherence_adaptability', title: 'Plan Adherence and Adaptability', description: 'Following existing plans and adaptability to scenario changes' }
             ].map((area) => (
-              <div key={area.key} className="border border-gray-700 rounded-lg p-4">
-                <h4 className="text-white font-semibold mb-3">{area.label}</h4>
+              <div key={area.key} className="bg-gray-800 p-4 rounded border border-gray-700">
+                <h4 className="text-lg font-semibold text-white mb-2">{area.title}</h4>
+                <p className="text-sm text-gray-400 mb-3">{area.description}</p>
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-gray-300">Rating</Label>
-                    <Select 
-                      value={formData[area.key]?.rating || 'Not Applicable'} 
+                    <Label className="text-white">Rating</Label>
+                    <Select
+                      value={formData[area.key].rating}
                       onValueChange={(value) => handleAreaAssessmentChange(area.key, 'rating', value)}
                     >
-                      <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-gray-800 border-gray-700">
+                      <SelectContent className="bg-gray-700 border-gray-600">
                         {ratingOptions.map((option) => (
-                          <SelectItem key={option} value={option} className="text-white focus:bg-gray-700">
+                          <SelectItem key={option} value={option} className="text-white hover:bg-gray-600">
                             {option}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
+                  
                   <div>
-                    <Label className="text-gray-300">Comments</Label>
+                    <Label className="text-white">Comments</Label>
                     <Textarea
-                      value={formData[area.key]?.comments || ''}
+                      value={formData[area.key].comments}
                       onChange={(e) => handleAreaAssessmentChange(area.key, 'comments', e.target.value)}
-                      placeholder="Add specific observations and comments..."
-                      className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
-                      rows={3}
+                      placeholder="Assessment comments..."
+                      rows={2}
+                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
                     />
                   </div>
                 </div>
@@ -9530,6 +9536,9 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
         <Card className="bg-gray-900 border-gray-700">
           <CardHeader>
             <CardTitle className="text-orange-500">Summary and Findings</CardTitle>
+            <CardDescription className="text-gray-400">
+              High-level overview and detailed findings
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
@@ -9537,8 +9546,9 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
               <Textarea
                 value={formData.summary_of_findings}
                 onChange={(e) => handleInputChange('summary_of_findings', e.target.value)}
-                placeholder="Provide an executive summary of key findings..."
-                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-[100px]"
+                placeholder="Provide a high-level overview of what went well and what needs improvement..."
+                rows={3}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
               />
             </div>
 
@@ -9547,8 +9557,9 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
               <Textarea
                 value={formData.strengths}
                 onChange={(e) => handleInputChange('strengths', e.target.value)}
-                placeholder="Highlight what worked well during the exercise..."
-                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-[100px]"
+                placeholder="Detail what worked effectively during the exercise..."
+                rows={3}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
               />
             </div>
 
@@ -9557,8 +9568,9 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
               <Textarea
                 value={formData.areas_for_improvement}
                 onChange={(e) => handleInputChange('areas_for_improvement', e.target.value)}
-                placeholder="Identify areas that need improvement..."
-                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-[100px]"
+                placeholder="List the aspects of the plan, procedures, or response that were deficient..."
+                rows={3}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
               />
             </div>
 
@@ -9567,8 +9579,9 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
               <Textarea
                 value={formData.key_findings_narrative}
                 onChange={(e) => handleInputChange('key_findings_narrative', e.target.value)}
-                placeholder="Provide detailed narrative of key findings..."
-                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-[120px]"
+                placeholder="Include detailed, objective narrative summaries of specific events, problems, or successes observed..."
+                rows={4}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
               />
             </div>
           </CardContent>
@@ -9578,6 +9591,9 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
         <Card className="bg-gray-900 border-gray-700">
           <CardHeader>
             <CardTitle className="text-orange-500">Recommendations and Appendices</CardTitle>
+            <CardDescription className="text-gray-400">
+              Action items and supporting documentation
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
@@ -9585,8 +9601,9 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
               <Textarea
                 value={formData.recommendations}
                 onChange={(e) => handleInputChange('recommendations', e.target.value)}
-                placeholder="Provide specific recommendations for future exercises..."
-                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-[120px]"
+                placeholder="Assign responsibilities and timelines for addressing identified gaps and improving the emergency management program..."
+                rows={4}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
               />
             </div>
 
@@ -9595,8 +9612,9 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
               <Textarea
                 value={formData.appendices}
                 onChange={(e) => handleInputChange('appendices', e.target.value)}
-                placeholder="Additional supporting documentation, references, or data..."
-                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-[100px]"
+                placeholder="Include supporting documents such as the problem log, debriefing notes, and evaluation forms..."
+                rows={3}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
               />
             </div>
           </CardContent>

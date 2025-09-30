@@ -57,6 +57,18 @@
 ##   test_priority: "high_first"  # or "sequential" or "stuck_first"
 ##
 ## frontend:
+  - task: "Evaluation Report Form Duplication Fix"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high" 
+    needs_retesting: true
+    status_history:
+        -working: "unknown"
+        -agent: "main"
+        -comment: "DEDUPLICATION FIX APPLIED: Previous engineer successfully removed duplicated JSX blocks from EvaluationReportForm component in App.js. Sections like 'Exercise Overview,' 'Key Areas Assessment,' and 'Summary and Findings' were appearing twice in the form. Frontend service restarted to apply changes. Initial manual testing shows application loads correctly and Evaluations section is accessible. Need comprehensive testing to verify form renders without duplicated sections."
+
   - task: "Digital Scribe Form Frontend Interface and Functionality"
     implemented: true
     working: true

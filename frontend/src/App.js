@@ -8777,45 +8777,24 @@ const ExerciseManagementDashboard = ({
   };
 
   const renderEvaluationsManagement = () => {
-    const [evaluationReports, setEvaluationReports] = useState([]);
-    const [showAddReport, setShowAddReport] = useState(false);
-    const [editingReport, setEditingReport] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    const fetchEvaluationReports = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`${API}/evaluation-reports/exercise/${exerciseId}`);
-        setEvaluationReports(response.data);
-      } catch (error) {
-        console.error('Error fetching evaluation reports:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    useEffect(() => {
-      fetchEvaluationReports();
-    }, [exerciseId]);
-
     const handleAddNew = () => {
-      setEditingReport(null);
-      setShowAddReport(true);
+      setEditingEvaluation(null);
+      setShowAddEvaluation(true);
     };
 
     const handleEdit = (report) => {
-      setEditingReport(report);
-      setShowAddReport(true);
+      setEditingEvaluation(report);
+      setShowAddEvaluation(true);
     };
 
     const handleBack = () => {
-      setShowAddReport(false);
-      setEditingReport(null);
+      setShowAddEvaluation(false);
+      setEditingEvaluation(null);
     };
 
     const handleSave = () => {
-      setShowAddReport(false);
-      setEditingReport(null);
+      setShowAddEvaluation(false);
+      setEditingEvaluation(null);
       fetchEvaluationReports(); // Refresh the list
     };
 
@@ -8965,11 +8944,11 @@ const ExerciseManagementDashboard = ({
       printWindow.close();
     };
 
-    if (showAddReport) {
+    if (showAddEvaluation) {
       return (
         <EvaluationReportForm
           exerciseId={exerciseId}
-          editingReport={editingReport}
+          editingReport={editingEvaluation}
           onBack={handleBack}
           onSave={handleSave}
         />
@@ -8999,7 +8978,7 @@ const ExerciseManagementDashboard = ({
           </div>
         </div>
 
-        {loading ? (
+        {evaluationLoading ? (
           <Card className="bg-gray-800 border-gray-700">
             <CardContent className="p-12 text-center">
               <div className="text-gray-400">Loading evaluation reports...</div>

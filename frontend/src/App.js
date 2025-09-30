@@ -9073,6 +9073,356 @@ const ExerciseManagementDashboard = ({
     );
   };
 
+// Evaluation Report Form Component  
+const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => {
+  const [formData, setFormData] = useState({
+    report_title: '',
+    evaluator_name: '',
+    evaluator_organization: '',
+    evaluation_date: '',
+    exercise_overview: '',
+    summary_of_findings: '',
+    strengths: '',
+    areas_for_improvement: '',
+    key_findings_narrative: '',
+    recommendations: '',
+    appendices: '',
+    command_and_control: { area_name: 'Command and Control', rating: 'Not Applicable', comments: '' },
+    communication: { area_name: 'Communication', rating: 'Not Applicable', comments: '' },
+    resource_management: { area_name: 'Resource Management', rating: 'Not Applicable', comments: '' },
+    safety_and_security: { area_name: 'Safety and Security', rating: 'Not Applicable', comments: '' },
+    operational_effectiveness: { area_name: 'Operational Effectiveness', rating: 'Not Applicable', comments: '' },
+    training_and_readiness: { area_name: 'Training and Readiness', rating: 'Not Applicable', comments: '' },
+    plan_adherence_adaptability: { area_name: 'Plan Adherence and Adaptability', rating: 'Not Applicable', comments: '' },
+    evaluation_images: []
+  });
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [imagePreview, setImagePreview] = useState([]);
+
+  const ratingOptions = ['Not Applicable', 'Poor', 'Fair', 'Good', 'Excellent'];
+
+  useEffect(() => {
+    if (editingReport) {
+      setFormData({
+        report_title: editingReport.report_title || '',
+        evaluator_name: editingReport.evaluator_name || '',
+        evaluator_organization: editingReport.evaluator_organization || '',
+        evaluation_date: editingReport.evaluation_date || '',
+        exercise_overview: editingReport.exercise_overview || '',
+        summary_of_findings: editingReport.summary_of_findings || '',
+        strengths: editingReport.strengths || '',
+        areas_for_improvement: editingReport.areas_for_improvement || '',
+        key_findings_narrative: editingReport.key_findings_narrative || '',
+        recommendations: editingReport.recommendations || '',
+        appendices: editingReport.appendices || '',
+        command_and_control: editingReport.command_and_control || { area_name: 'Command and Control', rating: 'Not Applicable', comments: '' },
+        communication: editingReport.communication || { area_name: 'Communication', rating: 'Not Applicable', comments: '' },
+        resource_management: editingReport.resource_management || { area_name: 'Resource Management', rating: 'Not Applicable', comments: '' },
+        safety_and_security: editingReport.safety_and_security || { area_name: 'Safety and Security', rating: 'Not Applicable', comments: '' },
+        operational_effectiveness: editingReport.operational_effectiveness || { area_name: 'Operational Effectiveness', rating: 'Not Applicable', comments: '' },
+        training_and_readiness: editingReport.training_and_readiness || { area_name: 'Training and Readiness', rating: 'Not Applicable', comments: '' },
+        plan_adherence_adaptability: editingReport.plan_adherence_adaptability || { area_name: 'Plan Adherence and Adaptability', rating: 'Not Applicable', comments: '' },
+        evaluation_images: editingReport.evaluation_images || []
+      });
+      if (editingReport.evaluation_images) {
+        setImagePreview(editingReport.evaluation_images);
+      }
+    } else {
+      // Set default evaluation date to today
+      const today = new Date().toISOString().split('T')[0];
+      setFormData(prev => ({ ...prev, evaluation_date: today }));
+    }
+  }, [editingReport]);
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.report_title.trim()) {
+      newErrors.report_title = 'Report title is required';
+    }
+
+    if (!formData.evaluator_name.trim()) {
+      newErrors.evaluator_name = 'Evaluator name is required';
+    }
+
+    if (!formData.evaluation_date.trim()) {
+      newErrors.evaluation_date = 'Evaluation date is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({
+        ...prev,
+        [field]: ''
+      }));
+    }
+  };
+
+  const handleAreaAssessmentChange = (areaKey, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [areaKey]: {
+        ...prev[areaKey],
+        [field]: value
+      }
+    }));
+  };
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageData = e.target.result;
+        setImagePreview(prev => [...prev, imageData]);
+        setFormData(prev => ({ 
+          ...prev, 
+          evaluation_images: [...prev.evaluation_images, imageData] 
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCameraCapture = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.play();
+      
+      video.addEventListener('loadedmetadata', () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0);
+        
+        const imageData = canvas.toDataURL('image/jpeg');
+        setImagePreview(prev => [...prev, imageData]);
+        setFormData(prev => ({ 
+          ...prev, 
+          evaluation_images: [...prev.evaluation_images, imageData] 
+        }));
+        
+        stream.getTracks().forEach(track => track.stop());
+      });
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      alert('Unable to access camera. Please use file upload instead.');
+    }
+  };
+
+  const removeImage = (index) => {
+    setImagePreview(prev => prev.filter((_, i) => i !== index));
+    setFormData(prev => ({ 
+      ...prev, 
+      evaluation_images: prev.evaluation_images.filter((_, i) => i !== index) 
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      const reportData = {
+        ...formData,
+        exercise_id: exerciseId
+      };
+
+      if (editingReport) {
+        await axios.put(`${API}/evaluation-reports/${editingReport.id}`, reportData);
+      } else {
+        await axios.post(`${API}/evaluation-reports`, reportData);
+      }
+      
+      onSave();
+    } catch (error) {
+      console.error('Error saving evaluation report:', error);
+      alert('Failed to save evaluation report. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-5xl mx-auto p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-orange-500 mb-2">
+            {editingReport ? 'Edit Evaluation Report' : 'Create Evaluation Report'}
+          </h1>
+          <p className="text-gray-400">
+            Comprehensive evaluation report for exercise performance assessment
+          </p>
+        </div>
+        <Button 
+          variant="outline" 
+          onClick={onBack}
+          className="text-orange-500 border-orange-500 hover:bg-orange-500 hover:text-black"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Evaluations
+        </Button>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Basic Information */}
+        <Card className="bg-gray-900 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Basic Information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="report_title" className="text-white">
+                  Report Title *
+                </Label>
+                <Input
+                  id="report_title"
+                  type="text"
+                  value={formData.report_title}
+                  onChange={(e) => handleInputChange('report_title', e.target.value)}
+                  placeholder="Exercise Evaluation Report"
+                  className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+                />
+                {errors.report_title && (
+                  <p className="text-red-400 text-sm mt-1">{errors.report_title}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="evaluation_date" className="text-white">
+                  Evaluation Date *
+                </Label>
+                <Input
+                  id="evaluation_date"
+                  type="date"
+                  value={formData.evaluation_date}
+                  onChange={(e) => handleInputChange('evaluation_date', e.target.value)}
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+                {errors.evaluation_date && (
+                  <p className="text-red-400 text-sm mt-1">{errors.evaluation_date}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="evaluator_name" className="text-white">
+                  Evaluator Name *
+                </Label>
+                <Input
+                  id="evaluator_name"
+                  type="text"
+                  value={formData.evaluator_name}
+                  onChange={(e) => handleInputChange('evaluator_name', e.target.value)}
+                  placeholder="Primary evaluator's name"
+                  className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+                />
+                {errors.evaluator_name && (
+                  <p className="text-red-400 text-sm mt-1">{errors.evaluator_name}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="evaluator_organization" className="text-white">
+                  Evaluator Organization
+                </Label>
+                <Input
+                  id="evaluator_organization"
+                  type="text"
+                  value={formData.evaluator_organization}
+                  onChange={(e) => handleInputChange('evaluator_organization', e.target.value)}
+                  placeholder="Organization or department"
+                  className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Supporting Images */}
+        <Card className="bg-gray-900 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Supporting Images</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="evaluation-image-upload"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => document.getElementById('evaluation-image-upload').click()}
+                    className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10 mr-3"
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload Image
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleCameraCapture}
+                    className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10"
+                  >
+                    <Camera className="h-4 w-4 mr-2" />
+                    Use Camera
+                  </Button>
+                </div>
+              </div>
+
+              {imagePreview.length > 0 && (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {imagePreview.map((image, index) => (
+                    <div key={index} className="relative">
+                      <img 
+                        src={image} 
+                        alt={`Evaluation ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg border border-gray-600"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="absolute top-1 right-1 text-red-400 border-red-400 hover:bg-red-400 hover:text-white p-1"
+                        onClick={() => removeImage(index)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
   // Helper function to create print functions for improvement sections
   const createPrintFunction = (sectionName, sectionTitle) => {
     return () => {

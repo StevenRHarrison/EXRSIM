@@ -57,6 +57,18 @@
 ##   test_priority: "high_first"  # or "sequential" or "stuck_first"
 ##
 ## frontend:
+  - task: "Evaluation Report CRUD Operations and Rating Persistence"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "unknown"
+        -agent: "main"
+        -comment: "CRUD VERIFICATION REQUIRED: Need to verify that Evaluation Report CRUD operations work correctly with the new rating system. Must test that selected ratings for all 7 assessment areas are being properly saved to database and retrieved correctly. Testing required: 1) Create evaluation report with various ratings set across all assessment areas, 2) Retrieve report and verify all rating values are preserved, 3) Update report with different ratings and confirm changes persist, 4) Test all rating options (Not Rated, Needs Improvement, Satisfactory, Excellent) work correctly in database operations, 5) Verify rating field values return correctly for frontend display, 6) Ensure backend models handle new rating system properly."
+
   - task: "Evaluation Report Overall Rating Algorithm"
     implemented: true
     working: true

@@ -9423,6 +9423,173 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
           </CardContent>
         </Card>
 
+        {/* Exercise Overview */}
+        <Card className="bg-gray-900 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Exercise Overview</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Textarea
+              value={formData.exercise_overview}
+              onChange={(e) => handleInputChange('exercise_overview', e.target.value)}
+              placeholder="Provide a brief overview of the exercise, its purpose, and scope..."
+              className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-[100px]"
+            />
+          </CardContent>
+        </Card>
+
+        {/* Key Areas Assessment */}
+        <Card className="bg-gray-900 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Key Areas Assessment</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {[
+              { key: 'command_and_control', label: 'Command and Control' },
+              { key: 'communication', label: 'Communication' },
+              { key: 'resource_management', label: 'Resource Management' },
+              { key: 'safety_and_security', label: 'Safety and Security' },
+              { key: 'operational_effectiveness', label: 'Operational Effectiveness' },
+              { key: 'training_and_readiness', label: 'Training and Readiness' },
+              { key: 'plan_adherence_adaptability', label: 'Plan Adherence and Adaptability' }
+            ].map((area) => (
+              <div key={area.key} className="border border-gray-700 rounded-lg p-4">
+                <h4 className="text-white font-semibold mb-3">{area.label}</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-300">Rating</Label>
+                    <Select 
+                      value={formData[area.key]?.rating || 'Not Applicable'} 
+                      onValueChange={(value) => handleAreaAssessmentChange(area.key, 'rating', value)}
+                    >
+                      <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-800 border-gray-700">
+                        {ratingOptions.map((option) => (
+                          <SelectItem key={option} value={option} className="text-white focus:bg-gray-700">
+                            {option}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-gray-300">Comments</Label>
+                    <Textarea
+                      value={formData[area.key]?.comments || ''}
+                      onChange={(e) => handleAreaAssessmentChange(area.key, 'comments', e.target.value)}
+                      placeholder="Add specific observations and comments..."
+                      className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+                      rows={3}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Summary and Findings */}
+        <Card className="bg-gray-900 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Summary and Findings</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label className="text-white">Summary of Findings</Label>
+              <Textarea
+                value={formData.summary_of_findings}
+                onChange={(e) => handleInputChange('summary_of_findings', e.target.value)}
+                placeholder="Provide an executive summary of key findings..."
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-[100px]"
+              />
+            </div>
+
+            <div>
+              <Label className="text-white">Strengths</Label>
+              <Textarea
+                value={formData.strengths}
+                onChange={(e) => handleInputChange('strengths', e.target.value)}
+                placeholder="Highlight what worked well during the exercise..."
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-[100px]"
+              />
+            </div>
+
+            <div>
+              <Label className="text-white">Areas for Improvement</Label>
+              <Textarea
+                value={formData.areas_for_improvement}
+                onChange={(e) => handleInputChange('areas_for_improvement', e.target.value)}
+                placeholder="Identify areas that need improvement..."
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-[100px]"
+              />
+            </div>
+
+            <div>
+              <Label className="text-white">Key Findings (Narrative)</Label>
+              <Textarea
+                value={formData.key_findings_narrative}
+                onChange={(e) => handleInputChange('key_findings_narrative', e.target.value)}
+                placeholder="Provide detailed narrative of key findings..."
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-[120px]"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Recommendations and Appendices */}
+        <Card className="bg-gray-900 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Recommendations and Appendices</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label className="text-white">Recommendations</Label>
+              <Textarea
+                value={formData.recommendations}
+                onChange={(e) => handleInputChange('recommendations', e.target.value)}
+                placeholder="Provide specific recommendations for future exercises..."
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-[120px]"
+              />
+            </div>
+
+            <div>
+              <Label className="text-white">Appendices</Label>
+              <Textarea
+                value={formData.appendices}
+                onChange={(e) => handleInputChange('appendices', e.target.value)}
+                placeholder="Additional supporting documentation, references, or data..."
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-[100px]"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Form Actions */}
+        <div className="flex justify-end space-x-4 pt-6">
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={onBack}
+            disabled={loading}
+            className="text-gray-300 border-gray-600 hover:bg-gray-800"
+          >
+            Cancel
+          </Button>
+          <Button 
+            type="submit" 
+            disabled={loading}
+            className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
+          >
+            {loading ? 'Saving...' : (editingReport ? 'Update Report' : 'Create Report')}
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
   // Helper function to create print functions for improvement sections
   const createPrintFunction = (sectionName, sectionTitle) => {
     return () => {

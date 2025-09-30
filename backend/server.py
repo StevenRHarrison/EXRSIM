@@ -1151,6 +1151,92 @@ async def delete_resource(resource_id: str):
         logger.error(f"Error deleting resource {resource_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# Evaluation Report API endpoints
+@api_router.post("/evaluation-reports", response_model=EvaluationReport)
+async def create_evaluation_report(report: EvaluationReportCreate):
+    try:
+        report_data = report.dict()
+        report_data["id"] = str(uuid.uuid4())
+        report_data["created_at"] = datetime.now(timezone.utc)
+        report_data["updated_at"] = datetime.now(timezone.utc)
+        
+        await db.evaluation_reports.insert_one(prepare_for_mongo(report_data))
+        return EvaluationReport(**report_data)
+    except Exception as e:
+        logger.error(f"Error creating evaluation report: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/evaluation-reports", response_model=List[EvaluationReport])
+async def get_all_evaluation_reports():
+    try:
+        reports = await db.evaluation_reports.find().to_list(length=None)
+        return [EvaluationReport(**parse_from_mongo(report)) for report in reports]
+    except Exception as e:
+        logger.error(f"Error retrieving evaluation reports: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/evaluation-reports/exercise/{exercise_id}", response_model=List[EvaluationReport])
+async def get_evaluation_reports_by_exercise(exercise_id: str):
+    try:
+        reports = await db.evaluation_reports.find({"exercise_id": exercise_id}).to_list(length=None)
+        return [EvaluationReport(**parse_from_mongo(report)) for report in reports]
+    except Exception as e:
+        logger.error(f"Error retrieving evaluation reports for exercise {exercise_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/evaluation-reports/{report_id}", response_model=EvaluationReport)
+async def get_evaluation_report(report_id: str):
+    try:
+        report = await db.evaluation_reports.find_one({"id": report_id})
+        if not report:
+            raise HTTPException(status_code=404, detail="Evaluation report not found")
+        return EvaluationReport(**parse_from_mongo(report))
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error retrieving evaluation report {report_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.put("/evaluation-reports/{report_id}", response_model=EvaluationReport)
+async def update_evaluation_report(report_id: str, report_update: EvaluationReportUpdate):
+    try:
+        # Get existing report
+        existing_report = await db.evaluation_reports.find_one({"id": report_id})
+        if not existing_report:
+            raise HTTPException(status_code=404, detail="Evaluation report not found")
+        
+        # Prepare update data
+        update_data = {k: v for k, v in report_update.dict().items() if v is not None}
+        update_data["updated_at"] = datetime.now(timezone.utc)
+        
+        # Update report
+        await db.evaluation_reports.update_one(
+            {"id": report_id}, 
+            {"$set": prepare_for_mongo(update_data)}
+        )
+        
+        # Return updated report
+        updated_report = await db.evaluation_reports.find_one({"id": report_id})
+        return EvaluationReport(**parse_from_mongo(updated_report))
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating evaluation report {report_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/evaluation-reports/{report_id}")
+async def delete_evaluation_report(report_id: str):
+    try:
+        result = await db.evaluation_reports.delete_one({"id": report_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Evaluation report not found")
+        return {"message": "Evaluation report deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting evaluation report {report_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Include the router in the main app
 app.include_router(api_router)
 

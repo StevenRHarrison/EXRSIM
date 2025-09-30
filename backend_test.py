@@ -2065,11 +2065,11 @@ if __name__ == "__main__":
     print("\n🔍 Testing Data Validation...")
     test_results.append(("Data Validation", test_data_validation()))
     
-    # Test 7: Edge Cases
+    # Test 8: Edge Cases
     print("\n🎯 Testing Edge Cases...")
     test_results.append(("Edge Cases", test_edge_cases()))
     
-    # Test 8: Performance Testing
+    # Test 9: Performance Testing
     print("\n⚡ Testing Performance...")
     test_results.append(("Performance", test_performance()))
     

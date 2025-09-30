@@ -7416,6 +7416,12 @@ const ExerciseManagementDashboard = ({
   // Improvement menu expansion state
   const [improvementExpanded, setImprovementExpanded] = useState(true);
 
+  // Evaluation state
+  const [evaluationReports, setEvaluationReports] = useState([]);
+  const [showAddEvaluation, setShowAddEvaluation] = useState(false);
+  const [editingEvaluation, setEditingEvaluation] = useState(null);
+  const [evaluationLoading, setEvaluationLoading] = useState(false);
+
   useEffect(() => {
     if (exerciseId) {
       fetchExercise();

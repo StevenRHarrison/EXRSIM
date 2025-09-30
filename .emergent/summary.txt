@@ -1,41 +1,70 @@
 <analysis>
-The previous AI engineer successfully stabilized the application after initial feature implementation (validation, printing, reporting) by performing comprehensive testing. The primary focus then shifted to developing the complex **Scribe Management** features. This involved extensive full-stack work: creating new nested Pydantic models and CRUD API endpoints in  and implementing a complex Digital Scribe Form interface in the monolithic . A critical architectural challenge encountered was the violation of React Rules of Hooks, requiring major refactoring to hoist state and effects to the main  component and pass them down as props through the . The final task was implementing time validation (), which led to a strategic decision to simplify backend persistence by using strings instead of native  objects to avoid complex serialization issues with nested Pydantic models, delegating strict validation to the frontend. All required features are technically implemented and the backend API is confirmed working, but the last frontend test failed due to an Exercise Not Found error, which needs immediate resolution.
+The trajectory outlines a comprehensive development cycle, starting from stabilizing an initial MVP to implementing several complex, full-stack features. The initial major task was creating a Digital Scribe Form, which involved significant backend work with nested Pydantic models in  and a complex UI in the monolithic . This led to a critical refactoring of the frontend to resolve React Hooks violations by hoisting state.
+
+Subsequently, the focus shifted to a new Resource Management module. This was built from scratch, including backend models and CRUD APIs, and a feature-rich frontend with filtering, image uploads (camera/file), status badges, and print functionality. The UI was iteratively refined based on user requests, such as removing Personnel categories and converting filter buttons into a dropdown menu.
+
+Following this, two key fixes were implemented: enabling the Load Coordinators button in the Exercise Builder by adding the correct data-fetching and state update logic, and streamlining the Final Report UI by removing redundant summary buttons.
+
+The final and current major feature development is the Evaluation Report system. This involved creating new backend models and APIs and a very detailed multi-section frontend form. This implementation introduced duplication bugs in both the print output and the data entry form itself. The most recent actions were focused on identifying and removing these duplicated code blocks within the  in . The work concluded just after editing the file to remove the duplicates, with the next logical step being to restart the frontend and verify the fix.
 </analysis>
 
 <product_requirements>
-The EXRSIM application is a dark-themed emergency training platform focusing on a 17-step Exercise Builder. Initial requirements included robust real-time validation (email, phone, coordinates), print functionality across all exercise steps with branding, and a 'Final Report' summary under the 'Improvement' section. Recent feature enhancements include adding a Dashboard print icon, removing three quick action buttons (Goals, Events, Team Coordinators), adding Safety Officer to positions, and enhancing the Final Report with all step summaries. The core recent feature is the **Digital Scribe Form**: a persistent digital input form with CRUD functionality and structured fields for timeline events, communications (including a new Content longtext field), and notes. All time fields (Start/End time, event/communication time) must be validated on the frontend to the  format.
+The application, EXRSIM, is an emergency training and simulation platform. The core product has evolved significantly through several feature requests:
+
+1.  **Digital Scribe Form:** A persistent digital form for logging timeline events, communications, and notes during an exercise. It required full CRUD functionality and strict frontend validation for time inputs in  format.
+2.  **Resource Management System:** A comprehensive module to manage exercise resources. Requirements included:
+    *   Categorization (initially Personnel, Equipment, Supplies; later simplified to just Equipment and Supplies).
+    *   CRUD operations for resources with fields for ID, description, quantity (available vs. needed), location, and contact info.
+    *   Image association (via device camera or file upload).
+    *   A checkbox to mark if a resource is involved in the current exercise.
+    *   Advanced frontend UI with filtering (by category, insufficient quantity, exercise involvement), status badges, and a print summary feature.
+    *   UI refinements, including changing filter buttons to a dropdown and standardizing the Location field to use a dropdown list from the Participants section.
+3.  **Functional Fixes & UI Enhancements:**
+    *   Fix the Load Coordinators button to correctly import participants with the Team Coordinator role who are active in the exercise.
+    *   Remove Goals Summary and Safety Summary buttons from the Final Report screen to simplify the UI.
+4.  **Evaluation Report System:** A detailed data entry form and report generation system for post-exercise evaluation, requiring:
+    *   A multi-section form covering Exercise Overview, Findings, Strengths, Areas for Improvement, Recommendations, and a detailed assessment of 7 key operational areas (e.g., Command & Control, Communication).
+    *   Full CRUD, print capabilities, and image upload functionality.
+    *   Correction of data duplication appearing in both the print output and the data entry form.
 </product_requirements>
 
 <key_technical_concepts>
-- **Architecture**: Monolithic React frontend () communicating with FastAPI/MongoDB.
-- **Data Persistence**: Complex nested Pydantic models for structured data persistence (Scribe Templates).
-- **React Refactoring**: Fixing React Hooks violations by lifting state management to the root component level.
-- **Validation**: Client-side regex-based time validation for the  format, simplifying backend types to strings.
+- **Architecture**: Monolithic single-page application using React () for the frontend and a FastAPI () backend with MongoDB.
+- **Backend**: Pydantic models for data validation and schema definition, with new nested models and CRUD API endpoints for Scribes, Resources, and Evaluations.
+- **Frontend**: Heavy reliance on React Hooks (, ). A major refactoring was done to hoist state to the top-level component ( or ) to fix hook rule violations.
+- **UI Components**: Custom components built within  using a common pattern for forms, lists, filters, and print generation.
 </key_technical_concepts>
 
 <code_architecture>
-The application uses a standard MERN-like stack:
+The application follows a simple frontend-backend structure. All frontend logic, components, and state management are contained within a single file, which communicates with a single backend API file.
 
 
 
-- ****:
-    - **Importance**: Central component containing all UI, routing, and state.
-    - **Changes Summary**: Added  functionality (, ). Implemented , , . Added  position. Refactored state (, , etc.) to the main  function to fix hooks errors, passing them as props to . Implemented  for  format and integrated error handling across time input fields. Updated  for step summaries.
+- ****
+    - **Importance**: This file defines the entire backend API, including all data models (Pydantic schemas) and CRUD endpoints. It's the single source of truth for backend logic and database interaction.
+    - **Summary of Changes**: The file was significantly expanded to support new features.
+        - **Resource Management**: Added , , , and  Pydantic models. Implemented a full suite of CRUD endpoints () for creating, reading, updating, and deleting resources.
+        - **Evaluation Reports**: Added , , , and  Pydantic models, including nested models for key assessment areas. Implemented corresponding CRUD endpoints ().
 
-- ****:
-    - **Importance**: API definition and Pydantic schema validation.
-    - **Changes Summary**: Defined new nested models (, ,  including the  field). Added CRUD API endpoints for Scribe Templates. Fixed a critical routing bug by correctly positioning the  registration. Reverted time fields from Python  objects back to  to resolve Pydantic serialization issues with nested data.
+- ****
+    - **Importance**: This is the monolithic heart of the frontend. It contains all React components, state management, API call logic, routing, and UI rendering for the entire application. All new features were implemented by adding large component functions directly into this file.
+    - **Summary of Changes**: This file underwent massive additions and refactoring.
+        - **Resource Management**: A complete  component was added, containing logic for fetching, displaying, filtering, and printing resources. A complex  component was created to handle adding/editing resources, including image uploads, a new dropdown for location, and phone number validation.
+        - **Load Coordinators Fix**: Implemented the  function within the  component, which fetches participants, filters them based on user criteria (Team Coordinator position and  status), and updates the exercise state.
+        - **Evaluation System**: Added  and a large  component. This involved adding new state management to , creating API service functions, and building a multi-section form with text areas, dropdowns, and image handling. The most recent edits focused on removing duplicated JSX blocks from this form to fix a UI bug.
 </code_architecture>
 
 <pending_tasks>
-- Investigate and resolve the Exercise Not Found error encountered in the final frontend test, which occurred after backend restarts.
-- Perform comprehensive end-to-end testing of the Digital Scribe Form to verify that time inputs saved in the  format are correctly persisted, retrieved, and displayed on the form upon loading.
+- Restart the frontend service to apply the code changes that removed the duplicated fields in the .
+- Verify through testing that the duplication issue in the Evaluation data input form is fully resolved and the form renders correctly with only unique fields.
 </pending_tasks>
 
 <current_work>
-The most recent work involved completing the implementation of mandatory time validation on the Digital Scribe Form and ensuring backend data persistence for the new Scribe Template structure. On the backend (), time fields were finalized as strings () in Pydantic models, achieving stable persistence via CRUD operations, confirmed by curl testing where time values like 4:45 PM were successfully saved and retrieved. On the frontend (), new functions () and state () were implemented to enforce the  format and display red error text if validation fails. This work included resolving complex syntax and structural bugs caused by relocating functions and correcting unbalanced JSX elements in the massive  file. All core requirements for the Digital Scribe Form (CRUD, Content field, Time Validation) are technically implemented, but the last verification step failed to load the exercise dashboard, necessitating a final environment check before concluding the feature.
+The immediate past work focused on resolving a user-reported bug where the newly created Evaluation Report data input form was displaying duplicated sections and fields. The previous engineer correctly identified that sections like Exercise Overview, Key Areas Assessment, and Summary and Findings were erroneously coded twice within the  component in .
+
+The engineer performed a series of  actions to remove the redundant JSX blocks from the file. After removing the duplicated sections, they proceeded to consolidate and enhance the remaining Key Areas Assessment section to ensure it was complete and consistently styled. The work concluded immediately after these file edits were successfully saved. The application's frontend has not yet been restarted to reflect these changes, and no testing has been performed to confirm the fix.
 </current_work>
 
 <optional_next_step>
-Check application stability by attempting to load the exercise dashboard and then perform final end-to-end testing of the Digital Scribe Form time validation.
+Restart the frontend server to apply the deduplication fixes and then verify that the Add Evaluation form renders correctly without any duplicated fields.
 </optional_next_step>

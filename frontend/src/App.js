@@ -9566,19 +9566,183 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
           </CardContent>
         </Card>
 
-        {/* Form Actions */}
-        <div className="flex justify-end space-x-4 pt-6">
-          <Button 
-            type="button" 
-            variant="outline" 
+        {/* Exercise Overview */}
+        <Card className="bg-gray-900 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Exercise Overview</CardTitle>
+            <CardDescription className="text-gray-400">
+              Briefly describe the exercise's purpose, scope, scenario, and objectives
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Textarea
+              value={formData.exercise_overview}
+              onChange={(e) => handleInputChange('exercise_overview', e.target.value)}
+              placeholder="Describe the exercise's purpose, scope, scenario, and key objectives..."
+              rows={4}
+              className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+            />
+          </CardContent>
+        </Card>
+
+        {/* Key Areas of Concern Assessment */}
+        <Card className="bg-gray-900 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Key Areas Assessment</CardTitle>
+            <CardDescription className="text-gray-400">
+              Evaluate critical operational areas during the exercise
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {[
+              { key: 'command_and_control', title: 'Command and Control', description: 'Leadership, decision-making processes, and clarity of roles and responsibilities' },
+              { key: 'communication', title: 'Communication', description: 'Internal and external communication, information dissemination to relevant parties and emergency services' },
+              { key: 'resource_management', title: 'Resource Management', description: 'Availability, allocation, and effectiveness of personnel, equipment, and supplies' },
+              { key: 'safety_and_security', title: 'Safety and Security', description: 'Personnel protection, first aid, hazardous materials management, and overall security' },
+              { key: 'operational_effectiveness', title: 'Operational Effectiveness', description: 'Execution of emergency procedures, evacuation plans, shelter-in-place, and site-specific responses' },
+              { key: 'training_and_readiness', title: 'Training and Readiness', description: 'Staff training adequacy and preparedness to carry out assigned roles' },
+              { key: 'plan_adherence_adaptability', title: 'Plan Adherence and Adaptability', description: 'Following existing plans and adaptability to scenario changes' }
+            ].map((area) => (
+              <div key={area.key} className="bg-gray-800 p-4 rounded border border-gray-700">
+                <h4 className="text-lg font-semibold text-white mb-2">{area.title}</h4>
+                <p className="text-sm text-gray-400 mb-3">{area.description}</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-white">Rating</Label>
+                    <Select
+                      value={formData[area.key].rating}
+                      onValueChange={(value) => handleAreaAssessmentChange(area.key, 'rating', value)}
+                    >
+                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-700 border-gray-600">
+                        {ratingOptions.map((option) => (
+                          <SelectItem key={option} value={option} className="text-white hover:bg-gray-600">
+                            {option}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-white">Comments</Label>
+                    <Textarea
+                      value={formData[area.key].comments}
+                      onChange={(e) => handleAreaAssessmentChange(area.key, 'comments', e.target.value)}
+                      placeholder="Assessment comments..."
+                      rows={2}
+                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Summary and Findings */}
+        <Card className="bg-gray-900 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Summary and Findings</CardTitle>
+            <CardDescription className="text-gray-400">
+              High-level overview and detailed findings
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label className="text-white">Summary of Findings</Label>
+              <Textarea
+                value={formData.summary_of_findings}
+                onChange={(e) => handleInputChange('summary_of_findings', e.target.value)}
+                placeholder="Provide a high-level overview of what went well and what needs improvement..."
+                rows={3}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+            </div>
+
+            <div>
+              <Label className="text-white">Strengths</Label>
+              <Textarea
+                value={formData.strengths}
+                onChange={(e) => handleInputChange('strengths', e.target.value)}
+                placeholder="Detail what worked effectively during the exercise..."
+                rows={3}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+            </div>
+
+            <div>
+              <Label className="text-white">Areas for Improvement</Label>
+              <Textarea
+                value={formData.areas_for_improvement}
+                onChange={(e) => handleInputChange('areas_for_improvement', e.target.value)}
+                placeholder="List the aspects of the plan, procedures, or response that were deficient..."
+                rows={3}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+            </div>
+
+            <div>
+              <Label className="text-white">Key Findings (Narrative)</Label>
+              <Textarea
+                value={formData.key_findings_narrative}
+                onChange={(e) => handleInputChange('key_findings_narrative', e.target.value)}
+                placeholder="Include detailed, objective narrative summaries of specific events, problems, or successes observed..."
+                rows={4}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Recommendations and Appendices */}
+        <Card className="bg-gray-900 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Recommendations and Appendices</CardTitle>
+            <CardDescription className="text-gray-400">
+              Action items and supporting documentation
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label className="text-white">Recommendations</Label>
+              <Textarea
+                value={formData.recommendations}
+                onChange={(e) => handleInputChange('recommendations', e.target.value)}
+                placeholder="Assign responsibilities and timelines for addressing identified gaps and improving the emergency management program..."
+                rows={4}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+            </div>
+
+            <div>
+              <Label className="text-white">Appendices</Label>
+              <Textarea
+                value={formData.appendices}
+                onChange={(e) => handleInputChange('appendices', e.target.value)}
+                placeholder="Include supporting documents such as the problem log, debriefing notes, and evaluation forms..."
+                rows={3}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Submit Button */}
+        <div className="flex justify-end space-x-4">
+          <Button
+            type="button"
+            variant="outline"
             onClick={onBack}
-            disabled={loading}
-            className="text-gray-300 border-gray-600 hover:bg-gray-800"
+            className="text-gray-400 border-gray-600 hover:bg-gray-800 hover:text-white"
           >
             Cancel
           </Button>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             disabled={loading}
             className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
           >

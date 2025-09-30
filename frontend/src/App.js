@@ -9255,44 +9255,9 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
     }));
   };
 
-  // Calculate overall rating based on simple average of all rated areas
+  // Calculate overall rating for the current form data
   const calculateOverallRating = () => {
-    const assessmentAreas = [
-      'command_and_control',
-      'communication', 
-      'resource_management',
-      'safety_and_security',
-      'operational_effectiveness',
-      'training_and_readiness',
-      'plan_adherence_adaptability'
-    ];
-
-    // Convert ratings to numerical values for calculation
-    const ratingValues = {
-      'Not Rated': null,  // Exclude from calculation
-      'Needs Improvement': 1,
-      'Satisfactory': 2, 
-      'Excellent': 3
-    };
-
-    // Get all rated areas (exclude 'Not Rated')
-    const ratedAreas = assessmentAreas
-      .map(area => formData[area]?.rating)
-      .filter(rating => rating && rating !== 'Not Rated')
-      .map(rating => ratingValues[rating])
-      .filter(value => value !== null);
-
-    if (ratedAreas.length === 0) {
-      return 'Not Rated';
-    }
-
-    // Calculate simple average
-    const average = ratedAreas.reduce((sum, value) => sum + value, 0) / ratedAreas.length;
-
-    // Convert back to rating labels based on average
-    if (average >= 2.5) return 'Excellent';
-    if (average >= 1.5) return 'Satisfactory'; 
-    return 'Needs Improvement';
+    return calculateOverallRatingHelper(formData);
   };
 
   const handleImageUpload = (event) => {

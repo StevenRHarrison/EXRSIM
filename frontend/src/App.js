@@ -8812,6 +8812,15 @@ const ExerciseManagementDashboard = ({
     // Print function for Evaluations
     const printEvaluations = () => {
       const currentDateTime = new Date().toLocaleString();
+      
+      // Collect all unique images from all reports
+      const allImages = evaluationReports.reduce((images, report) => {
+        if (report.evaluation_images && report.evaluation_images.length > 0) {
+          return images.concat(report.evaluation_images);
+        }
+        return images;
+      }, []);
+      
       const printContent = `
         <html>
           <head>
@@ -8819,6 +8828,8 @@ const ExerciseManagementDashboard = ({
             <style>
               body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
               .header { border-bottom: 3px solid #333; margin-bottom: 30px; padding-bottom: 15px; }
+              .header-images { margin: 15px 0; }
+              .header-images img { max-width: 200px; max-height: 150px; object-fit: cover; margin-right: 15px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
               .report-item { border: 1px solid #ddd; margin-bottom: 25px; padding: 20px; border-radius: 8px; page-break-inside: avoid; }
               .report-title { font-size: 20px; font-weight: bold; margin-bottom: 15px; color: #333; }
               .section-title { font-size: 16px; font-weight: bold; margin: 20px 0 10px 0; color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px; }
@@ -8826,6 +8837,10 @@ const ExerciseManagementDashboard = ({
               .assessment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 10px 0; }
               .assessment-item { padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
               .rating { font-weight: bold; color: #333; }
+              .rating.excellent { color: #22c55e; }
+              .rating.good { color: #3b82f6; }
+              .rating.fair { color: #f59e0b; }
+              .rating.poor { color: #ef4444; }
               .footer { 
                 position: fixed; 
                 bottom: 20px; 
@@ -8850,6 +8865,13 @@ const ExerciseManagementDashboard = ({
               <h2>${exercise.name || 'Exercise Name'}</h2>
               <p><strong>Exercise Type:</strong> ${exercise.exercise_type || 'N/A'}</p>
               <p><strong>Generated on:</strong> ${new Date().toLocaleDateString()}</p>
+              
+              ${allImages.length > 0 ? `
+                <div class="header-images">
+                  <h3>Supporting Images:</h3>
+                  ${allImages.slice(0, 6).map(image => `<img src="${image}" alt="Evaluation Image" />`).join('')}
+                </div>
+              ` : ''}
             </div>
             <div class="reports-content">
               ${evaluationReports.length > 0 ? 
@@ -8885,33 +8907,38 @@ const ExerciseManagementDashboard = ({
                     <div class="assessment-grid">
                       <div class="assessment-item">
                         <strong>Command and Control</strong><br>
-                        <span class="rating">Rating: ${report.command_and_control?.rating || 'Not Rated'}</span><br>
+                        <span class="rating ${(report.command_and_control?.rating || '').toLowerCase()}"}>Rating: ${report.command_and_control?.rating || 'Not Rated'}</span><br>
                         ${report.command_and_control?.comments || 'No comments'}
                       </div>
                       <div class="assessment-item">
                         <strong>Communication</strong><br>
-                        <span class="rating">Rating: ${report.communication?.rating || 'Not Rated'}</span><br>
+                        <span class="rating ${(report.communication?.rating || '').toLowerCase()}">Rating: ${report.communication?.rating || 'Not Rated'}</span><br>
                         ${report.communication?.comments || 'No comments'}
                       </div>
                       <div class="assessment-item">
                         <strong>Resource Management</strong><br>
-                        <span class="rating">Rating: ${report.resource_management?.rating || 'Not Rated'}</span><br>
+                        <span class="rating ${(report.resource_management?.rating || '').toLowerCase()}">Rating: ${report.resource_management?.rating || 'Not Rated'}</span><br>
                         ${report.resource_management?.comments || 'No comments'}
                       </div>
                       <div class="assessment-item">
                         <strong>Safety and Security</strong><br>
-                        <span class="rating">Rating: ${report.safety_and_security?.rating || 'Not Rated'}</span><br>
+                        <span class="rating ${(report.safety_and_security?.rating || '').toLowerCase()}">Rating: ${report.safety_and_security?.rating || 'Not Rated'}</span><br>
                         ${report.safety_and_security?.comments || 'No comments'}
                       </div>
                       <div class="assessment-item">
                         <strong>Operational Effectiveness</strong><br>
-                        <span class="rating">Rating: ${report.operational_effectiveness?.rating || 'Not Rated'}</span><br>
+                        <span class="rating ${(report.operational_effectiveness?.rating || '').toLowerCase()}">Rating: ${report.operational_effectiveness?.rating || 'Not Rated'}</span><br>
                         ${report.operational_effectiveness?.comments || 'No comments'}
                       </div>
                       <div class="assessment-item">
                         <strong>Training and Readiness</strong><br>
-                        <span class="rating">Rating: ${report.training_and_readiness?.rating || 'Not Rated'}</span><br>
+                        <span class="rating ${(report.training_and_readiness?.rating || '').toLowerCase()}">Rating: ${report.training_and_readiness?.rating || 'Not Rated'}</span><br>
                         ${report.training_and_readiness?.comments || 'No comments'}
+                      </div>
+                      <div class="assessment-item">
+                        <strong>Plan Adherence and Adaptability</strong><br>
+                        <span class="rating ${(report.plan_adherence_adaptability?.rating || '').toLowerCase()}">Rating: ${report.plan_adherence_adaptability?.rating || 'Not Rated'}</span><br>
+                        ${report.plan_adherence_adaptability?.comments || 'No comments'}
                       </div>
                     </div>
                     
@@ -8923,6 +8950,11 @@ const ExerciseManagementDashboard = ({
                     ${report.recommendations ? `
                       <div class="section-title">Recommendations</div>
                       <div class="content">${report.recommendations}</div>
+                    ` : ''}
+                    
+                    ${report.appendices ? `
+                      <div class="section-title">Appendices</div>
+                      <div class="content">${report.appendices}</div>
                     ` : ''}
                   </div>
                 `).join('') 

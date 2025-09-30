@@ -9581,6 +9581,27 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Overall Rating Display */}
+            <div className="bg-gray-800 p-4 rounded border border-gray-700">
+              <Label className="text-white text-lg font-semibold">Overall Rating</Label>
+              <div className="mt-2">
+                <Badge 
+                  variant="outline" 
+                  className={`text-lg px-4 py-2 ${
+                    calculateOverallRating() === 'Excellent' ? 'border-green-500 text-green-400 bg-green-500/10' :
+                    calculateOverallRating() === 'Satisfactory' ? 'border-blue-500 text-blue-400 bg-blue-500/10' :
+                    calculateOverallRating() === 'Needs Improvement' ? 'border-yellow-500 text-yellow-400 bg-yellow-500/10' :
+                    'border-gray-500 text-gray-400 bg-gray-500/10'
+                  }`}
+                >
+                  Overall Rating: {calculateOverallRating()}
+                </Badge>
+              </div>
+              <p className="text-sm text-gray-400 mt-2">
+                Calculated automatically based on the average of all rated assessment areas (excluding "Not Rated" areas)
+              </p>
+            </div>
+
             <div>
               <Label className="text-white">Summary of Findings</Label>
               <Textarea

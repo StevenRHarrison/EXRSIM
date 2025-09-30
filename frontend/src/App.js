@@ -7439,6 +7439,25 @@ const ExerciseManagementDashboard = ({
     }
   };
 
+  const fetchEvaluationReports = async () => {
+    try {
+      setEvaluationLoading(true);
+      const response = await axios.get(`${API}/evaluation-reports/exercise/${exerciseId}`);
+      setEvaluationReports(response.data);
+    } catch (error) {
+      console.error('Error fetching evaluation reports:', error);
+    } finally {
+      setEvaluationLoading(false);
+    }
+  };
+
+  // Load evaluation reports when exercise is loaded
+  useEffect(() => {
+    if (exerciseId) {
+      fetchEvaluationReports();
+    }
+  }, [exerciseId]);
+
   const topLevelMenuItems = [
     { id: 'overview', title: 'Exercise Overview', icon: Shield }
   ];

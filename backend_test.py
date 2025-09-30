@@ -2057,7 +2057,11 @@ if __name__ == "__main__":
     print("\n📋 Testing Digital Scribe Template APIs...")
     test_results.append(("Digital Scribe Template API", test_scribe_template_api()))
     
-    # Test 6: Data Validation
+    # Test 6: Evaluation Report CRUD APIs (HIGH PRIORITY - RATING PERSISTENCE)
+    print("\n📊 Testing Evaluation Report CRUD APIs - Rating Persistence...")
+    test_results.append(("Evaluation Report CRUD API", test_evaluation_report_crud_api()))
+    
+    # Test 7: Data Validation
     print("\n🔍 Testing Data Validation...")
     test_results.append(("Data Validation", test_data_validation()))
     

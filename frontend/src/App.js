@@ -11759,20 +11759,11 @@ function App() {
     additional_notes: ''
   });
 
-  // Resources state
-  const [resources, setResources] = useState([]);
-  const [showAddResource, setShowAddResource] = useState(false);
-  const [editingResource, setEditingResource] = useState(null);
-  const [resourceFormData, setResourceFormData] = useState({
-    resource_type: '',
-    identification: '',
-    description: '',
-    quantity_available: 0,
-    quantity_needed: 0,
-    location: '',
-    contact_person: '',
-    contact_phone: ''
-  });
+  // Evaluation state
+  const [evaluationReports, setEvaluationReports] = useState([]);
+  const [showAddEvaluation, setShowAddEvaluation] = useState(false);
+  const [editingEvaluation, setEditingEvaluation] = useState(null);
+  const [evaluationLoading, setEvaluationLoading] = useState(false);
 
   // Handle URL-based navigation for editing exercises
   useEffect(() => {

@@ -8838,9 +8838,11 @@ const ExerciseManagementDashboard = ({
               .assessment-item { padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
               .rating { font-weight: bold; color: #333; }
               .rating.excellent { color: #22c55e; }
-              .rating.good { color: #3b82f6; }
-              .rating.fair { color: #f59e0b; }
-              .rating.poor { color: #ef4444; }
+              .rating.satisfactory { color: #3b82f6; }
+              .rating.needs { color: #f59e0b; }
+              .rating.improvement { color: #f59e0b; }
+              .rating.not { color: #666; }
+              .rating.rated { color: #666; }
               .footer { 
                 position: fixed; 
                 bottom: 20px; 

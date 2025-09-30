@@ -624,6 +624,87 @@ class ResourceUpdate(BaseModel):
     resource_image: Optional[str] = None
     involved_in_exercise: Optional[bool] = None
 
+# Evaluation Report Models
+class EvaluationAreaAssessment(BaseModel):
+    area_name: str
+    rating: str  # "Excellent", "Good", "Fair", "Poor", "Not Applicable"
+    comments: str = ""
+
+class EvaluationReport(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    exercise_id: str
+    report_title: str
+    evaluator_name: str
+    evaluator_organization: str = ""
+    evaluation_date: str
+    
+    # Main Sections
+    exercise_overview: str = ""
+    summary_of_findings: str = ""
+    strengths: str = ""
+    areas_for_improvement: str = ""
+    key_findings_narrative: str = ""
+    recommendations: str = ""
+    appendices: str = ""
+    
+    # Key Areas Assessment
+    command_and_control: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Command and Control", rating="Not Applicable"))
+    communication: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Communication", rating="Not Applicable"))
+    resource_management: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Resource Management", rating="Not Applicable"))
+    safety_and_security: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Safety and Security", rating="Not Applicable"))
+    operational_effectiveness: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Operational Effectiveness", rating="Not Applicable"))
+    training_and_readiness: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Training and Readiness", rating="Not Applicable"))
+    plan_adherence_adaptability: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Plan Adherence and Adaptability", rating="Not Applicable"))
+    
+    # Supporting Documents
+    evaluation_images: List[str] = Field(default_factory=list)  # Base64 encoded images
+    
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class EvaluationReportCreate(BaseModel):
+    exercise_id: str
+    report_title: str
+    evaluator_name: str
+    evaluator_organization: str = ""
+    evaluation_date: str
+    exercise_overview: str = ""
+    summary_of_findings: str = ""
+    strengths: str = ""
+    areas_for_improvement: str = ""
+    key_findings_narrative: str = ""
+    recommendations: str = ""
+    appendices: str = ""
+    command_and_control: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Command and Control", rating="Not Applicable"))
+    communication: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Communication", rating="Not Applicable"))
+    resource_management: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Resource Management", rating="Not Applicable"))
+    safety_and_security: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Safety and Security", rating="Not Applicable"))
+    operational_effectiveness: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Operational Effectiveness", rating="Not Applicable"))
+    training_and_readiness: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Training and Readiness", rating="Not Applicable"))
+    plan_adherence_adaptability: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Plan Adherence and Adaptability", rating="Not Applicable"))
+    evaluation_images: List[str] = Field(default_factory=list)
+
+class EvaluationReportUpdate(BaseModel):
+    report_title: Optional[str] = None
+    evaluator_name: Optional[str] = None
+    evaluator_organization: Optional[str] = None
+    evaluation_date: Optional[str] = None
+    exercise_overview: Optional[str] = None
+    summary_of_findings: Optional[str] = None
+    strengths: Optional[str] = None
+    areas_for_improvement: Optional[str] = None
+    key_findings_narrative: Optional[str] = None
+    recommendations: Optional[str] = None
+    appendices: Optional[str] = None
+    command_and_control: Optional[EvaluationAreaAssessment] = None
+    communication: Optional[EvaluationAreaAssessment] = None
+    resource_management: Optional[EvaluationAreaAssessment] = None
+    safety_and_security: Optional[EvaluationAreaAssessment] = None
+    operational_effectiveness: Optional[EvaluationAreaAssessment] = None
+    training_and_readiness: Optional[EvaluationAreaAssessment] = None
+    plan_adherence_adaptability: Optional[EvaluationAreaAssessment] = None
+    evaluation_images: Optional[List[str]] = None
+
 # Helper functions
 def prepare_for_mongo(data):
     if isinstance(data, dict):

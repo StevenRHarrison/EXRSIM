@@ -605,10 +605,11 @@
 
 ## test_plan:
   current_focus:
-    - "Evaluation Report Form Duplication Fix - NEEDS TESTING"
-    - "Verify no duplicate sections in EvaluationReportForm component"
-    - "Test Add Evaluation form functionality"
-    - "Confirm form renders correctly after deduplication fixes"
+    - "Evaluation Report Overall Rating Algorithm - NEEDS TESTING"
+    - "Test overall rating calculation with different rating combinations"
+    - "Verify overall rating display in Summary and Findings section"
+    - "Test new rating system options (Not Rated, Needs Improvement, Satisfactory, Excellent)"
+    - "Verify overall rating appears in print function"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"

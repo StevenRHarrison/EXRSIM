@@ -588,13 +588,13 @@
 
 ## test_plan:
   current_focus:
-    - "Digital Scribe Form Frontend Testing - COMPLETED ✅"
-    - "Time Validation (HH:MM AM/PM Format) - WORKING ✅"
-    - "Form Functionality and User Experience - VERIFIED ✅"
-    - "End-to-End Data Persistence Workflow - CONFIRMED ✅"
+    - "Evaluation Report Form Duplication Fix - NEEDS TESTING"
+    - "Verify no duplicate sections in EvaluationReportForm component"
+    - "Test Add Evaluation form functionality"
+    - "Confirm form renders correctly after deduplication fixes"
   stuck_tasks: []
   test_all: false
-  test_priority: "completed"
+  test_priority: "high_first"
 
 ## frontend:
   - task: "Participant Position Options Update - New 27 Positions"

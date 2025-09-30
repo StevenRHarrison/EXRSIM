@@ -622,7 +622,11 @@
 
 ## test_plan:
   current_focus:
-    - "Evaluation Report Overall Rating Algorithm - TESTING COMPLETED SUCCESSFULLY"
+    - "Evaluation Report CRUD Operations and Rating Persistence - NEEDS TESTING"
+    - "Test Create/Save evaluation report with all rating fields"
+    - "Test Read/Retrieve evaluation report with rating values preserved"
+    - "Test Update evaluation report with changed ratings"
+    - "Verify all 7 assessment area ratings work in database operations"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"

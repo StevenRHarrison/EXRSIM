@@ -7984,6 +7984,19 @@ const ExerciseManagementDashboard = ({
     }
   };
 
+  const fetchLocations = async () => {
+    setLocationsLoading(true);
+    try {
+      const response = await axios.get(`${API}/locations`);
+      setLocations(response.data);
+    } catch (error) {
+      console.error('Error fetching locations:', error);
+      setLocations([]);
+    } finally {
+      setLocationsLoading(false);
+    }
+  };
+
   // Load evaluation reports and lessons learned when exercise is loaded
   useEffect(() => {
     if (exerciseId) {

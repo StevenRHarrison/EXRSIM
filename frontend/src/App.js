@@ -8949,7 +8949,7 @@ const ExerciseManagementDashboard = ({
                       </div>
                       <div class="assessment-item">
                         <strong>Plan Adherence and Adaptability</strong><br>
-                        <span class="rating ${(report.plan_adherence_adaptability?.rating || '').toLowerCase()}">Rating: ${report.plan_adherence_adaptability?.rating || 'Not Rated'}</span><br>
+                        <span class="rating ${(report.plan_adherence_adaptability?.rating || '').toLowerCase().replace(' ', '')}"}>Rating: ${report.plan_adherence_adaptability?.rating || 'Average'}</span><br>
                         ${report.plan_adherence_adaptability?.comments || 'No comments'}
                       </div>
                     </div>

@@ -10663,24 +10663,298 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave }) => {
 };
 
   const renderLessonsLearnedManagement = () => {
-    const printLessonsLearned = createPrintFunction('lessons', 'Exercise Lessons Learned');
+    // Lessons Learned handlers
+    const handleAddNewLesson = () => {
+      setEditingLesson(null);
+      setShowAddLesson(true);
+    };
+
+    const handleEditLesson = (lesson) => {
+      setEditingLesson(lesson);
+      setShowAddLesson(true);
+    };
+
+    const handleDeleteLesson = async (lessonId) => {
+      if (window.confirm('Are you sure you want to delete this lesson learned?')) {
+        try {
+          const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/lessons-learned/${lessonId}`, {
+            method: 'DELETE',
+          });
+
+          if (response.ok) {
+            await fetchLessonsLearned();
+          } else {
+            throw new Error('Failed to delete lesson learned');
+          }
+        } catch (error) {
+          console.error('Error deleting lesson learned:', error);
+          alert('Failed to delete lesson learned. Please try again.');
+        }
+      }
+    };
+
+    const handleSaveLesson = async (savedLesson) => {
+      setShowAddLesson(false);
+      setEditingLesson(null);
+      await fetchLessonsLearned();
+    };
+
+    const handleBackFromForm = () => {
+      setShowAddLesson(false);
+      setEditingLesson(null);
+    };
+
+    // Print function for Lessons Learned
+    const printLessonsLearned = () => {
+      if (lessonsLearned.length === 0) {
+        alert('No lessons learned to print.');
+        return;
+      }
+
+      let lessonsToPrint = [];
+
+      // If there's only one lesson, print it directly
+      if (lessonsLearned.length === 1) {
+        lessonsToPrint = lessonsLearned;
+      }
+      // If there's a selected lesson, print only that one
+      else if (selectedLessonId) {
+        const selectedLesson = lessonsLearned.find(l => l.id === selectedLessonId);
+        if (selectedLesson) {
+          lessonsToPrint = [selectedLesson];
+        } else {
+          alert('Selected lesson learned not found.');
+          return;
+        }
+      }
+      // If multiple lessons and none selected, ask user which to print
+      else {
+        const lessonOptions = lessonsLearned.map((lesson, index) => 
+          `${index + 1}. ${lesson.name} (Serial #${lesson.serial_number})`
+        ).join('\n');
+        
+        const userChoice = prompt(
+          `Multiple lessons learned found. Which would you like to print?\n\n${lessonOptions}\n\nEnter the number (1-${lessonsLearned.length}) or 'all' to print all lessons:`
+        );
+
+        if (!userChoice || userChoice.toLowerCase() === 'cancel') {
+          return; // User cancelled
+        }
+
+        if (userChoice.toLowerCase() === 'all') {
+          lessonsToPrint = lessonsLearned;
+        } else {
+          const choiceNum = parseInt(userChoice);
+          if (choiceNum >= 1 && choiceNum <= lessonsLearned.length) {
+            lessonsToPrint = [lessonsLearned[choiceNum - 1]];
+          } else {
+            alert('Invalid selection. Please try again.');
+            return;
+          }
+        }
+      }
+
+      const currentDateTime = new Date().toLocaleString();
+      
+      // Collect all unique images from lessons to print
+      const allImages = lessonsToPrint.reduce((images, lesson) => {
+        if (lesson.lesson_images && lesson.lesson_images.length > 0) {
+          return images.concat(lesson.lesson_images);
+        }
+        return images;
+      }, []);
+      
+      const printContent = `
+        <html>
+          <head>
+            <title>Exercise Lessons Learned - ${exercise.name || 'Exercise'}</title>
+            <style>
+              @page { 
+                margin: 20px 20px 80px 20px; 
+                size: A4;
+              }
+              body { 
+                font-family: Arial, sans-serif; 
+                margin: 0; 
+                padding: 20px 20px 60px 20px; 
+                font-size: 12px;
+                line-height: 1.4;
+              }
+              .header { border-bottom: 3px solid #333; margin-bottom: 30px; padding-bottom: 15px; }
+              .header-images { margin: 15px 0; }
+              .header-images img { max-width: 200px; max-height: 150px; object-fit: cover; margin-right: 15px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
+              .lesson-item { 
+                border: 1px solid #ddd; 
+                margin-bottom: 25px; 
+                padding: 20px; 
+                border-radius: 8px; 
+                page-break-inside: avoid;
+                page-break-after: auto;
+              }
+              .lesson-title { font-size: 20px; font-weight: bold; margin-bottom: 15px; color: #333; }
+              .section-title { 
+                font-size: 16px; 
+                font-weight: bold; 
+                margin: 20px 0 10px 0; 
+                color: #555; 
+                border-bottom: 1px solid #eee; 
+                padding-bottom: 5px;
+                page-break-after: avoid;
+              }
+              .content { margin-bottom: 15px; color: #666; }
+              .priority { 
+                padding: 4px 8px; 
+                border-radius: 4px; 
+                font-weight: bold; 
+                color: white; 
+              }
+              .priority.pri-1 { background-color: #ef4444; }
+              .priority.pri-2 { background-color: #f59e0b; }
+              .priority.pri-3 { background-color: #22c55e; }
+              .priority.pri-4 { background-color: #3b82f6; }
+              .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 10px 0; }
+              .grid-item { padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+              .footer { 
+                position: fixed; 
+                bottom: 20px; 
+                left: 20px; 
+                right: 20px;
+                text-align: center; 
+                font-size: 12px; 
+                color: #666; 
+                border-top: 1px solid #ddd; 
+                padding-top: 10px;
+                height: 40px;
+                z-index: 999;
+              }
+              .no-print { display: none; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1>Exercise Lessons Learned</h1>
+              <h2>${exercise.name || 'Exercise Name'}</h2>
+              <p><strong>Exercise Type:</strong> ${exercise.exercise_type || 'N/A'}</p>
+              <p><strong>Generated on:</strong> ${new Date().toLocaleDateString()}</p>
+              
+              ${allImages.length > 0 ? `
+                <div class="header-images">
+                  <h3>Supporting Images:</h3>
+                  ${allImages.slice(0, 6).map(image => `<img src="${image}" alt="Lesson Image" />`).join('')}
+                </div>
+              ` : ''}
+            </div>
+            <div class="lessons-content">
+              ${lessonsToPrint.length > 0 ? 
+                lessonsToPrint.map((lesson, index) => `
+                  <div class="lesson-item">
+                    <div class="lesson-title">${lesson.name}</div>
+                    <div class="content">
+                      <strong>Serial Number:</strong> ${lesson.serial_number || 'N/A'}<br>
+                      <strong>Priority:</strong> <span class="priority ${lesson.priority.toLowerCase().replace(' ', '-')}">${lesson.priority}</span><br>
+                      <strong>Date:</strong> ${lesson.date}<br>
+                      <strong>DOTMPLFICC:</strong> ${lesson.dotmplficc}
+                    </div>
+                    
+                    ${lesson.references ? `
+                      <div class="section-title">References</div>
+                      <div class="content">${lesson.references}</div>
+                    ` : ''}
+                    
+                    <div class="section-title">Observations and Recommended Actions</div>
+                    ${lesson.issues_observation ? `
+                      <div class="content">
+                        <strong>Issues/Observation:</strong><br>${lesson.issues_observation}
+                      </div>
+                    ` : ''}
+                    ${lesson.recommendations ? `
+                      <div class="content">
+                        <strong>Recommendations:</strong><br>${lesson.recommendations}
+                      </div>
+                    ` : ''}
+                    
+                    <div class="section-title">Analysis and Actions</div>
+                    <div class="grid">
+                      ${lesson.additional_comments ? `
+                        <div class="grid-item">
+                          <strong>Additional Comments:</strong><br>${lesson.additional_comments}
+                        </div>
+                      ` : ''}
+                      ${lesson.recommended_actions ? `
+                        <div class="grid-item">
+                          <strong>Recommended Actions:</strong><br>${lesson.recommended_actions}
+                        </div>
+                      ` : ''}
+                      ${lesson.final_authority_remarks ? `
+                        <div class="grid-item">
+                          <strong>Final Authority Remarks:</strong><br>${lesson.final_authority_remarks}
+                        </div>
+                      ` : ''}
+                      ${lesson.testing_done_by || lesson.procedures_written_by || lesson.implement_new_ll_by ? `
+                        <div class="grid-item">
+                          <strong>Timeline:</strong><br>
+                          ${lesson.testing_done_by ? `Testing done by: ${lesson.testing_done_by}<br>` : ''}
+                          ${lesson.procedures_written_by ? `Procedures written by: ${lesson.procedures_written_by}<br>` : ''}
+                          ${lesson.implement_new_ll_by ? `Implement new LL by: ${lesson.implement_new_ll_by}` : ''}
+                        </div>
+                      ` : ''}
+                    </div>
+                  </div>
+                `).join('') : 
+                '<div class="lesson-item"><p>No lessons learned found.</p></div>'
+              }
+            </div>
+            <div class="footer">
+              <p>Generated on ${currentDateTime} | Page <span id="pageNumber"></span></p>
+            </div>
+          </body>
+        </html>
+      `;
+
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    };
+
+    // Show form if adding/editing
+    if (showAddLesson) {
+      return (
+        <LessonsLearnedForm
+          exerciseId={exerciseId}
+          editingLesson={editingLesson}
+          onBack={handleBackFromForm}
+          onSave={handleSaveLesson}
+        />
+      );
+    }
 
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-white">Lessons Learned</h1>
+          <div>
+            <h1 className="text-2xl font-bold text-white">Lessons Learned</h1>
+            {lessonsLearned.length > 1 && (
+              <p className="text-sm text-gray-400 mt-1">
+                Click on a lesson to select it for printing, or use "Print Lessons Learned" to choose
+              </p>
+            )}
+          </div>
           <div className="flex space-x-3">
             <Button 
               variant="outline"
               className="border-green-500/50 text-green-400 hover:bg-green-500/10"
               onClick={printLessonsLearned}
+              title={lessonsLearned.length > 1 ? "Click a lesson to select it for printing, or print all lessons" : "Print lessons learned"}
             >
               <Printer className="h-4 w-4 mr-2" />
-              Print Lessons Learned
+              {selectedLessonId ? "Print Selected" : "Print Lessons Learned"}
             </Button>
             <Button 
               className="bg-orange-500 hover:bg-orange-600 text-black"
-              onClick={() => {/* Add new lesson logic */}}
+              onClick={handleAddNewLesson}
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Lesson Learned
@@ -10688,17 +10962,119 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave }) => {
           </div>
         </div>
 
-        <Card className="bg-gray-800 border-gray-700 border-dashed">
-          <CardContent className="p-12 text-center">
-            <Lightbulb className="h-12 w-12 text-gray-500 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-300 mb-2">No Lessons Learned Yet</h3>
-            <p className="text-gray-500 mb-4">Document key lessons and insights from the exercise.</p>
-            <Button className="bg-orange-500 hover:bg-orange-600 text-black">
-              <Plus className="h-4 w-4 mr-2" />
-              Add First Lesson
-            </Button>
-          </CardContent>
-        </Card>
+        {lessonsLoading ? (
+          <Card className="bg-gray-800 border-gray-700">
+            <CardContent className="p-12 text-center">
+              <div className="text-gray-400">Loading lessons learned...</div>
+            </CardContent>
+          </Card>
+        ) : lessonsLearned.length === 0 ? (
+          <Card className="bg-gray-800 border-gray-700 border-dashed">
+            <CardContent className="p-12 text-center">
+              <Lightbulb className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-300 mb-2">No Lessons Learned Yet</h3>
+              <p className="text-gray-500 mb-4">Document key lessons and insights from the exercise.</p>
+              <Button 
+                className="bg-orange-500 hover:bg-orange-600 text-black"
+                onClick={handleAddNewLesson}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add First Lesson
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 gap-6">
+            {lessonsLearned.map((lesson) => (
+              <Card 
+                key={lesson.id} 
+                className={`bg-gray-800 border-gray-700 cursor-pointer transition-all ${
+                  selectedLessonId === lesson.id 
+                    ? 'border-orange-500 ring-2 ring-orange-500/20 bg-orange-500/5' 
+                    : 'hover:border-gray-600 hover:bg-gray-750'
+                }`}
+                onClick={() => setSelectedLessonId(selectedLessonId === lesson.id ? null : lesson.id)}
+              >
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <CardTitle className="text-white text-lg">{lesson.name}</CardTitle>
+                        {selectedLessonId === lesson.id && (
+                          <Badge variant="outline" className="border-orange-500 text-orange-400 bg-orange-500/10 text-xs">
+                            Selected for Print
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-4 text-sm text-gray-400">
+                        <span>Serial #{lesson.serial_number}</span>
+                        <Badge 
+                          className={`text-white ${
+                            lesson.priority === 'Pri 1' ? 'bg-red-500' :
+                            lesson.priority === 'Pri 2' ? 'bg-orange-500' :
+                            lesson.priority === 'Pri 3' ? 'bg-green-500' : 'bg-blue-500'
+                          }`}
+                        >
+                          {lesson.priority}
+                        </Badge>
+                        <span>{lesson.date}</span>
+                        <span>{lesson.dotmplficc}</span>
+                      </div>
+                    </div>
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-orange-500 border-orange-500 hover:bg-orange-500 hover:text-black"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditLesson(lesson);
+                        }}
+                      >
+                        <Edit className="h-3 w-3 mr-1" />
+                        Edit
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-red-400 border-red-400 hover:bg-red-400 hover:text-white"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteLesson(lesson.id);
+                        }}
+                      >
+                        <Trash2 className="h-3 w-3 mr-1" />
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {lesson.references && (
+                    <div>
+                      <h4 className="font-semibold text-white text-sm mb-1">References</h4>
+                      <p className="text-gray-300 text-sm">{lesson.references}</p>
+                    </div>
+                  )}
+                  
+                  {lesson.issues_observation && (
+                    <div>
+                      <h4 className="font-semibold text-white text-sm mb-1">Issues/Observation</h4>
+                      <p className="text-gray-300 text-sm">{lesson.issues_observation.substring(0, 200)}{lesson.issues_observation.length > 200 ? '...' : ''}</p>
+                    </div>
+                  )}
+                  
+                  {lesson.recommendations && (
+                    <div>
+                      <h4 className="font-semibold text-white text-sm mb-1">Recommendations</h4>
+                      <p className="text-gray-300 text-sm">{lesson.recommendations.substring(0, 200)}{lesson.recommendations.length > 200 ? '...' : ''}</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     );
   };

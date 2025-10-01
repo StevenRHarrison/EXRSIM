@@ -11331,7 +11331,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
           </head>
           <body>
             <div class="header">
-              <h1>Final Exercise Report</h1>
+              <h1>After Action Report</h1>
               <h2>${exercise.name || 'Exercise Name'}</h2>
               <table class="summary-table">
                 <tr>

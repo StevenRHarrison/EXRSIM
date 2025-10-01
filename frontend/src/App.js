@@ -903,6 +903,7 @@ const displayTimeToApiFormat = (timeStr) => {
   return formatTimeInput(timeStr);
 };
 const Dashboard = () => {
+  const { theme } = useTheme();
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
 

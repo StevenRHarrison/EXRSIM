@@ -10528,10 +10528,14 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave }) => {
                 value={formData.dotmplficc}
                 onChange={(e) => handleInputChange('dotmplficc', e.target.value)}
                 className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"
+                style={{
+                  backgroundColor: dotmplficcOptions.find(opt => opt.value === formData.dotmplficc)?.color + '20',
+                  borderColor: dotmplficcOptions.find(opt => opt.value === formData.dotmplficc)?.color
+                }}
               >
                 {dotmplficcOptions.map(option => (
-                  <option key={option} value={option}>
-                    {option}
+                  <option key={option.value} value={option.value}>
+                    {option.label}
                   </option>
                 ))}
               </select>

@@ -705,6 +705,37 @@ class EvaluationReportUpdate(BaseModel):
     plan_adherence_adaptability: Optional[EvaluationAreaAssessment] = None
     evaluation_images: Optional[List[str]] = None
 
+# Location Management Models
+class Location(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    description: str
+    address: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    contact_person: Optional[str] = None
+    contact_phone: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class LocationCreate(BaseModel):
+    name: str
+    description: str
+    address: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    contact_person: Optional[str] = None
+    contact_phone: Optional[str] = None
+
+class LocationUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    address: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    contact_person: Optional[str] = None
+    contact_phone: Optional[str] = None
+
 # Lessons Learned Models
 class LessonsLearnedBase(BaseModel):
     # First Container - Lesson Learned

@@ -13895,6 +13895,15 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
 
 // Main App Component
 function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
+}
+
+function AppContent() {
+  const { theme } = useTheme();
   const [activeMenu, setActiveMenu] = useState('dashboard');
   const [managingExerciseId, setManagingExerciseId] = useState(null);
   
@@ -14030,7 +14039,7 @@ function App() {
   // Don't show the main navigation and sidebar for the exercise management dashboard
   if (activeMenu === 'manage') {
     return (
-      <div className="min-h-screen bg-black text-white">
+      <div className={`min-h-screen ${theme.colors.primary} ${theme.colors.textPrimary}`}>
         <BrowserRouter>
           {renderContent()}
         </BrowserRouter>
@@ -14039,7 +14048,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className={`min-h-screen ${theme.colors.primary} ${theme.colors.textPrimary}`}>
       <BrowserRouter>
         <div className="flex flex-col h-screen">
           <Navigation />

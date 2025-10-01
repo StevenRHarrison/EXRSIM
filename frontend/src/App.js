@@ -427,6 +427,16 @@ const Navigation = () => {
         <LocationManager onClose={() => setShowLocationManager(false)} />
       )}
 
+      {/* Financial Categories Modal */}
+      {showFinancialCategories && (
+        <FinancialCategoriesManager onClose={() => setShowFinancialCategories(false)} />
+      )}
+
+      {/* Acronyms Modal */}
+      {showAcronyms && (
+        <AcronymsManager onClose={() => setShowAcronyms(false)} />
+      )}
+
       {/* Theme Settings Modal */}
       {showThemeSettings && (
         <ThemeSettings onClose={() => setShowThemeSettings(false)} />

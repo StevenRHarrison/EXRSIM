@@ -627,7 +627,7 @@ class ResourceUpdate(BaseModel):
 # Evaluation Report Models
 class EvaluationAreaAssessment(BaseModel):
     area_name: str
-    rating: str  # "Not Rated", "Needs Improvement", "Satisfactory", "Excellent"
+    rating: str  # "Excellent", "Above Average", "Average", "Below Average", "Unacceptable"
     comments: str = ""
 
 class EvaluationReport(BaseModel):

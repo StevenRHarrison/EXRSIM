@@ -11756,6 +11756,65 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
 
             <Separator className="bg-gray-700" />
 
+            {/* Lessons Learned Summary */}
+            {lessonsLearned && lessonsLearned.length > 0 && (
+              <>
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold text-white">Lessons Learned Summary</h3>
+                  <div className="space-y-3">
+                    {lessonsLearned.slice(0, 3).map((lesson, index) => (
+                      <Card key={index} className="bg-gray-700 border-gray-600">
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-white text-sm">{lesson.name}</h4>
+                              <div className="flex items-center gap-2 mt-1">
+                                <Badge 
+                                  className={`text-white text-xs ${
+                                    lesson.priority === 'Pri 1' ? 'bg-red-500' :
+                                    lesson.priority === 'Pri 2' ? 'bg-orange-500' :
+                                    lesson.priority === 'Pri 3' ? 'bg-green-500' : 'bg-blue-500'
+                                  }`}
+                                >
+                                  {lesson.priority}
+                                </Badge>
+                                <Badge 
+                                  className="text-white text-xs"
+                                  style={{
+                                    backgroundColor: dotmplficcOptions.find(opt => opt.value === lesson.dotmplficc)?.color || '#6b7280'
+                                  }}
+                                >
+                                  {lesson.dotmplficc}
+                                </Badge>
+                                <span className="text-xs text-gray-400">{lesson.date}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="space-y-2 text-sm">
+                            <div>
+                              <span className="text-gray-400">Issues/Observation:</span>
+                              <p className="text-gray-300 mt-1">{lesson.issues_observation ? (lesson.issues_observation.length > 100 ? lesson.issues_observation.substring(0, 100) + '...' : lesson.issues_observation) : 'No issues/observations specified'}</p>
+                            </div>
+                            {lesson.recommendations && (
+                              <div>
+                                <span className="text-gray-400">Recommendations:</span>
+                                <p className="text-gray-300 mt-1">{lesson.recommendations.length > 100 ? lesson.recommendations.substring(0, 100) + '...' : lesson.recommendations}</p>
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                    {lessonsLearned.length > 3 && (
+                      <p className="text-sm text-gray-400">...and {lessonsLearned.length - 3} more lessons learned</p>
+                    )}
+                  </div>
+                </div>
+
+                <Separator className="bg-gray-700" />
+              </>
+            )}
+
             {/* Report Actions */}
             <div className="space-y-3">
               <h3 className="text-lg font-semibold text-white">Report Actions</h3>

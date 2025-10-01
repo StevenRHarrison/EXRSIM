@@ -10042,10 +10042,10 @@ const ExerciseManagementDashboard = ({
             {evaluationReports.map((report) => (
               <Card 
                 key={report.id} 
-                className={`bg-gray-800 border-gray-700 cursor-pointer transition-all ${
+                className={`${theme.colors.tertiary} ${theme.colors.border} cursor-pointer transition-all ${
                   selectedEvaluationId === report.id 
                     ? 'border-orange-500 ring-2 ring-orange-500/20 bg-orange-500/5' 
-                    : 'hover:border-gray-600 hover:bg-gray-750'
+                    : `${theme.colors.hover}`
                 }`}
                 onClick={() => setSelectedEvaluationId(selectedEvaluationId === report.id ? null : report.id)}
               >
@@ -10053,7 +10053,7 @@ const ExerciseManagementDashboard = ({
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <CardTitle className="text-white text-lg">{report.report_title}</CardTitle>
+                        <CardTitle className={`${theme.colors.textPrimary} text-lg`}>{report.report_title}</CardTitle>
                         {selectedEvaluationId === report.id && (
                           <Badge variant="outline" className="border-orange-500 text-orange-400 bg-orange-500/10 text-xs">
                             Selected for Print

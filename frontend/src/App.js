@@ -7411,7 +7411,7 @@ const ExerciseManagementDashboard = ({
   const [editingScope, setEditingScope] = useState(null);
   
   // Exercise Steps menu expansion state
-  const [exerciseStepsExpanded, setExerciseStepsExpanded] = useState(true);
+  const [exerciseStepsExpanded, setExerciseStepsExpanded] = useState(false);
   
   // Improvement menu expansion state
   const [improvementExpanded, setImprovementExpanded] = useState(true);

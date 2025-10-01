@@ -10089,13 +10089,13 @@ const ExerciseManagementDashboard = ({
                 <CardContent className="space-y-4">
                   {report.summary_of_findings && (
                     <div>
-                      <h4 className="font-semibold text-white mb-2">Summary of Findings</h4>
-                      <p className="text-gray-300 text-sm">{report.summary_of_findings}</p>
+                      <h4 className={`font-semibold ${theme.colors.textPrimary} mb-2`}>Summary of Findings</h4>
+                      <p className={`${theme.colors.textSecondary} text-sm`}>{report.summary_of_findings}</p>
                     </div>
                   )}
                   
                   <div>
-                    <h4 className="font-semibold text-white mb-2">Key Areas Assessment</h4>
+                    <h4 className={`font-semibold ${theme.colors.textPrimary} mb-2`}>Key Areas Assessment</h4>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                       {[
                         { label: 'Command & Control', data: report.command_and_control },
@@ -10106,15 +10106,15 @@ const ExerciseManagementDashboard = ({
                         { label: 'Training & Readiness', data: report.training_and_readiness },
                         { label: 'Plan Adherence', data: report.plan_adherence_adaptability }
                       ].map((area, index) => (
-                        <div key={index} className="bg-gray-700 p-2 rounded text-center">
-                          <div className="text-xs text-gray-400 mb-1">{area.label}</div>
+                        <div key={index} className={`${theme.colors.quaternary} p-2 rounded text-center`}>
+                          <div className={`text-xs ${theme.colors.textMuted} mb-1`}>{area.label}</div>
                           <div className={`text-xs font-semibold ${
                             area.data?.rating === 'Excellent' ? 'text-blue-400' :
                             area.data?.rating === 'Above Average' ? 'text-sky-400' :
                             area.data?.rating === 'Average' ? 'text-green-400' :
                             area.data?.rating === 'Below Average' ? 'text-orange-400' :
                             area.data?.rating === 'Unacceptable' ? 'text-red-400' :
-                            'text-gray-500'
+                            theme.colors.textMuted
                           }`}>
                             {area.data?.rating || 'Not Rated'}
                           </div>

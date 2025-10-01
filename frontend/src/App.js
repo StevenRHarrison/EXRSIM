@@ -9051,7 +9051,14 @@ const ExerciseManagementDashboard = ({
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-white">Exercise Evaluations</h1>
+          <div>
+            <h1 className="text-2xl font-bold text-white">Exercise Evaluations</h1>
+            {evaluationReports.length > 1 && (
+              <p className="text-sm text-gray-400 mt-1">
+                Click on a report to select it for printing, or use "Print Evaluations" to choose
+              </p>
+            )}
+          </div>
           <div className="flex space-x-3">
             <Button 
               variant="outline"

@@ -8120,6 +8120,7 @@ const ExerciseManagementDashboard = ({
   setScribeTimeErrors,
   loadScribeTemplates 
 }) => {
+  const { theme } = useTheme();
   const [exercise, setExercise] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState('overview');

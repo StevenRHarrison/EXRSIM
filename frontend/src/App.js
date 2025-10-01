@@ -7865,9 +7865,36 @@ const ExerciseManagementDashboard = ({
                 padding-top: 10px; 
               }
               @media print { 
-                body { margin: 0; padding: 20px; } 
+                @page { 
+                  margin: 20px 20px 80px 20px; 
+                  size: A4;
+                }
+                body { 
+                  margin: 0; 
+                  padding: 20px 20px 60px 20px; 
+                  font-size: 12px;
+                  line-height: 1.4;
+                } 
                 .no-print { display: none; }
-                .footer { position: fixed; bottom: 0; }
+                .footer { 
+                  position: fixed; 
+                  bottom: 20px; 
+                  left: 20px; 
+                  right: 20px;
+                  height: 40px;
+                  z-index: 999;
+                }
+                .report-item { 
+                  page-break-inside: avoid; 
+                  page-break-after: auto;
+                  margin-bottom: 20px;
+                }
+                .section-title { 
+                  page-break-after: avoid;
+                }
+                .assessment-grid { 
+                  page-break-inside: avoid;
+                }
               }
             </style>
           </head>
@@ -8117,9 +8144,36 @@ const ExerciseManagementDashboard = ({
                 padding-top: 10px; 
               }
               @media print { 
-                body { margin: 0; padding: 20px; } 
+                @page { 
+                  margin: 20px 20px 80px 20px; 
+                  size: A4;
+                }
+                body { 
+                  margin: 0; 
+                  padding: 20px 20px 60px 20px; 
+                  font-size: 12px;
+                  line-height: 1.4;
+                } 
                 .no-print { display: none; }
-                .footer { position: fixed; bottom: 0; }
+                .footer { 
+                  position: fixed; 
+                  bottom: 20px; 
+                  left: 20px; 
+                  right: 20px;
+                  height: 40px;
+                  z-index: 999;
+                }
+                .report-item { 
+                  page-break-inside: avoid; 
+                  page-break-after: auto;
+                  margin-bottom: 20px;
+                }
+                .section-title { 
+                  page-break-after: avoid;
+                }
+                .assessment-grid { 
+                  page-break-inside: avoid;
+                }
               }
             </style>
           </head>
@@ -8272,9 +8326,36 @@ const ExerciseManagementDashboard = ({
                 padding-top: 10px; 
               }
               @media print { 
-                body { margin: 0; padding: 20px; } 
+                @page { 
+                  margin: 20px 20px 80px 20px; 
+                  size: A4;
+                }
+                body { 
+                  margin: 0; 
+                  padding: 20px 20px 60px 20px; 
+                  font-size: 12px;
+                  line-height: 1.4;
+                } 
                 .no-print { display: none; }
-                .footer { position: fixed; bottom: 0; }
+                .footer { 
+                  position: fixed; 
+                  bottom: 20px; 
+                  left: 20px; 
+                  right: 20px;
+                  height: 40px;
+                  z-index: 999;
+                }
+                .report-item { 
+                  page-break-inside: avoid; 
+                  page-break-after: auto;
+                  margin-bottom: 20px;
+                }
+                .section-title { 
+                  page-break-after: avoid;
+                }
+                .assessment-grid { 
+                  page-break-inside: avoid;
+                }
               }
             </style>
           </head>
@@ -8424,9 +8505,36 @@ const ExerciseManagementDashboard = ({
                 padding-top: 10px; 
               }
               @media print { 
-                body { margin: 0; padding: 20px; } 
+                @page { 
+                  margin: 20px 20px 80px 20px; 
+                  size: A4;
+                }
+                body { 
+                  margin: 0; 
+                  padding: 20px 20px 60px 20px; 
+                  font-size: 12px;
+                  line-height: 1.4;
+                } 
                 .no-print { display: none; }
-                .footer { position: fixed; bottom: 0; }
+                .footer { 
+                  position: fixed; 
+                  bottom: 20px; 
+                  left: 20px; 
+                  right: 20px;
+                  height: 40px;
+                  z-index: 999;
+                }
+                .report-item { 
+                  page-break-inside: avoid; 
+                  page-break-after: auto;
+                  margin-bottom: 20px;
+                }
+                .section-title { 
+                  page-break-after: avoid;
+                }
+                .assessment-grid { 
+                  page-break-inside: avoid;
+                }
               }
             </style>
           </head>
@@ -8569,9 +8677,36 @@ const ExerciseManagementDashboard = ({
                 padding-top: 10px; 
               }
               @media print { 
-                body { margin: 0; padding: 20px; } 
+                @page { 
+                  margin: 20px 20px 80px 20px; 
+                  size: A4;
+                }
+                body { 
+                  margin: 0; 
+                  padding: 20px 20px 60px 20px; 
+                  font-size: 12px;
+                  line-height: 1.4;
+                } 
                 .no-print { display: none; }
-                .footer { position: fixed; bottom: 0; }
+                .footer { 
+                  position: fixed; 
+                  bottom: 20px; 
+                  left: 20px; 
+                  right: 20px;
+                  height: 40px;
+                  z-index: 999;
+                }
+                .report-item { 
+                  page-break-inside: avoid; 
+                  page-break-after: auto;
+                  margin-bottom: 20px;
+                }
+                .section-title { 
+                  page-break-after: avoid;
+                }
+                .assessment-grid { 
+                  page-break-inside: avoid;
+                }
               }
             </style>
           </head>
@@ -8716,9 +8851,36 @@ const ExerciseManagementDashboard = ({
                 padding-top: 10px; 
               }
               @media print { 
-                body { margin: 0; padding: 20px; } 
+                @page { 
+                  margin: 20px 20px 80px 20px; 
+                  size: A4;
+                }
+                body { 
+                  margin: 0; 
+                  padding: 20px 20px 60px 20px; 
+                  font-size: 12px;
+                  line-height: 1.4;
+                } 
                 .no-print { display: none; }
-                .footer { position: fixed; bottom: 0; }
+                .footer { 
+                  position: fixed; 
+                  bottom: 20px; 
+                  left: 20px; 
+                  right: 20px;
+                  height: 40px;
+                  z-index: 999;
+                }
+                .report-item { 
+                  page-break-inside: avoid; 
+                  page-break-after: auto;
+                  margin-bottom: 20px;
+                }
+                .section-title { 
+                  page-break-after: avoid;
+                }
+                .assessment-grid { 
+                  page-break-inside: avoid;
+                }
               }
             </style>
           </head>
@@ -8985,9 +9147,36 @@ const ExerciseManagementDashboard = ({
                 padding-top: 10px; 
               }
               @media print { 
-                body { margin: 0; padding: 20px; } 
+                @page { 
+                  margin: 20px 20px 80px 20px; 
+                  size: A4;
+                }
+                body { 
+                  margin: 0; 
+                  padding: 20px 20px 60px 20px; 
+                  font-size: 12px;
+                  line-height: 1.4;
+                } 
                 .no-print { display: none; }
-                .footer { position: fixed; bottom: 0; }
+                .footer { 
+                  position: fixed; 
+                  bottom: 20px; 
+                  left: 20px; 
+                  right: 20px;
+                  height: 40px;
+                  z-index: 999;
+                }
+                .report-item { 
+                  page-break-inside: avoid; 
+                  page-break-after: auto;
+                  margin-bottom: 20px;
+                }
+                .section-title { 
+                  page-break-after: avoid;
+                }
+                .assessment-grid { 
+                  page-break-inside: avoid;
+                }
               }
             </style>
           </head>
@@ -9905,9 +10094,36 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
                 padding-top: 10px; 
               }
               @media print { 
-                body { margin: 0; padding: 20px; } 
+                @page { 
+                  margin: 20px 20px 80px 20px; 
+                  size: A4;
+                }
+                body { 
+                  margin: 0; 
+                  padding: 20px 20px 60px 20px; 
+                  font-size: 12px;
+                  line-height: 1.4;
+                } 
                 .no-print { display: none; }
-                .footer { position: fixed; bottom: 0; }
+                .footer { 
+                  position: fixed; 
+                  bottom: 20px; 
+                  left: 20px; 
+                  right: 20px;
+                  height: 40px;
+                  z-index: 999;
+                }
+                .report-item { 
+                  page-break-inside: avoid; 
+                  page-break-after: auto;
+                  margin-bottom: 20px;
+                }
+                .section-title { 
+                  page-break-after: avoid;
+                }
+                .assessment-grid { 
+                  page-break-inside: avoid;
+                }
               }
             </style>
           </head>

@@ -414,6 +414,10 @@ const Navigation = () => {
   const [showThemeSettings, setShowThemeSettings] = useState(false);
   const [showFinancialCategories, setShowFinancialCategories] = useState(false);
   const [showAcronyms, setShowAcronyms] = useState(false);
+  const [showDefinitions, setShowDefinitions] = useState(false);
+  const [showQuicklinks, setShowQuicklinks] = useState(false);
+  const [showPositionManager, setShowPositionManager] = useState(false);
+  const [showPoliciesProcedures, setShowPoliciesProcedures] = useState(false);
 
   return (
     <nav className={`${theme.colors.primary} border-b ${theme.colors.borderAccent} px-6 py-4`}>

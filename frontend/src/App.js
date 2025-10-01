@@ -10173,7 +10173,7 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
   };
 
 // Lessons Learned Form Component  
-const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave }) => {
+const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplficcOptions }) => {
   const [formData, setFormData] = useState({
     // First Container - Lesson Learned
     name: '',

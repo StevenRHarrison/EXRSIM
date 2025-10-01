@@ -554,15 +554,14 @@ const LocationManager = ({ onClose }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className={`${theme.colors.modal} rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden`}>
-        <div className="flex items-center justify-between p-6 border-b border-gray-700">
-          <h2 className="text-2xl font-bold text-orange-500">Manage Locations</h2>
+        <div className={`p-6 border-b ${theme.colors.border} flex justify-between items-center`}>
+          <h2 className="text-2xl font-bold text-orange-500">Location Manager</h2>
           <Button
             variant="ghost"
-            size="sm"
             onClick={onClose}
-            className="text-gray-400 hover:text-white"
+            className={`${theme.colors.textMuted} hover:${theme.colors.textPrimary}`}
           >
-            <X className="h-5 w-5" />
+            <X className="h-6 w-6" />
           </Button>
         </div>
 

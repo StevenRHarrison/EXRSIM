@@ -8307,30 +8307,30 @@ const ExerciseManagementDashboard = ({
           <p className={`${theme.colors.textSecondary} mb-4`}>{exercise.exercise_description}</p>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-gray-700/50 p-4 rounded-lg">
+            <div className={`${theme.colors.quaternary}/50 p-4 rounded-lg`}>
               <div className="flex items-center space-x-2 mb-2">
                 <MapPin className="h-5 w-5 text-orange-400" />
-                <span className="text-sm font-medium text-gray-300">Location</span>
+                <span className={`text-sm font-medium ${theme.colors.textSecondary}`}>Location</span>
               </div>
-              <p className="text-white">{exercise.location || 'Not specified'}</p>
+              <p className={theme.colors.textPrimary}>{exercise.location || 'Not specified'}</p>
             </div>
             
-            <div className="bg-gray-700/50 p-4 rounded-lg">
+            <div className={`${theme.colors.quaternary}/50 p-4 rounded-lg`}>
               <div className="flex items-center space-x-2 mb-2">
                 <Clock className="h-5 w-5 text-orange-400" />
-                <span className="text-sm font-medium text-gray-300">Duration</span>
+                <span className={`text-sm font-medium ${theme.colors.textSecondary}`}>Duration</span>
               </div>
-              <p className="text-white">
+              <p className={theme.colors.textPrimary}>
                 {new Date(exercise.start_date).toLocaleDateString()} - {new Date(exercise.end_date).toLocaleDateString()}
               </p>
             </div>
             
-            <div className="bg-gray-700/50 p-4 rounded-lg">
+            <div className={`${theme.colors.quaternary}/50 p-4 rounded-lg`}>
               <div className="flex items-center space-x-2 mb-2">
                 <Users className="h-5 w-5 text-orange-400" />
-                <span className="text-sm font-medium text-gray-300">Participants</span>
+                <span className={`text-sm font-medium ${theme.colors.textSecondary}`}>Participants</span>
               </div>
-              <p className="text-white">{exercise.coordinators?.length || 0} Coordinators</p>
+              <p className={theme.colors.textPrimary}>{exercise.coordinators?.length || 0} Coordinators</p>
             </div>
           </div>
         </div>

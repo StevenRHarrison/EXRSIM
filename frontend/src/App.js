@@ -11735,6 +11735,7 @@ function App() {
   const [showAddEvaluation, setShowAddEvaluation] = useState(false);
   const [editingEvaluation, setEditingEvaluation] = useState(null);
   const [evaluationLoading, setEvaluationLoading] = useState(false);
+  const [selectedEvaluationId, setSelectedEvaluationId] = useState(null);
 
   // Handle URL-based navigation for editing exercises
   useEffect(() => {

@@ -7586,7 +7586,7 @@ const ExerciseManagementDashboard = ({
     { id: 'evaluations', title: 'Evaluations', icon: Star },
     { id: 'lessons_learned', title: 'Lessons Learned', icon: Lightbulb },
     { id: 'corrective_actions', title: 'Corrective Actions', icon: CheckCircle },
-    { id: 'final_report', title: 'Final Report', icon: FileText }
+    { id: 'final_report', title: 'After Action Report', icon: FileText }
   ];
 
   // Combined for compatibility with existing code

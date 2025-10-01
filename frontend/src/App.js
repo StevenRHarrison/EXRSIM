@@ -9141,7 +9141,7 @@ const ExerciseManagementDashboard = ({
               body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
               .header { border-bottom: 3px solid #333; margin-bottom: 30px; padding-bottom: 15px; }
               .header-images { margin: 15px 0; }
-              .header-images img { max-width: 200px; max-height: 150px; object-fit: cover; margin-right: 15px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
+              .header-images img { width: 120px; height: 120px; object-fit: cover; margin-right: 15px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; aspect-ratio: 1/1; }
               .report-item { border: 1px solid #ddd; margin-bottom: 25px; padding: 20px; border-radius: 8px; page-break-inside: avoid; }
               .report-title { font-size: 20px; font-weight: bold; margin-bottom: 15px; color: #333; }
               .section-title { font-size: 16px; font-weight: bold; margin: 20px 0 10px 0; color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px; }
@@ -10787,7 +10787,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave }) => {
               }
               .header { border-bottom: 3px solid #333; margin-bottom: 30px; padding-bottom: 15px; }
               .header-images { margin: 15px 0; }
-              .header-images img { max-width: 200px; max-height: 150px; object-fit: cover; margin-right: 15px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
+              .header-images img { width: 120px; height: 120px; object-fit: cover; margin-right: 15px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; aspect-ratio: 1/1; }
               .lesson-item { 
                 border: 1px solid #ddd; 
                 margin-bottom: 25px; 

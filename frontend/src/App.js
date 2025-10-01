@@ -13834,7 +13834,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
                 <div className="pt-2">
                   <Button
                     variant="ghost"
-                    className="w-full justify-start text-left text-gray-300 hover:text-orange-500 hover:bg-gray-800 mb-1"
+                    className={`w-full justify-start text-left ${theme.colors.textSecondary} hover:text-orange-500 ${theme.colors.hover} mb-1`}
                     onClick={() => setImprovementExpanded(!improvementExpanded)}
                   >
                     {improvementExpanded ? (

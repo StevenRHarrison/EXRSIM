@@ -332,6 +332,8 @@ const Navigation = () => {
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
   const [showLocationManager, setShowLocationManager] = useState(false);
   const [showThemeSettings, setShowThemeSettings] = useState(false);
+  const [showFinancialCategories, setShowFinancialCategories] = useState(false);
+  const [showAcronyms, setShowAcronyms] = useState(false);
 
   return (
     <nav className={`${theme.colors.primary} border-b ${theme.colors.borderAccent} px-6 py-4`}>

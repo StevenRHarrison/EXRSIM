@@ -13807,7 +13807,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
                   
                   {/* Exercise Steps Sub-menu Items */}
                   {exerciseStepsExpanded && (
-                    <div className="ml-4 space-y-1 border-l border-gray-700 pl-2">
+                    <div className={`ml-4 space-y-1 border-l ${theme.colors.border} pl-2`}>
                       {exerciseStepsMenuItems.map((item) => {
                         const Icon = item.icon;
                         return (
@@ -13817,7 +13817,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
                             className={`w-full justify-start text-left text-sm ${
                               activeSection === item.id
                                 ? "bg-orange-500/20 text-orange-300 border-orange-500/50"
-                                : "text-gray-400 hover:text-orange-500 hover:bg-gray-800"
+                                : `${theme.colors.textMuted} hover:text-orange-500 ${theme.colors.hover}`
                             }`}
                             onClick={() => setActiveSection(item.id)}
                           >

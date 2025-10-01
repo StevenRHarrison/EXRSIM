@@ -8304,7 +8304,7 @@ const ExerciseManagementDashboard = ({
             )}
           </div>
           
-          <p className="text-gray-300 mb-4">{exercise.exercise_description}</p>
+          <p className={`${theme.colors.textSecondary} mb-4`}>{exercise.exercise_description}</p>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-gray-700/50 p-4 rounded-lg">

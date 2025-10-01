@@ -1078,28 +1078,20 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
     'Visitor'
   ];
 
-  const assignedToOptions = [
-    'Operations Center EOC',
+  // Default fallback locations if none are managed
+  const defaultLocations = [
     'Command Post',
-    'Airbase',
-    'Base',
-    'Camp',
-    'Exercise',
-    'Fire Hall',
-    'Heliport',
-    'Helispot',
     'Hospital',
-    'Incident',
-    'Medical',
-    'Police',
-    'Public Works',
-    'Staging Areas',
-    'Mobile Unit',
-    'Stationary Unit',
-    'Assistant',
-    'Assembly Place',
-    'Muster Point'
+    'Fire Station',
+    'Police Station',
+    'Operations Center EOC',
+    'Staging Area'
   ];
+
+  // Dynamic assigned to options using managed locations + fallbacks
+  const assignedToOptions = locations.length > 0 
+    ? locations.map(location => location.name)
+    : defaultLocations;
 
   const countries = [
     'Canada',
@@ -2176,28 +2168,20 @@ const ResourceForm = ({ onBack, onSave, editingResource }) => {
   ];
 
   // Assigned location options (same as Participants "Assigned to")
-  const assignedToOptions = [
-    'Operations Center EOC',
+  // Default fallback locations if none are managed
+  const defaultLocations = [
     'Command Post',
-    'Airbase',
-    'Base',
-    'Camp',
-    'Exercise',
-    'Fire Hall',
-    'Heliport',
-    'Helispot',
     'Hospital',
-    'Incident',
-    'Medical',
-    'Police',
-    'Public Works',
-    'Staging Areas',
-    'Mobile Unit',
-    'Stationary Unit',
-    'Assistant',
-    'Assembly Place',
-    'Muster Point'
+    'Fire Station',
+    'Police Station',
+    'Operations Center EOC',
+    'Staging Area'
   ];
+
+  // Dynamic assigned to options using managed locations + fallbacks
+  const assignedToOptions = locations.length > 0 
+    ? locations.map(location => location.name)
+    : defaultLocations;
 
   useEffect(() => {
     if (editingResource) {

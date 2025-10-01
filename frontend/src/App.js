@@ -10667,6 +10667,20 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave }) => {
   );
 };
 
+  // DOTMPLFICC options with colors (shared between form and management)
+  const dotmplficcOptions = [
+    { value: 'Doctrine', label: 'Doctrine', color: '#3b82f6' }, // Blue
+    { value: 'Organization', label: 'Organization', color: '#10b981' }, // Emerald
+    { value: 'Training', label: 'Training', color: '#f59e0b' }, // Amber
+    { value: 'Maint and Equip', label: 'Maint and Equip', color: '#8b5cf6' }, // Violet
+    { value: 'Personnel', label: 'Personnel', color: '#06b6d4' }, // Cyan
+    { value: 'Leadership', label: 'Leadership', color: '#ef4444' }, // Red
+    { value: 'Facilities', label: 'Facilities', color: '#84cc16' }, // Lime
+    { value: 'Interoperability', label: 'Interoperability', color: '#f97316' }, // Orange
+    { value: 'Communications', label: 'Communications', color: '#ec4899' }, // Pink
+    { value: 'Command and Control', label: 'Command and Control', color: '#6366f1' } // Indigo
+  ];
+
   const renderLessonsLearnedManagement = () => {
     // Lessons Learned handlers
     const handleAddNewLesson = () => {

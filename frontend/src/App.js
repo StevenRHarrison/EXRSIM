@@ -145,24 +145,13 @@ const Navigation = () => {
     <nav className="bg-black border-b border-orange-500/20 px-6 py-4">
         <div className="flex items-center space-x-8">
           <Link to="/" className="flex items-center group">
-            {/* Custom EXRSIM Logo Design */}
-            <div className="flex items-center space-x-2 group-hover:scale-105 transition-transform">
-              <div className="relative">
-                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
-                  <div className="w-8 h-8 bg-black rounded flex items-center justify-center">
-                    <span className="text-orange-500 font-bold text-lg">EX</span>
-                  </div>
-                </div>
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-orange-500 text-xl font-bold tracking-wider leading-none">
-                  EXRSIM
-                </span>
-                <span className="text-orange-400/60 text-xs font-medium tracking-widest">
-                  EMERGENCY TRAINING
-                </span>
-              </div>
+            {/* EXRSIM Logo Image */}
+            <div className="flex items-center group-hover:scale-105 transition-transform">
+              <img 
+                src="https://customer-assets.emergentagent.com/job_crisis-trainer/artifacts/v9rilei7_EXRSIM_Small.jpg"
+                alt="EXRSIM Emergency Training"
+                className="h-12 w-auto object-contain"
+              />
             </div>
           </Link>
           <div className="hidden md:flex items-center space-x-6">

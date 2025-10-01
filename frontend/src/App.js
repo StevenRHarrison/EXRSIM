@@ -13720,7 +13720,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
       <div className="p-6 flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading exercise...</p>
+          <p className={theme.colors.textMuted}>Loading exercise...</p>
         </div>
       </div>
     );
@@ -13730,9 +13730,9 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
     return (
       <div className="p-6 flex items-center justify-center h-64">
         <div className="text-center">
-          <ShieldAlert className="h-12 w-12 text-gray-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-300 mb-2">Exercise Not Found</h3>
-          <p className="text-gray-500 mb-4">The requested exercise could not be loaded.</p>
+          <ShieldAlert className={`h-12 w-12 ${theme.colors.textMuted} mx-auto mb-4`} />
+          <h3 className={`text-lg font-semibold ${theme.colors.textSecondary} mb-2`}>Exercise Not Found</h3>
+          <p className={`${theme.colors.textMuted} mb-4`}>The requested exercise could not be loaded.</p>
           <Button 
             variant="outline"
             onClick={() => window.location.href = '#dashboard'}
@@ -13746,10 +13746,10 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className={`min-h-screen ${theme.colors.primary} ${theme.colors.textPrimary}`}>
       <div className="flex">
         {/* Exercise-Specific Sidebar */}
-        <div className="w-80 bg-gray-900 border-r border-orange-500/20 h-screen sticky top-0">
+        <div className={`w-80 ${theme.colors.secondary} border-r ${theme.colors.borderAccent} h-screen sticky top-0`}>
           <div className="p-4">
             <Button 
               variant="ghost" 

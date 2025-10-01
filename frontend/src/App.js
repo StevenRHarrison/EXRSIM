@@ -7421,6 +7421,7 @@ const ExerciseManagementDashboard = ({
   const [showAddEvaluation, setShowAddEvaluation] = useState(false);
   const [editingEvaluation, setEditingEvaluation] = useState(null);
   const [evaluationLoading, setEvaluationLoading] = useState(false);
+  const [selectedEvaluationId, setSelectedEvaluationId] = useState(null);
 
   useEffect(() => {
     if (exerciseId) {

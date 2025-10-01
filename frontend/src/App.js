@@ -222,6 +222,404 @@ const Navigation = () => {
   );
 };
 
+// Location Manager Component
+const LocationManager = ({ onClose }) => {
+  const [locations, setLocations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingLocation, setEditingLocation] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    address: '',
+    latitude: '',
+    longitude: '',
+    contact_person: '',
+    contact_phone: ''
+  });
+  const [validationErrors, setValidationErrors] = useState({});
+
+  useEffect(() => {
+    fetchLocations();
+  }, []);
+
+  const fetchLocations = async () => {
+    try {
+      const response = await axios.get(`${API}/locations`);
+      setLocations(response.data);
+    } catch (error) {
+      console.error('Error fetching locations:', error);
+      // If endpoint doesn't exist, start with empty array
+      setLocations([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    
+    if (!formData.name.trim()) {
+      errors.name = 'Location name is required';
+    }
+    
+    if (!formData.description.trim()) {
+      errors.description = 'Description is required';
+    }
+    
+    if (formData.latitude && !validateLatitude(formData.latitude)) {
+      errors.latitude = 'Please enter a valid latitude (-90.0000 to 90.0000)';
+    }
+    
+    if (formData.longitude && !validateLongitude(formData.longitude)) {
+      errors.longitude = 'Please enter a valid longitude (-180.0000 to 180.0000)';
+    }
+    
+    if (formData.contact_phone && !validatePhone(formData.contact_phone)) {
+      errors.contact_phone = 'Please enter phone in format 123-456-7890';
+    }
+    
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const locationData = {
+        ...formData,
+        latitude: formData.latitude ? parseFloat(formData.latitude) : null,
+        longitude: formData.longitude ? parseFloat(formData.longitude) : null
+      };
+
+      if (editingLocation) {
+        const response = await axios.put(`${API}/locations/${editingLocation.id}`, locationData);
+        setLocations(prev => prev.map(loc => loc.id === editingLocation.id ? response.data : loc));
+      } else {
+        const response = await axios.post(`${API}/locations`, locationData);
+        setLocations(prev => [...prev, response.data]);
+      }
+      
+      resetForm();
+    } catch (error) {
+      console.error('Error saving location:', error);
+      alert('Error saving location. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEdit = (location) => {
+    setEditingLocation(location);
+    setFormData({
+      name: location.name || '',
+      description: location.description || '',
+      address: location.address || '',
+      latitude: location.latitude?.toString() || '',
+      longitude: location.longitude?.toString() || '',
+      contact_person: location.contact_person || '',
+      contact_phone: location.contact_phone || ''
+    });
+    setShowAddForm(true);
+  };
+
+  const handleDelete = async (locationId) => {
+    if (window.confirm('Are you sure you want to delete this location?')) {
+      try {
+        await axios.delete(`${API}/locations/${locationId}`);
+        setLocations(prev => prev.filter(loc => loc.id !== locationId));
+      } catch (error) {
+        console.error('Error deleting location:', error);
+        alert('Error deleting location. Please try again.');
+      }
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      description: '',
+      address: '',
+      latitude: '',
+      longitude: '',
+      contact_person: '',
+      contact_phone: ''
+    });
+    setEditingLocation(null);
+    setShowAddForm(false);
+    setValidationErrors({});
+  };
+
+  const handlePhoneChange = (e) => {
+    const formatted = formatPhone(e.target.value);
+    setFormData(prev => ({ ...prev, contact_phone: formatted }));
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-gray-800 border border-gray-700 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
+        <div className="flex items-center justify-between p-6 border-b border-gray-700">
+          <h2 className="text-2xl font-bold text-orange-500">Manage Locations</h2>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="text-gray-400 hover:text-white"
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        </div>
+
+        <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+          {!showAddForm ? (
+            <>
+              <div className="flex justify-between items-center mb-6">
+                <p className="text-gray-400">Manage exercise locations like Command Post, Hospital, etc.</p>
+                <Button
+                  onClick={() => setShowAddForm(true)}
+                  className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Location
+                </Button>
+              </div>
+
+              {loading ? (
+                <div className="space-y-4">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="bg-gray-700 rounded-lg p-4 animate-pulse">
+                      <div className="h-4 bg-gray-600 rounded w-1/4 mb-2"></div>
+                      <div className="h-3 bg-gray-600 rounded w-3/4"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : locations.length === 0 ? (
+                <div className="text-center py-12">
+                  <MapPin className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-300 mb-2">No Locations Yet</h3>
+                  <p className="text-gray-500 mb-4">Add your first exercise location to get started.</p>
+                  <Button
+                    onClick={() => setShowAddForm(true)}
+                    className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add First Location
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {locations.map((location) => (
+                    <Card key={location.id} className="bg-gray-700 border-gray-600">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h3 className="text-lg font-semibold text-white mb-2">{location.name}</h3>
+                            <p className="text-gray-300 mb-3">{location.description}</p>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-400">
+                              {location.address && (
+                                <div className="flex items-center space-x-2">
+                                  <MapPin className="h-4 w-4 text-orange-500" />
+                                  <span>{location.address}</span>
+                                </div>
+                              )}
+                              
+                              {location.contact_person && (
+                                <div className="flex items-center space-x-2">
+                                  <Users className="h-4 w-4 text-orange-500" />
+                                  <span>{location.contact_person}</span>
+                                </div>
+                              )}
+                              
+                              {location.contact_phone && (
+                                <div className="flex items-center space-x-2">
+                                  <Phone className="h-4 w-4 text-orange-500" />
+                                  <span>{location.contact_phone}</span>
+                                </div>
+                              )}
+                              
+                              {location.latitude && location.longitude && (
+                                <div className="flex items-center space-x-2">
+                                  <Map className="h-4 w-4 text-orange-500" />
+                                  <span>{location.latitude}, {location.longitude}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div className="flex space-x-2 ml-4">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleEdit(location)}
+                              className="border-gray-600 text-gray-300 hover:text-orange-500 hover:border-orange-500/50"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDelete(location.id)}
+                              className="border-red-600 text-red-400 hover:text-red-300 hover:border-red-500/50"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-semibold text-white">
+                  {editingLocation ? 'Edit Location' : 'Add New Location'}
+                </h3>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={resetForm}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to List
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label htmlFor="name" className="text-gray-300">Location Name *</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    placeholder="Command Post"
+                    required
+                  />
+                  {validationErrors.name && (
+                    <p className="text-red-500 text-sm mt-1">{validationErrors.name}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="contact_person" className="text-gray-300">Contact Person</Label>
+                  <Input
+                    id="contact_person"
+                    value={formData.contact_person}
+                    onChange={(e) => setFormData(prev => ({ ...prev, contact_person: e.target.value }))}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    placeholder="John Smith"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="description" className="text-gray-300">Description *</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                  className="bg-gray-700 border-gray-600 text-white"
+                  placeholder="Primary command and control center for emergency operations"
+                  rows={3}
+                  required
+                />
+                {validationErrors.description && (
+                  <p className="text-red-500 text-sm mt-1">{validationErrors.description}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="address" className="text-gray-300">Address</Label>
+                <Input
+                  id="address"
+                  value={formData.address}
+                  onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                  className="bg-gray-700 border-gray-600 text-white"
+                  placeholder="123 Emergency Way, City, Province"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="latitude" className="text-gray-300">Latitude</Label>
+                  <Input
+                    id="latitude"
+                    value={formData.latitude}
+                    onChange={(e) => setFormData(prev => ({ ...prev, latitude: e.target.value }))}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    placeholder="45.1234"
+                  />
+                  {validationErrors.latitude && (
+                    <p className="text-red-500 text-sm mt-1">{validationErrors.latitude}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="longitude" className="text-gray-300">Longitude</Label>
+                  <Input
+                    id="longitude"
+                    value={formData.longitude}
+                    onChange={(e) => setFormData(prev => ({ ...prev, longitude: e.target.value }))}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    placeholder="-97.0000"
+                  />
+                  {validationErrors.longitude && (
+                    <p className="text-red-500 text-sm mt-1">{validationErrors.longitude}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="contact_phone" className="text-gray-300">Contact Phone</Label>
+                  <Input
+                    id="contact_phone"
+                    value={formData.contact_phone}
+                    onChange={handlePhoneChange}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    placeholder="123-456-7890"
+                  />
+                  {validationErrors.contact_phone && (
+                    <p className="text-red-500 text-sm mt-1">{validationErrors.contact_phone}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-4 pt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={resetForm}
+                  disabled={loading}
+                  className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="bg-orange-500 hover:bg-orange-600 text-black font-semibold"
+                >
+                  {loading ? 'Saving...' : (editingLocation ? 'Update Location' : 'Add Location')}
+                </Button>
+              </div>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Sidebar Component
 const Sidebar = ({ onMenuSelect, activeMenu }) => {
   const menuItems = [

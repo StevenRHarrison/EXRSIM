@@ -7585,9 +7585,6 @@ const ExerciseManagementDashboard = ({
   const improvementMenuItems = [
     { id: 'evaluations', title: 'Evaluations', icon: Star },
     { id: 'lessons_learned', title: 'Lessons Learned', icon: Lightbulb },
-    { id: 'deficiencies', title: 'Deficiencies', icon: AlertCircle },
-    { id: 'near_misses', title: 'Near Misses', icon: Zap },
-    { id: 'comments', title: 'Comments', icon: MessageSquare },
     { id: 'corrective_actions', title: 'Corrective Actions', icon: CheckCircle },
     { id: 'final_report', title: 'Final Report', icon: FileText }
   ];

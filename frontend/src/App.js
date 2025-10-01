@@ -10175,6 +10175,7 @@ const calculateOverallRatingHelper = (reportData) => {
 
 // Evaluation Report Form Component  
 const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => {
+  const { theme } = useTheme();
   const [formData, setFormData] = useState({
     report_title: '',
     evaluator_name: '',

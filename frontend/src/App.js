@@ -327,6 +327,82 @@ const ThemeSettings = ({ onClose }) => {
   );
 };
 
+// Financial Categories Manager Component (Placeholder)
+const FinancialCategoriesManager = ({ onClose }) => {
+  const { theme } = useTheme();
+  
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className={`${theme.colors.modal} rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden`}>
+        <div className={`p-6 border-b ${theme.colors.border} flex justify-between items-center`}>
+          <h2 className="text-2xl font-bold text-orange-500">Financial Categories Manager</h2>
+          <Button
+            variant="ghost"
+            onClick={onClose}
+            className={`${theme.colors.textMuted} hover:${theme.colors.textPrimary}`}
+          >
+            <X className="h-6 w-6" />
+          </Button>
+        </div>
+        
+        <div className="p-6">
+          <div className="text-center py-12">
+            <DollarSign className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+            <h3 className={`text-xl font-semibold ${theme.colors.textPrimary} mb-2`}>
+              Financial Categories Management
+            </h3>
+            <p className={`${theme.colors.textMuted} mb-6`}>
+              Manage financial categories for exercise budgeting and cost tracking.
+            </p>
+            <p className={`${theme.colors.textSecondary} text-sm`}>
+              This feature will be implemented to manage exercise-related financial categories,
+              cost centers, and budget allocation tracking.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Acronyms Manager Component (Placeholder)
+const AcronymsManager = ({ onClose }) => {
+  const { theme } = useTheme();
+  
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className={`${theme.colors.modal} rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden`}>
+        <div className={`p-6 border-b ${theme.colors.border} flex justify-between items-center`}>
+          <h2 className="text-2xl font-bold text-orange-500">Acronyms Manager</h2>
+          <Button
+            variant="ghost"
+            onClick={onClose}
+            className={`${theme.colors.textMuted} hover:${theme.colors.textPrimary}`}
+          >
+            <X className="h-6 w-6" />
+          </Button>
+        </div>
+        
+        <div className="p-6">
+          <div className="text-center py-12">
+            <BookText className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+            <h3 className={`text-xl font-semibold ${theme.colors.textPrimary} mb-2`}>
+              Acronyms & Terminology Management
+            </h3>
+            <p className={`${theme.colors.textMuted} mb-6`}>
+              Manage emergency management acronyms and terminology definitions.
+            </p>
+            <p className={`${theme.colors.textSecondary} text-sm`}>
+              This feature will be implemented to manage emergency management acronyms,
+              terminology definitions, and standardized language for exercise documentation.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Navigation = () => {
   const { theme } = useTheme();
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);

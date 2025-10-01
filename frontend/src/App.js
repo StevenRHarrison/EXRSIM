@@ -7505,6 +7505,13 @@ const ExerciseManagementDashboard = ({
   const [evaluationLoading, setEvaluationLoading] = useState(false);
   const [selectedEvaluationId, setSelectedEvaluationId] = useState(null);
 
+  // Lessons Learned state
+  const [lessonsLearned, setLessonsLearned] = useState([]);
+  const [showAddLesson, setShowAddLesson] = useState(false);
+  const [editingLesson, setEditingLesson] = useState(null);
+  const [lessonsLoading, setLessonsLoading] = useState(false);
+  const [selectedLessonId, setSelectedLessonId] = useState(null);
+
   useEffect(() => {
     if (exerciseId) {
       fetchExercise();

@@ -8298,7 +8298,7 @@ const ExerciseManagementDashboard = ({
               </div>
             </div>
             {exercise.exercise_image && (
-              <div className="w-20 h-20 rounded-lg bg-gray-700 overflow-hidden">
+              <div className={`w-20 h-20 rounded-lg ${theme.colors.quaternary} overflow-hidden`}>
                 <img src={exercise.exercise_image} alt={exercise.exercise_name} className="w-full h-full object-cover" />
               </div>
             )}

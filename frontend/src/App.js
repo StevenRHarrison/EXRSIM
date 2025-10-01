@@ -8284,10 +8284,10 @@ const ExerciseManagementDashboard = ({
     return (
       <div className="space-y-6">
         {/* Exercise Header */}
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+        <div className={`${theme.colors.tertiary} border ${theme.colors.border} rounded-lg p-6`}>
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-white mb-2">{exercise.exercise_name}</h1>
+              <h1 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-2`}>{exercise.exercise_name}</h1>
               <div className="flex items-center space-x-4">
                 <Badge className={getStatusColor(status)}>
                   {status}

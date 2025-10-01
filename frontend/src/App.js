@@ -9989,9 +9989,9 @@ const ExerciseManagementDashboard = ({
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white">Exercise Evaluations</h1>
+            <h1 className={`text-2xl font-bold ${theme.colors.textPrimary}`}>Exercise Evaluations</h1>
             {evaluationReports.length > 1 && (
-              <p className="text-sm text-gray-400 mt-1">
+              <p className={`text-sm ${theme.colors.textMuted} mt-1`}>
                 Click on a report to select it for printing, or use "Print Evaluations" to choose
               </p>
             )}

@@ -1096,8 +1096,8 @@ const Dashboard = () => {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-orange-500 mb-2">Exercise Dashboard</h1>
-          <p className="text-gray-400">Manage your emergency training exercises</p>
+          <h1 className={`text-3xl font-bold ${theme.colors.textPrimary} mb-2`}>Exercise Dashboard</h1>
+          <p className={theme.colors.textMuted}>Manage your emergency training exercises</p>
         </div>
         <div className="flex items-center space-x-3">
           <Button 

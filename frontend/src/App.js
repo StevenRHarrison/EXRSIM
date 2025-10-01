@@ -64,7 +64,9 @@ import {
   PenTool,
   FileEdit,
   Package,
-  Palette
+  Palette,
+  DollarSign,
+  BookText
 } from 'lucide-react';
 
 const API = process.env.REACT_APP_BACKEND_URL + '/api';

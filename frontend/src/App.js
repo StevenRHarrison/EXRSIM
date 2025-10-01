@@ -66,7 +66,11 @@ import {
   Package,
   Palette,
   DollarSign,
-  BookText
+  BookText,
+  BookOpen,
+  ExternalLink,
+  UserCog,
+  FileCheck
 } from 'lucide-react';
 
 const API = process.env.REACT_APP_BACKEND_URL + '/api';

@@ -9175,13 +9175,13 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
     key_findings_narrative: '',
     recommendations: '',
     appendices: '',
-    command_and_control: { area_name: 'Command and Control', rating: 'Not Rated', comments: '' },
-    communication: { area_name: 'Communication', rating: 'Not Rated', comments: '' },
-    resource_management: { area_name: 'Resource Management', rating: 'Not Rated', comments: '' },
-    safety_and_security: { area_name: 'Safety and Security', rating: 'Not Rated', comments: '' },
-    operational_effectiveness: { area_name: 'Operational Effectiveness', rating: 'Not Rated', comments: '' },
-    training_and_readiness: { area_name: 'Training and Readiness', rating: 'Not Rated', comments: '' },
-    plan_adherence_adaptability: { area_name: 'Plan Adherence and Adaptability', rating: 'Not Rated', comments: '' },
+    command_and_control: { area_name: 'Command and Control', rating: 'Average', comments: '' },
+    communication: { area_name: 'Communication', rating: 'Average', comments: '' },
+    resource_management: { area_name: 'Resource Management', rating: 'Average', comments: '' },
+    safety_and_security: { area_name: 'Safety and Security', rating: 'Average', comments: '' },
+    operational_effectiveness: { area_name: 'Operational Effectiveness', rating: 'Average', comments: '' },
+    training_and_readiness: { area_name: 'Training and Readiness', rating: 'Average', comments: '' },
+    plan_adherence_adaptability: { area_name: 'Plan Adherence and Adaptability', rating: 'Average', comments: '' },
     evaluation_images: []
   });
   const [loading, setLoading] = useState(false);

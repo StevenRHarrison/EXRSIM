@@ -10822,6 +10822,7 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
 
 // Lessons Learned Form Component  
 const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplficcOptions }) => {
+  const { theme } = useTheme();
   const [formData, setFormData] = useState({
     // First Container - Lesson Learned
     name: '',

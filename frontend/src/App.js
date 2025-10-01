@@ -1036,6 +1036,7 @@ const ParticipantForm = ({ onBack, onSave, editingParticipant = null }) => {
   });
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [locations, setLocations] = useState([]);
   
   // Validation error states
   const [validationErrors, setValidationErrors] = useState({

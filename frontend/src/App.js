@@ -9057,9 +9057,10 @@ const ExerciseManagementDashboard = ({
               variant="outline"
               className="border-green-500/50 text-green-400 hover:bg-green-500/10"
               onClick={printEvaluations}
+              title={evaluationReports.length > 1 ? "Click a report to select it for printing, or print all reports" : "Print evaluation report"}
             >
               <Printer className="h-4 w-4 mr-2" />
-              Print Evaluations
+              {selectedEvaluationId ? "Print Selected" : "Print Evaluations"}
             </Button>
             <Button 
               className="bg-orange-500 hover:bg-orange-600 text-black"

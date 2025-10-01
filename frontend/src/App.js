@@ -10875,7 +10875,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave }) => {
                       <strong>Serial Number:</strong> ${lesson.serial_number || 'N/A'}<br>
                       <strong>Priority:</strong> <span class="priority ${lesson.priority.toLowerCase().replace(' ', '-')}">${lesson.priority}</span><br>
                       <strong>Date:</strong> ${lesson.date}<br>
-                      <strong>DOTMPLFICC:</strong> ${lesson.dotmplficc}
+                      <strong>DOTMPLFICC:</strong> <span class="dotmplficc ${lesson.dotmplficc.toLowerCase().replace(/\s+/g, '').replace('and', '')}">${lesson.dotmplficc}</span>
                     </div>
                     
                     ${lesson.references ? `

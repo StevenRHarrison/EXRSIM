@@ -11663,7 +11663,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-white">Final Exercise Report</h1>
+          <h1 className="text-2xl font-bold text-white">After Action Report</h1>
           <Button 
             variant="outline"
             className="border-green-500/50 text-green-400 hover:bg-green-500/10"

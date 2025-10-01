@@ -8924,8 +8924,8 @@ const ExerciseManagementDashboard = ({
               ` : ''}
             </div>
             <div class="reports-content">
-              ${evaluationReports.length > 0 ? 
-                evaluationReports.map((report, index) => `
+              ${reportsToPrint.length > 0 ? 
+                reportsToPrint.map((report, index) => `
                   <div class="report-item">
                     <div class="report-title">${report.report_title}</div>
                     <div class="content">

@@ -609,7 +609,7 @@ const Navigation = () => {
           
           {/* Dropdown Menu */}
           {showSettingsDropdown && (
-            <div className={`absolute right-0 mt-2 w-48 ${theme.colors.tertiary} border ${theme.colors.border} rounded-md shadow-lg z-50`}>
+            <div className={`absolute right-0 mt-2 w-60 ${theme.colors.tertiary} border ${theme.colors.border} rounded-md shadow-lg z-50`}>
               <div className="py-1">
                 <button
                   className={`flex items-center w-full px-4 py-2 text-sm ${theme.colors.textSecondary} ${theme.colors.hover} hover:text-orange-400 transition-colors`}

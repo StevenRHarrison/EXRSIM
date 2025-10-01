@@ -143,6 +143,7 @@ const formatCoordinate = (input, type) => {
 const Navigation = () => {
   return (
     <nav className="bg-black border-b border-orange-500/20 px-6 py-4">
+      <div className="flex items-center justify-between">
         <div className="flex items-center space-x-8">
           <Link to="/" className="flex items-center group">
             {/* EXRSIM Logo Image */}
@@ -169,6 +170,8 @@ const Navigation = () => {
             </Link>
           </div>
         </div>
+        
+        {/* Settings button moved to the right side */}
         <Button 
           variant="outline" 
           size="sm" 
@@ -177,6 +180,7 @@ const Navigation = () => {
           <Settings className="h-4 w-4 mr-2" />
           Settings
         </Button>
+      </div>
     </nav>
   );
 };

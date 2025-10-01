@@ -407,6 +407,158 @@ const AcronymsManager = ({ onClose }) => {
   );
 };
 
+// Definitions Manager Component (Placeholder)
+const DefinitionsManager = ({ onClose }) => {
+  const { theme } = useTheme();
+  
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className={`${theme.colors.modal} rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden`}>
+        <div className={`p-6 border-b ${theme.colors.border} flex justify-between items-center`}>
+          <h2 className="text-2xl font-bold text-orange-500">Definitions Manager</h2>
+          <Button
+            variant="ghost"
+            onClick={onClose}
+            className={`${theme.colors.textMuted} hover:${theme.colors.textPrimary}`}
+          >
+            <X className="h-6 w-6" />
+          </Button>
+        </div>
+        
+        <div className="p-6">
+          <div className="text-center py-12">
+            <BookOpen className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+            <h3 className={`text-xl font-semibold ${theme.colors.textPrimary} mb-2`}>
+              Definitions Management
+            </h3>
+            <p className={`${theme.colors.textMuted} mb-6`}>
+              Manage exercise and emergency management definitions and glossary terms.
+            </p>
+            <p className={`${theme.colors.textSecondary} text-sm`}>
+              This feature will be implemented to manage standardized definitions,
+              glossary terms, and terminology used in exercise documentation and training materials.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Quicklinks Manager Component (Placeholder)
+const QuicklinksManager = ({ onClose }) => {
+  const { theme } = useTheme();
+  
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className={`${theme.colors.modal} rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden`}>
+        <div className={`p-6 border-b ${theme.colors.border} flex justify-between items-center`}>
+          <h2 className="text-2xl font-bold text-orange-500">Quicklinks Manager</h2>
+          <Button
+            variant="ghost"
+            onClick={onClose}
+            className={`${theme.colors.textMuted} hover:${theme.colors.textPrimary}`}
+          >
+            <X className="h-6 w-6" />
+          </Button>
+        </div>
+        
+        <div className="p-6">
+          <div className="text-center py-12">
+            <ExternalLink className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+            <h3 className={`text-xl font-semibold ${theme.colors.textPrimary} mb-2`}>
+              Quicklinks Management
+            </h3>
+            <p className={`${theme.colors.textMuted} mb-6`}>
+              Manage quick access links to external resources and emergency management tools.
+            </p>
+            <p className={`${theme.colors.textSecondary} text-sm`}>
+              This feature will be implemented to manage external links, resources,
+              and tools frequently used during exercise planning and execution.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Position Manager Component (Placeholder)
+const PositionManager = ({ onClose }) => {
+  const { theme } = useTheme();
+  
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className={`${theme.colors.modal} rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden`}>
+        <div className={`p-6 border-b ${theme.colors.border} flex justify-between items-center`}>
+          <h2 className="text-2xl font-bold text-orange-500">Position Manager</h2>
+          <Button
+            variant="ghost"
+            onClick={onClose}
+            className={`${theme.colors.textMuted} hover:${theme.colors.textPrimary}`}
+          >
+            <X className="h-6 w-6" />
+          </Button>
+        </div>
+        
+        <div className="p-6">
+          <div className="text-center py-12">
+            <UserCog className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+            <h3 className={`text-xl font-semibold ${theme.colors.textPrimary} mb-2`}>
+              Position Management
+            </h3>
+            <p className={`${theme.colors.textMuted} mb-6`}>
+              Manage organizational positions, roles, and responsibilities for exercise participants.
+            </p>
+            <p className={`${theme.colors.textSecondary} text-sm`}>
+              This feature will be implemented to manage standardized positions, job titles,
+              and role definitions used in emergency response exercises and training scenarios.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Policies and Procedures Manager Component (Placeholder)
+const PoliciesProceduresManager = ({ onClose }) => {
+  const { theme } = useTheme();
+  
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className={`${theme.colors.modal} rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden`}>
+        <div className={`p-6 border-b ${theme.colors.border} flex justify-between items-center`}>
+          <h2 className="text-2xl font-bold text-orange-500">Policies and Procedures Manager</h2>
+          <Button
+            variant="ghost"
+            onClick={onClose}
+            className={`${theme.colors.textMuted} hover:${theme.colors.textPrimary}`}
+          >
+            <X className="h-6 w-6" />
+          </Button>
+        </div>
+        
+        <div className="p-6">
+          <div className="text-center py-12">
+            <FileCheck className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+            <h3 className={`text-xl font-semibold ${theme.colors.textPrimary} mb-2`}>
+              Policies and Procedures Management
+            </h3>
+            <p className={`${theme.colors.textMuted} mb-6`}>
+              Manage organizational policies, procedures, and standard operating procedures (SOPs).
+            </p>
+            <p className={`${theme.colors.textSecondary} text-sm`}>
+              This feature will be implemented to manage policy documents, procedures,
+              and SOPs that govern emergency response operations and exercise conduct.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Navigation = () => {
   const { theme } = useTheme();
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);

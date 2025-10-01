@@ -9188,7 +9188,7 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
   const [errors, setErrors] = useState({});
   const [imagePreview, setImagePreview] = useState([]);
 
-  const ratingOptions = ['Not Rated', 'Needs Improvement', 'Satisfactory', 'Excellent'];
+  const ratingOptions = ['Excellent', 'Above Average', 'Average', 'Below Average', 'Unacceptable'];
 
   useEffect(() => {
     if (editingReport) {

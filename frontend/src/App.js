@@ -8944,7 +8944,7 @@ const ExerciseManagementDashboard = ({
                       </div>
                       <div class="assessment-item">
                         <strong>Training and Readiness</strong><br>
-                        <span class="rating ${(report.training_and_readiness?.rating || '').toLowerCase()}">Rating: ${report.training_and_readiness?.rating || 'Not Rated'}</span><br>
+                        <span class="rating ${(report.training_and_readiness?.rating || '').toLowerCase().replace(' ', '')}"}>Rating: ${report.training_and_readiness?.rating || 'Average'}</span><br>
                         ${report.training_and_readiness?.comments || 'No comments'}
                       </div>
                       <div class="assessment-item">

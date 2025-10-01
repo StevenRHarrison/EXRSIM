@@ -167,15 +167,18 @@
 
   - task: "Evaluation Report Add & Delete Functionality Debugging"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/src/App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: "NA"
         -agent: "testing"
         -comment: "USER REPORTED ISSUES: Testing Add Evaluation and Delete button functionality per user report. User reports: 1) 'Add Evaluation' button does not add another evaluation, 2) 'Delete' button does not function to delete evaluations. Current status observed: Add Evaluation button opens form correctly, form submission works and creates new evaluation reports, Delete buttons are present and clickable, but delete action appears to not remove evaluations from the list. Need comprehensive testing of: Add Evaluation workflow (navigate to evaluations, click Add Evaluation, fill form, submit, verify new evaluation appears), Delete Evaluation workflow (click Delete button, handle confirmation, verify evaluation removed from list), API endpoint verification (monitor network requests, verify HTTP methods and status codes), State management testing (verify list refreshes after operations), Error handling testing."
+        -working: false
+        -agent: "testing"
+        -comment: "CRITICAL BUG IDENTIFIED: Evaluations menu item is completely inaccessible due to frontend bug. ISSUE: When Improvement section is expanded in sidebar, it displays Exercise Steps menu items (Scope, Purpose, Scenario, Goals, Events, Functions, Injections, Organizations, Team Coordinators, Code Words, Callsigns, Communications, Assumptions, Artificialities, Safety Concerns) instead of the correct Improvement menu items (Evaluations, Lessons Learned, Deficiencies, Near Misses, Comments, Corrective Actions, Final Report). ROOT CAUSE: The Improvement submenu is rendering the wrong menu items array. BACKEND VERIFICATION: API endpoints working correctly - GET /api/evaluation-reports/exercise/{id} returns 2 existing evaluation reports. FRONTEND CODE ANALYSIS: improvementMenuItems array is correctly defined with Evaluations as first item, but sidebar rendering logic is displaying exerciseStepsMenuItems instead. IMPACT: Users cannot access Evaluations functionality at all - cannot test Add/Delete operations because the Evaluations page is unreachable through the UI. TESTING STATUS: Unable to complete Add/Delete testing due to navigation blocker."
 
 ## agent_communication:
     -agent: "main"

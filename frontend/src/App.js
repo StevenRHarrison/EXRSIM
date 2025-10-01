@@ -7828,12 +7828,6 @@ const ExerciseManagementDashboard = ({
         return renderEvaluationsManagement();
       case 'lessons_learned':
         return renderLessonsLearnedManagement();
-      case 'deficiencies':
-        return renderDeficienciesManagement();
-      case 'near_misses':
-        return renderNearMissesManagement();
-      case 'comments':
-        return renderCommentsManagement();
       case 'corrective_actions':
         return renderCorrectiveActionsManagement();
       case 'final_report':

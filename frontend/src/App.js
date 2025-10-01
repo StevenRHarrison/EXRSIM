@@ -8435,7 +8435,7 @@ const ExerciseManagementDashboard = ({
         </div>
 
         {/* Quick Actions */}
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className={`${theme.colors.tertiary} ${theme.colors.border}`}>
           <CardHeader>
             <CardTitle className="text-orange-500">Quick Actions</CardTitle>
           </CardHeader>

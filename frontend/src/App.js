@@ -2204,6 +2204,22 @@ const ResourceForm = ({ onBack, onSave, editingResource }) => {
     }
   }, [editingResource]);
 
+  // Fetch managed locations
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await axios.get(`${API}/locations`);
+        setLocations(response.data);
+      } catch (error) {
+        console.error('Error fetching locations:', error);
+        // If endpoint doesn't exist, start with empty array
+        setLocations([]);
+      }
+    };
+    
+    fetchLocations();
+  }, []);
+
   const validateForm = () => {
     const newErrors = {};
 

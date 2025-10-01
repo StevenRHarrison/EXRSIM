@@ -10496,7 +10496,8 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave }) => {
                       <img
                         src={image}
                         alt={`Lesson ${index + 1}`}
-                        className="w-full h-24 object-cover rounded border border-gray-700"
+                        className="w-full h-24 object-cover rounded border border-gray-700 aspect-square"
+                        style={{ aspectRatio: '1/1' }}
                       />
                       <Button
                         type="button"

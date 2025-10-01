@@ -9618,7 +9618,7 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
                 </Badge>
               </div>
               <p className="text-sm text-gray-400 mt-2">
-                Calculated automatically based on the average of all rated assessment areas (excluding "Not Rated" areas)
+                Calculated automatically based on the average of all assessment area ratings
               </p>
             </div>
 

@@ -9607,10 +9607,11 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
                 <Badge 
                   variant="outline" 
                   className={`text-lg px-4 py-2 ${
-                    calculateOverallRating() === 'Excellent' ? 'border-green-500 text-green-400 bg-green-500/10' :
-                    calculateOverallRating() === 'Satisfactory' ? 'border-blue-500 text-blue-400 bg-blue-500/10' :
-                    calculateOverallRating() === 'Needs Improvement' ? 'border-yellow-500 text-yellow-400 bg-yellow-500/10' :
-                    'border-gray-500 text-gray-400 bg-gray-500/10'
+                    calculateOverallRating() === 'Excellent' ? 'border-blue-500 text-blue-400 bg-blue-500/10' :
+                    calculateOverallRating() === 'Above Average' ? 'border-sky-400 text-sky-400 bg-sky-400/10' :
+                    calculateOverallRating() === 'Average' ? 'border-green-500 text-green-400 bg-green-500/10' :
+                    calculateOverallRating() === 'Below Average' ? 'border-orange-500 text-orange-400 bg-orange-500/10' :
+                    'border-red-500 text-red-400 bg-red-500/10'
                   }`}
                 >
                   Overall Rating: {calculateOverallRating()}

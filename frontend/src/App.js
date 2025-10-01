@@ -10060,7 +10060,7 @@ const ExerciseManagementDashboard = ({
                           </Badge>
                         )}
                       </div>
-                      <CardDescription className="text-gray-400">
+                      <CardDescription className={theme.colors.textMuted}>
                         By {report.evaluator_name} {report.evaluator_organization && `(${report.evaluator_organization})`} • {report.evaluation_date}
                       </CardDescription>
                     </div>

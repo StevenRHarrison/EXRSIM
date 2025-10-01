@@ -648,13 +648,13 @@ class EvaluationReport(BaseModel):
     appendices: str = ""
     
     # Key Areas Assessment
-    command_and_control: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Command and Control", rating="Not Rated"))
-    communication: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Communication", rating="Not Rated"))
-    resource_management: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Resource Management", rating="Not Rated"))
-    safety_and_security: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Safety and Security", rating="Not Rated"))
-    operational_effectiveness: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Operational Effectiveness", rating="Not Rated"))
-    training_and_readiness: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Training and Readiness", rating="Not Rated"))
-    plan_adherence_adaptability: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Plan Adherence and Adaptability", rating="Not Rated"))
+    command_and_control: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Command and Control", rating="Average"))
+    communication: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Communication", rating="Average"))
+    resource_management: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Resource Management", rating="Average"))
+    safety_and_security: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Safety and Security", rating="Average"))
+    operational_effectiveness: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Operational Effectiveness", rating="Average"))
+    training_and_readiness: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Training and Readiness", rating="Average"))
+    plan_adherence_adaptability: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Plan Adherence and Adaptability", rating="Average"))
     
     # Supporting Documents
     evaluation_images: List[str] = Field(default_factory=list)  # Base64 encoded images
@@ -675,13 +675,13 @@ class EvaluationReportCreate(BaseModel):
     key_findings_narrative: str = ""
     recommendations: str = ""
     appendices: str = ""
-    command_and_control: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Command and Control", rating="Not Rated"))
-    communication: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Communication", rating="Not Rated"))
-    resource_management: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Resource Management", rating="Not Rated"))
-    safety_and_security: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Safety and Security", rating="Not Rated"))
-    operational_effectiveness: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Operational Effectiveness", rating="Not Rated"))
-    training_and_readiness: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Training and Readiness", rating="Not Rated"))
-    plan_adherence_adaptability: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Plan Adherence and Adaptability", rating="Not Rated"))
+    command_and_control: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Command and Control", rating="Average"))
+    communication: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Communication", rating="Average"))
+    resource_management: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Resource Management", rating="Average"))
+    safety_and_security: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Safety and Security", rating="Average"))
+    operational_effectiveness: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Operational Effectiveness", rating="Average"))
+    training_and_readiness: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Training and Readiness", rating="Average"))
+    plan_adherence_adaptability: EvaluationAreaAssessment = Field(default_factory=lambda: EvaluationAreaAssessment(area_name="Plan Adherence and Adaptability", rating="Average"))
     evaluation_images: List[str] = Field(default_factory=list)
 
 class EvaluationReportUpdate(BaseModel):

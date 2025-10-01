@@ -68,6 +68,119 @@ import {
 
 const API = process.env.REACT_APP_BACKEND_URL + '/api';
 
+// Theme Context
+const ThemeContext = createContext();
+
+export const useTheme = () => {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error('useTheme must be used within a ThemeProvider');
+  }
+  return context;
+};
+
+// Theme configurations
+const themes = {
+  dark: {
+    name: 'Dark Theme',
+    colors: {
+      // Main backgrounds
+      primary: 'bg-black',
+      secondary: 'bg-gray-900',
+      tertiary: 'bg-gray-800',
+      quaternary: 'bg-gray-700',
+      
+      // Text colors
+      textPrimary: 'text-white',
+      textSecondary: 'text-gray-300',
+      textMuted: 'text-gray-400',
+      
+      // Borders
+      border: 'border-gray-700',
+      borderLight: 'border-gray-600',
+      borderAccent: 'border-orange-500/20',
+      
+      // Interactive elements
+      hover: 'hover:bg-gray-700',
+      active: 'bg-orange-500/5',
+      
+      // Form elements
+      input: 'bg-gray-800 border-gray-700 text-white placeholder-gray-400',
+      select: 'bg-gray-800 border-gray-700 text-white',
+      
+      // Cards and containers
+      card: 'bg-gray-800 border-gray-700',
+      modal: 'bg-gray-900 border-gray-700',
+    }
+  },
+  light: {
+    name: 'Light Theme',
+    colors: {
+      // Main backgrounds
+      primary: 'bg-white',
+      secondary: 'bg-gray-50',
+      tertiary: 'bg-gray-100',
+      quaternary: 'bg-gray-200',
+      
+      // Text colors
+      textPrimary: 'text-gray-900',
+      textSecondary: 'text-gray-700',
+      textMuted: 'text-gray-500',
+      
+      // Borders
+      border: 'border-gray-300',
+      borderLight: 'border-gray-200',
+      borderAccent: 'border-orange-500/30',
+      
+      // Interactive elements
+      hover: 'hover:bg-gray-100',
+      active: 'bg-orange-500/10',
+      
+      // Form elements
+      input: 'bg-white border-gray-300 text-gray-900 placeholder-gray-500',
+      select: 'bg-white border-gray-300 text-gray-900',
+      
+      // Cards and containers
+      card: 'bg-white border-gray-300',
+      modal: 'bg-white border-gray-300',
+    }
+  }
+};
+
+// Theme Provider Component
+const ThemeProvider = ({ children }) => {
+  const [currentTheme, setCurrentTheme] = useState('dark');
+  
+  // Load theme from localStorage on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('exrsim-theme');
+    if (savedTheme && themes[savedTheme]) {
+      setCurrentTheme(savedTheme);
+    }
+  }, []);
+  
+  // Save theme to localStorage when changed
+  useEffect(() => {
+    localStorage.setItem('exrsim-theme', currentTheme);
+    // Update document class for global styling
+    document.documentElement.className = currentTheme;
+  }, [currentTheme]);
+  
+  const switchTheme = (themeName) => {
+    if (themes[themeName]) {
+      setCurrentTheme(themeName);
+    }
+  };
+  
+  const theme = themes[currentTheme];
+  
+  return (
+    <ThemeContext.Provider value={{ currentTheme, theme, switchTheme, themes }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+
 // Validation functions
 const validateLatitude = (lat) => {
   if (lat === '' || lat === null || lat === undefined) return true; // Allow empty for optional fields

@@ -7540,6 +7540,17 @@ const ExerciseManagementDashboard = ({
       setEvaluationLoading(false);
     }
   };
+  const fetchLessonsLearned = async () => {
+    try {
+      setLessonsLoading(true);
+      const response = await axios.get(`${API}/lessons-learned/exercise/${exerciseId}`);
+      setLessonsLearned(response.data);
+    } catch (error) {
+      console.error('Error fetching lessons learned:', error);
+    } finally {
+      setLessonsLoading(false);
+    }
+  };
 
   // Load evaluation reports when exercise is loaded
   useEffect(() => {

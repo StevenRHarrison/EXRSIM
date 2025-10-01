@@ -67,7 +67,6 @@ import {
   Palette,
   DollarSign,
   BookText,
-  BookOpen,
   ExternalLink,
   UserCog,
   FileCheck

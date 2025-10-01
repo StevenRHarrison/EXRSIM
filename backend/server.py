@@ -766,7 +766,7 @@ class LessonsLearnedUpdate(LessonsLearnedBase):
     exercise_id: Optional[str] = None
 
 class LessonsLearned(LessonsLearnedBase):
-    id: str = Field(default_factory=lambda: str(uuid4()))
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     exercise_id: str
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)

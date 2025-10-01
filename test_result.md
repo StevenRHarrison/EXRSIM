@@ -165,6 +165,18 @@
         -agent: "testing"
         -comment: "✅ COMPREHENSIVE VALIDATION SYSTEM TESTING COMPLETED - EXCELLENT RESULTS! All validation requirements successfully verified across all forms: 🧑‍🤝‍🧑 PARTICIPANT FORM VALIDATION: Email validation working with real-time feedback (invalid-email triggers proper error message), Phone validation with auto-formatting working perfectly (1234567890 → 123-456-7890), Latitude validation working (999 triggers range error -90 to 90), Longitude validation working (999 triggers range error -180 to 180), Red error text styling confirmed. 🚨 HIRA FORM VALIDATION: Latitude field found and tested with proper validation (999 triggers format error 45.1234, range -90.0000 to 90.0000), Longitude field found and tested with proper validation (999 triggers format error 97.0000, range -180.0000 to 180.0000), Real-time validation confirmed. 🏗️ EXERCISE BUILDER VALIDATION: Scenario latitude validation tested in Step 4 (999 triggers proper error), Scenario longitude validation tested in Step 4 (999 triggers proper error), Coordinate validation working across all exercise builder steps. The validation system is production-ready and meets all specified requirements with excellent user experience."
 
+  - task: "Evaluation Report Add & Delete Functionality Debugging"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "USER REPORTED ISSUES: Testing Add Evaluation and Delete button functionality per user report. User reports: 1) 'Add Evaluation' button does not add another evaluation, 2) 'Delete' button does not function to delete evaluations. Current status observed: Add Evaluation button opens form correctly, form submission works and creates new evaluation reports, Delete buttons are present and clickable, but delete action appears to not remove evaluations from the list. Need comprehensive testing of: Add Evaluation workflow (navigate to evaluations, click Add Evaluation, fill form, submit, verify new evaluation appears), Delete Evaluation workflow (click Delete button, handle confirmation, verify evaluation removed from list), API endpoint verification (monitor network requests, verify HTTP methods and status codes), State management testing (verify list refreshes after operations), Error handling testing."
+
 ## agent_communication:
     -agent: "main"
     -message: "EVALUATION REPORT CRUD VERIFICATION INITIATED: Need to verify comprehensive CRUD operations for Evaluation Report system with new rating system. User requests verification that selected ratings are being saved properly in database and return correctly for all rating fields. Testing focus: 1) Backend API endpoints handle new rating system correctly, 2) Create evaluation report with ratings for all 7 assessment areas, 3) Retrieve report and confirm all rating values preserved, 4) Update report with different ratings and verify persistence, 5) Test all rating options (Not Rated, Needs Improvement, Satisfactory, Excellent) in database operations, 6) Ensure frontend displays correct saved rating values when editing existing reports. Critical to verify complete data persistence workflow for rating fields."

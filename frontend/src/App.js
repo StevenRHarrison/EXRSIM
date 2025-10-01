@@ -8812,10 +8812,58 @@ const ExerciseManagementDashboard = ({
 
     // Print function for Evaluations
     const printEvaluations = () => {
+      if (evaluationReports.length === 0) {
+        alert('No evaluation reports to print.');
+        return;
+      }
+
+      let reportsToPrint = [];
+
+      // If there's only one report, print it directly
+      if (evaluationReports.length === 1) {
+        reportsToPrint = evaluationReports;
+      }
+      // If there's a selected report, print only that one
+      else if (selectedEvaluationId) {
+        const selectedReport = evaluationReports.find(r => r.id === selectedEvaluationId);
+        if (selectedReport) {
+          reportsToPrint = [selectedReport];
+        } else {
+          alert('Selected evaluation report not found.');
+          return;
+        }
+      }
+      // If multiple reports and none selected, ask user which to print
+      else {
+        const reportOptions = evaluationReports.map((report, index) => 
+          `${index + 1}. ${report.report_title} (by ${report.evaluator_name})`
+        ).join('\n');
+        
+        const userChoice = prompt(
+          `Multiple evaluation reports found. Which would you like to print?\n\n${reportOptions}\n\nEnter the number (1-${evaluationReports.length}) or 'all' to print all reports:`
+        );
+
+        if (!userChoice || userChoice.toLowerCase() === 'cancel') {
+          return; // User cancelled
+        }
+
+        if (userChoice.toLowerCase() === 'all') {
+          reportsToPrint = evaluationReports;
+        } else {
+          const choiceNum = parseInt(userChoice);
+          if (choiceNum >= 1 && choiceNum <= evaluationReports.length) {
+            reportsToPrint = [evaluationReports[choiceNum - 1]];
+          } else {
+            alert('Invalid selection. Please try again.');
+            return;
+          }
+        }
+      }
+
       const currentDateTime = new Date().toLocaleString();
       
-      // Collect all unique images from all reports
-      const allImages = evaluationReports.reduce((images, report) => {
+      // Collect all unique images from reports to print
+      const allImages = reportsToPrint.reduce((images, report) => {
         if (report.evaluation_images && report.evaluation_images.length > 0) {
           return images.concat(report.evaluation_images);
         }

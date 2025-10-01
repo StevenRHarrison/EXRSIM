@@ -8373,7 +8373,7 @@ const ExerciseManagementDashboard = ({
         {/* Emergency Preparedness Features */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Exercise Timeline */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className={`${theme.colors.tertiary} ${theme.colors.border}`}>
             <CardHeader>
               <CardTitle className="text-orange-500 flex items-center">
                 <Clock className="h-5 w-5 mr-2" />
@@ -8385,8 +8385,8 @@ const ExerciseManagementDashboard = ({
                 <div className="flex items-center space-x-3">
                   <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
                   <div>
-                    <div className="text-white font-medium">Exercise Start</div>
-                    <div className="text-sm text-gray-400">
+                    <div className={`${theme.colors.textPrimary} font-medium`}>Exercise Start</div>
+                    <div className={`text-sm ${theme.colors.textMuted}`}>
                       {new Date(exercise.start_date).toLocaleString()}
                     </div>
                   </div>
@@ -8394,8 +8394,8 @@ const ExerciseManagementDashboard = ({
                 <div className="flex items-center space-x-3">
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                   <div>
-                    <div className="text-white font-medium">Exercise End</div>
-                    <div className="text-sm text-gray-400">
+                    <div className={`${theme.colors.textPrimary} font-medium`}>Exercise End</div>
+                    <div className={`text-sm ${theme.colors.textMuted}`}>
                       {new Date(exercise.end_date).toLocaleString()}
                     </div>
                   </div>

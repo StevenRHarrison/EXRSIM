@@ -413,6 +413,7 @@ const Navigation = () => {
 
 // Location Manager Component
 const LocationManager = ({ onClose }) => {
+  const { theme } = useTheme();
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);

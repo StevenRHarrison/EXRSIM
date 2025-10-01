@@ -647,7 +647,7 @@
 
 ## test_plan:
   current_focus:
-    - "Evaluation Report Add & Delete Functionality Debugging"
+    - "Evaluation Report Print Selection Dialog Testing"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"

@@ -1159,30 +1159,30 @@ const Dashboard = () => {
           exercises.map((exercise) => (
             <Card 
               key={exercise.id} 
-              className="bg-gray-800 border-gray-700 hover:border-orange-500/50 transition-colors cursor-pointer"
+              className={`${theme.colors.tertiary} ${theme.colors.border} hover:border-orange-500/50 transition-colors cursor-pointer`}
               data-testid={`exercise-card-${exercise.id}`}
               onClick={() => window.location.href = `#manage?exercise=${exercise.id}`}
             >
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <CardTitle className="text-white text-lg mb-1">{exercise.exercise_name}</CardTitle>
+                    <CardTitle className={`${theme.colors.textPrimary} text-lg mb-1`}>{exercise.exercise_name}</CardTitle>
                     <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">
                       {exercise.exercise_type}
                     </Badge>
                   </div>
                   {exercise.exercise_image && (
-                    <div className="w-12 h-12 rounded bg-gray-700 overflow-hidden ml-3">
+                    <div className={`w-12 h-12 rounded ${theme.colors.quaternary} overflow-hidden ml-3`}>
                       <img src={exercise.exercise_image} alt={exercise.exercise_name} className="w-full h-full object-cover" />
                     </div>
                   )}
                 </div>
-                <CardDescription className="text-gray-400 mt-2">
+                <CardDescription className={`${theme.colors.textMuted} mt-2`}>
                   {exercise.exercise_description}
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-0">
-                <div className="space-y-2 text-sm text-gray-400">
+                <div className={`space-y-2 text-sm ${theme.colors.textMuted}`}>
                   <div className="flex items-center space-x-2">
                     <MapPin className="h-4 w-4" />
                     <span>{exercise.location || 'Location not set'}</span>

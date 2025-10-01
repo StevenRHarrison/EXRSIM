@@ -10172,6 +10172,496 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
     };
   };
 
+// Lessons Learned Form Component  
+const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave }) => {
+  const [formData, setFormData] = useState({
+    // First Container - Lesson Learned
+    name: '',
+    serial_number: null,
+    priority: 'Pri 1',
+    references: '',
+    date: new Date().toISOString().split('T')[0],
+    lesson_images: [],
+    
+    // Second Container - Observations and Recommended Actions
+    dotmplficc: 'Doctrine',
+    issues_observation: '',
+    recommendations: '',
+    
+    // Third Container - Analysis and Actions
+    additional_comments: '',
+    recommended_actions: '',
+    final_authority_remarks: '',
+    testing_done_by: '',
+    procedures_written_by: '',
+    implement_new_ll_by: ''
+  });
+
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Priority options with colors
+  const priorityOptions = [
+    { value: 'Pri 1', label: 'Pri 1', color: '#ef4444' }, // Red
+    { value: 'Pri 2', label: 'Pri 2', color: '#f59e0b' }, // Orange  
+    { value: 'Pri 3', label: 'Pri 3', color: '#22c55e' }, // Green
+    { value: 'Pri 4', label: 'Pri 4', color: '#3b82f6' }  // Blue
+  ];
+
+  // DOTMPLFICC options
+  const dotmplficcOptions = [
+    'Doctrine',
+    'Organization', 
+    'Training',
+    'Maint and Equip',
+    'Personnel',
+    'Leadership',
+    'Facilities',
+    'Interoperability',
+    'Communications',
+    'Command and Control'
+  ];
+
+  useEffect(() => {
+    if (editingLesson) {
+      setFormData({
+        name: editingLesson.name || '',
+        serial_number: editingLesson.serial_number || null,
+        priority: editingLesson.priority || 'Pri 1',
+        references: editingLesson.references || '',
+        date: editingLesson.date || new Date().toISOString().split('T')[0],
+        lesson_images: editingLesson.lesson_images || [],
+        dotmplficc: editingLesson.dotmplficc || 'Doctrine',
+        issues_observation: editingLesson.issues_observation || '',
+        recommendations: editingLesson.recommendations || '',
+        additional_comments: editingLesson.additional_comments || '',
+        recommended_actions: editingLesson.recommended_actions || '',
+        final_authority_remarks: editingLesson.final_authority_remarks || '',
+        testing_done_by: editingLesson.testing_done_by || '',
+        procedures_written_by: editingLesson.procedures_written_by || '',
+        implement_new_ll_by: editingLesson.implement_new_ll_by || ''
+      });
+    }
+  }, [editingLesson]);
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({
+        ...prev,
+        [field]: ''
+      }));
+    }
+  };
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setFormData(prev => ({
+          ...prev,
+          lesson_images: [...prev.lesson_images, reader.result]
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCameraCapture = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.play();
+      
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      
+      video.addEventListener('loadedmetadata', () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0);
+        
+        const imageData = canvas.toDataURL('image/png');
+        setFormData(prev => ({
+          ...prev,
+          lesson_images: [...prev.lesson_images, imageData]
+        }));
+        
+        stream.getTracks().forEach(track => track.stop());
+      });
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      alert('Could not access camera. Please check permissions.');
+    }
+  };
+
+  const removeImage = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      lesson_images: prev.lesson_images.filter((_, i) => i !== index)
+    }));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Lesson name is required';
+    }
+
+    if (!formData.references.trim()) {
+      newErrors.references = 'References are required';
+    }
+
+    if (!formData.issues_observation.trim()) {
+      newErrors.issues_observation = 'Issues/Observation is required';
+    }
+
+    if (!formData.recommendations.trim()) {
+      newErrors.recommendations = 'Recommendations are required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const submitData = {
+        ...formData,
+        exercise_id: exerciseId
+      };
+
+      const url = editingLesson 
+        ? `${process.env.REACT_APP_BACKEND_URL}/api/lessons-learned/${editingLesson.id}`
+        : `${process.env.REACT_APP_BACKEND_URL}/api/lessons-learned`;
+      
+      const method = editingLesson ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submitData),
+      });
+
+      if (response.ok) {
+        const savedLesson = await response.json();
+        onSave(savedLesson);
+      } else {
+        throw new Error('Failed to save lesson learned');
+      }
+    } catch (error) {
+      console.error('Error saving lesson learned:', error);
+      alert('Failed to save lesson learned. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-white">
+          {editingLesson ? 'Edit Lessons Learned' : 'Create Lessons Learned'}
+        </h1>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* First Container - Lesson Learned */}
+        <Card className="bg-gray-900 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Lesson Learned</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label className="text-white">Name *</Label>
+                <Input
+                  value={formData.name}
+                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  placeholder="Name of the lesson learned"
+                  className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+                />
+                {errors.name && (
+                  <p className="text-red-400 text-sm mt-1">{errors.name}</p>
+                )}
+              </div>
+
+              <div>
+                <Label className="text-white">Serial Number</Label>
+                <Input
+                  value={formData.serial_number || ''}
+                  placeholder="Auto-generated"
+                  disabled
+                  className="bg-gray-700 border-gray-600 text-gray-400"
+                />
+              </div>
+
+              <div>
+                <Label className="text-white">Priority *</Label>
+                <select
+                  value={formData.priority}
+                  onChange={(e) => handleInputChange('priority', e.target.value)}
+                  className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"
+                  style={{
+                    backgroundColor: priorityOptions.find(p => p.value === formData.priority)?.color + '20',
+                    borderColor: priorityOptions.find(p => p.value === formData.priority)?.color
+                  }}
+                >
+                  {priorityOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <Label className="text-white">Date *</Label>
+                <Input
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) => handleInputChange('date', e.target.value)}
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label className="text-white">References *</Label>
+              <Textarea
+                value={formData.references}
+                onChange={(e) => handleInputChange('references', e.target.value)}
+                placeholder="Enter references..."
+                rows={3}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+              {errors.references && (
+                <p className="text-red-400 text-sm mt-1">{errors.references}</p>
+              )}
+            </div>
+
+            {/* Image Upload */}
+            <div>
+              <Label className="text-white">Supporting Images</Label>
+              <div className="flex items-center space-x-4 mt-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                  id="lesson-image-upload"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => document.getElementById('lesson-image-upload').click()}
+                  className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10"
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Upload Image
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleCameraCapture}
+                  className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10"
+                >
+                  <Camera className="h-4 w-4 mr-2" />
+                  Use Camera
+                </Button>
+              </div>
+
+              {formData.lesson_images.length > 0 && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                  {formData.lesson_images.map((image, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={image}
+                        alt={`Lesson ${index + 1}`}
+                        className="w-full h-24 object-cover rounded border border-gray-700"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removeImage(index)}
+                        className="absolute top-1 right-1 h-6 w-6 p-0 border-red-500 text-red-400 hover:bg-red-500/10"
+                      >
+                        ×
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Second Container - Observations and Recommended Actions */}
+        <Card className="bg-gray-900 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Observations and Recommended Actions</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label className="text-white">DOTMPLFICC *</Label>
+              <select
+                value={formData.dotmplficc}
+                onChange={(e) => handleInputChange('dotmplficc', e.target.value)}
+                className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"
+              >
+                {dotmplficcOptions.map(option => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <Label className="text-white">Issues / Observation *</Label>
+              <Textarea
+                value={formData.issues_observation}
+                onChange={(e) => handleInputChange('issues_observation', e.target.value)}
+                placeholder="Describe the issues or observations..."
+                rows={4}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+              {errors.issues_observation && (
+                <p className="text-red-400 text-sm mt-1">{errors.issues_observation}</p>
+              )}
+            </div>
+
+            <div>
+              <Label className="text-white">Recommendations *</Label>
+              <Textarea
+                value={formData.recommendations}
+                onChange={(e) => handleInputChange('recommendations', e.target.value)}
+                placeholder="Enter your recommendations..."
+                rows={4}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+              {errors.recommendations && (
+                <p className="text-red-400 text-sm mt-1">{errors.recommendations}</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Third Container - Analysis and Actions */}
+        <Card className="bg-gray-900 border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-orange-500">Analysis and Actions</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label className="text-white">Additional Comments</Label>
+              <Textarea
+                value={formData.additional_comments}
+                onChange={(e) => handleInputChange('additional_comments', e.target.value)}
+                placeholder="Enter additional comments..."
+                rows={3}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+            </div>
+
+            <div>
+              <Label className="text-white">Recommended Actions</Label>
+              <Textarea
+                value={formData.recommended_actions}
+                onChange={(e) => handleInputChange('recommended_actions', e.target.value)}
+                placeholder="Enter recommended actions..."
+                rows={3}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+            </div>
+
+            <div>
+              <Label className="text-white">Final Authority Remarks</Label>
+              <Textarea
+                value={formData.final_authority_remarks}
+                onChange={(e) => handleInputChange('final_authority_remarks', e.target.value)}
+                placeholder="Enter final authority remarks..."
+                rows={3}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label className="text-white">Testing done by</Label>
+                <Input
+                  type="date"
+                  value={formData.testing_done_by}
+                  onChange={(e) => handleInputChange('testing_done_by', e.target.value)}
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+              </div>
+
+              <div>
+                <Label className="text-white">Procedures Written By</Label>
+                <Input
+                  type="date"
+                  value={formData.procedures_written_by}
+                  onChange={(e) => handleInputChange('procedures_written_by', e.target.value)}
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+              </div>
+
+              <div>
+                <Label className="text-white">Implement new LL by</Label>
+                <Input
+                  type="date"
+                  value={formData.implement_new_ll_by}
+                  onChange={(e) => handleInputChange('implement_new_ll_by', e.target.value)}
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Submit Buttons */}
+        <div className="flex justify-end space-x-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onBack}
+            className="border-gray-600 text-gray-400 hover:bg-gray-700"
+          >
+            Back to Lessons Learned
+          </Button>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="bg-orange-500 hover:bg-orange-600 text-black"
+          >
+            {isSubmitting ? 'Saving...' : (editingLesson ? 'Update Lesson Learned' : 'Save Lesson Learned')}
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
   const renderLessonsLearnedManagement = () => {
     const printLessonsLearned = createPrintFunction('lessons', 'Exercise Lessons Learned');
 

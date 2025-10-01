@@ -604,14 +604,14 @@ const LocationManager = ({ onClose }) => {
               ) : (
                 <div className="space-y-4">
                   {locations.map((location) => (
-                    <Card key={location.id} className="bg-gray-700 border-gray-600">
+                    <Card key={location.id} className={`${theme.colors.tertiary} ${theme.colors.border}`}>
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
-                            <h3 className="text-lg font-semibold text-white mb-2">{location.name}</h3>
-                            <p className="text-gray-300 mb-3">{location.description}</p>
+                            <h3 className={`text-lg font-semibold ${theme.colors.textPrimary} mb-2`}>{location.name}</h3>
+                            <p className={`${theme.colors.textSecondary} mb-3`}>{location.description}</p>
                             
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-400">
+                            <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 text-sm ${theme.colors.textMuted}`}>
                               {location.address && (
                                 <div className="flex items-center space-x-2">
                                   <MapPin className="h-4 w-4 text-orange-500" />

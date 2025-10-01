@@ -10817,6 +10817,23 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave }) => {
               .priority.pri-2 { background-color: #f59e0b; }
               .priority.pri-3 { background-color: #22c55e; }
               .priority.pri-4 { background-color: #3b82f6; }
+              .dotmplficc { 
+                padding: 4px 8px; 
+                border-radius: 4px; 
+                font-weight: bold; 
+                color: white; 
+                margin-left: 10px;
+              }
+              .dotmplficc.doctrine { background-color: #3b82f6; }
+              .dotmplficc.organization { background-color: #10b981; }
+              .dotmplficc.training { background-color: #f59e0b; }
+              .dotmplficc.maint { background-color: #8b5cf6; }
+              .dotmplficc.personnel { background-color: #06b6d4; }
+              .dotmplficc.leadership { background-color: #ef4444; }
+              .dotmplficc.facilities { background-color: #84cc16; }
+              .dotmplficc.interoperability { background-color: #f97316; }
+              .dotmplficc.communications { background-color: #ec4899; }
+              .dotmplficc.command { background-color: #6366f1; }
               .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 10px 0; }
               .grid-item { padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
               .footer { 

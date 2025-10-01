@@ -8405,7 +8405,7 @@ const ExerciseManagementDashboard = ({
           </Card>
 
           {/* Safety Information */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className={`${theme.colors.tertiary} ${theme.colors.border}`}>
             <CardHeader>
               <CardTitle className="text-red-500 flex items-center">
                 <ShieldAlert className="h-5 w-5 mr-2" />
@@ -8414,8 +8414,8 @@ const ExerciseManagementDashboard = ({
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <div className="text-white font-medium">Safety Concerns: {exercise.safetyConcerns?.length || 0}</div>
-                <div className="text-sm text-gray-400">
+                <div className={`${theme.colors.textPrimary} font-medium`}>Safety Concerns: {exercise.safetyConcerns?.length || 0}</div>
+                <div className={`text-sm ${theme.colors.textMuted}`}>
                   {exercise.safetyConcerns?.length > 0 ? 
                     "Safety protocols have been documented for this exercise." : 
                     "No specific safety concerns documented."

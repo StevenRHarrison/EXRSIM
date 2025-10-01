@@ -10017,17 +10017,17 @@ const ExerciseManagementDashboard = ({
         </div>
 
         {evaluationLoading ? (
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className={`${theme.colors.tertiary} ${theme.colors.border}`}>
             <CardContent className="p-12 text-center">
-              <div className="text-gray-400">Loading evaluation reports...</div>
+              <div className={theme.colors.textMuted}>Loading evaluation reports...</div>
             </CardContent>
           </Card>
         ) : evaluationReports.length === 0 ? (
-          <Card className="bg-gray-800 border-gray-700 border-dashed">
+          <Card className={`${theme.colors.tertiary} ${theme.colors.border} border-dashed`}>
             <CardContent className="p-12 text-center">
-              <Star className="h-12 w-12 text-gray-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-300 mb-2">No Evaluations Yet</h3>
-              <p className="text-gray-500 mb-4">Add exercise evaluations to track performance and effectiveness.</p>
+              <Star className={`h-12 w-12 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h3 className={`text-lg font-semibold ${theme.colors.textSecondary} mb-2`}>No Evaluations Yet</h3>
+              <p className={`${theme.colors.textMuted} mb-4`}>Add exercise evaluations to track performance and effectiveness.</p>
               <Button 
                 className="bg-orange-500 hover:bg-orange-600 text-black"
                 onClick={handleAddNew}

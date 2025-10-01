@@ -332,7 +332,7 @@ const Navigation = () => {
   const [showThemeSettings, setShowThemeSettings] = useState(false);
 
   return (
-    <nav className="bg-black border-b border-orange-500/20 px-6 py-4">
+    <nav className={`${theme.colors.primary} border-b ${theme.colors.borderAccent} px-6 py-4`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-8">
           <Link to="/" className="flex items-center group">
@@ -345,16 +345,10 @@ const Navigation = () => {
               />
             </div>
           </Link>
-          <div className="hidden md:flex items-center space-x-6">
-            <Link 
-              to="/" 
-              className="text-gray-300 hover:text-orange-500 transition-colors font-medium"
-            >
-              Dashboard
-            </Link>
+          <div className="flex items-center space-x-6">
             <Link 
               to="/builder" 
-              className="text-gray-300 hover:text-orange-500 transition-colors font-medium"
+              className="text-orange-500 hover:text-orange-400 transition-colors font-medium"
             >
               Exercise Builder
             </Link>
@@ -376,10 +370,10 @@ const Navigation = () => {
           
           {/* Dropdown Menu */}
           {showSettingsDropdown && (
-            <div className="absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded-md shadow-lg z-50">
+            <div className={`absolute right-0 mt-2 w-48 ${theme.colors.tertiary} border ${theme.colors.border} rounded-md shadow-lg z-50`}>
               <div className="py-1">
                 <button
-                  className="flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-orange-400 transition-colors"
+                  className={`flex items-center w-full px-4 py-2 text-sm ${theme.colors.textSecondary} ${theme.colors.hover} hover:text-orange-400 transition-colors`}
                   onClick={() => {
                     setShowLocationManager(true);
                     setShowSettingsDropdown(false);
@@ -389,11 +383,14 @@ const Navigation = () => {
                   Manage Locations
                 </button>
                 <button
-                  className="flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-orange-400 transition-colors"
-                  onClick={() => setShowSettingsDropdown(false)}
+                  className={`flex items-center w-full px-4 py-2 text-sm ${theme.colors.textSecondary} ${theme.colors.hover} hover:text-orange-400 transition-colors`}
+                  onClick={() => {
+                    setShowThemeSettings(true);
+                    setShowSettingsDropdown(false);
+                  }}
                 >
-                  <Settings className="h-4 w-4 mr-3" />
-                  General Settings
+                  <Palette className="h-4 w-4 mr-3" />
+                  Theme Settings
                 </button>
               </div>
             </div>
@@ -404,6 +401,11 @@ const Navigation = () => {
       {/* Location Manager Modal */}
       {showLocationManager && (
         <LocationManager onClose={() => setShowLocationManager(false)} />
+      )}
+
+      {/* Theme Settings Modal */}
+      {showThemeSettings && (
+        <ThemeSettings onClose={() => setShowThemeSettings(false)} />
       )}
     </nav>
   );

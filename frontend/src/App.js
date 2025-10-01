@@ -2152,6 +2152,7 @@ const ResourceForm = ({ onBack, onSave, editingResource }) => {
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [locations, setLocations] = useState([]);
 
   // Resource type options
   const resourceTypes = [

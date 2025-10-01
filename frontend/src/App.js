@@ -561,6 +561,26 @@ const Navigation = () => {
         <AcronymsManager onClose={() => setShowAcronyms(false)} />
       )}
 
+      {/* Definitions Modal */}
+      {showDefinitions && (
+        <DefinitionsManager onClose={() => setShowDefinitions(false)} />
+      )}
+
+      {/* Quicklinks Modal */}
+      {showQuicklinks && (
+        <QuicklinksManager onClose={() => setShowQuicklinks(false)} />
+      )}
+
+      {/* Position Manager Modal */}
+      {showPositionManager && (
+        <PositionManager onClose={() => setShowPositionManager(false)} />
+      )}
+
+      {/* Policies and Procedures Modal */}
+      {showPoliciesProcedures && (
+        <PoliciesProceduresManager onClose={() => setShowPoliciesProcedures(false)} />
+      )}
+
       {/* Theme Settings Modal */}
       {showThemeSettings && (
         <ThemeSettings onClose={() => setShowThemeSettings(false)} />

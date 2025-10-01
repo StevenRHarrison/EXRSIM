@@ -9135,30 +9135,32 @@ const calculateOverallRatingHelper = (reportData) => {
 
   // Convert ratings to numerical values for calculation
   const ratingValues = {
-    'Not Rated': null,  // Exclude from calculation
-    'Needs Improvement': 1,
-    'Satisfactory': 2, 
-    'Excellent': 3
+    'Excellent': 5,
+    'Above Average': 4,
+    'Average': 3,
+    'Below Average': 2,
+    'Unacceptable': 1
   };
 
-  // Get all rated areas (exclude 'Not Rated')
+  // Get all rated areas
   const ratedAreas = assessmentAreas
     .map(area => reportData[area]?.rating)
-    .filter(rating => rating && rating !== 'Not Rated')
-    .map(rating => ratingValues[rating])
-    .filter(value => value !== null);
+    .filter(rating => rating && ratingValues[rating])
+    .map(rating => ratingValues[rating]);
 
   if (ratedAreas.length === 0) {
-    return 'Not Rated';
+    return 'Average';
   }
 
   // Calculate simple average
   const average = ratedAreas.reduce((sum, value) => sum + value, 0) / ratedAreas.length;
 
   // Convert back to rating labels based on average
-  if (average >= 2.5) return 'Excellent';
-  if (average >= 1.5) return 'Satisfactory'; 
-  return 'Needs Improvement';
+  if (average >= 4.5) return 'Excellent';
+  if (average >= 3.5) return 'Above Average';
+  if (average >= 2.5) return 'Average';
+  if (average >= 1.5) return 'Below Average';
+  return 'Unacceptable';
 };
 
 // Evaluation Report Form Component  

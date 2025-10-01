@@ -253,9 +253,82 @@ const formatCoordinate = (input, type) => {
 };
 
 // Navigation Component
+// Theme Settings Component
+const ThemeSettings = ({ onClose }) => {
+  const { currentTheme, switchTheme, themes } = useTheme();
+  
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className={`${themes[currentTheme].colors.modal} rounded-lg shadow-xl w-full max-w-md mx-4`}>
+        <div className={`flex items-center justify-between p-6 ${themes[currentTheme].colors.borderAccent} border-b`}>
+          <h2 className={`text-xl font-bold ${themes[currentTheme].colors.textPrimary}`}>Theme Settings</h2>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className={`${themes[currentTheme].colors.textMuted} hover:${themes[currentTheme].colors.textPrimary}`}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        <div className="p-6 space-y-4">
+          <div>
+            <Label className={`${themes[currentTheme].colors.textPrimary} text-sm font-medium mb-3 block`}>
+              Select Theme
+            </Label>
+            <div className="space-y-2">
+              {Object.entries(themes).map(([themeKey, themeConfig]) => (
+                <button
+                  key={themeKey}
+                  onClick={() => switchTheme(themeKey)}
+                  className={`w-full flex items-center justify-between p-3 rounded-lg border-2 transition-all ${
+                    currentTheme === themeKey
+                      ? 'border-orange-500 bg-orange-500/10'
+                      : `${themes[currentTheme].colors.border} ${themes[currentTheme].colors.hover}`
+                  }`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-4 h-4 rounded-full ${
+                      themeKey === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
+                    } border-2 ${themes[currentTheme].colors.border}`} />
+                    <span className={themes[currentTheme].colors.textPrimary}>
+                      {themeConfig.name}
+                    </span>
+                  </div>
+                  {currentTheme === themeKey && (
+                    <CheckCircle className="h-4 w-4 text-orange-500" />
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          <div className="pt-4 border-t border-gray-600">
+            <p className={`text-xs ${themes[currentTheme].colors.textMuted}`}>
+              Theme settings are saved automatically and will persist across sessions.
+            </p>
+          </div>
+        </div>
+        
+        <div className={`flex justify-end p-6 ${themes[currentTheme].colors.borderAccent} border-t`}>
+          <Button
+            onClick={onClose}
+            className="bg-orange-500 hover:bg-orange-600 text-black"
+          >
+            Done
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Navigation = () => {
+  const { theme } = useTheme();
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
   const [showLocationManager, setShowLocationManager] = useState(false);
+  const [showThemeSettings, setShowThemeSettings] = useState(false);
 
   return (
     <nav className="bg-black border-b border-orange-500/20 px-6 py-4">

@@ -8907,11 +8907,12 @@ const ExerciseManagementDashboard = ({
                     <div class="section-title">Overall Rating</div>
                     <div class="content">
                       <strong style="padding: 8px 16px; border: 2px solid #ddd; border-radius: 8px; background-color: ${
-                        calculateOverallRatingHelper(report) === 'Excellent' ? '#22c55e' :
-                        calculateOverallRatingHelper(report) === 'Satisfactory' ? '#3b82f6' :
-                        calculateOverallRatingHelper(report) === 'Needs Improvement' ? '#f59e0b' : '#666'
+                        calculateOverallRatingHelper(report) === 'Excellent' ? '#3b82f6' :
+                        calculateOverallRatingHelper(report) === 'Above Average' ? '#0ea5e9' :
+                        calculateOverallRatingHelper(report) === 'Average' ? '#22c55e' :
+                        calculateOverallRatingHelper(report) === 'Below Average' ? '#f59e0b' : '#ef4444'
                       }; color: white;">Overall Rating: ${calculateOverallRatingHelper(report)}</strong>
-                      <br><small style="color: #666; font-style: italic;">Calculated automatically based on the average of all rated assessment areas</small>
+                      <br><small style="color: #666; font-style: italic;">Calculated automatically based on the average of all assessment area ratings</small>
                     </div>
                     
                     <div class="section-title">Key Areas Assessment</div>

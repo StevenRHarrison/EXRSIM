@@ -11023,7 +11023,14 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave }) => {
                           {lesson.priority}
                         </Badge>
                         <span>{lesson.date}</span>
-                        <span>{lesson.dotmplficc}</span>
+                        <Badge 
+                          className="text-white"
+                          style={{
+                            backgroundColor: dotmplficcOptions.find(opt => opt.value === lesson.dotmplficc)?.color || '#6b7280'
+                          }}
+                        >
+                          {lesson.dotmplficc}
+                        </Badge>
                       </div>
                     </div>
                     <div className="flex space-x-2">

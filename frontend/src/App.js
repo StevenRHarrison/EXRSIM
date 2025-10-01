@@ -1123,15 +1123,15 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
           Array.from({ length: 6 }).map((_, i) => (
-            <Card key={i} className="bg-gray-800 border-gray-700">
+            <Card key={i} className={`${theme.colors.tertiary} ${theme.colors.border}`}>
               <CardHeader>
-                <div className="h-4 bg-gray-700 rounded animate-pulse mb-2"></div>
-                <div className="h-3 bg-gray-700 rounded animate-pulse w-2/3"></div>
+                <div className={`h-4 ${theme.colors.quaternary} rounded animate-pulse mb-2`}></div>
+                <div className={`h-3 ${theme.colors.quaternary} rounded animate-pulse w-2/3`}></div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <div className="h-3 bg-gray-700 rounded animate-pulse"></div>
-                  <div className="h-3 bg-gray-700 rounded animate-pulse w-3/4"></div>
+                  <div className={`h-3 ${theme.colors.quaternary} rounded animate-pulse`}></div>
+                  <div className={`h-3 ${theme.colors.quaternary} rounded animate-pulse w-3/4`}></div>
                 </div>
               </CardContent>
             </Card>

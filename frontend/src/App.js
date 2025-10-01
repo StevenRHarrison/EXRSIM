@@ -11271,7 +11271,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
       const printContent = `
         <html>
           <head>
-            <title>Final Exercise Report - ${exercise.name || 'Exercise'}</title>
+            <title>After Action Report - ${exercise.name || 'Exercise'}</title>
             <style>
               body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
               .header { border-bottom: 3px solid #333; margin-bottom: 30px; padding-bottom: 15px; }

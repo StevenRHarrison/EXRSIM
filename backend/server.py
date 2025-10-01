@@ -705,6 +705,41 @@ class EvaluationReportUpdate(BaseModel):
     plan_adherence_adaptability: Optional[EvaluationAreaAssessment] = None
     evaluation_images: Optional[List[str]] = None
 
+# Lessons Learned Models
+class LessonsLearnedBase(BaseModel):
+    # First Container - Lesson Learned
+    name: str
+    serial_number: Optional[int] = None
+    priority: str  # "Pri 1", "Pri 2", "Pri 3", "Pri 4"
+    references: str = ""
+    date: Optional[str] = None
+    lesson_images: Optional[List[str]] = Field(default_factory=list)
+    
+    # Second Container - Observations and Recommended Actions
+    dotmplficc: str = "Doctrine"  # DOTMPLFICC category
+    issues_observation: str = ""
+    recommendations: str = ""
+    
+    # Third Container - Analysis and Actions
+    additional_comments: str = ""
+    recommended_actions: str = ""
+    final_authority_remarks: str = ""
+    testing_done_by: Optional[str] = None  # Date format
+    procedures_written_by: Optional[str] = None  # Date format
+    implement_new_ll_by: Optional[str] = None  # Date format
+
+class LessonsLearnedCreate(LessonsLearnedBase):
+    exercise_id: str
+
+class LessonsLearnedUpdate(LessonsLearnedBase):
+    exercise_id: Optional[str] = None
+
+class LessonsLearned(LessonsLearnedBase):
+    id: str = Field(default_factory=lambda: str(uuid4()))
+    exercise_id: str
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
+
 # Helper functions
 def prepare_for_mongo(data):
     if isinstance(data, dict):

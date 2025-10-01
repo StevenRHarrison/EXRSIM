@@ -8939,7 +8939,7 @@ const ExerciseManagementDashboard = ({
                       </div>
                       <div class="assessment-item">
                         <strong>Operational Effectiveness</strong><br>
-                        <span class="rating ${(report.operational_effectiveness?.rating || '').toLowerCase()}">Rating: ${report.operational_effectiveness?.rating || 'Not Rated'}</span><br>
+                        <span class="rating ${(report.operational_effectiveness?.rating || '').toLowerCase().replace(' ', '')}"}>Rating: ${report.operational_effectiveness?.rating || 'Average'}</span><br>
                         ${report.operational_effectiveness?.comments || 'No comments'}
                       </div>
                       <div class="assessment-item">

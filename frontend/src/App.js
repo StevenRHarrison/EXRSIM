@@ -13779,7 +13779,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
                       className={`w-full justify-start text-left ${
                         activeSection === item.id
                           ? "bg-orange-500/20 text-orange-300 border-orange-500/50"
-                          : "text-gray-300 hover:text-orange-500 hover:bg-gray-800"
+                          : `${theme.colors.textSecondary} hover:text-orange-500 ${theme.colors.hover}`
                       }`}
                       onClick={() => setActiveSection(item.id)}
                     >

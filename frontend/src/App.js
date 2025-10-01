@@ -1138,11 +1138,11 @@ const Dashboard = () => {
           ))
         ) : exercises.length === 0 ? (
           <div className="col-span-full">
-            <Card className="bg-gray-800 border-gray-700 border-dashed">
+            <Card className={`${theme.colors.tertiary} ${theme.colors.border} border-dashed`}>
               <CardContent className="flex flex-col items-center justify-center py-12">
-                <Shield className="h-12 w-12 text-gray-500 mb-4" />
-                <h3 className="text-lg font-semibold text-gray-300 mb-2">No Exercises Yet</h3>
-                <p className="text-gray-500 text-center mb-4">
+                <Shield className={`h-12 w-12 ${theme.colors.textMuted} mb-4`} />
+                <h3 className={`text-lg font-semibold ${theme.colors.textSecondary} mb-2`}>No Exercises Yet</h3>
+                <p className={`${theme.colors.textMuted} text-center mb-4`}>
                   Create your first emergency training exercise using the Exercise Builder.
                 </p>
                 <Button 

@@ -389,6 +389,26 @@ const Navigation = () => {
                 <button
                   className={`flex items-center w-full px-4 py-2 text-sm ${theme.colors.textSecondary} ${theme.colors.hover} hover:text-orange-400 transition-colors`}
                   onClick={() => {
+                    setShowFinancialCategories(true);
+                    setShowSettingsDropdown(false);
+                  }}
+                >
+                  <DollarSign className="h-4 w-4 mr-3" />
+                  Financial Categories
+                </button>
+                <button
+                  className={`flex items-center w-full px-4 py-2 text-sm ${theme.colors.textSecondary} ${theme.colors.hover} hover:text-orange-400 transition-colors`}
+                  onClick={() => {
+                    setShowAcronyms(true);
+                    setShowSettingsDropdown(false);
+                  }}
+                >
+                  <BookText className="h-4 w-4 mr-3" />
+                  Acronyms
+                </button>
+                <button
+                  className={`flex items-center w-full px-4 py-2 text-sm ${theme.colors.textSecondary} ${theme.colors.hover} hover:text-orange-400 transition-colors`}
+                  onClick={() => {
                     setShowThemeSettings(true);
                     setShowSettingsDropdown(false);
                   }}

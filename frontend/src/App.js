@@ -670,14 +670,14 @@ const LocationManager = ({ onClose }) => {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-white">
+                <h3 className={`text-xl font-semibold ${theme.colors.textPrimary}`}>
                   {editingLocation ? 'Edit Location' : 'Add New Location'}
                 </h3>
                 <Button
                   type="button"
                   variant="ghost"
                   onClick={resetForm}
-                  className="text-gray-400 hover:text-white"
+                  className={`${theme.colors.textMuted} hover:${theme.colors.textPrimary}`}
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to List
@@ -686,12 +686,12 @@ const LocationManager = ({ onClose }) => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <Label htmlFor="name" className="text-gray-300">Location Name *</Label>
+                  <Label htmlFor="name" className={theme.colors.textSecondary}>Location Name *</Label>
                   <Input
                     id="name"
                     value={formData.name}
                     onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    className="bg-gray-700 border-gray-600 text-white"
+                    className={theme.colors.input}
                     placeholder="Command Post"
                     required
                   />
@@ -701,24 +701,24 @@ const LocationManager = ({ onClose }) => {
                 </div>
 
                 <div>
-                  <Label htmlFor="contact_person" className="text-gray-300">Contact Person</Label>
+                  <Label htmlFor="contact_person" className={theme.colors.textSecondary}>Contact Person</Label>
                   <Input
                     id="contact_person"
                     value={formData.contact_person}
                     onChange={(e) => setFormData(prev => ({ ...prev, contact_person: e.target.value }))}
-                    className="bg-gray-700 border-gray-600 text-white"
+                    className={theme.colors.input}
                     placeholder="John Smith"
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="description" className="text-gray-300">Description *</Label>
+                <Label htmlFor="description" className={theme.colors.textSecondary}>Description *</Label>
                 <Textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  className="bg-gray-700 border-gray-600 text-white"
+                  className={theme.colors.input}
                   placeholder="Primary command and control center for emergency operations"
                   rows={3}
                   required

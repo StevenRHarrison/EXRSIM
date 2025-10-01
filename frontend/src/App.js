@@ -1102,7 +1102,7 @@ const Dashboard = () => {
         <div className="flex items-center space-x-3">
           <Button 
             variant="outline" 
-            className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-orange-500"
+            className={`${theme.colors.border} ${theme.colors.textSecondary} ${theme.colors.hover} hover:text-orange-500`}
             onClick={() => printDashboard()}
             title="Print Exercises Summary"
           >

@@ -553,7 +553,7 @@ const LocationManager = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-gray-800 border border-gray-700 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
+      <div className={`${theme.colors.modal} rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden`}>
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
           <h2 className="text-2xl font-bold text-orange-500">Manage Locations</h2>
           <Button

@@ -9164,10 +9164,11 @@ const ExerciseManagementDashboard = ({
                         <div key={index} className="bg-gray-700 p-2 rounded text-center">
                           <div className="text-xs text-gray-400 mb-1">{area.label}</div>
                           <div className={`text-xs font-semibold ${
-                            area.data?.rating === 'Excellent' ? 'text-green-400' :
-                            area.data?.rating === 'Good' ? 'text-blue-400' :
-                            area.data?.rating === 'Fair' ? 'text-yellow-400' :
-                            area.data?.rating === 'Poor' ? 'text-red-400' :
+                            area.data?.rating === 'Excellent' ? 'text-blue-400' :
+                            area.data?.rating === 'Above Average' ? 'text-sky-400' :
+                            area.data?.rating === 'Average' ? 'text-green-400' :
+                            area.data?.rating === 'Below Average' ? 'text-orange-400' :
+                            area.data?.rating === 'Unacceptable' ? 'text-red-400' :
                             'text-gray-500'
                           }`}>
                             {area.data?.rating || 'Not Rated'}

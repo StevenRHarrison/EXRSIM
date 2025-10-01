@@ -1049,6 +1049,80 @@ async def delete_participant(participant_id: str):
         raise HTTPException(status_code=404, detail="Participant not found")
     return {"message": "Participant deleted successfully"}
 
+# Location Management Routes
+@api_router.get("/locations", response_model=List[Location])
+async def get_locations():
+    try:
+        locations = await db.locations.find().to_list(1000)
+        return [Location(**parse_from_mongo(location)) for location in locations]
+    except Exception as e:
+        logger.error(f"Error fetching locations: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/locations/{location_id}", response_model=Location)
+async def get_location(location_id: str):
+    try:
+        location = await db.locations.find_one({"id": location_id})
+        if not location:
+            raise HTTPException(status_code=404, detail="Location not found")
+        return Location(**parse_from_mongo(location))
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching location {location_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/locations", response_model=Location)
+async def create_location(location_data: LocationCreate):
+    try:
+        location = Location(**location_data.dict())
+        location_mongo = prepare_for_mongo(location.dict())
+        await db.locations.insert_one(location_mongo)
+        return location
+    except Exception as e:
+        logger.error(f"Error creating location: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.put("/locations/{location_id}", response_model=Location)
+async def update_location(location_id: str, location_data: LocationUpdate):
+    try:
+        # Get existing location
+        existing_location = await db.locations.find_one({"id": location_id})
+        if not existing_location:
+            raise HTTPException(status_code=404, detail="Location not found")
+        
+        # Prepare update data
+        update_data = {k: v for k, v in location_data.dict().items() if v is not None}
+        update_data["updated_at"] = datetime.now(timezone.utc)
+        
+        # Update location
+        await db.locations.update_one(
+            {"id": location_id}, 
+            {"$set": prepare_for_mongo(update_data)}
+        )
+        
+        # Return updated location
+        updated_location = await db.locations.find_one({"id": location_id})
+        return Location(**parse_from_mongo(updated_location))
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating location {location_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/locations/{location_id}")
+async def delete_location(location_id: str):
+    try:
+        result = await db.locations.delete_one({"id": location_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Location not found")
+        return {"message": "Location deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting location {location_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Health check
 @api_router.get("/")
 async def root():

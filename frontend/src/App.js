@@ -7940,6 +7940,10 @@ const ExerciseManagementDashboard = ({
   const [lessonsLoading, setLessonsLoading] = useState(false);
   const [selectedLessonId, setSelectedLessonId] = useState(null);
 
+  // Locations state (shared with Participants and Resources)
+  const [locations, setLocations] = useState([]);
+  const [locationsLoading, setLocationsLoading] = useState(false);
+
   useEffect(() => {
     if (exerciseId) {
       fetchExercise();

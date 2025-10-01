@@ -7552,10 +7552,11 @@ const ExerciseManagementDashboard = ({
     }
   };
 
-  // Load evaluation reports when exercise is loaded
+  // Load evaluation reports and lessons learned when exercise is loaded
   useEffect(() => {
     if (exerciseId) {
       fetchEvaluationReports();
+      fetchLessonsLearned();
     }
   }, [exerciseId]);
 

@@ -10963,6 +10963,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave }) => {
           editingLesson={editingLesson}
           onBack={handleBackFromForm}
           onSave={handleSaveLesson}
+          dotmplficcOptions={dotmplficcOptions}
         />
       );
     }

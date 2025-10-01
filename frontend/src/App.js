@@ -13753,7 +13753,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
           <div className="p-4">
             <Button 
               variant="ghost" 
-              className="w-full justify-start text-gray-300 hover:text-orange-500 mb-4"
+              className={`w-full justify-start ${theme.colors.textSecondary} hover:text-orange-500 mb-4`}
               onClick={() => window.location.href = '#dashboard'}
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -13761,7 +13761,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
             </Button>
             
             <div className="mb-6">
-              <h2 className="text-lg font-semibold text-white mb-2">{exercise.exercise_name}</h2>
+              <h2 className={`text-lg font-semibold ${theme.colors.textPrimary} mb-2`}>{exercise.exercise_name}</h2>
               <Badge className={getStatusColor(getExerciseStatus())}>
                 {getExerciseStatus()}
               </Badge>

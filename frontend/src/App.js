@@ -10375,7 +10375,7 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
           <h1 className="text-3xl font-bold text-orange-500 mb-2">
             {editingReport ? 'Edit Evaluation Report' : 'Create Evaluation Report'}
           </h1>
-          <p className="text-gray-400">
+          <p className={theme.colors.textMuted}>
             Comprehensive evaluation report for exercise performance assessment
           </p>
         </div>
@@ -10391,14 +10391,14 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Information */}
-        <Card className="bg-gray-900 border-gray-700">
+        <Card className={`${theme.colors.secondary} ${theme.colors.border}`}>
           <CardHeader>
             <CardTitle className="text-orange-500">Basic Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="report_title" className="text-white">
+                <Label htmlFor="report_title" className={theme.colors.textPrimary}>
                   Report Title *
                 </Label>
                 <Input
@@ -10407,7 +10407,7 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
                   value={formData.report_title}
                   onChange={(e) => handleInputChange('report_title', e.target.value)}
                   placeholder="Exercise Evaluation Report"
-                  className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+                  className={theme.colors.input}
                 />
                 {errors.report_title && (
                   <p className="text-red-400 text-sm mt-1">{errors.report_title}</p>
@@ -10415,7 +10415,7 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
               </div>
 
               <div>
-                <Label htmlFor="evaluation_date" className="text-white">
+                <Label htmlFor="evaluation_date" className={theme.colors.textPrimary}>
                   Evaluation Date *
                 </Label>
                 <Input
@@ -10423,7 +10423,7 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
                   type="date"
                   value={formData.evaluation_date}
                   onChange={(e) => handleInputChange('evaluation_date', e.target.value)}
-                  className="bg-gray-800 border-gray-700 text-white"
+                  className={theme.colors.input}
                 />
                 {errors.evaluation_date && (
                   <p className="text-red-400 text-sm mt-1">{errors.evaluation_date}</p>
@@ -10433,7 +10433,7 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="evaluator_name" className="text-white">
+                <Label htmlFor="evaluator_name" className={theme.colors.textPrimary}>
                   Evaluator Name *
                 </Label>
                 <Input
@@ -10442,7 +10442,7 @@ const EvaluationReportForm = ({ exerciseId, editingReport, onBack, onSave }) => 
                   value={formData.evaluator_name}
                   onChange={(e) => handleInputChange('evaluator_name', e.target.value)}
                   placeholder="Primary evaluator's name"
-                  className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+                  className={theme.colors.input}
                 />
                 {errors.evaluator_name && (
                   <p className="text-red-400 text-sm mt-1">{errors.evaluator_name}</p>

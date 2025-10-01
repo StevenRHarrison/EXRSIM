@@ -141,6 +141,9 @@ const formatCoordinate = (input, type) => {
 
 // Navigation Component
 const Navigation = () => {
+  const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
+  const [showLocationManager, setShowLocationManager] = useState(false);
+
   return (
     <nav className="bg-black border-b border-orange-500/20 px-6 py-4">
       <div className="flex items-center justify-between">
@@ -171,16 +174,50 @@ const Navigation = () => {
           </div>
         </div>
         
-        {/* Settings button moved to the right side */}
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10"
-        >
-          <Settings className="h-4 w-4 mr-2" />
-          Settings
-        </Button>
+        {/* Settings dropdown menu */}
+        <div className="relative">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10"
+            onClick={() => setShowSettingsDropdown(!showSettingsDropdown)}
+          >
+            <Settings className="h-4 w-4 mr-2" />
+            Settings
+            <ChevronDown className="h-3 w-3 ml-2" />
+          </Button>
+          
+          {/* Dropdown Menu */}
+          {showSettingsDropdown && (
+            <div className="absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded-md shadow-lg z-50">
+              <div className="py-1">
+                <button
+                  className="flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-orange-400 transition-colors"
+                  onClick={() => {
+                    setShowLocationManager(true);
+                    setShowSettingsDropdown(false);
+                  }}
+                >
+                  <MapPin className="h-4 w-4 mr-3" />
+                  Manage Locations
+                </button>
+                <button
+                  className="flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-orange-400 transition-colors"
+                  onClick={() => setShowSettingsDropdown(false)}
+                >
+                  <Settings className="h-4 w-4 mr-3" />
+                  General Settings
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Location Manager Modal */}
+      {showLocationManager && (
+        <LocationManager onClose={() => setShowLocationManager(false)} />
+      )}
     </nav>
   );
 };

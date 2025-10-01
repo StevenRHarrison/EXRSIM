@@ -11670,7 +11670,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
             onClick={printFinalReport}
           >
             <Printer className="h-4 w-4 mr-2" />
-            Print Final Report
+            Print After Action Report
           </Button>
         </div>
 

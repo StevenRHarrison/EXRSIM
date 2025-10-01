@@ -1272,6 +1272,105 @@ async def delete_evaluation_report(report_id: str):
         logger.error(f"Error deleting evaluation report {report_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# Lessons Learned API endpoints
+@api_router.post("/lessons-learned", response_model=LessonsLearned)
+async def create_lessons_learned(lesson: LessonsLearnedCreate):
+    try:
+        # Get the highest serial number for this exercise and increment
+        existing_lessons = await db.lessons_learned.find(
+            {"exercise_id": lesson.exercise_id}
+        ).to_list(length=None)
+        
+        if existing_lessons:
+            max_serial = max([ll.get("serial_number", 0) for ll in existing_lessons])
+            serial_number = max_serial + 1
+        else:
+            serial_number = 1
+            
+        lesson_data = lesson.dict()
+        lesson_data["id"] = str(uuid.uuid4())
+        lesson_data["serial_number"] = serial_number
+        lesson_data["created_at"] = datetime.now(timezone.utc)
+        lesson_data["updated_at"] = datetime.now(timezone.utc)
+        
+        lesson_mongo = prepare_for_mongo(lesson_data)
+        await db.lessons_learned.insert_one(lesson_mongo)
+        return LessonsLearned(**lesson_data)
+    except Exception as e:
+        logger.error(f"Error creating lessons learned: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/lessons-learned", response_model=List[LessonsLearned])
+async def get_all_lessons_learned():
+    try:
+        lessons = await db.lessons_learned.find().to_list(length=None)
+        return [LessonsLearned(**parse_from_mongo(lesson)) for lesson in lessons]
+    except Exception as e:
+        logger.error(f"Error retrieving lessons learned: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/lessons-learned/exercise/{exercise_id}", response_model=List[LessonsLearned])
+async def get_lessons_learned_by_exercise(exercise_id: str):
+    try:
+        lessons = await db.lessons_learned.find({"exercise_id": exercise_id}).to_list(length=None)
+        return [LessonsLearned(**parse_from_mongo(lesson)) for lesson in lessons]
+    except Exception as e:
+        logger.error(f"Error retrieving lessons learned for exercise {exercise_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/lessons-learned/{lesson_id}", response_model=LessonsLearned)
+async def get_lessons_learned(lesson_id: str):
+    try:
+        lesson = await db.lessons_learned.find_one({"id": lesson_id})
+        if not lesson:
+            raise HTTPException(status_code=404, detail="Lessons learned not found")
+        return LessonsLearned(**parse_from_mongo(lesson))
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error retrieving lessons learned {lesson_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.put("/lessons-learned/{lesson_id}", response_model=LessonsLearned)
+async def update_lessons_learned(lesson_id: str, lesson_update: LessonsLearnedUpdate):
+    try:
+        # Get existing lesson
+        existing_lesson = await db.lessons_learned.find_one({"id": lesson_id})
+        if not existing_lesson:
+            raise HTTPException(status_code=404, detail="Lessons learned not found")
+        
+        # Update fields
+        update_data = lesson_update.dict(exclude_unset=True)
+        update_data["updated_at"] = datetime.now(timezone.utc)
+        
+        update_mongo = prepare_for_mongo(update_data)
+        await db.lessons_learned.update_one(
+            {"id": lesson_id}, 
+            {"$set": update_mongo}
+        )
+        
+        # Get updated lesson
+        updated_lesson = await db.lessons_learned.find_one({"id": lesson_id})
+        return LessonsLearned(**parse_from_mongo(updated_lesson))
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating lessons learned {lesson_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/lessons-learned/{lesson_id}")
+async def delete_lessons_learned(lesson_id: str):
+    try:
+        result = await db.lessons_learned.delete_one({"id": lesson_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Lessons learned not found")
+        return {"message": "Lessons learned deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting lessons learned {lesson_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Include the router in the main app
 app.include_router(api_router)
 

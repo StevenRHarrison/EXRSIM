@@ -493,6 +493,46 @@ const Navigation = () => {
                 <button
                   className={`flex items-center w-full px-4 py-2 text-sm ${theme.colors.textSecondary} ${theme.colors.hover} hover:text-orange-400 transition-colors`}
                   onClick={() => {
+                    setShowDefinitions(true);
+                    setShowSettingsDropdown(false);
+                  }}
+                >
+                  <BookOpen className="h-4 w-4 mr-3" />
+                  Definitions
+                </button>
+                <button
+                  className={`flex items-center w-full px-4 py-2 text-sm ${theme.colors.textSecondary} ${theme.colors.hover} hover:text-orange-400 transition-colors`}
+                  onClick={() => {
+                    setShowQuicklinks(true);
+                    setShowSettingsDropdown(false);
+                  }}
+                >
+                  <ExternalLink className="h-4 w-4 mr-3" />
+                  Quicklinks
+                </button>
+                <button
+                  className={`flex items-center w-full px-4 py-2 text-sm ${theme.colors.textSecondary} ${theme.colors.hover} hover:text-orange-400 transition-colors`}
+                  onClick={() => {
+                    setShowPositionManager(true);
+                    setShowSettingsDropdown(false);
+                  }}
+                >
+                  <UserCog className="h-4 w-4 mr-3" />
+                  Position Manager
+                </button>
+                <button
+                  className={`flex items-center w-full px-4 py-2 text-sm ${theme.colors.textSecondary} ${theme.colors.hover} hover:text-orange-400 transition-colors`}
+                  onClick={() => {
+                    setShowPoliciesProcedures(true);
+                    setShowSettingsDropdown(false);
+                  }}
+                >
+                  <FileCheck className="h-4 w-4 mr-3" />
+                  Policies and Procedures
+                </button>
+                <button
+                  className={`flex items-center w-full px-4 py-2 text-sm ${theme.colors.textSecondary} ${theme.colors.hover} hover:text-orange-400 transition-colors`}
+                  onClick={() => {
                     setShowThemeSettings(true);
                     setShowSettingsDropdown(false);
                   }}

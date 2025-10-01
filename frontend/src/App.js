@@ -9095,7 +9095,15 @@ const ExerciseManagementDashboard = ({
         ) : (
           <div className="grid grid-cols-1 gap-6">
             {evaluationReports.map((report) => (
-              <Card key={report.id} className="bg-gray-800 border-gray-700">
+              <Card 
+                key={report.id} 
+                className={`bg-gray-800 border-gray-700 cursor-pointer transition-all ${
+                  selectedEvaluationId === report.id 
+                    ? 'border-orange-500 ring-2 ring-orange-500/20 bg-orange-500/5' 
+                    : 'hover:border-gray-600 hover:bg-gray-750'
+                }`}
+                onClick={() => setSelectedEvaluationId(selectedEvaluationId === report.id ? null : report.id)}
+              >
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div>

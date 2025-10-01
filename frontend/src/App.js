@@ -11592,6 +11592,60 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
             </div>
 
             <div class="section">
+              <div class="section-title">Lessons Learned Summary</div>
+              ${lessonsLearned && lessonsLearned.length > 0 ? 
+                lessonsLearned.map((lesson, index) => `
+                  <div class="subsection">
+                    <div class="subsection-title">${index + 1}. ${lesson.name || 'Unnamed Lesson'}</div>
+                    <table class="summary-table">
+                      <tr>
+                        <th style="width: 20%;">Date</th>
+                        <td>${lesson.date || 'Not specified'}</td>
+                      </tr>
+                      <tr>
+                        <th>Priority</th>
+                        <td>
+                          <span style="padding: 4px 8px; border-radius: 4px; color: white; font-weight: bold; background-color: ${
+                            lesson.priority === 'Pri 1' ? '#ef4444' :
+                            lesson.priority === 'Pri 2' ? '#f59e0b' :
+                            lesson.priority === 'Pri 3' ? '#22c55e' : '#3b82f6'
+                          };">${lesson.priority}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>DOTMPLFICC</th>
+                        <td>
+                          <span style="padding: 4px 8px; border-radius: 4px; color: white; font-weight: bold; background-color: ${
+                            lesson.dotmplficc === 'Doctrine' ? '#3b82f6' :
+                            lesson.dotmplficc === 'Organization' ? '#10b981' :
+                            lesson.dotmplficc === 'Training' ? '#f59e0b' :
+                            lesson.dotmplficc === 'Maint and Equip' ? '#8b5cf6' :
+                            lesson.dotmplficc === 'Personnel' ? '#06b6d4' :
+                            lesson.dotmplficc === 'Leadership' ? '#ef4444' :
+                            lesson.dotmplficc === 'Facilities' ? '#84cc16' :
+                            lesson.dotmplficc === 'Interoperability' ? '#f97316' :
+                            lesson.dotmplficc === 'Communications' ? '#ec4899' : '#6366f1'
+                          };">${lesson.dotmplficc}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Issues / Observation</th>
+                        <td>${lesson.issues_observation || 'No issues/observations specified'}</td>
+                      </tr>
+                      ${lesson.recommendations ? `
+                        <tr>
+                          <th>Recommendations</th>
+                          <td>${lesson.recommendations}</td>
+                        </tr>
+                      ` : ''}
+                    </table>
+                  </div>
+                `).join('') 
+                : '<div class="content">No lessons learned documented for this exercise.</div>'
+              }
+            </div>
+
+            <div class="section">
               <div class="section-title">Exercise Conclusion</div>
               <div class="content">
                 This exercise report provides a comprehensive overview of the exercise activities, 

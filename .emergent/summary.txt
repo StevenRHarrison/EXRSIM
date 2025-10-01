@@ -1,70 +1,70 @@
 <analysis>
-The trajectory outlines a comprehensive development cycle, starting from stabilizing an initial MVP to implementing several complex, full-stack features. The initial major task was creating a Digital Scribe Form, which involved significant backend work with nested Pydantic models in  and a complex UI in the monolithic . This led to a critical refactoring of the frontend to resolve React Hooks violations by hoisting state.
+The trajectory chronicles the evolution of the EXRSIM application from an MVP to a feature-rich platform. The development process was highly iterative, driven by specific user requests. The work began by fixing a UI duplication bug in the Evaluation Report form. This was followed by a series of significant feature enhancements to the same module, including implementing a calculated Overall Rating with a user-defined scale and color-coding, which required changes to both frontend () and backend () logic.
 
-Subsequently, the focus shifted to a new Resource Management module. This was built from scratch, including backend models and CRUD APIs, and a feature-rich frontend with filtering, image uploads (camera/file), status badges, and print functionality. The UI was iteratively refined based on user requests, such as removing Personnel categories and converting filter buttons into a dropdown menu.
+A major effort was dedicated to building a full-stack Lessons Learned module from scratch, complete with new backend models, CRUD APIs, and a complex frontend form featuring image uploads and dynamic dropdowns. This module was subsequently enhanced with cosmetic improvements (square images, color-coded options) and integrated into the After Action Report (formerly Final Report).
 
-Following this, two key fixes were implemented: enabling the Load Coordinators button in the Exercise Builder by adding the correct data-fetching and state update logic, and streamlining the Final Report UI by removing redundant summary buttons.
+Several UI/UX improvements were made, including sidebar cleanup, renaming reports, replacing the logo, and repositioning the settings button. A new Location Management CRUD system was built and integrated into the Participants and Resources forms, replacing hardcoded dropdowns with a dynamic, centralized list.
 
-The final and current major feature development is the Evaluation Report system. This involved creating new backend models and APIs and a very detailed multi-section frontend form. This implementation introduced duplication bugs in both the print output and the data entry form itself. The most recent actions were focused on identifying and removing these duplicated code blocks within the  in . The work concluded just after editing the file to remove the duplicates, with the next logical step being to restart the frontend and verify the fix.
+The most recent task, which is currently in progress, is the implementation of a light/dark theme system. The foundational work, including creating a React Theme Context and Provider and starting to apply theme colors, has been done, but the feature is not yet complete. The monolithic nature of the frontend in  and the backend in  is a consistent architectural pattern throughout the development.
 </analysis>
 
 <product_requirements>
-The application, EXRSIM, is an emergency training and simulation platform. The core product has evolved significantly through several feature requests:
+The application, EXRSIM, is an emergency training and simulation platform. The initial goal was to stabilize an MVP and then incrementally add features to create a comprehensive exercise management tool.
 
-1.  **Digital Scribe Form:** A persistent digital form for logging timeline events, communications, and notes during an exercise. It required full CRUD functionality and strict frontend validation for time inputs in  format.
-2.  **Resource Management System:** A comprehensive module to manage exercise resources. Requirements included:
-    *   Categorization (initially Personnel, Equipment, Supplies; later simplified to just Equipment and Supplies).
-    *   CRUD operations for resources with fields for ID, description, quantity (available vs. needed), location, and contact info.
-    *   Image association (via device camera or file upload).
-    *   A checkbox to mark if a resource is involved in the current exercise.
-    *   Advanced frontend UI with filtering (by category, insufficient quantity, exercise involvement), status badges, and a print summary feature.
-    *   UI refinements, including changing filter buttons to a dropdown and standardizing the Location field to use a dropdown list from the Participants section.
-3.  **Functional Fixes & UI Enhancements:**
-    *   Fix the Load Coordinators button to correctly import participants with the Team Coordinator role who are active in the exercise.
-    *   Remove Goals Summary and Safety Summary buttons from the Final Report screen to simplify the UI.
-4.  **Evaluation Report System:** A detailed data entry form and report generation system for post-exercise evaluation, requiring:
-    *   A multi-section form covering Exercise Overview, Findings, Strengths, Areas for Improvement, Recommendations, and a detailed assessment of 7 key operational areas (e.g., Command & Control, Communication).
-    *   Full CRUD, print capabilities, and image upload functionality.
-    *   Correction of data duplication appearing in both the print output and the data entry form.
+Key requirements implemented include:
+1.  **Evaluation Report System**: A detailed form for post-exercise evaluation. Required fixing data duplication bugs, implementing a dynamic overall rating algorithm with a custom 5-level scale ( to ), and applying specific color-coding to each rating level throughout the UI and printouts.
+2.  **Lessons Learned Module**: A full-stack CRUD system for logging lessons. The form required three distinct sections, fields for priority (with color-coding), DOTMPLFICC categories (also color-coded), image uploads, and an auto-incrementing serial number. It also needed print functionality allowing users to select a specific lesson to print.
+3.  **Centralized Location Management**: A CRUD interface under a new Settings menu to manage exercise locations (e.g., Command Post, Hospital). This central list was required to dynamically populate the Assigned to dropdowns in both the Participants and Resources modules, replacing static, hardcoded lists.
+4.  **UI/UX & Branding Enhancements**:
+    *   Simplify the sidebar by removing Deficiencies, Near Misses, and Comments.
+    *   Rename Final Report to the industry-standard After Action Report application-wide.
+    *   Replace the text-based logo with a professional brand image.
+    *   Implement a selectable light/dark theme system accessible from the settings menu.
 </product_requirements>
 
 <key_technical_concepts>
-- **Architecture**: Monolithic single-page application using React () for the frontend and a FastAPI () backend with MongoDB.
-- **Backend**: Pydantic models for data validation and schema definition, with new nested models and CRUD API endpoints for Scribes, Resources, and Evaluations.
-- **Frontend**: Heavy reliance on React Hooks (, ). A major refactoring was done to hoist state to the top-level component ( or ) to fix hook rule violations.
-- **UI Components**: Custom components built within  using a common pattern for forms, lists, filters, and print generation.
+- **Architecture**: Monolithic single-page application using React () for the frontend, and a FastAPI () backend with a MongoDB database.
+- **Backend**: Pydantic models for data validation and schema definition. Full CRUD API endpoints were created for Evaluation Reports, Lessons Learned, and Locations.
+- **Frontend**: Heavy use of React Hooks (, ). The application state is managed at the top-level  component. New features were built as large, self-contained components within .
+- **Styling**: Tailwind CSS for component styling. A React Context () was introduced to manage application-wide light and dark themes.
 </key_technical_concepts>
 
 <code_architecture>
-The application follows a simple frontend-backend structure. All frontend logic, components, and state management are contained within a single file, which communicates with a single backend API file.
+The application's architecture is a simple client-server model with a monolithic frontend and backend.
 
 
 
 - ****
-    - **Importance**: This file defines the entire backend API, including all data models (Pydantic schemas) and CRUD endpoints. It's the single source of truth for backend logic and database interaction.
-    - **Summary of Changes**: The file was significantly expanded to support new features.
-        - **Resource Management**: Added , , , and  Pydantic models. Implemented a full suite of CRUD endpoints () for creating, reading, updating, and deleting resources.
-        - **Evaluation Reports**: Added , , , and  Pydantic models, including nested models for key assessment areas. Implemented corresponding CRUD endpoints ().
+    - **Importance**: This file is the entire backend. It contains all FastAPI routes, Pydantic data models, and database logic for interacting with MongoDB. It is the single source of truth for the application's API.
+    - **Summary of Changes**: The file was significantly expanded to support new modules. New Pydantic models (, ) and corresponding sets of CRUD API endpoints (, ) were added. Existing models for Evaluation Reports were modified multiple times to accommodate changes in the rating system.
 
 - ****
-    - **Importance**: This is the monolithic heart of the frontend. It contains all React components, state management, API call logic, routing, and UI rendering for the entire application. All new features were implemented by adding large component functions directly into this file.
-    - **Summary of Changes**: This file underwent massive additions and refactoring.
-        - **Resource Management**: A complete  component was added, containing logic for fetching, displaying, filtering, and printing resources. A complex  component was created to handle adding/editing resources, including image uploads, a new dropdown for location, and phone number validation.
-        - **Load Coordinators Fix**: Implemented the  function within the  component, which fetches participants, filters them based on user criteria (Team Coordinator position and  status), and updates the exercise state.
-        - **Evaluation System**: Added  and a large  component. This involved adding new state management to , creating API service functions, and building a multi-section form with text areas, dropdowns, and image handling. The most recent edits focused on removing duplicated JSX blocks from this form to fix a UI bug.
+    - **Importance**: This monolithic file contains the entire React frontend application. All components, state management, API service calls, routing logic, and UI views are defined within this single file, making it the core of the user experience.
+    - **Summary of Changes**: This file underwent massive and continuous modifications.
+        - **Evaluation System**: The  was debugged and then heavily modified to support two different rating systems and color-coding schemes. An overall rating calculation algorithm was implemented.
+        - **Lessons Learned Module**: A large  component and a  view were created from scratch, including logic for state management, image handling, form validation, and print functionality.
+        - **Location Management**: A new  modal component was built, along with the logic to fetch and display locations. The participant and resource forms were refactored to consume this dynamic data.
+        - **UI & Theme**: The  component was refactored multiple times to replace the logo, move the settings button, and add a dropdown menu. Most recently, a  and  were added at the top level, and a  component was created to allow users to switch themes. The process of applying theme-aware styles to components has begun.
 </code_architecture>
 
 <pending_tasks>
-- Restart the frontend service to apply the code changes that removed the duplicated fields in the .
-- Verify through testing that the duplication issue in the Evaluation data input form is fully resolved and the form renders correctly with only unique fields.
+- Complete the implementation of the light/dark theme system by applying theme-aware styles to all remaining components in .
+- Thoroughly test the theme-switching functionality across the entire application to ensure all UI elements render correctly in both light and dark modes.
 </pending_tasks>
 
 <current_work>
-The immediate past work focused on resolving a user-reported bug where the newly created Evaluation Report data input form was displaying duplicated sections and fields. The previous engineer correctly identified that sections like Exercise Overview, Key Areas Assessment, and Summary and Findings were erroneously coded twice within the  component in .
+The immediate past work focused on initiating the development of a user-selectable light and dark theme for the application. The previous engineer laid the groundwork for this feature by implementing a theme management system using React's Context API.
 
-The engineer performed a series of  actions to remove the redundant JSX blocks from the file. After removing the duplicated sections, they proceeded to consolidate and enhance the remaining Key Areas Assessment section to ensure it was complete and consistently styled. The work concluded immediately after these file edits were successfully saved. The application's frontend has not yet been restarted to reflect these changes, and no testing has been performed to confirm the fix.
+The following steps were completed in :
+1.  **Theme Context Creation**: A  and a  component were created to manage and distribute the current theme (either 'light' or 'dark') and the function to toggle it () throughout the application.
+2.  **Provider Integration**: The main  component was wrapped with the  to make the theme state globally available.
+3.  **Settings Menu Update**: A new Theme Settings option was added to the General Settings dropdown menu. This option opens a modal for theme selection.
+4.  **Theme Settings Component**: A  modal component was created, which allows the user to select either the Light or Dark theme.
+5.  **Initial Application**: The engineer began applying the theme to core components. The  component and the main  were updated to use dynamic classes based on the current theme (e.g., , ).
+
+The work stopped after these initial files were modified. The theme has not been applied to the majority of the application's components, such as the various forms and management dashboards.
 </current_work>
 
 <optional_next_step>
-Restart the frontend server to apply the deduplication fixes and then verify that the Add Evaluation form renders correctly without any duplicated fields.
+Continue applying the theme colors and styles to the remaining components within , starting with the , to complete the light/dark theme implementation.
 </optional_next_step>

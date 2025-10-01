@@ -606,7 +606,7 @@
         -comment: "NEW TESTING REQUEST: Test navigation to Exercise Management Dashboard by clicking exercise cards from main dashboard. Verify URL navigation (#manage?exercise=<id>) works correctly and loads the management interface."
         -working: true
         -agent: "testing"
-        -comment: "✅ COMPREHENSIVE TESTING COMPLETED - Exercise Management Dashboard Navigation FULLY WORKING! VERIFIED: ✅ Successfully navigated to main dashboard at https://crisis-trainer.preview.emergentagent.com/#dashboard ✅ Found 5 exercise cards on dashboard with proper data-testid attributes ✅ Exercise card click navigation working perfectly - URL changes to #manage?exercise=<id> format ✅ Exercise Management Dashboard loads correctly with full interface ✅ Navigation flow: Main Dashboard → Click Exercise Card → Exercise Management Dashboard working seamlessly. The navigation implementation using window.location.href and hash-based routing is working correctly."
+        -comment: "✅ COMPREHENSIVE TESTING COMPLETED - Exercise Management Dashboard Navigation FULLY WORKING! VERIFIED: ✅ Successfully navigated to main dashboard at https://ex-trainer.preview.emergentagent.com/#dashboard ✅ Found 5 exercise cards on dashboard with proper data-testid attributes ✅ Exercise card click navigation working perfectly - URL changes to #manage?exercise=<id> format ✅ Exercise Management Dashboard loads correctly with full interface ✅ Navigation flow: Main Dashboard → Click Exercise Card → Exercise Management Dashboard working seamlessly. The navigation implementation using window.location.href and hash-based routing is working correctly."
 
   - task: "Exercise Management Dashboard Sidebar"
     implemented: true

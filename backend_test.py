@@ -15,7 +15,7 @@ import time
 import uuid
 
 # Get backend URL from frontend .env
-BACKEND_URL = "https://crisis-trainer.preview.emergentagent.com/api"
+BACKEND_URL = "https://ex-trainer.preview.emergentagent.com/api"
 
 def test_exercise_builder_api():
     """Test Exercise Builder API endpoints comprehensively"""

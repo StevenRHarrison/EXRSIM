@@ -8837,12 +8837,11 @@ const ExerciseManagementDashboard = ({
               .assessment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 10px 0; }
               .assessment-item { padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
               .rating { font-weight: bold; color: #333; }
-              .rating.excellent { color: #22c55e; }
-              .rating.satisfactory { color: #3b82f6; }
-              .rating.needs { color: #f59e0b; }
-              .rating.improvement { color: #f59e0b; }
-              .rating.not { color: #666; }
-              .rating.rated { color: #666; }
+              .rating.excellent { color: #3b82f6; }
+              .rating.above { color: #0ea5e9; }
+              .rating.average { color: #22c55e; }
+              .rating.below { color: #f59e0b; }
+              .rating.unacceptable { color: #ef4444; }
               .footer { 
                 position: fixed; 
                 bottom: 20px; 

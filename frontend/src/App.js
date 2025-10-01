@@ -9106,8 +9106,15 @@ const ExerciseManagementDashboard = ({
               >
                 <CardHeader>
                   <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle className="text-white text-lg">{report.report_title}</CardTitle>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <CardTitle className="text-white text-lg">{report.report_title}</CardTitle>
+                        {selectedEvaluationId === report.id && (
+                          <Badge variant="outline" className="border-orange-500 text-orange-400 bg-orange-500/10 text-xs">
+                            Selected for Print
+                          </Badge>
+                        )}
+                      </div>
                       <CardDescription className="text-gray-400">
                         By {report.evaluator_name} {report.evaluator_organization && `(${report.evaluator_organization})`} • {report.evaluation_date}
                       </CardDescription>

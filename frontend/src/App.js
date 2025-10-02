@@ -1439,34 +1439,21 @@ const LeafletMapping = ({ exerciseId }) => {
             }
           }, 100);
 
-          // Map click handler for placing objects (new workflow)
+          // Map click handler for placing objects (updated for new workflow)
           map.on('click', function(e) {
             console.log('🖱️ Map clicked at:', e.latlng);
-            console.log('🔍 Debug - isPlacingObject:', isPlacingObject, 'currentObjectType:', currentObjectType);
+            console.log('🔍 Debug - isPlacingObject:', window.mapDebug?.isPlacingObject);
+            console.log('🔍 Debug - currentObjectType:', window.mapDebug?.currentObjectType);
             
-            if (isPlacingObject && currentObjectType) {
-              console.log('🎯 Coordinates captured for', currentObjectType, ':', e.latlng);
+            if (window.mapDebug?.isPlacingObject && window.mapDebug?.currentObjectType) {
+              console.log('🎯 Capturing coordinates for', window.mapDebug.currentObjectType);
               
               const { lat, lng } = e.latlng;
-              
-              // Store clicked coordinates
-              setClickedCoordinates({ lat, lng });
-              
-              // Pre-fill form data with object type and default name
-              setFormData({
-                name: `New ${currentObjectType.charAt(0).toUpperCase() + currentObjectType.slice(1)}`,
-                description: '',
-                color: getDefaultColorForType(currentObjectType),
-                image: '',
-                type: currentObjectType
-              });
-              
-              // Open modal for user to enter details
-              setShowObjectForm(true);
-              
-              console.log('✅ Coordinates captured, opening form modal');
+              window.mapDebug.captureCoordinates(lat, lng);
+            } else {
+              console.log('❌ Not in placement mode or no object type selected');
             }
-          }, this);
+          });
 
           // Set up Leaflet.draw event handlers
           map.on(L.Draw.Event.CREATED, function (e) {

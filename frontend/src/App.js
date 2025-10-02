@@ -1049,6 +1049,7 @@ const ICSDashboard = ({ currentExercise }) => {
                   size="sm"
                   className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
                   onClick={() => {
+                    console.log('Quick Tools Mapping clicked - setting activeICSMenu to mapping');
                     setActiveICSMenu('mapping');
                   }}
                 >

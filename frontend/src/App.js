@@ -560,6 +560,9 @@ const PoliciesProceduresManager = ({ onClose }) => {
 
 const Navigation = ({ currentExercise = null }) => {
   const { theme } = useTheme();
+  
+  // Debug: Log the currentExercise
+  console.log('Navigation received currentExercise:', currentExercise);
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
   const [showLocationManager, setShowLocationManager] = useState(false);
   const [showThemeSettings, setShowThemeSettings] = useState(false);

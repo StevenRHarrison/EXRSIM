@@ -1337,9 +1337,6 @@ const LeafletMapping = ({ exerciseId }) => {
     });
     setShowObjectForm(false);
     setEditingObject(null);
-    setIsPlacingObject(false);
-    setCurrentObjectType(null);
-    setClickedCoordinates(null);
   };
 
   const resetModalForm = () => {

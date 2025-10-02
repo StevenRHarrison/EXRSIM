@@ -1206,10 +1206,34 @@ const LeafletMapping = ({ exerciseId }) => {
         setMapObjects(prev => prev.map(obj => obj.id === objectId ? updatedObject : obj));
         setEditingObject(null);
         setShowObjectForm(false);
+        setEditingInModal(false);
+        setShowHoverModal(false);
         resetForm();
+        console.log('✅ Object updated successfully');
       }
     } catch (error) {
       console.error('Error updating map object:', error);
+    }
+  };
+
+  const handleObjectDelete = async (objectId) => {
+    if (!window.confirm('Are you sure you want to delete this map object?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/map-objects/${objectId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setMapObjects(prev => prev.filter(obj => obj.id !== objectId));
+        setShowHoverModal(false);
+        setEditingInModal(false);
+        console.log('✅ Object deleted successfully');
+      }
+    } catch (error) {
+      console.error('Error deleting map object:', error);
     }
   };
 

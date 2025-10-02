@@ -1634,7 +1634,8 @@ const LeafletMapping = ({ exerciseId }) => {
       {/* Object form modal */}
       {showObjectForm && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center"
+          style={{ zIndex: 9999 }}
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               resetForm();
@@ -1642,7 +1643,8 @@ const LeafletMapping = ({ exerciseId }) => {
           }}
         >
           <div 
-            className={`${theme.colors.secondary} rounded-lg p-6 w-96 max-h-96 overflow-y-auto border ${theme.colors.border}`}
+            className={`bg-white dark:bg-gray-800 rounded-lg p-6 w-96 max-w-md mx-4 shadow-2xl border-2 border-blue-500`}
+            style={{ zIndex: 10000 }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-4">

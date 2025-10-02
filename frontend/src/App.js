@@ -584,13 +584,24 @@ const Navigation = ({ currentExercise = null }) => {
               />
             </div>
           </Link>
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-4">
             <Link 
               to="/builder" 
               className="text-orange-500 hover:text-orange-400 transition-colors font-medium"
             >
               Exercise
             </Link>
+            {currentExercise && (
+              <Button 
+                variant="outline"
+                size="sm"
+                className={`${theme.colors.textSecondary} border-gray-500/50 hover:border-orange-500/50 hover:text-orange-400 transition-colors max-w-xs truncate`}
+                onClick={() => window.location.href = `#exercise/${currentExercise.id}`}
+                title={currentExercise.exercise_name}
+              >
+                {currentExercise.exercise_name}
+              </Button>
+            )}
           </div>
         </div>
         

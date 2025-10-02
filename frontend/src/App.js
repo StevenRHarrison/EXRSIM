@@ -1395,55 +1395,69 @@ const ScenarioForm = ({ exerciseId, editingScenario, onBack, onSave }) => {
           </CardContent>
         </Card>
 
-        {/* Image Upload */}
+        {/* Scenario Image */}
         <Card className={`${theme.colors.secondary} ${theme.colors.border}`}>
           <CardHeader>
             <CardTitle className="text-orange-500">Scenario Image</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center space-x-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploading}
-                className="border-orange-500/50 text-orange-400 hover:bg-orange-500/10"
-              >
-                <Camera className="h-4 w-4 mr-2" />
-                {uploading ? 'Uploading...' : 'Upload Image'}
-              </Button>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={(e) => handleImageUpload(e.target.files[0])}
-                accept="image/*"
-                className="hidden"
-              />
-            </div>
-            
-            {imagePreview && (
-              <div className="mt-4">
-                <div className="w-full max-w-md h-48 rounded-lg overflow-hidden">
-                  <img 
-                    src={imagePreview} 
-                    alt="Scenario preview" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setImagePreview(null);
-                    setFormData(prev => ({ ...prev, scenario_image: null }));
-                  }}
-                  className="mt-2 text-red-400 hover:text-red-300"
-                >
-                  Remove Image
-                </Button>
+          <CardContent>
+            <div className="flex items-center space-x-6">
+              <div className={`w-32 h-32 rounded-lg ${theme.colors.quaternary} border-2 border-dashed ${theme.colors.border} flex items-center justify-center overflow-hidden`}>
+                {imagePreview ? (
+                  <img src={imagePreview} alt="Scenario" className="w-full h-full object-cover rounded-lg" />
+                ) : (
+                  <div className="text-center">
+                    <Camera className={`h-8 w-8 ${theme.colors.textMuted} mx-auto mb-2`} />
+                    <span className={`text-sm ${theme.colors.textMuted}`}>No image</span>
+                  </div>
+                )}
               </div>
-            )}
+              <div className="space-y-3">
+                <div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="scenario-image-upload"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => document.getElementById('scenario-image-upload').click()}
+                    className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10 mr-3"
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload Photo
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleCameraCapture}
+                    className="border-orange-500/50 text-orange-500 hover:bg-orange-500/10"
+                  >
+                    <Camera className="h-4 w-4 mr-2" />
+                    Take Photo
+                  </Button>
+                </div>
+                <p className={`text-sm ${theme.colors.textMuted}`}>Upload from file or capture with camera</p>
+                {imagePreview && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setImagePreview(null);
+                      setFormData(prev => ({ ...prev, scenario_image: null }));
+                    }}
+                    className="text-red-400 hover:text-red-300 block"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Remove Image
+                  </Button>
+                )}
+              </div>
+            </div>
           </CardContent>
         </Card>
 

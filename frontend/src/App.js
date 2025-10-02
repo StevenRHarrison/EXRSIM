@@ -1347,14 +1347,12 @@ const LeafletMapping = ({ exerciseId }) => {
           center={[39.8283, -98.5795]} // Center of USA
           zoom={4}
           style={{ height: '100%', width: '100%' }}
-          ref={(mapInstance) => {
-            if (mapInstance && mapInstance.getContainer && !mapReady) {
-              console.log('Map instance ready, setting up drawing controls');
-              mapRef.current = mapInstance;
-              // Delay to ensure map is fully rendered
-              setTimeout(() => {
-                setMapReady(true);
-              }, 1000);
+          whenReady={(mapInstance) => {
+            console.log('Map ready event fired');
+            if (mapInstance && mapInstance.target && !mapReady) {
+              mapRef.current = mapInstance.target;
+              setMapReady(true);
+              console.log('✅ Map initialized successfully');
             }
           }}
         >

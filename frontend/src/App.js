@@ -1250,6 +1250,65 @@ const LeafletMapping = ({ exerciseId }) => {
   const [isPlacingObject, setIsPlacingObject] = useState(false);
   const [pendingObjectData, setPendingObjectData] = useState(null);
 
+  // Debug state exposure for map click handler
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.mapDebug = {
+        isPlacingObject,
+        pendingObjectData,
+        createObject: (geoJSON, objectData) => {
+          // Create the object with the form data
+          handleObjectCreate(geoJSON, objectData.type);
+          
+          // Create and add layer to map immediately for visual feedback
+          if (mapRef.current && drawnItemsRef.current) {
+            const map = mapRef.current;
+            const editableLayers = drawnItemsRef.current;
+            
+            let layer;
+            const lat = geoJSON.geometry.coordinates[1];
+            const lng = geoJSON.geometry.coordinates[0];
+            
+            if (objectData.type === 'marker') {
+              layer = L.marker([lat, lng]);
+            } else if (objectData.type === 'polygon' || objectData.type === 'rectangle') {
+              const coords = geoJSON.geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
+              layer = L.polygon(coords, { 
+                color: objectData.color, 
+                fillColor: objectData.color, 
+                fillOpacity: 0.3 
+              });
+            } else if (objectData.type === 'line') {
+              const coords = geoJSON.geometry.coordinates.map(coord => [coord[1], coord[0]]);
+              layer = L.polyline(coords, { 
+                color: objectData.color, 
+                weight: 4 
+              });
+            }
+            
+            if (layer) {
+              editableLayers.addLayer(layer);
+              
+              // Add popup with object info
+              const popupContent = `
+                <div>
+                  <strong>${objectData.name}</strong><br>
+                  <small>${objectData.description || 'No description'}</small><br>
+                  <em>Type: ${objectData.type}</em>
+                </div>
+              `;
+              layer.bindPopup(popupContent).openPopup();
+            }
+          }
+          
+          // Reset placement mode
+          setIsPlacingObject(false);
+          setPendingObjectData(null);
+        }
+      };
+    }
+  }, [isPlacingObject, pendingObjectData, handleObjectCreate]);
+
   // Fix default marker icons for Leaflet
   useEffect(() => {
     delete L.Icon.Default.prototype._getIconUrl;

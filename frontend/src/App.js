@@ -1238,12 +1238,19 @@ const ScenarioForm = ({ exerciseId, editingScenario, onBack, onSave }) => {
                   value={formData.severity_level}
                   onChange={(e) => handleInputChange('severity_level', e.target.value)}
                   className={`${theme.colors.input} w-full`}
+                  style={{
+                    backgroundColor: formData.severity_level === 'Low' ? '#16a34a' :
+                                   formData.severity_level === 'Medium' ? '#eab308' :
+                                   formData.severity_level === 'High' ? '#ea580c' :
+                                   formData.severity_level === 'Critical' ? '#dc2626' : '',
+                    color: formData.severity_level ? 'white' : ''
+                  }}
                 >
                   <option value="">Select severity level</option>
-                  <option value="Low">Low</option>
-                  <option value="Medium">Medium</option>
-                  <option value="High">High</option>
-                  <option value="Critical">Critical</option>
+                  <option value="Low" style={{ backgroundColor: '#16a34a', color: 'white' }}>Low</option>
+                  <option value="Medium" style={{ backgroundColor: '#eab308', color: 'white' }}>Medium</option>
+                  <option value="High" style={{ backgroundColor: '#ea580c', color: 'white' }}>High</option>
+                  <option value="Critical" style={{ backgroundColor: '#dc2626', color: 'white' }}>Critical</option>
                 </select>
                 {errors.severity_level && (
                   <p className="text-red-400 text-sm mt-1">{errors.severity_level}</p>

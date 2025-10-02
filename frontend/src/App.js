@@ -1465,10 +1465,7 @@ const LeafletMapping = ({ exerciseId }) => {
   const drawnItemsRef = useRef(null);
   const [mapReady, setMapReady] = useState(false);
   const [drawingMode, setDrawingMode] = useState(null);
-  const [isPlacingObject, setIsPlacingObject] = useState(false);
   const [pendingObjectData, setPendingObjectData] = useState(null);
-  const [currentObjectType, setCurrentObjectType] = useState(null);
-  const [clickedCoordinates, setClickedCoordinates] = useState(null);
 
   // Fix default marker icons for Leaflet
   useEffect(() => {

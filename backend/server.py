@@ -1532,6 +1532,85 @@ def parse_scribe_data_from_mongo(data: dict) -> dict:
     
     return parsed_data
 
+# Scenario Model
+class Scenario(BaseModel):
+    id: Optional[str] = Field(default_factory=lambda: str(uuid.uuid4()))
+    exercise_id: str
+    scenario_name: str
+    scenario_type: str
+    severity_level: str
+    location: str
+    description: str
+    affected_population: Optional[str] = None
+    resources_required: Optional[str] = None
+    timeline: Optional[str] = None
+    status: str = "Active"
+    scenario_image: Optional[str] = None
+    created_at: Optional[datetime] = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: Optional[datetime] = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+# Scenario API Endpoints
+@app.post("/api/scenarios", response_model=Scenario)
+async def create_scenario(scenario: Scenario):
+    scenario_dict = scenario.dict()
+    scenario_dict = prepare_for_mongo(scenario_dict)
+    await db.scenarios.insert_one(scenario_dict)
+    return scenario
+
+@app.get("/api/scenarios", response_model=List[Scenario])
+async def get_scenarios(exercise_id: str):
+    scenarios = await db.scenarios.find({"exercise_id": exercise_id}).to_list(length=None)
+    return [Scenario(**parse_from_mongo(scenario)) for scenario in scenarios]
+
+@app.get("/api/scenarios/{scenario_id}", response_model=Scenario)
+async def get_scenario(scenario_id: str):
+    scenario = await db.scenarios.find_one({"id": scenario_id})
+    if not scenario:
+        raise HTTPException(status_code=404, detail="Scenario not found")
+    return Scenario(**parse_from_mongo(scenario))
+
+@app.put("/api/scenarios/{scenario_id}", response_model=Scenario)
+async def update_scenario(scenario_id: str, scenario: Scenario):
+    scenario_dict = scenario.dict()
+    scenario_dict["updated_at"] = datetime.now(timezone.utc)
+    scenario_dict = prepare_for_mongo(scenario_dict)
+    
+    await db.scenarios.update_one(
+        {"id": scenario_id}, 
+        {"$set": scenario_dict}
+    )
+    return scenario
+
+@app.delete("/api/scenarios/{scenario_id}")
+async def delete_scenario(scenario_id: str):
+    result = await db.scenarios.delete_one({"id": scenario_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Scenario not found")
+    return {"message": "Scenario deleted successfully"}
+
+# File Upload Endpoint
+@app.post("/api/upload")
+async def upload_file(file: UploadFile = File(...)):
+    import os
+    import shutil
+    from pathlib import Path
+    
+    # Create uploads directory if it doesn't exist
+    upload_dir = Path("/app/uploads")
+    upload_dir.mkdir(exist_ok=True)
+    
+    # Generate unique filename
+    file_extension = file.filename.split(".")[-1]
+    unique_filename = f"{str(uuid.uuid4())}.{file_extension}"
+    file_path = upload_dir / unique_filename
+    
+    # Save file
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    
+    # Return the file path (relative to serve via static files)
+    return {"file_path": f"/uploads/{unique_filename}"}
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()

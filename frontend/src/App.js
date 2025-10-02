@@ -595,11 +595,11 @@ const Navigation = ({ currentExercise = null }) => {
               <Button 
                 variant="outline"
                 size="sm"
-                className={`${theme.colors.textSecondary} border-gray-500/50 hover:border-orange-500/50 hover:text-orange-400 transition-colors max-w-xs truncate`}
-                onClick={() => window.location.href = `#exercise/${currentExercise.id}`}
+                className={`${theme.colors.textSecondary} border-gray-500/50 hover:border-orange-500/50 hover:text-orange-400 transition-colors`}
+                onClick={() => window.location.href = `#manage?exercise=${currentExercise.id}`}
                 title={currentExercise.exercise_name}
               >
-                {currentExercise.exercise_name}
+                ICS
               </Button>
             )}
           </div>

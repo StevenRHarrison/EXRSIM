@@ -5,14 +5,12 @@ import './App.css';
 
 // Leaflet imports
 import { MapContainer as LeafletMapContainer, TileLayer, LayersControl, FeatureGroup, Marker, Popup, Polygon, Polyline, Rectangle } from 'react-leaflet';
+import { EditControl } from 'react-leaflet-draw';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-// Import leaflet-draw plugin and styles
-import 'leaflet-draw';
+// Import leaflet-draw styles
 import 'leaflet-draw/dist/leaflet.draw.css';
-
-// Leaflet-draw plugin will be initialized when map is ready
 
 // Import shadcn components
 import { Button } from './components/ui/button';

@@ -3,6 +3,13 @@ import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-do
 import axios from 'axios';
 import './App.css';
 
+// Leaflet imports
+import { MapContainer as LeafletMapContainer, TileLayer, LayersControl, FeatureGroup } from 'react-leaflet';
+import { EditControl } from "react-leaflet-draw";
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-draw/dist/leaflet.draw.css';
+
 // Import shadcn components
 import { Button } from './components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';

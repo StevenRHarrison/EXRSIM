@@ -1616,7 +1616,6 @@ const LeafletMapping = ({ exerciseId }) => {
                 console.log('🎯 Marker creation mode activated');
                 setCurrentObjectType('marker');
                 setIsPlacingObject(true);
-                alert('MARKER MODE: Click anywhere on the map to place a marker, then fill in the details.');
               }}
               className="bg-red-600 hover:bg-red-700 text-white py-2 px-3 rounded text-sm font-semibold flex items-center justify-center"
             >
@@ -1628,7 +1627,6 @@ const LeafletMapping = ({ exerciseId }) => {
                 console.log('🎯 Line creation mode activated');
                 setCurrentObjectType('line');
                 setIsPlacingObject(true);
-                alert('LINE MODE: Click on the map to place a line, then fill in the details.');
               }}
               className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm font-semibold flex items-center justify-center"
             >
@@ -1640,7 +1638,6 @@ const LeafletMapping = ({ exerciseId }) => {
                 console.log('🎯 Polygon creation mode activated');
                 setCurrentObjectType('polygon');
                 setIsPlacingObject(true);
-                alert('POLYGON MODE: Click on the map to place a polygon, then fill in the details.');
               }}
               className="bg-orange-600 hover:bg-orange-700 text-white py-2 px-3 rounded text-sm font-semibold flex items-center justify-center"
             >
@@ -1652,7 +1649,6 @@ const LeafletMapping = ({ exerciseId }) => {
                 console.log('🎯 Rectangle creation mode activated');
                 setCurrentObjectType('rectangle');
                 setIsPlacingObject(true);
-                alert('RECTANGLE MODE: Click on the map to place a rectangle, then fill in the details.');
               }}
               className="bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded text-sm font-semibold flex items-center justify-center"
             >

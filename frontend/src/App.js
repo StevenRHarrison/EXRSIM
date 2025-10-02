@@ -571,7 +571,7 @@ const ICSDashboard = ({ currentExercise }) => {
   const { theme } = useTheme();
   const [activeICSMenu, setActiveICSMenu] = useState('dashboard');
   const [operationsExpanded, setOperationsExpanded] = useState(false);
-  const [planningExpanded, setPlanningExpanded] = useState(false);
+  const [planningExpanded, setPlanningExpanded] = useState(true);
   const [logisticsExpanded, setLogisticsExpanded] = useState(false);
   const [finAdminExpanded, setFinAdminExpanded] = useState(false);
 

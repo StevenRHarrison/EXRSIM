@@ -1217,6 +1217,16 @@ const LeafletMapping = ({ exerciseId }) => {
     }
   };
 
+  const getDefaultColorForType = (type) => {
+    switch (type) {
+      case 'marker': return '#ff0000'; // Red for markers
+      case 'line': return '#0000ff'; // Blue for lines  
+      case 'polygon': return '#ff8800'; // Orange for polygons
+      case 'rectangle': return '#00ff00'; // Green for rectangles
+      default: return '#3388ff';
+    }
+  };
+
   const resetForm = () => {
     setFormData({
       name: '',

@@ -16930,6 +16930,27 @@ function AppContent() {
       window.removeEventListener('popstate', handleHashChange);
     };
   }, []);
+  
+  // Load current exercise when managingExerciseId changes
+  useEffect(() => {
+    if (managingExerciseId) {
+      loadCurrentExercise(managingExerciseId);
+    } else {
+      setCurrentExercise(null);
+    }
+  }, [managingExerciseId]);
+
+  const loadCurrentExercise = async (exerciseId) => {
+    try {
+      const response = await axios.get(`${API}/exercise-builder/${exerciseId}`);
+      setCurrentExercise(response.data);
+      console.log('✅ Current exercise loaded for management:', response.data);
+    } catch (error) {
+      console.error('Error loading current exercise:', error);
+      setCurrentExercise(null);
+    }
+  };
+  
   // Load scribe templates when exercise changes
   useEffect(() => {
     if (managingExerciseId && activeMenu === 'manage') {

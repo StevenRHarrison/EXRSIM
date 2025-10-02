@@ -64,6 +64,12 @@ def string_to_time(time_str: str) -> Optional[time]:
 # Create the main app without a prefix
 app = FastAPI()
 
+# Create uploads directory and serve static files
+from pathlib import Path
+uploads_dir = Path("/app/uploads")
+uploads_dir.mkdir(exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
+
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 

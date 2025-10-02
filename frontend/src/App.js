@@ -1252,6 +1252,39 @@ const LeafletMapping = ({ exerciseId }) => {
           map.addLayer(drawnFeatureGroup);
           setDrawnItems(drawnFeatureGroup);
 
+          // Add persistent CSS for draw controls
+          const style = document.createElement('style');
+          style.textContent = `
+            .leaflet-draw {
+              display: block !important;
+              visibility: visible !important;
+              opacity: 1 !important;
+              z-index: 2000 !important;
+            }
+            .leaflet-draw-toolbar {
+              display: block !important;
+              visibility: visible !important;
+            }
+            .leaflet-draw-toolbar a {
+              display: inline-block !important;
+              visibility: visible !important;
+              opacity: 1 !important;
+              background-color: white !important;
+              border: 3px solid #2563eb !important;
+              border-radius: 6px !important;
+              box-shadow: 0 4px 8px rgba(0,0,0,0.25) !important;
+              margin: 4px !important;
+              padding: 8px !important;
+              min-width: 40px !important;
+              min-height: 40px !important;
+            }
+            .leaflet-draw-toolbar a:hover {
+              background-color: #2563eb !important;
+              transform: scale(1.1) !important;
+            }
+          `;
+          document.head.appendChild(style);
+
           // Initialize the draw control with enhanced visibility
           const drawControl = new L.Control.Draw({
             position: 'topleft',

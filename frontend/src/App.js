@@ -1174,7 +1174,7 @@ const ScenarioForm = ({ exerciseId, editingScenario, onBack, onSave }) => {
 
               <div>
                 <Label htmlFor="scenario_type" className={theme.colors.textPrimary}>
-                  Scenario Type *
+                  Disaster Type *
                 </Label>
                 <select
                   id="scenario_type"
@@ -1182,17 +1182,45 @@ const ScenarioForm = ({ exerciseId, editingScenario, onBack, onSave }) => {
                   onChange={(e) => handleInputChange('scenario_type', e.target.value)}
                   className={`${theme.colors.input} w-full`}
                 >
-                  <option value="">Select scenario type</option>
-                  <option value="Fire Emergency">Fire Emergency</option>
-                  <option value="Natural Disaster">Natural Disaster</option>
-                  <option value="Medical Emergency">Medical Emergency</option>
-                  <option value="Security Incident">Security Incident</option>
-                  <option value="Chemical Spill">Chemical Spill</option>
-                  <option value="Evacuation">Evacuation</option>
-                  <option value="Search & Rescue">Search & Rescue</option>
-                  <option value="Mass Casualty">Mass Casualty</option>
-                  <option value="Infrastructure Failure">Infrastructure Failure</option>
-                  <option value="Other">Other</option>
+                  <option value="">Select disaster type</option>
+                  <optgroup label="MANMADE DISASTERS" className="font-semibold text-orange-400">
+                    <option value="Terrorism">Terrorism</option>
+                    <option value="Cyber Attack">Cyber Attack</option>
+                    <option value="Industrial Accident">Industrial Accident</option>
+                    <option value="Chemical Spill">Chemical Spill</option>
+                    <option value="Nuclear Accident">Nuclear Accident</option>
+                    <option value="Transportation Accident">Transportation Accident</option>
+                    <option value="Building Collapse">Building Collapse</option>
+                    <option value="Fire (Structural)">Fire (Structural)</option>
+                    <option value="Explosion">Explosion</option>
+                    <option value="Hazardous Material Release">Hazardous Material Release</option>
+                    <option value="Infrastructure Failure">Infrastructure Failure</option>
+                    <option value="Mass Shooting">Mass Shooting</option>
+                    <option value="Civil Unrest">Civil Unrest</option>
+                    <option value="Supply Chain Disruption">Supply Chain Disruption</option>
+                    <option value="Economic Crisis">Economic Crisis</option>
+                    <option value="Pandemic (Human-caused)">Pandemic (Human-caused)</option>
+                  </optgroup>
+                  <optgroup label="NATURAL DISASTERS" className="font-semibold text-green-400">
+                    <option value="Earthquake">Earthquake</option>
+                    <option value="Flood">Flood</option>
+                    <option value="Hurricane/Typhoon">Hurricane/Typhoon</option>
+                    <option value="Tornado">Tornado</option>
+                    <option value="Wildfire">Wildfire</option>
+                    <option value="Drought">Drought</option>
+                    <option value="Blizzard/Ice Storm">Blizzard/Ice Storm</option>
+                    <option value="Heatwave">Heatwave</option>
+                    <option value="Thunderstorm/Hail">Thunderstorm/Hail</option>
+                    <option value="Landslide">Landslide</option>
+                    <option value="Tsunami">Tsunami</option>
+                    <option value="Volcanic Eruption">Volcanic Eruption</option>
+                    <option value="Pandemic (Natural)">Pandemic (Natural)</option>
+                    <option value="Disease Outbreak">Disease Outbreak</option>
+                    <option value="Insect Infestation">Insect Infestation</option>
+                    <option value="Extreme Cold">Extreme Cold</option>
+                    <option value="Coastal Erosion">Coastal Erosion</option>
+                    <option value="Sinkhole">Sinkhole</option>
+                  </optgroup>
                 </select>
                 {errors.scenario_type && (
                   <p className="text-red-400 text-sm mt-1">{errors.scenario_type}</p>

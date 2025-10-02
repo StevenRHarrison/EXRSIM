@@ -1258,25 +1258,53 @@ const LeafletMapping = ({ exerciseId }) => {
     }]);
   };
 
-  const handleDrawEdited = (e) => {
+  const handleDrawEdited = async (e) => {
     const { layers } = e;
     console.log('✏️ Draw edited:', layers.getLayers().length, 'layers');
     
-    layers.eachLayer((layer) => {
+    layers.eachLayer(async (layer) => {
       const geoJson = layer.toGeoJSON();
       console.log('🔄 Edited layer:', geoJson);
-      // TODO: Update backend with edited geometry
+      
+      // Find matching object by coordinates or layer ID
+      const matchingObject = mapObjects.find(obj => {
+        if (!obj.geometry) return false;
+        
+        // Simple coordinate matching for update identification
+        if (obj.type === 'marker' && geoJson.geometry.type === 'Point') {
+          const [objLng, objLat] = obj.geometry.coordinates;
+          const [newLng, newLat] = geoJson.geometry.coordinates;
+          return Math.abs(objLat - newLat) < 0.001 && Math.abs(objLng - newLng) < 0.001;
+        }
+        
+        return JSON.stringify(obj.geometry) === JSON.stringify(geoJson.geometry);
+      });
+      
+      if (matchingObject) {
+        await handleObjectUpdate(matchingObject.id, {
+          geometry: geoJson.geometry
+        });
+      }
     });
   };
 
-  const handleDrawDeleted = (e) => {
+  const handleDrawDeleted = async (e) => {
     const { layers } = e;
     console.log('🗑️ Draw deleted:', layers.getLayers().length, 'layers');
     
-    layers.eachLayer((layer) => {
+    layers.eachLayer(async (layer) => {
       const geoJson = layer.toGeoJSON();
       console.log('❌ Deleted layer:', geoJson);
-      // TODO: Delete from backend
+      
+      // Find matching object by coordinates
+      const matchingObject = mapObjects.find(obj => {
+        if (!obj.geometry) return false;
+        return JSON.stringify(obj.geometry) === JSON.stringify(geoJson.geometry);
+      });
+      
+      if (matchingObject) {
+        await handleObjectDelete(matchingObject.id);
+      }
     });
   };
 

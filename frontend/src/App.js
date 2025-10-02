@@ -1388,12 +1388,122 @@ const LeafletMapping = ({ exerciseId }) => {
             }
           }, 100);
 
-          // Set up event handlers
+          // Map click handler for placing objects
+          map.on('click', function(e) {
+            console.log('🖱️ Map clicked at:', e.latlng);
+            
+            if (isPlacingObject && pendingObjectData) {
+              console.log('🎯 Placing object:', pendingObjectData);
+              
+              const { lat, lng } = e.latlng;
+              
+              // Create GeoJSON based on object type
+              let geoJSON;
+              if (pendingObjectData.type === 'marker') {
+                geoJSON = {
+                  type: 'Feature',
+                  geometry: {
+                    type: 'Point',
+                    coordinates: [lng, lat]
+                  }
+                };
+              } else if (pendingObjectData.type === 'polygon') {
+                // Create a small square polygon around the clicked point
+                const offset = 0.01; // Small offset for polygon
+                geoJSON = {
+                  type: 'Feature',
+                  geometry: {
+                    type: 'Polygon',
+                    coordinates: [[
+                      [lng - offset, lat - offset],
+                      [lng + offset, lat - offset], 
+                      [lng + offset, lat + offset],
+                      [lng - offset, lat + offset],
+                      [lng - offset, lat - offset]
+                    ]]
+                  }
+                };
+              } else if (pendingObjectData.type === 'line') {
+                // Create a small line from the clicked point
+                const offset = 0.005;
+                geoJSON = {
+                  type: 'Feature',
+                  geometry: {
+                    type: 'LineString',
+                    coordinates: [
+                      [lng - offset, lat],
+                      [lng + offset, lat]
+                    ]
+                  }
+                };
+              } else if (pendingObjectData.type === 'rectangle') {
+                // Create a rectangle around the clicked point
+                const offset = 0.008;
+                geoJSON = {
+                  type: 'Feature',
+                  geometry: {
+                    type: 'Polygon',
+                    coordinates: [[
+                      [lng - offset, lat - offset],
+                      [lng + offset, lat - offset],
+                      [lng + offset, lat + offset], 
+                      [lng - offset, lat + offset],
+                      [lng - offset, lat - offset]
+                    ]]
+                  }
+                };
+              }
+              
+              // Create the object with the form data
+              handleObjectCreate(geoJSON, pendingObjectData.type);
+              
+              // Create and add layer to map immediately for visual feedback
+              let layer;
+              if (pendingObjectData.type === 'marker') {
+                layer = L.marker([lat, lng]);
+              } else if (pendingObjectData.type === 'polygon' || pendingObjectData.type === 'rectangle') {
+                const coords = geoJSON.geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
+                layer = L.polygon(coords, { 
+                  color: pendingObjectData.color, 
+                  fillColor: pendingObjectData.color, 
+                  fillOpacity: 0.3 
+                });
+              } else if (pendingObjectData.type === 'line') {
+                const coords = geoJSON.geometry.coordinates.map(coord => [coord[1], coord[0]]);
+                layer = L.polyline(coords, { 
+                  color: pendingObjectData.color, 
+                  weight: 4 
+                });
+              }
+              
+              if (layer) {
+                editableLayers.addLayer(layer);
+                
+                // Add popup with object info
+                const popupContent = `
+                  <div>
+                    <strong>${pendingObjectData.name}</strong><br>
+                    <small>${pendingObjectData.description || 'No description'}</small><br>
+                    <em>Type: ${pendingObjectData.type}</em>
+                  </div>
+                `;
+                layer.bindPopup(popupContent).openPopup();
+              }
+              
+              // Reset placement mode
+              setIsPlacingObject(false);
+              setPendingObjectData(null);
+              
+              console.log('✅ Object placed successfully!');
+            }
+          });
+
+          // Set up Leaflet.draw event handlers
           map.on(L.Draw.Event.CREATED, function (e) {
             const type = e.layerType;
             const layer = e.layer;
             
-            console.log('🎯 New shape created:', type);
+            console.log('🎯 New shape created via drawing tool:', type);
             
             // Add layer to the FeatureGroup
             editableLayers.addLayer(layer);
@@ -1402,7 +1512,7 @@ const LeafletMapping = ({ exerciseId }) => {
             const geoJSON = layer.toGeoJSON();
             const objectType = type === 'polyline' ? 'line' : type;
             
-            console.log('💾 Saving to backend:', objectType);
+            console.log('💾 Saving drawn object to backend:', objectType);
             handleObjectCreate(geoJSON, objectType);
             
             // Add popup to layer
@@ -1422,7 +1532,6 @@ const LeafletMapping = ({ exerciseId }) => {
             layers.eachLayer(function (layer) {
               const geoJSON = layer.toGeoJSON();
               console.log('Updated layer:', geoJSON);
-              // Handle updates here if needed
             });
           });
 
@@ -1432,7 +1541,6 @@ const LeafletMapping = ({ exerciseId }) => {
             
             layers.eachLayer(function (layer) {
               console.log('Deleted layer:', layer);
-              // Handle deletion from backend here if needed
             });
           });
 

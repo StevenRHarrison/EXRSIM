@@ -1229,32 +1229,42 @@ const LeafletMapping = ({ exerciseId }) => {
       exercise_id: exerciseId,
       type: layerType === 'polyline' ? 'line' : layerType,
       name: `New ${layerType}`,
-      description: '',
+      description: 'Created via drawing tools',
       color: '#3388ff',
       geometry: geoJson.geometry
     };
     
-    // Save to backend
+    console.log('💾 Saving drawn object to backend:', objectData);
+    
+    // Save to backend using existing handler
     handleObjectCreate(geoJson, layerType === 'polyline' ? 'line' : layerType);
+    
+    // Add to map objects list for immediate UI update
+    setMapObjects(prev => [...prev, {
+      id: Date.now().toString(), // Temporary ID until backend response
+      ...objectData
+    }]);
   };
 
   const handleDrawEdited = (e) => {
     const { layers } = e;
-    console.log('✏️ Draw edited:', layers);
+    console.log('✏️ Draw edited:', layers.getLayers().length, 'layers');
     
     layers.eachLayer((layer) => {
-      // Handle layer editing - would need to match with existing objects
-      console.log('Edited layer:', layer.toGeoJSON());
+      const geoJson = layer.toGeoJSON();
+      console.log('🔄 Edited layer:', geoJson);
+      // TODO: Update backend with edited geometry
     });
   };
 
   const handleDrawDeleted = (e) => {
     const { layers } = e;
-    console.log('🗑️ Draw deleted:', layers);
+    console.log('🗑️ Draw deleted:', layers.getLayers().length, 'layers');
     
     layers.eachLayer((layer) => {
-      // Handle layer deletion - would need to match with existing objects
-      console.log('Deleted layer:', layer.toGeoJSON());
+      const geoJson = layer.toGeoJSON();
+      console.log('❌ Deleted layer:', geoJson);
+      // TODO: Delete from backend
     });
   };
 

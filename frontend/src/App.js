@@ -1614,7 +1614,11 @@ const LeafletMapping = ({ exerciseId }) => {
         <LeafletMapContainer
           center={[39.8283, -98.5795]} // Center of USA
           zoom={4}
-          style={{ height: '100%', width: '100%' }}
+          style={{ 
+            height: '100%', 
+            width: '100%', 
+            cursor: isPlacingObject ? 'crosshair' : 'grab'
+          }}
           whenReady={(mapInstance) => {
             console.log('Map ready event fired');
             if (mapInstance && mapInstance.target && !mapReady) {

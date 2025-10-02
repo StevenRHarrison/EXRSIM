@@ -1775,6 +1775,34 @@ const LeafletMapping = ({ exerciseId }) => {
                 console.warn('Error rendering polyline:', obj, error);
                 return null;
               }
+            } else if (obj.type === 'rectangle' && obj.geometry?.coordinates) {
+              try {
+                const coords = obj.geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
+                // For rectangle, we need to extract the bounds
+                const bounds = coords.reduce((acc, coord) => {
+                  return [
+                    [Math.min(acc[0][0], coord[0]), Math.min(acc[0][1], coord[1])], // SW corner
+                    [Math.max(acc[1][0], coord[0]), Math.max(acc[1][1], coord[1])]  // NE corner
+                  ];
+                }, [[coords[0][0], coords[0][1]], [coords[0][0], coords[0][1]]]);
+                
+                return (
+                  <Rectangle
+                    key={obj.id}
+                    bounds={bounds}
+                    color={obj.color || '#3388ff'}
+                    fillColor={obj.color || '#3388ff'}
+                    fillOpacity={0.3}
+                    eventHandlers={{
+                      mouseover: (e) => handleObjectMouseEnter(obj, e.originalEvent),
+                      mouseout: handleObjectMouseLeave,
+                    }}
+                  />
+                );
+              } catch (error) {
+                console.warn('Error rendering rectangle:', obj, error);
+                return null;
+              }
             }
             return null;
           }).filter(Boolean)} {/* Filter out null values */}

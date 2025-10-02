@@ -734,14 +734,14 @@ const ICSDashboard = ({ currentExercise }) => {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col min-h-screen">
+        <div className="flex-1 flex flex-col h-screen">
           {/* Main Content */}
           <main className="flex-1 overflow-auto">
             {renderICSContent()}
           </main>
 
-          {/* Quick Actions Bar */}
-          <div className={`${theme.colors.secondary} border-t ${theme.colors.border} p-4`}>
+          {/* Quick Actions Bar - Fixed at bottom */}
+          <div className={`${theme.colors.secondary} border-t ${theme.colors.border} p-4 flex-shrink-0`}>
             <div className="flex items-center justify-between">
               <h3 className={`text-sm font-semibold ${theme.colors.textPrimary}`}>Quick Actions</h3>
               <div className="flex items-center space-x-3">

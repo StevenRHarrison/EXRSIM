@@ -1361,7 +1361,7 @@ const LeafletMapping = ({ exerciseId }) => {
 
   // Load existing map objects onto the map
   useEffect(() => {
-    if (map && drawnItems && mapObjects.length > 0) {
+    if (mapReady && mapRef.current && drawnItems && mapObjects.length > 0) {
       // Clear existing layers
       drawnItems.clearLayers();
       
@@ -1416,7 +1416,7 @@ const LeafletMapping = ({ exerciseId }) => {
         }
       });
     }
-  }, [map, drawnItems, mapObjects]);
+  }, [mapReady, drawnItems, mapObjects]);
 
   const MapContainerComponent = () => {
     return (

@@ -759,7 +759,7 @@ const ICSDashboard = ({ currentExercise }) => {
           </div>
         </div>
       </div>
-    </div>
+    </React.Fragment>
   );
 };
 

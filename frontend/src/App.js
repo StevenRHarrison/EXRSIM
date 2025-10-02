@@ -1300,7 +1300,12 @@ const LeafletMapping = ({ exerciseId }) => {
             }
           });
 
-          map.addControl(drawControl);
+          try {
+            map.addControl(drawControl);
+            console.log('Draw control successfully added to map');
+          } catch (error) {
+            console.error('Error adding draw control:', error);
+          }
 
           // Apply enhanced styling to make drawing controls more prominent
           setTimeout(() => {

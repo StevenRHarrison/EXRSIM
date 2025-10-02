@@ -1359,7 +1359,30 @@ const LeafletMapping = ({ exerciseId }) => {
                 });
               });
             } else {
-              console.log('Draw control container not found');
+              console.log('Draw control container not found, retrying...');
+              // Keep trying to find and style the draw controls
+              setTimeout(() => {
+                const retryDrawControl = document.querySelector('.leaflet-draw');
+                if (retryDrawControl) {
+                  console.log('Found draw control on retry, applying styling');
+                  retryDrawControl.style.zIndex = '2000';
+                  retryDrawControl.style.position = 'relative';
+                  
+                  const retryButtons = retryDrawControl.querySelectorAll('.leaflet-draw-toolbar a');
+                  retryButtons.forEach((button) => {
+                    button.style.backgroundColor = '#ffffff';
+                    button.style.border = '3px solid #2563eb';
+                    button.style.borderRadius = '6px';
+                    button.style.boxShadow = '0 4px 8px rgba(0,0,0,0.25)';
+                    button.style.margin = '4px';
+                    button.style.padding = '8px';
+                    button.style.minWidth = '40px';
+                    button.style.minHeight = '40px';
+                    button.style.display = 'inline-block !important';
+                    button.style.visibility = 'visible !important';
+                  });
+                }
+              }, 1000);
             }
           }, 500);
 

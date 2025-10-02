@@ -1538,10 +1538,13 @@ const LeafletMapping = ({ exerciseId }) => {
         <MapContainerComponent />
         
         {/* Drawing Tools Status */}
-        <div className="absolute top-4 right-4 bg-white rounded shadow-lg p-3">
+        <div className="absolute top-4 right-4 bg-white rounded shadow-lg p-3 border border-blue-300">
           <div className="text-center">
-            <p className="text-sm font-semibold text-gray-700">Leaflet Draw Tools</p>
-            <p className="text-xs text-gray-500 mt-1">Tools should appear<br/>below zoom controls (+/-)</p>
+            <p className="text-sm font-bold text-blue-700">🎯 Leaflet Draw Active</p>
+            <p className="text-xs text-gray-600 mt-1">Drawing toolbar loading...<br/>Should appear below zoom (+/-)</p>
+            {mapReady && (
+              <p className="text-xs text-green-600 mt-1">✅ Map Ready</p>
+            )}
           </div>
         </div>
       </div>

@@ -1326,6 +1326,32 @@ const LeafletMapping = ({ exerciseId }) => {
     }
   }, [map, formData.color]);
 
+  // Add global functions for popup buttons
+  useEffect(() => {
+    window.editObject = (objectId) => {
+      const obj = mapObjects.find(o => o.id === objectId);
+      if (obj) {
+        setEditingObject(obj);
+        setFormData({
+          name: obj.name,
+          description: obj.description,
+          color: obj.color,
+          image: obj.image || ''
+        });
+        setShowObjectForm(true);
+      }
+    };
+
+    window.deleteObject = (objectId) => {
+      handleObjectDelete(objectId);
+    };
+
+    return () => {
+      delete window.editObject;
+      delete window.deleteObject;
+    };
+  }, [mapObjects]);
+
   // Load existing map objects onto the map
   useEffect(() => {
     if (map && drawnItems && mapObjects.length > 0) {

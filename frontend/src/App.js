@@ -1379,7 +1379,7 @@ const LeafletMapping = ({ exerciseId }) => {
   };
 
   const handleObjectMouseEnter = (obj, event) => {
-    if (editingInModal) return; // Don't show hover modal while editing
+    if (editingInModal || showHoverModal) return; // Prevent re-triggering
     
     setHoveredObject(obj);
     setModalFormData({
@@ -1390,19 +1390,23 @@ const LeafletMapping = ({ exerciseId }) => {
     });
     
     // Position modal near mouse cursor
-    const rect = event.target.getBoundingClientRect();
-    setHoverModalPosition({
-      x: rect.left + window.scrollX + 20,
-      y: rect.top + window.scrollY
-    });
+    if (event?.target?.getBoundingClientRect) {
+      const rect = event.target.getBoundingClientRect();
+      setHoverModalPosition({
+        x: rect.left + window.scrollX + 20,
+        y: rect.top + window.scrollY
+      });
+    }
     
     setShowHoverModal(true);
   };
 
   const handleObjectMouseLeave = () => {
     if (!editingInModal) {
-      setShowHoverModal(false);
-      setHoveredObject(null);
+      setTimeout(() => {
+        setShowHoverModal(false);
+        setHoveredObject(null);
+      }, 100); // Small delay to prevent flicker
     }
   };
 

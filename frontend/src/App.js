@@ -1661,46 +1661,46 @@ const LeafletMapping = ({ exerciseId }) => {
             
             <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
               <div>
-                <label className={`block text-sm ${theme.colors.textMuted} mb-1`}>Name</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className={`w-full p-2 rounded border ${theme.colors.border} ${theme.colors.tertiary} ${theme.colors.textPrimary}`}
+                  className="w-full p-3 rounded border-2 border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="Enter object name"
                   autoFocus
                 />
               </div>
 
               <div>
-                <label className={`block text-sm ${theme.colors.textMuted} mb-1`}>Description</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  className={`w-full p-2 rounded border ${theme.colors.border} ${theme.colors.tertiary} ${theme.colors.textPrimary}`}
+                  className="w-full p-3 rounded border-2 border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   rows={3}
                   placeholder="Enter description"
                 />
               </div>
 
               <div>
-                <label className={`block text-sm ${theme.colors.textMuted} mb-1`}>Color</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Color</label>
                 <input
                   type="color"
                   value={formData.color}
                   onChange={(e) => setFormData(prev => ({ ...prev, color: e.target.value }))}
-                  className="w-full h-10 rounded border border-gray-300"
+                  className="w-full h-12 rounded border-2 border-gray-300 focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className={`block text-sm ${theme.colors.textMuted} mb-1`}>Image (Base64)</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Image (Base64)</label>
                 <textarea
                   value={formData.image}
                   onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                  className={`w-full p-2 rounded border ${theme.colors.border} ${theme.colors.tertiary} ${theme.colors.textPrimary}`}
+                  className="w-full p-3 rounded border-2 border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   rows={2}
-                  placeholder="Paste base64 image data"
+                  placeholder="Paste base64 image data (optional)"
                 />
               </div>
 

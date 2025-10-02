@@ -1905,9 +1905,16 @@ const LeafletMapping = ({ exerciseId }) => {
             }}
           >
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {editingObject ? 'Edit Map Object' : 'Add Map Object'}
-              </h3>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  {editingObject ? 'Edit Map Object' : 'Add Map Object'}
+                </h3>
+                {clickedCoordinates && (
+                  <p className="text-sm text-green-600 mt-1">
+                    📍 Location: {clickedCoordinates.lat.toFixed(6)}, {clickedCoordinates.lng.toFixed(6)}
+                  </p>
+                )}
+              </div>
               <button
                 onClick={resetForm}
                 className="text-3xl text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white bg-gray-100 hover:bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center"

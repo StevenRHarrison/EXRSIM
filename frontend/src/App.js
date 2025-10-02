@@ -1202,6 +1202,10 @@ const LeafletMapping = ({ exerciseId }) => {
     { id: 'rectangle', label: 'Rectangles', count: mapObjects.filter(obj => obj.type === 'rectangle').length }
   ];
 
+  // Drawing state
+  const [drawingMode, setDrawingMode] = useState(null);
+  const [tempMarkers, setTempMarkers] = useState([]);
+
   // Fix default marker icons for Leaflet
   useEffect(() => {
     delete L.Icon.Default.prototype._getIconUrl;
@@ -1212,22 +1216,92 @@ const LeafletMapping = ({ exerciseId }) => {
     });
   }, []);
 
-  const onCreated = (e) => {
-    const { layerType, layer } = e;
-    const geoJSON = layer.toGeoJSON();
-    
-    // Create object with default name and current form data
-    const objectData = {
-      exercise_id: exerciseId,
-      type: layerType === 'polyline' ? 'line' : layerType,
-      name: formData.name || `New ${layerType}`,
-      description: formData.description,
-      color: formData.color,
-      geometry: geoJSON.geometry,
-      image: formData.image
-    };
+  const handleMapClick = (e) => {
+    if (drawingMode === 'marker') {
+      const { lat, lng } = e.latlng;
+      const newMarker = {
+        id: Date.now(),
+        position: [lat, lng],
+        color: formData.color
+      };
+      setTempMarkers(prev => [...prev, newMarker]);
+      
+      // Create the marker object
+      const geoJSON = {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [lng, lat]
+        }
+      };
+      handleObjectCreate(geoJSON, 'marker');
+      setDrawingMode(null);
+    }
+  };
 
-    handleObjectCreate(geoJSON, layerType === 'polyline' ? 'line' : layerType);
+  const renderMapObjects = () => {
+    return mapObjects.map(obj => {
+      const { geometry, color, name, id } = obj;
+      
+      switch (obj.type) {
+        case 'marker':
+          if (geometry.type === 'Point') {
+            const [lng, lat] = geometry.coordinates;
+            return (
+              <Marker key={id} position={[lat, lng]}>
+                <Popup>
+                  <div>
+                    <h3 className="font-semibold">{name}</h3>
+                    <p className="text-sm text-gray-600">{obj.description}</p>
+                  </div>
+                </Popup>
+              </Marker>
+            );
+          }
+          break;
+        case 'polygon':
+          if (geometry.type === 'Polygon') {
+            const positions = geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
+            return (
+              <Polygon
+                key={id}
+                positions={positions}
+                pathOptions={{ color: color, fillColor: color, fillOpacity: 0.3 }}
+              >
+                <Popup>
+                  <div>
+                    <h3 className="font-semibold">{name}</h3>
+                    <p className="text-sm text-gray-600">{obj.description}</p>
+                  </div>
+                </Popup>
+              </Polygon>
+            );
+          }
+          break;
+        case 'line':
+          if (geometry.type === 'LineString') {
+            const positions = geometry.coordinates.map(coord => [coord[1], coord[0]]);
+            return (
+              <Polyline
+                key={id}
+                positions={positions}
+                pathOptions={{ color: color, weight: 4 }}
+              >
+                <Popup>
+                  <div>
+                    <h3 className="font-semibold">{name}</h3>
+                    <p className="text-sm text-gray-600">{obj.description}</p>
+                  </div>
+                </Popup>
+              </Polyline>
+            );
+          }
+          break;
+        default:
+          return null;
+      }
+      return null;
+    });
   };
 
   const MapContainerComponent = () => {
@@ -1237,6 +1311,9 @@ const LeafletMapping = ({ exerciseId }) => {
           center={[39.8283, -98.5795]} // Center of USA
           zoom={4}
           style={{ height: '100%', width: '100%' }}
+          eventHandlers={{
+            click: handleMapClick
+          }}
         >
           <LayersControl position="topright">
             {/* Base layers */}
@@ -1274,55 +1351,15 @@ const LeafletMapping = ({ exerciseId }) => {
                 url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
               />
             </LayersControl.BaseLayer>
-
-            {/* Drawing controls */}
-            <FeatureGroup>
-              <EditControl
-                position="topleft"
-                onCreated={onCreated}
-                draw={{
-                  rectangle: {
-                    shapeOptions: {
-                      color: formData.color,
-                      fillColor: formData.color,
-                      fillOpacity: 0.3
-                    }
-                  },
-                  polygon: {
-                    shapeOptions: {
-                      color: formData.color,
-                      fillColor: formData.color,
-                      fillOpacity: 0.3
-                    }
-                  },
-                  polyline: {
-                    shapeOptions: {
-                      color: formData.color,
-                      weight: 4
-                    }
-                  },
-                  marker: true,
-                  circle: false,
-                  circlemarker: false
-                }}
-                edit={{
-                  edit: false,
-                  remove: false
-                }}
-              />
-            </FeatureGroup>
-
-            {/* Existing map objects overlay */}
-            <LayersControl.Overlay checked name="Map Objects">
-              <FeatureGroup>
-                {mapObjects.map(obj => {
-                  // This would render existing objects on the map
-                  // Implementation depends on object geometry type
-                  return null;
-                })}
-              </FeatureGroup>
-            </LayersControl.Overlay>
           </LayersControl>
+
+          {/* Render existing map objects */}
+          {renderMapObjects()}
+
+          {/* Render temporary markers during drawing */}
+          {tempMarkers.map(marker => (
+            <Marker key={marker.id} position={marker.position} />
+          ))}
         </LeafletMapContainer>
       </div>
     );

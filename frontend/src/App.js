@@ -7,6 +7,8 @@ import './App.css';
 import { MapContainer as LeafletMapContainer, TileLayer, LayersControl, FeatureGroup, Marker, Popup, Polygon, Polyline, Rectangle } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-draw';
+import 'leaflet-draw/dist/leaflet.draw.css';
 
 // Import shadcn components
 import { Button } from './components/ui/button';

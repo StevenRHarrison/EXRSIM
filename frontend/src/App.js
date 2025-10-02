@@ -1791,7 +1791,7 @@ const LeafletMapping = ({ exerciseId }) => {
       </div>
 
       {/* Main map area */}
-      <div className="flex-1 relative">
+      <div className={`flex-1 relative ${isPlacingObject ? 'cursor-crosshair' : ''}`}>
         <MapContainerComponent />
         
         {/* Drawing Tools Status */}

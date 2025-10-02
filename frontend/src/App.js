@@ -1521,7 +1521,10 @@ const LeafletMapping = ({ exerciseId }) => {
         {/* Add new object button */}
         <div className="p-4 border-t border-gray-700">
           <button
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('Add Map Object clicked');
               resetForm();
               setShowObjectForm(true);
             }}

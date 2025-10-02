@@ -1431,8 +1431,32 @@ const LeafletMapping = ({ exerciseId }) => {
         }
       };
 
+      // Function to keep draw controls visible
+      const ensureDrawControlsVisible = () => {
+        const drawControl = document.querySelector('.leaflet-draw');
+        if (drawControl) {
+          drawControl.style.display = 'block !important';
+          drawControl.style.visibility = 'visible !important';
+          drawControl.style.opacity = '1 !important';
+          drawControl.style.zIndex = '2000 !important';
+          
+          const buttons = drawControl.querySelectorAll('.leaflet-draw-toolbar a');
+          buttons.forEach(button => {
+            button.style.display = 'inline-block !important';
+            button.style.visibility = 'visible !important';
+            button.style.opacity = '1 !important';
+          });
+        }
+        
+        // Keep checking every second to ensure controls stay visible
+        setTimeout(ensureDrawControlsVisible, 1000);
+      };
+
       // Start initialization with a small delay
       setTimeout(initDrawControls, 100);
+      
+      // Start the visibility monitor after initialization
+      setTimeout(ensureDrawControlsVisible, 2000);
     }
   }, [mapReady, formData.color]);
 

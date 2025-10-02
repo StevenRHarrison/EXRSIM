@@ -1324,9 +1324,9 @@ const LeafletMapping = ({ exerciseId }) => {
           console.log('📍 Map container check:', !!map.getContainer());
           console.log('📍 Map size check:', !!map._size);
           
-          if (!map.getContainer() || !map._size) {
-            console.log('⏳ Map not ready, retrying in 500ms...');
-            setTimeout(initializeDrawing, 500);
+          if (!map.getContainer() || !map._size || !map._loaded) {
+            console.log('⏳ Map not fully ready, retrying in 1000ms...');
+            setTimeout(initializeDrawing, 1000);
             return;
           }
 

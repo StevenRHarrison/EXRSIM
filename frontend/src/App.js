@@ -1617,7 +1617,11 @@ const LeafletMapping = ({ exerciseId }) => {
             {categories.map(category => (
               <button
                 key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
+                onClick={() => {
+                  console.log('Category clicked:', category.id);
+                  setSelectedCategory(category.id);
+                  // Don't interfere with draw controls
+                }}
                 className={`w-full text-left px-3 py-2 rounded text-sm ${
                   selectedCategory === category.id
                     ? 'bg-blue-600 text-white'

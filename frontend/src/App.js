@@ -632,8 +632,11 @@ const ICSDashboard = ({ currentExercise }) => {
 
   const renderICSContent = () => {
     console.log('renderICSContent called with activeICSMenu:', activeICSMenu);
+    console.log('Available cases: dashboard, scenario, command-staff, operations, mapping, etc.');
+    
     switch (activeICSMenu) {
       case 'dashboard':
+        console.log('Dashboard case triggered');
         return <ICSDashboardOverview exerciseId={currentExercise?.id} />;
       case 'scenario':
         return <ScenarioManagement exerciseId={currentExercise?.id} />;

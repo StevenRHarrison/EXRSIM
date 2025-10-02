@@ -725,7 +725,7 @@ const ICSDashboard = ({ currentExercise }) => {
                     </Button>
                     
                     {/* Operations Submenu */}
-                    {item.hasSubmenu && operationsExpanded && (
+                    {item.hasSubmenu && item.id === 'operations' && operationsExpanded && (
                       <div className="ml-4 mt-1 space-y-1">
                         {item.submenuItems?.map((subItem) => {
                           const SubIcon = subItem.icon;
@@ -744,6 +744,32 @@ const ICSDashboard = ({ currentExercise }) => {
                             >
                               <SubIcon className="h-4 w-4 mr-3" />
                               <span className="text-white">{subItem.label}</span>
+                            </Button>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {/* Fin/Admin Submenu */}
+                    {item.hasSubmenu && item.id === 'fin-admin' && finAdminExpanded && (
+                      <div className="ml-4 mt-1 space-y-1">
+                        {item.submenuItems?.map((subItem) => {
+                          const SubIcon = subItem.icon;
+                          const isSubActive = activeICSMenu === subItem.id;
+                          
+                          return (
+                            <Button
+                              key={subItem.id}
+                              variant="ghost"
+                              className={`w-full justify-start text-left text-sm ${
+                                isSubActive
+                                  ? `${theme.colors.accent} ${theme.colors.textPrimary}`
+                                  : `${theme.colors.textMuted} ${theme.colors.hover}`
+                              }`}
+                              onClick={() => setActiveICSMenu(subItem.id)}
+                            >
+                              <SubIcon className="h-4 w-4 mr-3" />
+                              <span className={theme.name === 'Dark Theme' ? 'text-white' : 'text-gray-700'}>{subItem.label}</span>
                             </Button>
                           );
                         })}

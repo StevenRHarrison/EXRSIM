@@ -1839,73 +1839,7 @@ const LeafletMapping = ({ exerciseId }) => {
     <div className="flex h-screen">
       {/* Sidebar for object management */}
       <div className={`w-80 ${theme.colors.secondary} border-r ${theme.colors.border} flex flex-col h-full`}>
-        {/* Object Type Selection Buttons - New Primary Interface */}
-        <div className="p-4 border-b border-gray-700 bg-blue-900">
-          <h3 className="text-lg font-semibold text-white mb-3">Create Object</h3>
-          <p className="text-xs text-blue-200 mb-3">1. Select object type → 2. Click map → 3. Enter details</p>
-          
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={() => {
-                console.log('🎯 Marker creation mode activated');
-                setCurrentObjectType('marker');
-                setIsPlacingObject(true);
-              }}
-              className="bg-red-600 hover:bg-red-700 text-white py-2 px-3 rounded text-sm font-semibold flex items-center justify-center"
-            >
-              📍 Marker
-            </button>
-            
-            <button
-              onClick={() => {
-                console.log('🎯 Line creation mode activated');
-                setCurrentObjectType('line');
-                setIsPlacingObject(true);
-              }}
-              className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm font-semibold flex items-center justify-center"
-            >
-              📏 Line
-            </button>
-            
-            <button
-              onClick={() => {
-                console.log('🎯 Polygon creation mode activated');
-                setCurrentObjectType('polygon');
-                setIsPlacingObject(true);
-              }}
-              className="bg-orange-600 hover:bg-orange-700 text-white py-2 px-3 rounded text-sm font-semibold flex items-center justify-center"
-            >
-              🔶 Polygon
-            </button>
-            
-            <button
-              onClick={() => {
-                console.log('🎯 Rectangle creation mode activated');
-                setCurrentObjectType('rectangle');
-                setIsPlacingObject(true);
-              }}
-              className="bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded text-sm font-semibold flex items-center justify-center"
-            >
-              ⬜ Rectangle
-            </button>
-          </div>
-          
-          {isPlacingObject && (
-            <div className="mt-3 p-2 bg-yellow-600 rounded text-xs">
-              <strong>Active:</strong> {currentObjectType?.toUpperCase()} mode
-              <button 
-                onClick={() => {
-                  setIsPlacingObject(false);
-                  setCurrentObjectType(null);
-                  setClickedCoordinates(null);
-                }}
-                className="ml-2 text-yellow-200 underline"
-              >
-                Cancel
-              </button>
-            </div>
-          )}
-        </div>
+        {/* Create Object Panel Removed - Use Leaflet Draw Tools Only */}
 
         {/* Manual Entry Button Removed - Use draw tools only */}
 

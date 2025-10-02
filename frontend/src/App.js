@@ -1313,7 +1313,7 @@ const LeafletMapping = ({ exerciseId }) => {
 
   // Initialize native Leaflet.draw when map is ready
   useEffect(() => {
-    if (mapReady && mapRef.current) {
+    if (mapReady && mapRef.current && !window.leafletDrawInitialized) {
       const map = mapRef.current;
       
       console.log('🎯 Initializing native Leaflet.draw plugin...');

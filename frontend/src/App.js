@@ -1204,9 +1204,9 @@ const LeafletMapping = ({ exerciseId }) => {
     { id: 'rectangle', label: 'Rectangles', count: mapObjects.filter(obj => obj.type === 'rectangle').length }
   ];
 
-  // Drawing state
-  const [drawingMode, setDrawingMode] = useState(null);
-  const [tempMarkers, setTempMarkers] = useState([]);
+  // Drawing state and map reference
+  const [map, setMap] = useState(null);
+  const [drawnItems, setDrawnItems] = useState(null);
 
   // Fix default marker icons for Leaflet
   useEffect(() => {
@@ -1218,28 +1218,172 @@ const LeafletMapping = ({ exerciseId }) => {
     });
   }, []);
 
-  const handleMapClick = (e) => {
-    if (drawingMode === 'marker') {
-      const { lat, lng } = e.latlng;
-      const newMarker = {
-        id: Date.now(),
-        position: [lat, lng],
-        color: formData.color
-      };
-      setTempMarkers(prev => [...prev, newMarker]);
-      
-      // Create the marker object
-      const geoJSON = {
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [lng, lat]
+  // Initialize drawing controls when map is ready
+  useEffect(() => {
+    if (map) {
+      // Create a FeatureGroup for drawn items
+      const drawnFeatureGroup = new L.FeatureGroup();
+      map.addLayer(drawnFeatureGroup);
+      setDrawnItems(drawnFeatureGroup);
+
+      // Initialize the draw control
+      const drawControl = new L.Control.Draw({
+        position: 'topleft',
+        draw: {
+          polygon: {
+            shapeOptions: {
+              color: formData.color,
+              fillColor: formData.color,
+              fillOpacity: 0.3
+            },
+            allowIntersection: false,
+            drawError: {
+              color: '#e1e100',
+              message: '<strong>Oh snap!</strong> you can\'t draw that!'
+            }
+          },
+          polyline: {
+            shapeOptions: {
+              color: formData.color,
+              weight: 4
+            }
+          },
+          rectangle: {
+            shapeOptions: {
+              color: formData.color,
+              fillColor: formData.color,
+              fillOpacity: 0.3
+            }
+          },
+          circle: false, // Disable circle drawing
+          circlemarker: false, // Disable circle marker
+          marker: {
+            icon: L.icon({
+              iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+              shadowSize: [41, 41]
+            })
+          }
+        },
+        edit: {
+          featureGroup: drawnFeatureGroup,
+          remove: true
+        }
+      });
+
+      map.addControl(drawControl);
+
+      // Handle draw events
+      map.on(L.Draw.Event.CREATED, function (e) {
+        const layer = e.layer;
+        const type = e.layerType;
+        
+        // Add the layer to the drawn items group
+        drawnFeatureGroup.addLayer(layer);
+        
+        // Convert to GeoJSON and save to backend
+        const geoJSON = layer.toGeoJSON();
+        handleObjectCreate(geoJSON, type);
+        
+        // Add popup to the layer
+        const popupContent = `
+          <div>
+            <h3 class="font-semibold">${formData.name || `New ${type}`}</h3>
+            <p class="text-sm text-gray-600">${formData.description || 'No description'}</p>
+            <button onclick="editMapObject('${Date.now()}')" class="text-blue-500 text-xs">Edit</button>
+          </div>
+        `;
+        layer.bindPopup(popupContent);
+      });
+
+      map.on(L.Draw.Event.EDITED, function (e) {
+        const layers = e.layers;
+        layers.eachLayer(function (layer) {
+          // Handle layer editing - update in backend
+          const geoJSON = layer.toGeoJSON();
+          console.log('Layer edited:', geoJSON);
+        });
+      });
+
+      map.on(L.Draw.Event.DELETED, function (e) {
+        const layers = e.layers;
+        layers.eachLayer(function (layer) {
+          // Handle layer deletion - remove from backend
+          console.log('Layer deleted:', layer);
+        });
+      });
+
+      // Cleanup function
+      return () => {
+        if (map) {
+          map.removeControl(drawControl);
+          map.removeLayer(drawnFeatureGroup);
         }
       };
-      handleObjectCreate(geoJSON, 'marker');
-      setDrawingMode(null);
     }
-  };
+  }, [map, formData.color]);
+
+  // Load existing map objects onto the map
+  useEffect(() => {
+    if (map && drawnItems && mapObjects.length > 0) {
+      // Clear existing layers
+      drawnItems.clearLayers();
+      
+      // Add existing objects to the map
+      mapObjects.forEach(obj => {
+        let layer;
+        const { geometry, color, name, description } = obj;
+        
+        switch (obj.type) {
+          case 'marker':
+            if (geometry.type === 'Point') {
+              const [lng, lat] = geometry.coordinates;
+              layer = L.marker([lat, lng]);
+            }
+            break;
+          case 'polygon':
+            if (geometry.type === 'Polygon') {
+              const positions = geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
+              layer = L.polygon(positions, { color: color, fillColor: color, fillOpacity: 0.3 });
+            }
+            break;
+          case 'polyline':
+          case 'line':
+            if (geometry.type === 'LineString') {
+              const positions = geometry.coordinates.map(coord => [coord[1], coord[0]]);
+              layer = L.polyline(positions, { color: color, weight: 4 });
+            }
+            break;
+          case 'rectangle':
+            if (geometry.type === 'Polygon') {
+              const positions = geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
+              const bounds = L.latLngBounds(positions);
+              layer = L.rectangle(bounds, { color: color, fillColor: color, fillOpacity: 0.3 });
+            }
+            break;
+        }
+        
+        if (layer) {
+          // Add popup
+          const popupContent = `
+            <div>
+              <h3 class="font-semibold">${name}</h3>
+              <p class="text-sm text-gray-600">${description}</p>
+              <div class="mt-2">
+                <button onclick="editObject('${obj.id}')" class="text-blue-500 text-xs mr-2">Edit</button>
+                <button onclick="deleteObject('${obj.id}')" class="text-red-500 text-xs">Delete</button>
+              </div>
+            </div>
+          `;
+          layer.bindPopup(popupContent);
+          drawnItems.addLayer(layer);
+        }
+      });
+    }
+  }, [map, drawnItems, mapObjects]);
 
   const renderMapObjects = () => {
     return mapObjects.map(obj => {

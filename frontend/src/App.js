@@ -1983,11 +1983,7 @@ const LeafletMapping = ({ exerciseId }) => {
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                   {editingObject ? 'Edit Map Object' : 'Add Map Object'}
                 </h3>
-                {clickedCoordinates && (
-                  <p className="text-sm text-green-600 mt-1">
-                    📍 Location: {clickedCoordinates.lat.toFixed(6)}, {clickedCoordinates.lng.toFixed(6)}
-                  </p>
-                )}
+                {/* Location coordinates removed with Create Object panel */}
               </div>
               <button
                 onClick={resetForm}

@@ -14409,7 +14409,7 @@ function AppContent() {
       <div className={`min-h-screen ${theme.colors.primary} ${theme.colors.textPrimary}`}>
         <BrowserRouter>
           <div className="flex flex-col h-screen">
-            <Navigation currentExercise={currentExercise} />
+            <Navigation currentExercise={currentExercise} activeMenu={activeMenu} />
             <main className="flex-1 overflow-auto">
               {renderContent()}
             </main>

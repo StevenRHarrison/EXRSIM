@@ -1216,6 +1216,47 @@ const LeafletMapping = ({ exerciseId }) => {
       }
     }
   };
+  // React Leaflet Draw event handlers
+  const handleDrawCreated = (e) => {
+    const { layerType, layer } = e;
+    console.log('🎨 Draw created:', layerType, layer);
+    
+    // Convert layer to GeoJSON
+    const geoJson = layer.toGeoJSON();
+    
+    // Create object data based on layer type
+    const objectData = {
+      exercise_id: exerciseId,
+      type: layerType === 'polyline' ? 'line' : layerType,
+      name: `New ${layerType}`,
+      description: '',
+      color: '#3388ff',
+      geometry: geoJson.geometry
+    };
+    
+    // Save to backend
+    handleObjectCreate(geoJson, layerType === 'polyline' ? 'line' : layerType);
+  };
+
+  const handleDrawEdited = (e) => {
+    const { layers } = e;
+    console.log('✏️ Draw edited:', layers);
+    
+    layers.eachLayer((layer) => {
+      // Handle layer editing - would need to match with existing objects
+      console.log('Edited layer:', layer.toGeoJSON());
+    });
+  };
+
+  const handleDrawDeleted = (e) => {
+    const { layers } = e;
+    console.log('🗑️ Draw deleted:', layers);
+    
+    layers.eachLayer((layer) => {
+      // Handle layer deletion - would need to match with existing objects
+      console.log('Deleted layer:', layer.toGeoJSON());
+    });
+  };
 
   const getDefaultColorForType = (type) => {
     switch (type) {

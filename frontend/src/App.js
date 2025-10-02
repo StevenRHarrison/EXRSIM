@@ -1154,7 +1154,10 @@ const LeafletMapping = ({ exerciseId }) => {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/map-objects?exercise_id=${exerciseId}`);
       if (response.ok) {
         const data = await response.json();
+        console.log(`📊 Fetched ${data.length} map objects from backend`);
         setMapObjects(data);
+      } else {
+        console.error('Failed to fetch map objects. Status:', response.status);
       }
     } catch (error) {
       console.error('Error fetching map objects:', error);

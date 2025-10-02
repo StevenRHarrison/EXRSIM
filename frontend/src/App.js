@@ -1316,40 +1316,6 @@ const LeafletMapping = ({ exerciseId }) => {
   const [currentObjectType, setCurrentObjectType] = useState(null);
   const [clickedCoordinates, setClickedCoordinates] = useState(null);
 
-  // Debug state exposure for map click handler (updated for new workflow)
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.mapDebug = {
-        isPlacingObject,
-        currentObjectType,
-        clickedCoordinates,
-        captureCoordinates: (lat, lng) => {
-          console.log('🎯 Coordinates captured:', { lat, lng, type: currentObjectType });
-          
-          // Store clicked coordinates
-          setClickedCoordinates({ lat, lng });
-          
-          // Pre-fill form data with object type and default name
-          setFormData({
-            name: `New ${currentObjectType.charAt(0).toUpperCase() + currentObjectType.slice(1)}`,
-            description: '',
-            color: getDefaultColorForType(currentObjectType),
-            image: '',
-            type: currentObjectType
-          });
-          
-          // Open modal for user to enter details
-          setShowObjectForm(true);
-          
-          // Keep placement mode active until object is created
-          // setIsPlacingObject(false); // Don't disable yet
-          
-          console.log('✅ Coordinates captured, opening form modal');
-        }
-      };
-    }
-  }, [isPlacingObject, currentObjectType, clickedCoordinates]);
-
   // Fix default marker icons for Leaflet
   useEffect(() => {
     delete L.Icon.Default.prototype._getIconUrl;

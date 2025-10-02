@@ -1383,27 +1383,77 @@ const LeafletMapping = ({ exerciseId }) => {
                   message: '<strong>Drawing error:</strong> Shape edges cannot cross!'
                 },
                 shapeOptions: {
-                  color: formData.color || '#3388ff'
-                }
+                  color: formData.color || '#3388ff',
+                  weight: 3,
+                  fillOpacity: 0.3
+                },
+                showArea: true,
+                showLength: true,
+                metric: true,
+                imperial: false
               },
               polyline: {
                 shapeOptions: {
                   color: formData.color || '#3388ff',
-                  weight: 4
-                }
+                  weight: 4,
+                  opacity: 0.8
+                },
+                showLength: true,
+                metric: true,
+                imperial: false,
+                feet: false
               },
               rectangle: {
                 shapeOptions: {
-                  color: formData.color || '#3388ff'
-                }
+                  color: formData.color || '#3388ff',
+                  weight: 3,
+                  fillOpacity: 0.3
+                },
+                showArea: true,
+                metric: true,
+                imperial: false
               },
-              circle: false, // Disable circle
-              circlemarker: false, // Disable circle marker
-              marker: true
+              circle: {
+                shapeOptions: {
+                  color: formData.color || '#3388ff',
+                  weight: 3,
+                  fillOpacity: 0.3
+                },
+                showRadius: true,
+                metric: true,
+                imperial: false,
+                feet: false
+              },
+              marker: {
+                icon: new L.Icon({
+                  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+                  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+                  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+                  iconSize: [25, 41],
+                  iconAnchor: [12, 41],
+                  popupAnchor: [1, -34],
+                  shadowSize: [41, 41]
+                }),
+                repeatMode: false,
+                zIndexOffset: 2000
+              },
+              circlemarker: false // Disable circle marker to avoid confusion
             },
             edit: {
               featureGroup: editableLayers,
-              remove: true
+              remove: {
+                title: 'Delete layers'
+              },
+              edit: {
+                selectedPathOptions: {
+                  maintainColor: true,
+                  opacity: 0.8,
+                  dashArray: '10, 10',
+                  fill: true,
+                  fillColor: '#fe57a1',
+                  fillOpacity: 0.1
+                }
+              }
             }
           };
 

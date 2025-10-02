@@ -1309,7 +1309,12 @@ const LeafletMapping = ({ exerciseId }) => {
 
           // Apply enhanced styling to make drawing controls more prominent
           setTimeout(() => {
+            console.log('Looking for draw controls...');
             const drawControlContainer = document.querySelector('.leaflet-draw');
+            const allControls = document.querySelectorAll('.leaflet-control');
+            console.log('All leaflet controls found:', allControls.length);
+            console.log('Draw control containers found:', drawControlContainer ? 1 : 0);
+            
             if (drawControlContainer) {
               console.log('Applying enhanced styling to draw controls');
               drawControlContainer.style.zIndex = '2000';

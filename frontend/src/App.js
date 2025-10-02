@@ -788,12 +788,21 @@ const Navigation = ({ currentExercise = null, activeMenu = 'dashboard' }) => {
             </div>
           </Link>
           <div className="flex items-center space-x-4">
-            <Link 
-              to="/builder" 
-              className={`text-orange-500 hover:text-orange-400 transition-colors ${activeMenu === 'builder' ? 'font-bold' : 'font-medium'}`}
-            >
-              Exercise
-            </Link>
+            {currentExercise ? (
+              <button
+                className={`text-orange-500 hover:text-orange-400 transition-colors ${activeMenu === 'manage' ? 'font-bold' : 'font-medium'}`}
+                onClick={() => window.location.href = `#manage?exercise=${currentExercise.id}`}
+              >
+                Exercise
+              </button>
+            ) : (
+              <Link 
+                to="/builder" 
+                className={`text-orange-500 hover:text-orange-400 transition-colors ${activeMenu === 'builder' ? 'font-bold' : 'font-medium'}`}
+              >
+                Exercise
+              </Link>
+            )}
             {currentExercise && (
               <>
                 {/* Arrow between buttons pointing to non-active button */}

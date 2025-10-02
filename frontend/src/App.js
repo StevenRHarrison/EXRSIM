@@ -986,26 +986,30 @@ const ScenarioManagement = ({ exerciseId }) => {
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
-                {scenario.scenario_image ? (
-                  <div className="w-32 h-32 rounded-lg overflow-hidden border border-gray-600 shadow-lg mx-auto">
-                    <img 
-                      src={scenario.scenario_image} 
-                      alt={`Scenario: ${scenario.scenario_name}`} 
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
-                    />
+                <div className="flex items-start space-x-4">
+                  <div className="flex-1">
+                    <p className={`text-sm ${theme.colors.textSecondary} leading-relaxed`}>
+                      {scenario.description}
+                    </p>
                   </div>
-                ) : (
-                  <div className={`w-32 h-32 rounded-lg border-2 border-dashed ${theme.colors.border} flex items-center justify-center mx-auto`}>
-                    <div className="text-center">
-                      <Camera className={`h-6 w-6 ${theme.colors.textMuted} mx-auto mb-1`} />
-                      <p className={`text-xs ${theme.colors.textMuted}`}>No image</p>
-                    </div>
+                  <div className="flex-shrink-0">
+                    {scenario.scenario_image ? (
+                      <div className="w-32 h-32 rounded-lg overflow-hidden border border-gray-600 shadow-lg">
+                        <img 
+                          src={scenario.scenario_image} 
+                          alt={`Scenario: ${scenario.scenario_name}`} 
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
+                        />
+                      </div>
+                    ) : (
+                      <div className={`w-32 h-32 rounded-lg border-2 border-dashed ${theme.colors.border} flex items-center justify-center`}>
+                        <div className="text-center">
+                          <Camera className={`h-6 w-6 ${theme.colors.textMuted} mx-auto mb-1`} />
+                          <p className={`text-xs ${theme.colors.textMuted}`}>No image</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
-                <div>
-                  <p className={`text-sm ${theme.colors.textSecondary} mb-2`}>
-                    {scenario.description}
-                  </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>

@@ -1166,10 +1166,10 @@ const LeafletMapping = ({ exerciseId }) => {
       exercise_id: exerciseId,
       type: objectType,
       name: formData.name || `New ${objectType}`,
-      description: formData.description,
-      color: formData.color,
+      description: formData.description || 'Created via drawing tools',
+      color: formData.color || '#3388ff',
       geometry: geoJsonData.geometry,
-      image: formData.image
+      image: formData.image || ''
     };
 
     try {

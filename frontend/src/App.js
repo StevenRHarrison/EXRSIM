@@ -1318,7 +1318,7 @@ const LeafletMapping = ({ exerciseId }) => {
       
       console.log('🎯 Initializing native Leaflet.draw plugin...');
       
-      // Ensure map is completely ready before adding draw controls
+      // Add a longer delay to ensure React rendering is complete
       const initializeDrawing = () => {
         try {
           console.log('📍 Map container check:', !!map.getContainer());

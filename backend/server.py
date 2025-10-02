@@ -1618,6 +1618,85 @@ async def upload_file(file: UploadFile = File(...)):
     # Return the file path (relative to serve via static files)
     return {"file_path": f"/uploads/{unique_filename}"}
 
+# Mapping Models
+class MapObject(BaseModel):
+    id: Optional[str] = Field(default_factory=lambda: str(uuid.uuid4()))
+    exercise_id: str
+    type: str  # "line", "polygon", "rectangle", "marker"
+    name: str
+    description: str = ""
+    color: str = "#3388ff"
+    geometry: dict  # GeoJSON geometry
+    image: Optional[str] = None
+    created_at: Optional[datetime] = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: Optional[datetime] = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class MapObjectCreate(BaseModel):
+    exercise_id: str
+    type: str
+    name: str
+    description: str = ""
+    color: str = "#3388ff"
+    geometry: dict
+    image: Optional[str] = None
+
+class MapObjectUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    color: Optional[str] = None
+    geometry: Optional[dict] = None
+    image: Optional[str] = None
+
+# Mapping API Endpoints
+@app.post("/api/map-objects", response_model=MapObject)
+async def create_map_object(map_object: MapObjectCreate):
+    map_obj_dict = map_object.dict()
+    map_obj_dict["id"] = str(uuid.uuid4())
+    map_obj_dict["created_at"] = datetime.now(timezone.utc)
+    map_obj_dict["updated_at"] = datetime.now(timezone.utc)
+    
+    await db.map_objects.insert_one(map_obj_dict)
+    return MapObject(**map_obj_dict)
+
+@app.get("/api/map-objects", response_model=List[MapObject])
+async def get_map_objects(exercise_id: str, type: Optional[str] = None):
+    query = {"exercise_id": exercise_id}
+    if type:
+        query["type"] = type
+    
+    map_objects = await db.map_objects.find(query).to_list(length=None)
+    return [MapObject(**obj) for obj in map_objects]
+
+@app.get("/api/map-objects/{object_id}", response_model=MapObject)
+async def get_map_object(object_id: str):
+    map_object = await db.map_objects.find_one({"id": object_id})
+    if not map_object:
+        raise HTTPException(status_code=404, detail="Map object not found")
+    return MapObject(**map_object)
+
+@app.put("/api/map-objects/{object_id}", response_model=MapObject)
+async def update_map_object(object_id: str, map_object: MapObjectUpdate):
+    update_dict = {k: v for k, v in map_object.dict().items() if v is not None}
+    update_dict["updated_at"] = datetime.now(timezone.utc)
+    
+    result = await db.map_objects.update_one(
+        {"id": object_id}, 
+        {"$set": update_dict}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Map object not found")
+    
+    updated_object = await db.map_objects.find_one({"id": object_id})
+    return MapObject(**updated_object)
+
+@app.delete("/api/map-objects/{object_id}")
+async def delete_map_object(object_id: str):
+    result = await db.map_objects.delete_one({"id": object_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Map object not found")
+    return {"message": "Map object deleted successfully"}
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()

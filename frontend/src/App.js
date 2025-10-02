@@ -1433,7 +1433,7 @@ const LeafletMapping = ({ exerciseId }) => {
 
       {/* Main map area */}
       <div className="flex-1 relative">
-        <MapContainer />
+        <MapContainerComponent />
         
         {/* Map controls overlay */}
         <div className="absolute top-4 right-4 bg-white rounded shadow-lg p-2">

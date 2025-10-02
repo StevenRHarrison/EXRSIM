@@ -704,7 +704,20 @@ const ICSDashboard = ({ currentExercise }) => {
         );
       // Planning submenu items
       case 'mapping':
-        return <LeafletMapping exerciseId={currentExercise?.id} />;
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <Map className={`h-16 w-16 ${theme.colors.textPrimary} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>Mapping Interface</h2>
+              <p className={`${theme.colors.textSecondary} mb-6`}>
+                Mapping component loading... (Test View)
+              </p>
+              <p className={`text-sm ${theme.colors.textMuted}`}>
+                Exercise ID: {currentExercise?.id}
+              </p>
+            </div>
+          </div>
+        );
       case 'situation-unit':
         return (
           <div className="p-6">

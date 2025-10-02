@@ -2258,10 +2258,10 @@ def test_ics_dashboard_overview_api():
         print(f"❌ ICS Dashboard Overview API Test Error: {e}")
         return False
 
-def test_map_object_api():
-    """Test Map Object API endpoints comprehensively for Leaflet mapping functionality"""
+def test_map_objects_crud_api():
+    """Test Map Objects CRUD API endpoints comprehensively for EXRSIM mapping functionality"""
     print("=" * 60)
-    print("TESTING MAP OBJECT API ENDPOINTS FOR LEAFLET MAPPING")
+    print("TESTING MAP OBJECTS CRUD API ENDPOINTS - COMPREHENSIVE REVIEW REQUEST")
     print("=" * 60)
     
     # Use the confirmed working exercise ID from test results

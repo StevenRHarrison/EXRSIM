@@ -1866,6 +1866,20 @@ const LeafletMapping = ({ exerciseId }) => {
               </div>
 
               <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Object Type</label>
+                <select
+                  value={formData.type}
+                  onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
+                  className="w-full p-3 rounded border-2 border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                >
+                  <option value="marker">📍 Marker (Point)</option>
+                  <option value="line">📏 Line</option>
+                  <option value="polygon">🔶 Polygon</option>
+                  <option value="rectangle">⬜ Rectangle</option>
+                </select>
+              </div>
+
+              <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
                 <textarea
                   value={formData.description}

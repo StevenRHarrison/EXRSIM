@@ -1704,37 +1704,58 @@ const LeafletMapping = ({ exerciseId }) => {
                 />
               </div>
 
-              <div className="flex space-x-3 pt-4">
+              <div className="flex space-x-3 pt-6">
                 <button
                   type="button"
                   onClick={(e) => {
                     e.preventDefault();
+                    e.stopPropagation();
                     try {
                       if (editingObject) {
+                        console.log('Updating existing object:', editingObject.id);
                         handleObjectUpdate(editingObject.id, formData);
                       } else {
-                        // Create a simple marker object for testing
-                        const testGeoJSON = {
-                          type: 'Feature',
-                          geometry: {
-                            type: 'Point',
-                            coordinates: [-98.5795, 39.8283] // Center of USA
-                          }
-                        };
-                        handleObjectCreate(testGeoJSON, 'marker');
+                        // Create a test object based on current category
+                        let testGeoJSON;
+                        if (selectedCategory === 'polygons' || selectedCategory === 'polygon') {
+                          testGeoJSON = {
+                            type: 'Feature',
+                            geometry: {
+                              type: 'Polygon',
+                              coordinates: [[
+                                [-99, 40], [-99, 39], [-98, 39], [-98, 40], [-99, 40]
+                              ]]
+                            }
+                          };
+                        } else {
+                          testGeoJSON = {
+                            type: 'Feature',
+                            geometry: {
+                              type: 'Point',
+                              coordinates: [-98.5795, 39.8283]
+                            }
+                          };
+                        }
+                        console.log('Creating new object:', selectedCategory, testGeoJSON);
+                        handleObjectCreate(testGeoJSON, selectedCategory === 'polygons' ? 'polygon' : 'marker');
                       }
                     } catch (error) {
                       console.error('Error saving object:', error);
+                      alert('Error saving object. Please check console for details.');
                     }
                   }}
-                  className="flex-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105"
                 >
-                  {editingObject ? 'Update' : 'Save'}
+                  {editingObject ? 'Update Object' : 'Save Object'}
                 </button>
                 <button
                   type="button"
-                  onClick={resetForm}
-                  className="flex-1 bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    resetForm();
+                  }}
+                  className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200"
                 >
                   Cancel
                 </button>

@@ -987,11 +987,11 @@ const ScenarioManagement = ({ exerciseId }) => {
               </CardHeader>
               <CardContent className="space-y-3">
                 {scenario.scenario_image && (
-                  <div className="w-full h-32 rounded-lg overflow-hidden">
+                  <div className="w-full h-40 rounded-lg overflow-hidden border border-gray-600 shadow-lg">
                     <img 
                       src={scenario.scenario_image} 
-                      alt="Scenario" 
-                      className="w-full h-full object-cover"
+                      alt={`Scenario: ${scenario.scenario_name}`} 
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
                     />
                   </div>
                 )}

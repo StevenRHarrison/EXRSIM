@@ -14650,7 +14650,6 @@ function AppContent() {
             <main className="flex-1 overflow-auto">
               {renderContent()}
             </main>
-          </div>
         </div>
       </BrowserRouter>
     </div>

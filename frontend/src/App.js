@@ -1730,12 +1730,11 @@ const LeafletMapping = ({ exerciseId }) => {
                 <Marker
                   key={obj.id}
                   position={[lat, lng]}
-                >
-                  <Popup>
-                    <strong>{obj.name}</strong><br />
-                    <small>{obj.description || 'No description'}</small>
-                  </Popup>
-                </Marker>
+                  eventHandlers={{
+                    mouseover: (e) => handleObjectMouseEnter(obj, e.originalEvent),
+                    mouseout: handleObjectMouseLeave,
+                  }}
+                />
               );
             } else if (obj.type === 'polygon' && obj.geometry?.coordinates) {
               try {
@@ -1747,12 +1746,11 @@ const LeafletMapping = ({ exerciseId }) => {
                     color={obj.color || '#3388ff'}
                     fillColor={obj.color || '#3388ff'}
                     fillOpacity={0.3}
-                  >
-                    <Popup>
-                      <strong>{obj.name}</strong><br />
-                      <small>{obj.description || 'No description'}</small>
-                    </Popup>
-                  </Polygon>
+                    eventHandlers={{
+                      mouseover: (e) => handleObjectMouseEnter(obj, e.originalEvent),
+                      mouseout: handleObjectMouseLeave,
+                    }}
+                  />
                 );
               } catch (error) {
                 console.warn('Error rendering polygon:', obj, error);
@@ -1767,12 +1765,11 @@ const LeafletMapping = ({ exerciseId }) => {
                     positions={coords}
                     color={obj.color || '#3388ff'}
                     weight={4}
-                  >
-                    <Popup>
-                      <strong>{obj.name}</strong><br />
-                      <small>{obj.description || 'No description'}</small>
-                    </Popup>
-                  </Polyline>
+                    eventHandlers={{
+                      mouseover: (e) => handleObjectMouseEnter(obj, e.originalEvent),
+                      mouseout: handleObjectMouseLeave,
+                    }}
+                  />
                 );
               } catch (error) {
                 console.warn('Error rendering polyline:', obj, error);

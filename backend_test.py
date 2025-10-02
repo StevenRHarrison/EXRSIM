@@ -2021,6 +2021,243 @@ def test_evaluation_report_crud_api():
         print(f"❌ Unexpected Error: {e}")
         return False
 
+def test_ics_dashboard_overview_api():
+    """Test ICS Dashboard Overview API endpoints as requested in review"""
+    print("=" * 60)
+    print("TESTING ICS DASHBOARD OVERVIEW API ENDPOINTS")
+    print("=" * 60)
+    
+    # Use the exercise ID specified in the review request
+    exercise_id = "4bb39755-0b97-4ded-902d-7f9325f3d9a9"
+    
+    try:
+        # Test 1: GET /api/scenarios?exercise_id={exerciseId}
+        print(f"\n1. Testing GET /api/scenarios?exercise_id={exercise_id}")
+        response = requests.get(f"{BACKEND_URL}/scenarios", params={"exercise_id": exercise_id})
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            scenarios = response.json()
+            print(f"✅ Successfully retrieved {len(scenarios)} scenarios for exercise")
+            
+            if len(scenarios) > 0:
+                # Verify scenario data structure
+                first_scenario = scenarios[0]
+                required_fields = ["scenario_name", "description", "location", "status", "created_at"]
+                missing_fields = [field for field in required_fields if field not in first_scenario]
+                
+                if not missing_fields:
+                    print("   ✅ Scenario data structure includes all required fields:")
+                    print(f"   - Scenario Name: {first_scenario.get('scenario_name')}")
+                    print(f"   - Description: {first_scenario.get('description')[:50]}...")
+                    print(f"   - Location: {first_scenario.get('location')}")
+                    print(f"   - Status: {first_scenario.get('status')}")
+                    print(f"   - Created At: {first_scenario.get('created_at')}")
+                else:
+                    print(f"   ❌ Missing required fields in scenario data: {missing_fields}")
+                    return False
+            else:
+                print("   ⚠️  No scenarios found for this exercise - testing empty response handling")
+                
+        else:
+            print(f"❌ Failed to get scenarios: {response.text}")
+            return False
+            
+        # Test 2: GET /api/exercise-objectives/{exercise_id}
+        print(f"\n2. Testing GET /api/exercise-objectives/{exercise_id}")
+        response = requests.get(f"{BACKEND_URL}/exercise-objectives/{exercise_id}")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            objectives = response.json()
+            print(f"✅ Successfully retrieved {len(objectives)} exercise objectives")
+            
+            if len(objectives) > 0:
+                # Verify objective data structure
+                first_objective = objectives[0]
+                required_fields = ["name", "description", "achieved", "created_at"]
+                missing_fields = [field for field in required_fields if field not in first_objective]
+                
+                if not missing_fields:
+                    print("   ✅ Objective data structure includes all required fields:")
+                    print(f"   - Name: {first_objective.get('name')}")
+                    print(f"   - Description: {first_objective.get('description')[:50]}...")
+                    print(f"   - Achievement Status: {first_objective.get('achieved')}")
+                    print(f"   - Created At: {first_objective.get('created_at')}")
+                    
+                    # Verify achievement status values
+                    achieved_status = first_objective.get('achieved')
+                    valid_statuses = ["Yes", "Partial", "No"]
+                    if achieved_status in valid_statuses:
+                        print(f"   ✅ Achievement status '{achieved_status}' is valid")
+                    else:
+                        print(f"   ⚠️  Achievement status '{achieved_status}' not in expected values: {valid_statuses}")
+                else:
+                    print(f"   ❌ Missing required fields in objective data: {missing_fields}")
+                    return False
+            else:
+                print("   ⚠️  No objectives found for this exercise - testing empty response handling")
+                
+        else:
+            print(f"❌ Failed to get exercise objectives: {response.text}")
+            return False
+            
+        # Test 3: GET /api/safety-officer
+        print(f"\n3. Testing GET /api/safety-officer")
+        response = requests.get(f"{BACKEND_URL}/safety-officer")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            safety_officer = response.json()
+            
+            if safety_officer:
+                print("✅ Successfully retrieved safety officer data")
+                
+                # Verify safety officer data structure
+                required_fields = ["firstName", "lastName", "position"]
+                missing_fields = [field for field in required_fields if field not in safety_officer]
+                
+                if not missing_fields:
+                    print("   ✅ Safety officer data structure includes required fields:")
+                    print(f"   - First Name: {safety_officer.get('firstName')}")
+                    print(f"   - Last Name: {safety_officer.get('lastName')}")
+                    print(f"   - Position: {safety_officer.get('position')}")
+                    
+                    # Check for phones array (could be in different formats)
+                    phones = []
+                    if safety_officer.get('cellPhone'):
+                        phones.append(safety_officer.get('cellPhone'))
+                    if safety_officer.get('homePhone'):
+                        phones.append(safety_officer.get('homePhone'))
+                    if safety_officer.get('phone'):
+                        phones.append(safety_officer.get('phone'))
+                        
+                    if phones:
+                        print(f"   ✅ Phone numbers available: {phones}")
+                    else:
+                        print("   ⚠️  No phone numbers found in safety officer data")
+                else:
+                    print(f"   ❌ Missing required fields in safety officer data: {missing_fields}")
+                    return False
+            else:
+                print("   ⚠️  No safety officer assigned - testing null response handling")
+                print("   ✅ Proper handling of case when no safety officer is assigned")
+                
+        else:
+            print(f"❌ Failed to get safety officer: {response.text}")
+            return False
+            
+        # Test 4: Data Integration Testing - Verify JSON responses
+        print(f"\n4. Testing data integration - JSON response format validation")
+        
+        # Test scenarios endpoint JSON format
+        response = requests.get(f"{BACKEND_URL}/scenarios", params={"exercise_id": exercise_id})
+        if response.status_code == 200:
+            try:
+                scenarios_json = response.json()
+                print("   ✅ Scenarios endpoint returns valid JSON")
+            except ValueError as e:
+                print(f"   ❌ Scenarios endpoint JSON parsing error: {e}")
+                return False
+        
+        # Test objectives endpoint JSON format
+        response = requests.get(f"{BACKEND_URL}/exercise-objectives/{exercise_id}")
+        if response.status_code == 200:
+            try:
+                objectives_json = response.json()
+                print("   ✅ Exercise objectives endpoint returns valid JSON")
+            except ValueError as e:
+                print(f"   ❌ Exercise objectives endpoint JSON parsing error: {e}")
+                return False
+        
+        # Test safety officer endpoint JSON format
+        response = requests.get(f"{BACKEND_URL}/safety-officer")
+        if response.status_code == 200:
+            try:
+                safety_officer_json = response.json()
+                print("   ✅ Safety officer endpoint returns valid JSON")
+            except ValueError as e:
+                print(f"   ❌ Safety officer endpoint JSON parsing error: {e}")
+                return False
+                
+        # Test 5: Error handling when no data exists
+        print(f"\n5. Testing error handling for non-existent exercise")
+        fake_exercise_id = "non-existent-exercise-id"
+        
+        # Test scenarios with non-existent exercise
+        response = requests.get(f"{BACKEND_URL}/scenarios", params={"exercise_id": fake_exercise_id})
+        if response.status_code == 200:
+            scenarios = response.json()
+            if len(scenarios) == 0:
+                print("   ✅ Scenarios endpoint properly handles non-existent exercise (empty array)")
+            else:
+                print(f"   ⚠️  Scenarios endpoint returned data for non-existent exercise")
+        else:
+            print(f"   ⚠️  Scenarios endpoint error for non-existent exercise: {response.status_code}")
+            
+        # Test objectives with non-existent exercise
+        response = requests.get(f"{BACKEND_URL}/exercise-objectives/{fake_exercise_id}")
+        if response.status_code == 200:
+            objectives = response.json()
+            if len(objectives) == 0:
+                print("   ✅ Objectives endpoint properly handles non-existent exercise (empty array)")
+            else:
+                print(f"   ⚠️  Objectives endpoint returned data for non-existent exercise")
+        else:
+            print(f"   ⚠️  Objectives endpoint error for non-existent exercise: {response.status_code}")
+            
+        # Test 6: Date field format validation
+        print(f"\n6. Testing date field format for frontend consumption")
+        
+        # Check scenarios date format
+        response = requests.get(f"{BACKEND_URL}/scenarios", params={"exercise_id": exercise_id})
+        if response.status_code == 200:
+            scenarios = response.json()
+            if len(scenarios) > 0 and scenarios[0].get('created_at'):
+                created_at = scenarios[0].get('created_at')
+                print(f"   ✅ Scenario created_at format: {created_at}")
+                # Check if it's a valid datetime string
+                try:
+                    from datetime import datetime
+                    if 'T' in created_at:
+                        datetime.fromisoformat(created_at.replace('Z', '+00:00'))
+                        print("   ✅ Scenario date format is valid ISO format")
+                    else:
+                        print("   ⚠️  Scenario date format may not be ISO format")
+                except ValueError:
+                    print("   ⚠️  Scenario date format validation failed")
+                    
+        # Check objectives date format
+        response = requests.get(f"{BACKEND_URL}/exercise-objectives/{exercise_id}")
+        if response.status_code == 200:
+            objectives = response.json()
+            if len(objectives) > 0 and objectives[0].get('created_at'):
+                created_at = objectives[0].get('created_at')
+                print(f"   ✅ Objective created_at format: {created_at}")
+                try:
+                    from datetime import datetime
+                    if 'T' in created_at:
+                        datetime.fromisoformat(created_at.replace('Z', '+00:00'))
+                        print("   ✅ Objective date format is valid ISO format")
+                    else:
+                        print("   ⚠️  Objective date format may not be ISO format")
+                except ValueError:
+                    print("   ⚠️  Objective date format validation failed")
+                    
+        print("\n✅ ALL ICS DASHBOARD OVERVIEW API TESTS COMPLETED")
+        return True
+        
+    except requests.exceptions.ConnectionError as e:
+        print(f"❌ Connection Error: Cannot connect to {BACKEND_URL}")
+        print(f"Error: {e}")
+        return False
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Request Error: {e}")
+        return False
+    except Exception as e:
+        print(f"❌ ICS Dashboard Overview API Test Error: {e}")
+        return False
+
 if __name__ == "__main__":
     print("EXRSIM Backend API Comprehensive Testing")
     print(f"Backend URL: {BACKEND_URL}")

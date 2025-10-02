@@ -1730,6 +1730,14 @@ const LeafletMapping = ({ exerciseId }) => {
       // Start initialization after a short delay
       setTimeout(initializeDrawing, 200);
     }
+    
+    // Cleanup function
+    return () => {
+      if (window.leafletDrawInitialized) {
+        window.leafletDrawInitialized = false;
+        console.log('🧹 Leaflet.Draw initialization flag reset');
+      }
+    };
   }, [mapReady, formData.color]);
 
   // Add global functions for popup buttons

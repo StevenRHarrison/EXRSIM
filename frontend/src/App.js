@@ -1777,29 +1777,22 @@ const LeafletMapping = ({ exerciseId }) => {
                         console.log('Updating existing object:', editingObject.id);
                         handleObjectUpdate(editingObject.id, formData);
                       } else {
-                        // Create a test object based on current category
-                        let testGeoJSON;
-                        if (selectedCategory === 'polygons' || selectedCategory === 'polygon') {
-                          testGeoJSON = {
-                            type: 'Feature',
-                            geometry: {
-                              type: 'Polygon',
-                              coordinates: [[
-                                [-99, 40], [-99, 39], [-98, 39], [-98, 40], [-99, 40]
-                              ]]
-                            }
-                          };
-                        } else {
-                          testGeoJSON = {
-                            type: 'Feature',
-                            geometry: {
-                              type: 'Point',
-                              coordinates: [-98.5795, 39.8283]
-                            }
-                          };
-                        }
-                        console.log('Creating new object:', selectedCategory, testGeoJSON);
-                        handleObjectCreate(testGeoJSON, selectedCategory === 'polygons' ? 'polygon' : 'marker');
+                        // Enable map clicking mode for placing new object
+                        console.log('🎯 Enabling map click mode for object placement');
+                        setPendingObjectData({
+                          name: formData.name || 'New Object',
+                          description: formData.description,
+                          color: formData.color,
+                          image: formData.image,
+                          type: selectedCategory === 'polygons' ? 'polygon' : 
+                                selectedCategory === 'lines' ? 'line' :
+                                selectedCategory === 'rectangles' ? 'rectangle' : 'marker'
+                        });
+                        setIsPlacingObject(true);
+                        setShowObjectForm(false); // Close modal
+                        
+                        // Show instruction
+                        alert('Click on the map where you want to place the object!');
                       }
                     } catch (error) {
                       console.error('Error saving object:', error);
@@ -1808,7 +1801,7 @@ const LeafletMapping = ({ exerciseId }) => {
                   }}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105"
                 >
-                  {editingObject ? 'Update Object' : 'Save Object'}
+                  {editingObject ? 'Update Object' : 'Click Map to Place'}
                 </button>
                 <button
                   type="button"

@@ -631,6 +631,7 @@ const ICSDashboard = ({ currentExercise }) => {
   ];
 
   const renderICSContent = () => {
+    console.log('renderICSContent called with activeICSMenu:', activeICSMenu);
     switch (activeICSMenu) {
       case 'dashboard':
         return <ICSDashboardOverview exerciseId={currentExercise?.id} />;

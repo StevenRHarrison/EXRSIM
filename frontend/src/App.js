@@ -1684,9 +1684,18 @@ const LeafletMapping = ({ exerciseId }) => {
           }}
         >
           <div 
-            className={`bg-white dark:bg-gray-800 rounded-lg p-6 w-96 max-w-md mx-4 shadow-2xl border-2 border-blue-500`}
-            style={{ zIndex: 10000 }}
-            onClick={(e) => e.stopPropagation()}
+            className="bg-white dark:bg-gray-800 rounded-lg p-6 w-96 max-w-md mx-4 shadow-2xl border-2 border-blue-500 modal-content"
+            style={{ 
+              zIndex: 10000,
+              position: 'relative',
+              backgroundColor: 'white',
+              maxHeight: '90vh',
+              overflowY: 'auto'
+            }}
+            onClick={(e) => {
+              console.log('🎯 Modal content clicked');
+              e.stopPropagation();
+            }}
           >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">

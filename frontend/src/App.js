@@ -761,6 +761,646 @@ const ICSDashboard = ({ currentExercise }) => {
   );
 };
 
+// Scenario Management Component
+const ScenarioManagement = ({ exerciseId }) => {
+  const { theme } = useTheme();
+  const [scenarios, setScenarios] = useState([]);
+  const [editingScenario, setEditingScenario] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchScenarios();
+  }, [exerciseId]);
+
+  const fetchScenarios = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/scenarios?exercise_id=${exerciseId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setScenarios(data);
+      }
+    } catch (error) {
+      console.error('Error fetching scenarios:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (scenarioId) => {
+    if (window.confirm('Are you sure you want to delete this scenario?')) {
+      try {
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/scenarios/${scenarioId}`, {
+          method: 'DELETE'
+        });
+        fetchScenarios();
+      } catch (error) {
+        console.error('Error deleting scenario:', error);
+      }
+    }
+  };
+
+  const handlePrint = (scenario) => {
+    const printWindow = window.open('', '_blank');
+    const printContent = `
+      <html>
+        <head>
+          <title>Scenario Report - ${scenario.scenario_name}</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            h1 { color: #f97316; }
+            .section { margin-bottom: 20px; }
+            .label { font-weight: bold; color: #374151; }
+            .value { margin-bottom: 10px; }
+            .image { max-width: 100%; margin: 10px 0; }
+          </style>
+        </head>
+        <body>
+          <h1>Emergency Scenario Report</h1>
+          <div class="section">
+            <div class="label">Scenario Name:</div>
+            <div class="value">${scenario.scenario_name}</div>
+          </div>
+          <div class="section">
+            <div class="label">Type:</div>
+            <div class="value">${scenario.scenario_type}</div>
+          </div>
+          <div class="section">
+            <div class="label">Severity Level:</div>
+            <div class="value">${scenario.severity_level}</div>
+          </div>
+          <div class="section">
+            <div class="label">Location:</div>
+            <div class="value">${scenario.location}</div>
+          </div>
+          <div class="section">
+            <div class="label">Description:</div>
+            <div class="value">${scenario.description}</div>
+          </div>
+          <div class="section">
+            <div class="label">Affected Population:</div>
+            <div class="value">${scenario.affected_population || 'Not specified'}</div>
+          </div>
+          <div class="section">
+            <div class="label">Resources Required:</div>
+            <div class="value">${scenario.resources_required || 'Not specified'}</div>
+          </div>
+          <div class="section">
+            <div class="label">Timeline:</div>
+            <div class="value">${scenario.timeline || 'Not specified'}</div>
+          </div>
+          ${scenario.scenario_image ? `<div class="section">
+            <div class="label">Scenario Image:</div>
+            <img class="image" src="${scenario.scenario_image}" alt="Scenario Image" />
+          </div>` : ''}
+          <div class="section">
+            <div class="label">Status:</div>
+            <div class="value">${scenario.status}</div>
+          </div>
+          <div class="section">
+            <div class="label">Created:</div>
+            <div class="value">${new Date(scenario.created_at).toLocaleString()}</div>
+          </div>
+        </body>
+      </html>
+    `;
+    
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
+  if (showForm) {
+    return (
+      <ScenarioForm
+        exerciseId={exerciseId}
+        editingScenario={editingScenario}
+        onBack={() => {
+          setShowForm(false);
+          setEditingScenario(null);
+        }}
+        onSave={() => {
+          fetchScenarios();
+          setShowForm(false);
+          setEditingScenario(null);
+        }}
+      />
+    );
+  }
+
+  return (
+    <div className="p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className={`text-2xl font-bold ${theme.colors.textPrimary}`}>Scenario Management</h1>
+          <p className={`${theme.colors.textMuted} mt-1`}>
+            Manage emergency exercise scenarios and situational parameters
+          </p>
+        </div>
+        <Button 
+          className="bg-orange-500 hover:bg-orange-600 text-black"
+          onClick={() => setShowForm(true)}
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Add New Scenario
+        </Button>
+      </div>
+
+      {loading ? (
+        <Card className={`${theme.colors.tertiary} ${theme.colors.border}`}>
+          <CardContent className="p-12 text-center">
+            <div className={theme.colors.textMuted}>Loading scenarios...</div>
+          </CardContent>
+        </Card>
+      ) : scenarios.length === 0 ? (
+        <Card className={`${theme.colors.tertiary} ${theme.colors.border} border-dashed`}>
+          <CardContent className="p-12 text-center">
+            <AlertCircle className={`h-12 w-12 ${theme.colors.textMuted} mx-auto mb-4`} />
+            <h3 className={`text-lg font-semibold ${theme.colors.textSecondary} mb-2`}>No Scenarios Yet</h3>
+            <p className={`${theme.colors.textMuted} mb-4`}>Add emergency scenarios to define exercise parameters and conditions.</p>
+            <Button 
+              className="bg-orange-500 hover:bg-orange-600 text-black"
+              onClick={() => setShowForm(true)}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add First Scenario
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {scenarios.map((scenario) => (
+            <Card key={scenario.id} className={`${theme.colors.tertiary} ${theme.colors.border}`}>
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <CardTitle className={`${theme.colors.textPrimary} text-lg`}>
+                      {scenario.scenario_name}
+                    </CardTitle>
+                    <CardDescription className={theme.colors.textMuted}>
+                      {scenario.scenario_type} • {scenario.severity_level}
+                    </CardDescription>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handlePrint(scenario)}
+                      className={`${theme.colors.textMuted} hover:${theme.colors.textPrimary}`}
+                    >
+                      <Printer className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setEditingScenario(scenario);
+                        setShowForm(true);
+                      }}
+                      className={`${theme.colors.textMuted} hover:${theme.colors.textPrimary}`}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDelete(scenario.id)}
+                      className="text-red-400 hover:text-red-300"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {scenario.scenario_image && (
+                  <div className="w-full h-32 rounded-lg overflow-hidden">
+                    <img 
+                      src={scenario.scenario_image} 
+                      alt="Scenario" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                <div>
+                  <p className={`text-sm ${theme.colors.textSecondary} mb-2`}>
+                    {scenario.description}
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className={theme.colors.textMuted}>Location:</span>
+                    <div className={`${theme.colors.textPrimary} font-medium`}>
+                      {scenario.location}
+                    </div>
+                  </div>
+                  <div>
+                    <span className={theme.colors.textMuted}>Status:</span>
+                    <div className={`${theme.colors.textPrimary} font-medium`}>
+                      {scenario.status}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Scenario Form Component
+const ScenarioForm = ({ exerciseId, editingScenario, onBack, onSave }) => {
+  const { theme } = useTheme();
+  const [formData, setFormData] = useState({
+    scenario_name: '',
+    scenario_type: '',
+    severity_level: '',
+    location: '',
+    description: '',
+    affected_population: '',
+    resources_required: '',
+    timeline: '',
+    status: 'Active',
+    scenario_image: null
+  });
+  const [errors, setErrors] = useState({});
+  const [imagePreview, setImagePreview] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    if (editingScenario) {
+      setFormData({
+        scenario_name: editingScenario.scenario_name || '',
+        scenario_type: editingScenario.scenario_type || '',
+        severity_level: editingScenario.severity_level || '',
+        location: editingScenario.location || '',
+        description: editingScenario.description || '',
+        affected_population: editingScenario.affected_population || '',
+        resources_required: editingScenario.resources_required || '',
+        timeline: editingScenario.timeline || '',
+        status: editingScenario.status || 'Active',
+        scenario_image: editingScenario.scenario_image || null
+      });
+      setImagePreview(editingScenario.scenario_image);
+    }
+  }, [editingScenario]);
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: null }));
+    }
+  };
+
+  const handleImageUpload = async (file) => {
+    if (!file) return;
+
+    setUploading(true);
+    const formDataImage = new FormData();
+    formDataImage.append('file', file);
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/upload`, {
+        method: 'POST',
+        body: formDataImage
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setFormData(prev => ({ ...prev, scenario_image: result.file_path }));
+        setImagePreview(result.file_path);
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Basic validation
+    const newErrors = {};
+    if (!formData.scenario_name) newErrors.scenario_name = 'Scenario name is required';
+    if (!formData.scenario_type) newErrors.scenario_type = 'Scenario type is required';
+    if (!formData.severity_level) newErrors.severity_level = 'Severity level is required';
+    if (!formData.location) newErrors.location = 'Location is required';
+    if (!formData.description) newErrors.description = 'Description is required';
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    try {
+      const scenarioData = {
+        ...formData,
+        exercise_id: exerciseId
+      };
+
+      const url = editingScenario 
+        ? `${process.env.REACT_APP_BACKEND_URL}/api/scenarios/${editingScenario.id}`
+        : `${process.env.REACT_APP_BACKEND_URL}/api/scenarios`;
+      
+      const method = editingScenario ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(scenarioData)
+      });
+
+      if (response.ok) {
+        onSave();
+      }
+    } catch (error) {
+      console.error('Error saving scenario:', error);
+    }
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-orange-500 mb-2">
+            {editingScenario ? 'Edit Scenario' : 'Create New Scenario'}
+          </h1>
+          <p className={theme.colors.textMuted}>
+            Define emergency exercise scenario parameters and conditions
+          </p>
+        </div>
+        <Button 
+          variant="outline" 
+          onClick={onBack}
+          className="text-orange-500 border-orange-500 hover:bg-orange-500 hover:text-black"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Scenarios
+        </Button>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Basic Information */}
+        <Card className={`${theme.colors.secondary} ${theme.colors.border}`}>
+          <CardHeader>
+            <CardTitle className="text-orange-500">Basic Information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="scenario_name" className={theme.colors.textPrimary}>
+                  Scenario Name *
+                </Label>
+                <Input
+                  id="scenario_name"
+                  type="text"
+                  value={formData.scenario_name}
+                  onChange={(e) => handleInputChange('scenario_name', e.target.value)}
+                  placeholder="Multi-building fire emergency"
+                  className={theme.colors.input}
+                />
+                {errors.scenario_name && (
+                  <p className="text-red-400 text-sm mt-1">{errors.scenario_name}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="scenario_type" className={theme.colors.textPrimary}>
+                  Scenario Type *
+                </Label>
+                <select
+                  id="scenario_type"
+                  value={formData.scenario_type}
+                  onChange={(e) => handleInputChange('scenario_type', e.target.value)}
+                  className={`${theme.colors.input} w-full`}
+                >
+                  <option value="">Select scenario type</option>
+                  <option value="Fire Emergency">Fire Emergency</option>
+                  <option value="Natural Disaster">Natural Disaster</option>
+                  <option value="Medical Emergency">Medical Emergency</option>
+                  <option value="Security Incident">Security Incident</option>
+                  <option value="Chemical Spill">Chemical Spill</option>
+                  <option value="Evacuation">Evacuation</option>
+                  <option value="Search & Rescue">Search & Rescue</option>
+                  <option value="Mass Casualty">Mass Casualty</option>
+                  <option value="Infrastructure Failure">Infrastructure Failure</option>
+                  <option value="Other">Other</option>
+                </select>
+                {errors.scenario_type && (
+                  <p className="text-red-400 text-sm mt-1">{errors.scenario_type}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="severity_level" className={theme.colors.textPrimary}>
+                  Severity Level *
+                </Label>
+                <select
+                  id="severity_level"
+                  value={formData.severity_level}
+                  onChange={(e) => handleInputChange('severity_level', e.target.value)}
+                  className={`${theme.colors.input} w-full`}
+                >
+                  <option value="">Select severity level</option>
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
+                  <option value="Critical">Critical</option>
+                </select>
+                {errors.severity_level && (
+                  <p className="text-red-400 text-sm mt-1">{errors.severity_level}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="location" className={theme.colors.textPrimary}>
+                  Location *
+                </Label>
+                <Input
+                  id="location"
+                  type="text"
+                  value={formData.location}
+                  onChange={(e) => handleInputChange('location', e.target.value)}
+                  placeholder="Building A, 3rd Floor"
+                  className={theme.colors.input}
+                />
+                {errors.location && (
+                  <p className="text-red-400 text-sm mt-1">{errors.location}</p>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="description" className={theme.colors.textPrimary}>
+                Description *
+              </Label>
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => handleInputChange('description', e.target.value)}
+                placeholder="Detailed description of the emergency scenario..."
+                rows={4}
+                className={theme.colors.input}
+              />
+              {errors.description && (
+                <p className="text-red-400 text-sm mt-1">{errors.description}</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Additional Details */}
+        <Card className={`${theme.colors.secondary} ${theme.colors.border}`}>
+          <CardHeader>
+            <CardTitle className="text-orange-500">Additional Details</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="affected_population" className={theme.colors.textPrimary}>
+                  Affected Population
+                </Label>
+                <Input
+                  id="affected_population"
+                  type="text"
+                  value={formData.affected_population}
+                  onChange={(e) => handleInputChange('affected_population', e.target.value)}
+                  placeholder="Estimated number of people affected"
+                  className={theme.colors.input}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="timeline" className={theme.colors.textPrimary}>
+                  Timeline
+                </Label>
+                <Input
+                  id="timeline"
+                  type="text"
+                  value={formData.timeline}
+                  onChange={(e) => handleInputChange('timeline', e.target.value)}
+                  placeholder="Expected duration or timeline"
+                  className={theme.colors.input}
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="resources_required" className={theme.colors.textPrimary}>
+                Resources Required
+              </Label>
+              <Textarea
+                id="resources_required"
+                value={formData.resources_required}
+                onChange={(e) => handleInputChange('resources_required', e.target.value)}
+                placeholder="List of resources, personnel, and equipment needed..."
+                rows={3}
+                className={theme.colors.input}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="status" className={theme.colors.textPrimary}>
+                Status
+              </Label>
+              <select
+                id="status"
+                value={formData.status}
+                onChange={(e) => handleInputChange('status', e.target.value)}
+                className={`${theme.colors.input} w-full`}
+              >
+                <option value="Active">Active</option>
+                <option value="Pending">Pending</option>
+                <option value="Resolved">Resolved</option>
+                <option value="Archived">Archived</option>
+              </select>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Image Upload */}
+        <Card className={`${theme.colors.secondary} ${theme.colors.border}`}>
+          <CardHeader>
+            <CardTitle className="text-orange-500">Scenario Image</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center space-x-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                className="border-orange-500/50 text-orange-400 hover:bg-orange-500/10"
+              >
+                <Camera className="h-4 w-4 mr-2" />
+                {uploading ? 'Uploading...' : 'Upload Image'}
+              </Button>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={(e) => handleImageUpload(e.target.files[0])}
+                accept="image/*"
+                className="hidden"
+              />
+            </div>
+            
+            {imagePreview && (
+              <div className="mt-4">
+                <div className="w-full max-w-md h-48 rounded-lg overflow-hidden">
+                  <img 
+                    src={imagePreview} 
+                    alt="Scenario preview" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setImagePreview(null);
+                    setFormData(prev => ({ ...prev, scenario_image: null }));
+                  }}
+                  className="mt-2 text-red-400 hover:text-red-300"
+                >
+                  Remove Image
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Submit Buttons */}
+        <div className="flex items-center justify-end space-x-4">
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={onBack}
+            className={`${theme.colors.textSecondary} border-gray-500`}
+          >
+            Cancel
+          </Button>
+          <Button 
+            type="submit" 
+            className="bg-orange-500 hover:bg-orange-600 text-black"
+          >
+            {editingScenario ? 'Update Scenario' : 'Create Scenario'}
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
 const Navigation = ({ currentExercise = null, activeMenu = 'dashboard' }) => {
   const { theme } = useTheme();
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);

@@ -264,7 +264,7 @@
 
 ## test_plan:
   current_focus:
-    - "Exercise Management Routing Fix and Coordinate Capture Verification"
+    - "Comprehensive Leaflet Draw Tools Integration Testing"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"

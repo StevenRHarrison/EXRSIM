@@ -1221,8 +1221,14 @@ const LeafletMapping = ({ exerciseId }) => {
 
   // Initialize drawing controls when map is ready
   useEffect(() => {
-    if (mapReady && mapRef.current) {
+    if (mapReady && mapRef.current && mapRef.current._container) {
       const map = mapRef.current;
+      
+      // Ensure map is fully initialized
+      if (!map.getContainer()) {
+        console.log('Map container not ready, waiting...');
+        return;
+      }
       
       // Create a FeatureGroup for drawn items
       const drawnFeatureGroup = new L.FeatureGroup();

@@ -656,8 +656,7 @@ const ICSDashboard = ({ currentExercise }) => {
   };
 
   return (
-    <React.Fragment>
-      <div className="flex h-screen">
+    <div className="flex h-screen">
         {/* ICS Sidebar */}
         <div className={`w-64 ${theme.colors.secondary} border-r ${theme.colors.border} h-screen sticky top-0`}>
           <div className="p-4">

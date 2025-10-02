@@ -14628,8 +14628,8 @@ function AppContent() {
     }
   };
 
-  // Exercise management dashboard with navigation
-  if (activeMenu === 'manage') {
+  // Exercise management and ICS dashboard with navigation
+  if (activeMenu === 'manage' || activeMenu === 'ics') {
     return (
       <div className={`min-h-screen ${theme.colors.primary} ${theme.colors.textPrimary}`}>
         <BrowserRouter>

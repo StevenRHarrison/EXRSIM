@@ -689,7 +689,9 @@ const ICSDashboard = ({ currentExercise }) => {
                       variant={isActive ? "secondary" : "ghost"}
                       className={`w-full justify-start text-left ${
                         item.id === 'operations' 
-                          ? 'bg-orange-500 text-white hover:bg-orange-600' 
+                          ? 'bg-orange-500 text-white hover:bg-orange-600'
+                          : item.backgroundColor
+                          ? `${item.backgroundColor} text-white hover:opacity-80`
                           : isActive
                             ? `${theme.colors.accent} ${theme.colors.textPrimary}`
                             : `${theme.colors.textSecondary} ${theme.colors.hover}`
@@ -699,12 +701,22 @@ const ICSDashboard = ({ currentExercise }) => {
                         if (item.id === 'operations') {
                           setOperationsExpanded(!operationsExpanded);
                         }
+                        if (item.id === 'fin-admin' && item.hasSubmenu) {
+                          setFinAdminExpanded(!finAdminExpanded);
+                        }
                       }}
                     >
                       <Icon className="h-4 w-4 mr-3" />
-                      <span className={item.id === 'operations' ? 'text-white' : ''}>{item.label}</span>
-                      {item.hasSubmenu && (
+                      <span className={item.id === 'operations' || item.backgroundColor ? 'text-white' : ''}>{item.label}</span>
+                      {item.hasSubmenu && item.id === 'operations' && (
                         operationsExpanded ? (
+                          <ChevronDown className="h-4 w-4 ml-auto" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4 ml-auto" />
+                        )
+                      )}
+                      {item.hasSubmenu && item.id === 'fin-admin' && (
+                        finAdminExpanded ? (
                           <ChevronDown className="h-4 w-4 ml-auto" />
                         ) : (
                           <ChevronRight className="h-4 w-4 ml-auto" />

@@ -1352,6 +1352,22 @@ const LeafletMapping = ({ exerciseId }) => {
           console.log('✅ Leaflet.Draw plugin verified and available');
           console.log('✅ Available draw events:', Object.keys(L.Draw.Event));
 
+          // Check if already initialized
+          if (window.leafletDrawInitialized) {
+            console.log('⚠️ Draw control already initialized, skipping...');
+            return;
+          }
+
+          // Create FeatureGroup to store drawn items
+          if (!drawnItemsRef.current) {
+            const editableLayers = new L.FeatureGroup();
+            map.addLayer(editableLayers);
+            drawnItemsRef.current = editableLayers;
+            console.log('✅ FeatureGroup added for drawn items');
+          }
+
+          const editableLayers = drawnItemsRef.current;
+
           // Create Leaflet.Draw control with enhanced options
           const drawPluginOptions = {
             position: 'topleft',

@@ -805,7 +805,7 @@ const Navigation = ({ currentExercise = null, activeMenu = 'dashboard' }) => {
                 <div className="flex items-center">
                   {activeMenu === 'builder' ? (
                     <ChevronRight className="h-4 w-4 text-white" />
-                  ) : activeMenu === 'manage' ? (
+                  ) : activeMenu === 'ics' || activeMenu === 'manage' ? (
                     <ChevronLeft className="h-4 w-4 text-white" />
                   ) : (
                     <ChevronRight className="h-4 w-4 text-white" />

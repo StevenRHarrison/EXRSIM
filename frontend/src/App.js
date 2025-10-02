@@ -1323,6 +1323,7 @@ const LeafletMapping = ({ exerciseId }) => {
         try {
           console.log('📍 Map container check:', !!map.getContainer());
           console.log('📍 Map size check:', !!map._size);
+          console.log('📍 Map ready state:', map._loaded);
           
           if (!map.getContainer() || !map._size || !map._loaded) {
             console.log('⏳ Map not fully ready, retrying in 1000ms...');

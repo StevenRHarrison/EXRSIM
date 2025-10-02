@@ -773,6 +773,20 @@ const ICSDashboard = ({ currentExercise }) => {
                           <ChevronRight className="h-4 w-4 ml-auto" />
                         )
                       )}
+                      {item.hasSubmenu && item.id === 'planning' && (
+                        planningExpanded ? (
+                          <ChevronDown className="h-4 w-4 ml-auto" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4 ml-auto" />
+                        )
+                      )}
+                      {item.hasSubmenu && item.id === 'logistics' && (
+                        logisticsExpanded ? (
+                          <ChevronDown className="h-4 w-4 ml-auto" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4 ml-auto" />
+                        )
+                      )}
                       {item.hasSubmenu && item.id === 'fin-admin' && (
                         finAdminExpanded ? (
                           <ChevronDown className="h-4 w-4 ml-auto" />

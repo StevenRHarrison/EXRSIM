@@ -987,7 +987,7 @@ const ScenarioManagement = ({ exerciseId }) => {
               </CardHeader>
               <CardContent className="space-y-3">
                 {scenario.scenario_image ? (
-                  <div className="w-full h-40 rounded-lg overflow-hidden border border-gray-600 shadow-lg">
+                  <div className="w-32 h-32 rounded-lg overflow-hidden border border-gray-600 shadow-lg mx-auto">
                     <img 
                       src={scenario.scenario_image} 
                       alt={`Scenario: ${scenario.scenario_name}`} 
@@ -995,10 +995,10 @@ const ScenarioManagement = ({ exerciseId }) => {
                     />
                   </div>
                 ) : (
-                  <div className={`w-full h-24 rounded-lg border-2 border-dashed ${theme.colors.border} flex items-center justify-center`}>
+                  <div className={`w-32 h-32 rounded-lg border-2 border-dashed ${theme.colors.border} flex items-center justify-center mx-auto`}>
                     <div className="text-center">
                       <Camera className={`h-6 w-6 ${theme.colors.textMuted} mx-auto mb-1`} />
-                      <p className={`text-xs ${theme.colors.textMuted}`}>No image uploaded</p>
+                      <p className={`text-xs ${theme.colors.textMuted}`}>No image</p>
                     </div>
                   </div>
                 )}

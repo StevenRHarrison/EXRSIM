@@ -587,13 +587,13 @@ const Navigation = ({ currentExercise = null, activeMenu = 'dashboard' }) => {
           <div className="flex items-center space-x-4">
             <Link 
               to="/builder" 
-              className="text-orange-500 hover:text-orange-400 transition-colors font-medium"
+              className={`text-orange-500 hover:text-orange-400 transition-colors ${activeMenu === 'builder' ? 'font-bold' : 'font-medium'}`}
             >
               Exercise
             </Link>
             {currentExercise && (
               <button
-                className="text-orange-500 hover:text-orange-400 transition-colors font-medium cursor-pointer"
+                className={`text-orange-500 hover:text-orange-400 transition-colors cursor-pointer ${activeMenu === 'manage' ? 'font-bold' : 'font-medium'}`}
                 onClick={() => window.location.href = `#manage?exercise=${currentExercise.id}`}
                 title={currentExercise.exercise_name}
               >

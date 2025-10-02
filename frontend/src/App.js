@@ -620,7 +620,7 @@ const ICSDashboard = ({ currentExercise }) => {
         { id: 'cost-unit', label: 'Cost Unit', icon: DollarSign, backgroundColor: 'bg-gray-500' }
       ]
     },
-    { id: 'ics-2xx-forms', label: 'ICS 2XX Form Series', icon: FileCheck }
+    { id: 'ics-2xx-forms', label: 'ICS 2XX Form Series', icon: FileCheck, backgroundColor: 'bg-green-500' }
   ];
 
   const renderICSContent = () => {

@@ -1204,20 +1204,128 @@ const LeafletMapping = ({ exerciseId }) => {
     { id: 'rectangle', label: 'Rectangles', count: mapObjects.filter(obj => obj.type === 'rectangle').length }
   ];
 
-  // This will be the actual Leaflet map implementation
-  const MapContainer = () => {
+  // Fix default marker icons for Leaflet
+  useEffect(() => {
+    delete L.Icon.Default.prototype._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+      iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+    });
+  }, []);
+
+  const onCreated = (e) => {
+    const { layerType, layer } = e;
+    const geoJSON = layer.toGeoJSON();
+    
+    // Create object with default name and current form data
+    const objectData = {
+      exercise_id: exerciseId,
+      type: layerType === 'polyline' ? 'line' : layerType,
+      name: formData.name || `New ${layerType}`,
+      description: formData.description,
+      color: formData.color,
+      geometry: geoJSON.geometry,
+      image: formData.image
+    };
+
+    handleObjectCreate(geoJSON, layerType === 'polyline' ? 'line' : layerType);
+  };
+
+  const MapContainerComponent = () => {
     return (
-      <div className="h-full w-full bg-gray-200 flex items-center justify-center">
-        <div className="text-center">
-          <Map className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-600">Interactive Leaflet Map</p>
-          <p className="text-sm text-gray-500 mt-2">
-            Map will render here with:<br/>
-            • Multiple tile layers<br/>
-            • Drawing tools<br/>
-            • Object management
-          </p>
-        </div>
+      <div className="h-full w-full">
+        <LeafletMapContainer
+          center={[39.8283, -98.5795]} // Center of USA
+          zoom={4}
+          style={{ height: '100%', width: '100%' }}
+        >
+          <LayersControl position="topright">
+            {/* Base layers */}
+            <LayersControl.BaseLayer checked name="OpenStreetMap">
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+            </LayersControl.BaseLayer>
+            
+            <LayersControl.BaseLayer name="Streets">
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+              />
+            </LayersControl.BaseLayer>
+
+            <LayersControl.BaseLayer name="Satellite">
+              <TileLayer
+                attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+              />
+            </LayersControl.BaseLayer>
+
+            <LayersControl.BaseLayer name="Topographic">
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
+              />
+            </LayersControl.BaseLayer>
+
+            <LayersControl.BaseLayer name="Grayscale">
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+              />
+            </LayersControl.BaseLayer>
+
+            {/* Drawing controls */}
+            <FeatureGroup>
+              <EditControl
+                position="topleft"
+                onCreated={onCreated}
+                draw={{
+                  rectangle: {
+                    shapeOptions: {
+                      color: formData.color,
+                      fillColor: formData.color,
+                      fillOpacity: 0.3
+                    }
+                  },
+                  polygon: {
+                    shapeOptions: {
+                      color: formData.color,
+                      fillColor: formData.color,
+                      fillOpacity: 0.3
+                    }
+                  },
+                  polyline: {
+                    shapeOptions: {
+                      color: formData.color,
+                      weight: 4
+                    }
+                  },
+                  marker: true,
+                  circle: false,
+                  circlemarker: false
+                }}
+                edit={{
+                  edit: false,
+                  remove: false
+                }}
+              />
+            </FeatureGroup>
+
+            {/* Existing map objects overlay */}
+            <LayersControl.Overlay checked name="Map Objects">
+              <FeatureGroup>
+                {mapObjects.map(obj => {
+                  // This would render existing objects on the map
+                  // Implementation depends on object geometry type
+                  return null;
+                })}
+              </FeatureGroup>
+            </LayersControl.Overlay>
+          </LayersControl>
+        </LeafletMapContainer>
       </div>
     );
   };

@@ -295,20 +295,17 @@
 ## user_problem_statement: Complete the map object creation workflow in the EXRSIM application. The "Add Map Object" modal and form fields are functional, but users cannot click on the map to create objects at specific locations. Need to implement click-to-place functionality and ensure map object persistence through the existing API.
 
 ## backend:
-  - task: "Scribe Template API Endpoints - CRUD Operations"
+  - task: "Map Object API Endpoints - CRUD Operations for Leaflet Mapping"
     implemented: true
-    working: true
+    working: "unknown"
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         -working: "unknown"
         -agent: "main"
-        -comment: "Investigation required: Digital Scribe Form functionality needs comprehensive backend testing. Backend server.py contains ScribeTemplate, ScribeTemplateEvent, ScribeTemplateCommunication Pydantic models with CRUD endpoints. Need to verify all endpoints work correctly with time string fields and nested data structures."
-        -working: true
-        -agent: "testing"
-        -comment: "🎉 COMPREHENSIVE DIGITAL SCRIBE TEMPLATE API TESTING COMPLETED - OUTSTANDING SUCCESS! ✅ ALL SCRIBE TEMPLATE ENDPOINTS WORKING PERFECTLY: GET /api/scribe-templates (retrieve all), POST /api/scribe-templates (create with comprehensive nested data), GET /api/scribe-templates/{id} (retrieve specific), PUT /api/scribe-templates/{id} (update with additional nested data), DELETE /api/scribe-templates/{id} (delete and verify). ✅ TIME STRING HANDLING EXCELLENCE: HH:MM AM/PM format perfectly preserved ('9:30 AM', '2:45 PM', '11:00 PM', '12:15 AM'), edge cases handled correctly (midnight '12:00 AM', noon '12:00 PM', near-midnight '11:59 PM'), all time fields in nested structures working correctly. ✅ NESTED DATA STRUCTURES VERIFIED: ScribeTemplate with ScribeTemplateEvent (4 items), ScribeTemplateCommunication (3 items), ScribeTemplateDecision (2 items), ScribeTemplateIssue (2 items), ScribeTemplateParticipantObs (2 items) - all nested arrays persist correctly. ✅ LONGTEXT CONTENT FIELD WORKING: Communications content field handles large text data (488+ characters), detailed communication logs preserved correctly, multi-paragraph descriptions working. ✅ DATA PERSISTENCE EXCELLENCE: Complete CRUD workflow verified (Create → Save → Retrieve → Update → Retrieve → Delete), all required fields preserved (exerciseId, startTime, endTime, timeline_events, communications, notes), MongoDB storage and retrieval of complex nested structures working perfectly. ✅ ERROR HANDLING VERIFIED: Proper 422 error for missing required fields (exerciseId), proper 404 error for non-existent resources, malformed data handling working correctly. ✅ COMPREHENSIVE TEST SCENARIOS PASSED: Created comprehensive test data with multiple timeline events and communications, tested time values across full 24-hour range, verified content field handles large text data, tested data retrieval and all nested data persists correctly, verified complete workflow integrity. The Digital Scribe Form backend functionality is PRODUCTION READY and exceeds all specified requirements."
+        -comment: "BACKEND TESTING REQUESTED: Map object CRUD API endpoints need comprehensive testing to support the Leaflet mapping feature. Backend contains MapObject, MapObjectCreate, MapObjectUpdate Pydantic models with complete CRUD endpoints. Need to verify: 1) POST /api/map-objects - Create map objects with geometry data, 2) GET /api/map-objects?exercise_id={id} - Retrieve objects by exercise, 3) GET /api/map-objects/{object_id} - Get specific object, 4) PUT /api/map-objects/{object_id} - Update object data, 5) DELETE /api/map-objects/{object_id} - Delete objects. Models support marker, line, polygon, rectangle types with GeoJSON geometry format, name, description, color, and optional image fields. Testing should verify proper data persistence, geometry handling, and error cases."
 
   - task: "Exercise Management Dashboard - Exercise Loading"
     implemented: true

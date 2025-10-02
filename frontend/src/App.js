@@ -1237,21 +1237,6 @@ const LeafletMapping = ({ exerciseId }) => {
     }
   };
 
-  const handleObjectDelete = async (objectId) => {
-    if (window.confirm('Are you sure you want to delete this map object?')) {
-      try {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/map-objects/${objectId}`, {
-          method: 'DELETE',
-        });
-
-        if (response.ok) {
-          setMapObjects(prev => prev.filter(obj => obj.id !== objectId));
-        }
-      } catch (error) {
-        console.error('Error deleting map object:', error);
-      }
-    }
-  };
   // React Leaflet Draw event handlers
   const handleDrawCreated = (e) => {
     const { layerType, layer } = e;

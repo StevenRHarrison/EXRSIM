@@ -1385,71 +1385,6 @@ const LeafletMapping = ({ exerciseId }) => {
     }
   }, [map, drawnItems, mapObjects]);
 
-  const renderMapObjects = () => {
-    return mapObjects.map(obj => {
-      const { geometry, color, name, id } = obj;
-      
-      switch (obj.type) {
-        case 'marker':
-          if (geometry.type === 'Point') {
-            const [lng, lat] = geometry.coordinates;
-            return (
-              <Marker key={id} position={[lat, lng]}>
-                <Popup>
-                  <div>
-                    <h3 className="font-semibold">{name}</h3>
-                    <p className="text-sm text-gray-600">{obj.description}</p>
-                  </div>
-                </Popup>
-              </Marker>
-            );
-          }
-          break;
-        case 'polygon':
-          if (geometry.type === 'Polygon') {
-            const positions = geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
-            return (
-              <Polygon
-                key={id}
-                positions={positions}
-                pathOptions={{ color: color, fillColor: color, fillOpacity: 0.3 }}
-              >
-                <Popup>
-                  <div>
-                    <h3 className="font-semibold">{name}</h3>
-                    <p className="text-sm text-gray-600">{obj.description}</p>
-                  </div>
-                </Popup>
-              </Polygon>
-            );
-          }
-          break;
-        case 'line':
-          if (geometry.type === 'LineString') {
-            const positions = geometry.coordinates.map(coord => [coord[1], coord[0]]);
-            return (
-              <Polyline
-                key={id}
-                positions={positions}
-                pathOptions={{ color: color, weight: 4 }}
-              >
-                <Popup>
-                  <div>
-                    <h3 className="font-semibold">{name}</h3>
-                    <p className="text-sm text-gray-600">{obj.description}</p>
-                  </div>
-                </Popup>
-              </Polyline>
-            );
-          }
-          break;
-        default:
-          return null;
-      }
-      return null;
-    });
-  };
-
   const MapContainerComponent = () => {
     return (
       <div className="h-full w-full">
@@ -1457,8 +1392,8 @@ const LeafletMapping = ({ exerciseId }) => {
           center={[39.8283, -98.5795]} // Center of USA
           zoom={4}
           style={{ height: '100%', width: '100%' }}
-          eventHandlers={{
-            click: handleMapClick
+          whenReady={(mapInstance) => {
+            setMap(mapInstance.target);
           }}
         >
           <LayersControl position="topright">
@@ -1498,14 +1433,6 @@ const LeafletMapping = ({ exerciseId }) => {
               />
             </LayersControl.BaseLayer>
           </LayersControl>
-
-          {/* Render existing map objects */}
-          {renderMapObjects()}
-
-          {/* Render temporary markers during drawing */}
-          {tempMarkers.map(marker => (
-            <Marker key={marker.id} position={marker.position} />
-          ))}
         </LeafletMapContainer>
       </div>
     );

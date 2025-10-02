@@ -14256,17 +14256,24 @@ function AppContent() {
   useEffect(() => {
     const fetchCurrentExercise = async () => {
       if (managingExerciseId) {
+        console.log('Fetching exercise with ID:', managingExerciseId);
         try {
           const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/exercises/${managingExerciseId}`);
+          console.log('Response status:', response.status);
           if (response.ok) {
             const exerciseData = await response.json();
+            console.log('Exercise data fetched:', exerciseData);
             setCurrentExercise(exerciseData);
+          } else {
+            console.error('Failed to fetch exercise:', response.status);
+            setCurrentExercise(null);
           }
         } catch (error) {
           console.error('Error fetching current exercise:', error);
           setCurrentExercise(null);
         }
       } else {
+        console.log('No managingExerciseId, clearing currentExercise');
         setCurrentExercise(null);
       }
     };

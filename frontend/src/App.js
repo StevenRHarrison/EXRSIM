@@ -558,7 +558,7 @@ const PoliciesProceduresManager = ({ onClose }) => {
   );
 };
 
-const Navigation = ({ currentExercise = null }) => {
+const Navigation = ({ currentExercise = null, activeMenu = 'dashboard' }) => {
   const { theme } = useTheme();
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
   const [showLocationManager, setShowLocationManager] = useState(false);

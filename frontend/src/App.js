@@ -1104,7 +1104,8 @@ const LeafletMapping = ({ exerciseId }) => {
     name: '',
     description: '',
     color: '#3388ff',
-    image: ''
+    image: '',
+    type: 'marker' // Add object type to form data
   });
 
   useEffect(() => {

@@ -11,7 +11,7 @@ import sys
 import os
 
 # Get backend URL from frontend .env
-BACKEND_URL = "https://ics-command.preview.emergentagent.com/api"
+BACKEND_URL = "https://leaflet-ics.preview.emergentagent.com/api"
 
 def test_complete_data_flow():
     """Test complete data flow from Exercise Builder to Exercise Management Dashboard"""

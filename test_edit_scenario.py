@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 import sys
 
 # Get backend URL from frontend .env
-BACKEND_URL = "https://ics-command.preview.emergentagent.com/api"
+BACKEND_URL = "https://leaflet-ics.preview.emergentagent.com/api"
 
 def test_edit_exercise_scenario():
     """Test the exact scenario: fetch exercise for editing and examine dynamic collections"""

@@ -1239,7 +1239,7 @@ const LeafletMapping = ({ exerciseId }) => {
           map.addLayer(drawnFeatureGroup);
           setDrawnItems(drawnFeatureGroup);
 
-          // Initialize the draw control
+          // Initialize the draw control with enhanced visibility
           const drawControl = new L.Control.Draw({
             position: 'topleft',
             draw: {

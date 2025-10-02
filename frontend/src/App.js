@@ -566,6 +566,7 @@ const ICSDashboard = ({ currentExercise }) => {
   const [operationsExpanded, setOperationsExpanded] = useState(true);
 
   const icsMenuItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: Home },
     {
       id: 'operations',
       label: 'Operations',

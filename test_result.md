@@ -283,7 +283,8 @@
 ## test_plan:
   current_focus:
     - "Comprehensive Leaflet Draw Tools Integration Testing"
-  stuck_tasks: []
+  stuck_tasks:
+    - "Comprehensive Leaflet Draw Tools Integration"
   test_all: false
   test_priority: "high_first"
 

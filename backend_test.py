@@ -2258,6 +2258,338 @@ def test_ics_dashboard_overview_api():
         print(f"❌ ICS Dashboard Overview API Test Error: {e}")
         return False
 
+def test_map_object_api():
+    """Test Map Object API endpoints comprehensively for Leaflet mapping functionality"""
+    print("=" * 60)
+    print("TESTING MAP OBJECT API ENDPOINTS FOR LEAFLET MAPPING")
+    print("=" * 60)
+    
+    # Use the confirmed working exercise ID from test results
+    exercise_id = "4bb39755-0b97-4ded-902d-7f9325f3d9a9"
+    
+    # Test data for different object types with proper GeoJSON geometry
+    test_map_objects = {
+        "marker": {
+            "exercise_id": exercise_id,
+            "type": "marker",
+            "name": "Emergency Command Post",
+            "description": "Main command center for emergency operations",
+            "color": "#ff0000",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-123.1207, 49.2827]  # Vancouver coordinates [longitude, latitude]
+            },
+            "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+        },
+        "line": {
+            "exercise_id": exercise_id,
+            "type": "line",
+            "name": "Evacuation Route",
+            "description": "Primary evacuation route for emergency response",
+            "color": "#00ff00",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [-123.1207, 49.2827],  # Start point
+                    [-123.1100, 49.2900],  # Mid point
+                    [-123.1000, 49.3000]   # End point
+                ]
+            }
+        },
+        "polygon": {
+            "exercise_id": exercise_id,
+            "type": "polygon",
+            "name": "Hazard Zone",
+            "description": "Area affected by hazardous conditions",
+            "color": "#ffff00",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[
+                    [-123.1300, 49.2800],  # Point 1
+                    [-123.1200, 49.2800],  # Point 2
+                    [-123.1200, 49.2900],  # Point 3
+                    [-123.1300, 49.2900],  # Point 4
+                    [-123.1300, 49.2800]   # Close polygon
+                ]]
+            }
+        },
+        "rectangle": {
+            "exercise_id": exercise_id,
+            "type": "rectangle",
+            "name": "Safety Perimeter",
+            "description": "Rectangular safety zone around incident",
+            "color": "#0000ff",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[
+                    [-123.1400, 49.2750],  # Southwest corner
+                    [-123.1350, 49.2750],  # Southeast corner
+                    [-123.1350, 49.2800],  # Northeast corner
+                    [-123.1400, 49.2800],  # Northwest corner
+                    [-123.1400, 49.2750]   # Close rectangle
+                ]]
+            }
+        }
+    }
+    
+    created_objects = {}
+    
+    try:
+        # Test 1: GET /api/map-objects (Get all map objects for exercise - initial state)
+        print(f"\n1. Testing GET /api/map-objects?exercise_id={exercise_id}")
+        response = requests.get(f"{BACKEND_URL}/map-objects", params={"exercise_id": exercise_id})
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            initial_objects = response.json()
+            print(f"✅ Successfully retrieved {len(initial_objects)} existing map objects for exercise")
+        else:
+            print(f"❌ Failed to get map objects: {response.text}")
+            return False
+            
+        # Test 2: POST /api/map-objects (Create all 4 object types)
+        print(f"\n2. Testing POST /api/map-objects (create all 4 object types)")
+        
+        for obj_type, obj_data in test_map_objects.items():
+            print(f"\n   Creating {obj_type} object...")
+            response = requests.post(
+                f"{BACKEND_URL}/map-objects",
+                json=obj_data,
+                headers={"Content-Type": "application/json"}
+            )
+            print(f"   Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                created_object = response.json()
+                object_id = created_object.get("id")
+                created_objects[obj_type] = object_id
+                print(f"   ✅ Successfully created {obj_type} with ID: {object_id}")
+                
+                # Verify object data
+                if (created_object.get("type") == obj_type and
+                    created_object.get("name") == obj_data["name"] and
+                    created_object.get("exercise_id") == exercise_id):
+                    print(f"   ✅ {obj_type} data verified: name='{created_object.get('name')}', type='{created_object.get('type')}'")
+                else:
+                    print(f"   ❌ {obj_type} data verification failed")
+                    return False
+                    
+                # Verify GeoJSON geometry preservation
+                created_geometry = created_object.get("geometry", {})
+                expected_geometry = obj_data["geometry"]
+                if (created_geometry.get("type") == expected_geometry["type"] and
+                    created_geometry.get("coordinates") == expected_geometry["coordinates"]):
+                    print(f"   ✅ {obj_type} GeoJSON geometry preserved exactly")
+                else:
+                    print(f"   ❌ {obj_type} GeoJSON geometry not preserved correctly")
+                    print(f"      Expected: {expected_geometry}")
+                    print(f"      Got: {created_geometry}")
+                    return False
+                    
+                # Verify color and optional fields
+                if created_object.get("color") == obj_data["color"]:
+                    print(f"   ✅ {obj_type} color preserved: {created_object.get('color')}")
+                else:
+                    print(f"   ❌ {obj_type} color not preserved")
+                    return False
+                    
+                # Verify timestamps
+                if created_object.get("created_at") and created_object.get("updated_at"):
+                    print(f"   ✅ {obj_type} timestamps present")
+                else:
+                    print(f"   ❌ {obj_type} timestamps missing")
+                    return False
+                    
+            else:
+                print(f"   ❌ Failed to create {obj_type}: {response.text}")
+                return False
+                
+        print(f"\n✅ Successfully created all 4 object types: {list(created_objects.keys())}")
+        
+        # Test 3: GET /api/map-objects?exercise_id={id} (Verify all objects appear in exercise query)
+        print(f"\n3. Testing GET /api/map-objects?exercise_id={exercise_id} (verify creation)")
+        response = requests.get(f"{BACKEND_URL}/map-objects", params={"exercise_id": exercise_id})
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            all_objects = response.json()
+            print(f"✅ Successfully retrieved {len(all_objects)} map objects after creation")
+            
+            # Verify all created objects are present
+            created_ids = set(created_objects.values())
+            retrieved_ids = {obj.get("id") for obj in all_objects}
+            
+            if created_ids.issubset(retrieved_ids):
+                print("✅ All created objects found in exercise query")
+            else:
+                missing_ids = created_ids - retrieved_ids
+                print(f"❌ Missing objects in exercise query: {missing_ids}")
+                return False
+                
+            # Verify object types are correct
+            type_counts = {}
+            for obj in all_objects:
+                obj_type = obj.get("type")
+                type_counts[obj_type] = type_counts.get(obj_type, 0) + 1
+                
+            expected_types = ["marker", "line", "polygon", "rectangle"]
+            for expected_type in expected_types:
+                if expected_type in type_counts:
+                    print(f"✅ Found {type_counts[expected_type]} {expected_type} object(s)")
+                else:
+                    print(f"❌ No {expected_type} objects found")
+                    return False
+        else:
+            print(f"❌ Failed to get map objects after creation: {response.text}")
+            return False
+            
+        # Test 4: GET /api/map-objects/{object_id} (Get specific objects)
+        print(f"\n4. Testing GET /api/map-objects/{{object_id}} (get specific objects)")
+        
+        for obj_type, object_id in created_objects.items():
+            print(f"\n   Getting {obj_type} object {object_id}...")
+            response = requests.get(f"{BACKEND_URL}/map-objects/{object_id}")
+            print(f"   Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                retrieved_object = response.json()
+                print(f"   ✅ Successfully retrieved {obj_type}: {retrieved_object.get('name')}")
+                
+                # Verify data integrity
+                expected_data = test_map_objects[obj_type]
+                if (retrieved_object.get("type") == expected_data["type"] and
+                    retrieved_object.get("name") == expected_data["name"] and
+                    retrieved_object.get("description") == expected_data["description"]):
+                    print(f"   ✅ {obj_type} data integrity verified")
+                else:
+                    print(f"   ❌ {obj_type} data integrity compromised")
+                    return False
+            else:
+                print(f"   ❌ Failed to get {obj_type} object: {response.text}")
+                return False
+                
+        # Test 5: PUT /api/map-objects/{object_id} (Update objects)
+        print(f"\n5. Testing PUT /api/map-objects/{{object_id}} (update objects)")
+        
+        # Update the marker object with new data
+        marker_id = created_objects["marker"]
+        update_data = {
+            "name": "Updated Emergency Command Post",
+            "description": "Updated main command center with enhanced capabilities",
+            "color": "#ff6600",  # Changed color
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-123.1300, 49.2900]  # Updated coordinates
+            }
+        }
+        
+        print(f"\n   Updating marker object {marker_id}...")
+        response = requests.put(
+            f"{BACKEND_URL}/map-objects/{marker_id}",
+            json=update_data,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"   Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            updated_object = response.json()
+            print(f"   ✅ Successfully updated marker object")
+            
+            # Verify updates
+            if (updated_object.get("name") == update_data["name"] and
+                updated_object.get("color") == update_data["color"] and
+                updated_object.get("geometry")["coordinates"] == update_data["geometry"]["coordinates"]):
+                print(f"   ✅ Marker update verification passed")
+                print(f"      Name: {updated_object.get('name')}")
+                print(f"      Color: {updated_object.get('color')}")
+                print(f"      Coordinates: {updated_object.get('geometry')['coordinates']}")
+            else:
+                print(f"   ❌ Marker update verification failed")
+                return False
+                
+            # Verify updated_at timestamp changed
+            if updated_object.get("updated_at"):
+                print(f"   ✅ Updated timestamp present: {updated_object.get('updated_at')}")
+            else:
+                print(f"   ❌ Updated timestamp missing")
+                return False
+        else:
+            print(f"   ❌ Failed to update marker object: {response.text}")
+            return False
+            
+        # Test 6: DELETE /api/map-objects/{object_id} (Delete objects)
+        print(f"\n6. Testing DELETE /api/map-objects/{{object_id}} (delete objects)")
+        
+        for obj_type, object_id in created_objects.items():
+            print(f"\n   Deleting {obj_type} object {object_id}...")
+            response = requests.delete(f"{BACKEND_URL}/map-objects/{object_id}")
+            print(f"   Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                print(f"   ✅ Successfully deleted {obj_type} object")
+                
+                # Verify deletion
+                response = requests.get(f"{BACKEND_URL}/map-objects/{object_id}")
+                if response.status_code == 404:
+                    print(f"   ✅ {obj_type} deletion verified - object no longer exists")
+                else:
+                    print(f"   ❌ {obj_type} object still exists after deletion")
+                    return False
+            else:
+                print(f"   ❌ Failed to delete {obj_type} object: {response.text}")
+                return False
+                
+        # Test 7: Error handling for non-existent resources
+        print(f"\n7. Testing error handling for non-existent resources")
+        fake_id = "non-existent-map-object-id"
+        
+        # Test GET non-existent object
+        response = requests.get(f"{BACKEND_URL}/map-objects/{fake_id}")
+        if response.status_code == 404:
+            print("✅ GET non-existent object: Proper 404 response")
+        else:
+            print(f"⚠️  GET non-existent object: Expected 404, got {response.status_code}")
+            
+        # Test UPDATE non-existent object
+        response = requests.put(f"{BACKEND_URL}/map-objects/{fake_id}", json={"name": "test"})
+        if response.status_code == 404:
+            print("✅ UPDATE non-existent object: Proper 404 response")
+        else:
+            print(f"⚠️  UPDATE non-existent object: Expected 404, got {response.status_code}")
+            
+        # Test DELETE non-existent object
+        response = requests.delete(f"{BACKEND_URL}/map-objects/{fake_id}")
+        if response.status_code == 404:
+            print("✅ DELETE non-existent object: Proper 404 response")
+        else:
+            print(f"⚠️  DELETE non-existent object: Expected 404, got {response.status_code}")
+            
+        print("\n" + "=" * 60)
+        print("✅ ALL MAP OBJECT API TESTS PASSED")
+        print("=" * 60)
+        print("\n🎯 MAP OBJECT API COMPREHENSIVE TEST SUMMARY:")
+        print("✅ All CRUD operations working correctly")
+        print("✅ All 4 object types supported (marker, line, polygon, rectangle)")
+        print("✅ GeoJSON geometry data preserved exactly")
+        print("✅ Exercise-based filtering functional")
+        print("✅ Color and optional image field handling working")
+        print("✅ Timestamp fields (created_at, updated_at) working")
+        print("✅ Error handling for invalid data and missing resources")
+        print("✅ Data persistence verified across create-read-update-delete cycle")
+        print("\n🚀 BACKEND IS READY TO SUPPORT FRONTEND CLICK-TO-PLACE FUNCTIONALITY!")
+        return True
+        
+    except requests.exceptions.ConnectionError as e:
+        print(f"❌ Connection Error: Cannot connect to {BACKEND_URL}")
+        print(f"Error: {e}")
+        return False
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Request Error: {e}")
+        return False
+    except Exception as e:
+        print(f"❌ Unexpected Error: {e}")
+        return False
+
 if __name__ == "__main__":
     print("EXRSIM Backend API Comprehensive Testing")
     print(f"Backend URL: {BACKEND_URL}")

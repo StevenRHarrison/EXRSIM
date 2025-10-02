@@ -1084,6 +1084,7 @@ const ICSDashboard = ({ currentExercise }) => {
 
 // Leaflet Mapping Component
 const LeafletMapping = ({ exerciseId }) => {
+  console.log('LeafletMapping component rendered with exerciseId:', exerciseId);
   const { theme } = useTheme();
   const [mapObjects, setMapObjects] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('all');

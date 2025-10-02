@@ -1111,6 +1111,29 @@ const LeafletMapping = ({ exerciseId }) => {
     if (exerciseId) {
       fetchMapObjects();
     }
+    
+    // Add CSS to ensure modals always stay on top
+    const modalCSS = `
+      .modal-overlay {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        z-index: 9999 !important;
+        pointer-events: auto !important;
+      }
+      .modal-content {
+        position: relative !important;
+        z-index: 10000 !important;
+        pointer-events: auto !important;
+        transform: translateZ(0) !important;
+      }
+    `;
+    
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = modalCSS;
+    document.head.appendChild(styleSheet);
   }, [exerciseId]);
 
   const fetchMapObjects = async () => {

@@ -1040,6 +1040,17 @@ const ICSDashboard = ({ currentExercise }) => {
                 <Button 
                   variant="outline" 
                   size="sm"
+                  className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                  onClick={() => {
+                    setActiveICSMenu('mapping');
+                  }}
+                >
+                  <Map className="h-4 w-4 mr-2" />
+                  Mapping
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
                   className="border-teal-500/50 text-teal-400 hover:bg-teal-500/10"
                   onClick={() => {
                     // Implement scribe functionality

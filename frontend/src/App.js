@@ -753,6 +753,12 @@ const ICSDashboard = ({ currentExercise }) => {
                         if (item.id === 'operations') {
                           setOperationsExpanded(!operationsExpanded);
                         }
+                        if (item.id === 'planning' && item.hasSubmenu) {
+                          setPlanningExpanded(!planningExpanded);
+                        }
+                        if (item.id === 'logistics' && item.hasSubmenu) {
+                          setLogisticsExpanded(!logisticsExpanded);
+                        }
                         if (item.id === 'fin-admin' && item.hasSubmenu) {
                           setFinAdminExpanded(!finAdminExpanded);
                         }

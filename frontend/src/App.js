@@ -695,6 +695,81 @@ const ICSDashboard = ({ currentExercise }) => {
             </div>
           </div>
         );
+      // Planning submenu items
+      case 'mapping':
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <Map className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>Mapping</h2>
+              <p className={`${theme.colors.textMuted} mb-6`}>
+                Mapping module content will be implemented here.
+              </p>
+            </div>
+          </div>
+        );
+      case 'situation-unit':
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <Info className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>Situation Unit</h2>
+              <p className={`${theme.colors.textMuted} mb-6`}>
+                Situation Unit module content will be implemented here.
+              </p>
+            </div>
+          </div>
+        );
+      case 'documentation-unit':
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <FileText className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>Documentation Unit</h2>
+              <p className={`${theme.colors.textMuted} mb-6`}>
+                Documentation Unit module content will be implemented here.
+              </p>
+            </div>
+          </div>
+        );
+      case 'demobilization-unit':
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <ArrowLeft className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>Demobilization Unit</h2>
+              <p className={`${theme.colors.textMuted} mb-6`}>
+                Demobilization Unit module content will be implemented here.
+              </p>
+            </div>
+          </div>
+        );
+      // Logistics submenu items
+      case 'services':
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <Settings className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>Services</h2>
+              <p className={`${theme.colors.textMuted} mb-6`}>
+                Services module content will be implemented here.
+              </p>
+            </div>
+          </div>
+        );
+      case 'support':
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <Headphones className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>Support</h2>
+              <p className={`${theme.colors.textMuted} mb-6`}>
+                Support module content will be implemented here.
+              </p>
+            </div>
+          </div>
+        );
+      // Fin/Admin submenu items
       case 'ics-2xx-forms':
         return (
           <div className="p-6">
@@ -703,6 +778,54 @@ const ICSDashboard = ({ currentExercise }) => {
               <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>ICS 2XX Form Series</h2>
               <p className={`${theme.colors.textMuted} mb-6`}>
                 ICS 2XX Form Series module content will be implemented here.
+              </p>
+            </div>
+          </div>
+        );
+      case 'time-unit':
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <Clock className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>Time Unit</h2>
+              <p className={`${theme.colors.textMuted} mb-6`}>
+                Time Unit module content will be implemented here.
+              </p>
+            </div>
+          </div>
+        );
+      case 'procurement-unit':
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <Package className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>Procurement Unit</h2>
+              <p className={`${theme.colors.textMuted} mb-6`}>
+                Procurement Unit module content will be implemented here.
+              </p>
+            </div>
+          </div>
+        );
+      case 'comp-claims-unit':
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <FileCheck className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>Comp and Claims Unit</h2>
+              <p className={`${theme.colors.textMuted} mb-6`}>
+                Comp and Claims Unit module content will be implemented here.
+              </p>
+            </div>
+          </div>
+        );
+      case 'cost-unit':
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <DollarSign className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>Cost Unit</h2>
+              <p className={`${theme.colors.textMuted} mb-6`}>
+                Cost Unit module content will be implemented here.
               </p>
             </div>
           </div>

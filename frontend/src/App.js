@@ -1543,52 +1543,11 @@ const LeafletMapping = ({ exerciseId }) => {
       <div className="flex-1 relative">
         <MapContainerComponent />
         
-        {/* Map controls overlay */}
-        <div className="absolute top-4 right-4 bg-white rounded shadow-lg p-2">
-          <div className="flex flex-col space-y-2">
-            <button 
-              className={`p-2 hover:bg-gray-100 rounded ${drawingMode === 'marker' ? 'bg-blue-100' : ''}`}
-              onClick={() => setDrawingMode(drawingMode === 'marker' ? null : 'marker')}
-              title="Draw Marker"
-            >
-              <MapPin className="h-5 w-5" />
-            </button>
-            <button 
-              className={`p-2 hover:bg-gray-100 rounded ${drawingMode === 'line' ? 'bg-blue-100' : ''}`}
-              onClick={() => setDrawingMode(drawingMode === 'line' ? null : 'line')}
-              title="Draw Line"
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </button>
-            <button 
-              className={`p-2 hover:bg-gray-100 rounded ${drawingMode === 'polygon' ? 'bg-blue-100' : ''}`}
-              onClick={() => setDrawingMode(drawingMode === 'polygon' ? null : 'polygon')}
-              title="Draw Polygon"
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
-            </button>
-            <button 
-              className={`p-2 hover:bg-gray-100 rounded ${drawingMode === 'rectangle' ? 'bg-blue-100' : ''}`}
-              onClick={() => setDrawingMode(drawingMode === 'rectangle' ? null : 'rectangle')}
-              title="Draw Rectangle"
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-              </svg>
-            </button>
-            {drawingMode && (
-              <button 
-                className="p-2 hover:bg-gray-100 rounded border-t"
-                onClick={() => setDrawingMode(null)}
-                title="Cancel Drawing"
-              >
-                <X className="h-5 w-5 text-red-500" />
-              </button>
-            )}
+        {/* Map info overlay */}
+        <div className="absolute top-4 right-4 bg-white rounded shadow-lg p-3">
+          <div className="text-center">
+            <p className="text-sm font-semibold text-gray-700">Drawing Tools</p>
+            <p className="text-xs text-gray-500 mt-1">Use controls on the left<br/>to draw on the map</p>
           </div>
         </div>
       </div>

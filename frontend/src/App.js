@@ -656,11 +656,7 @@ const ICSDashboard = ({ currentExercise }) => {
   };
 
   return (
-    <div className={`min-h-screen ${theme.colors.primary} ${theme.colors.textPrimary}`}>
-      {/* Navigation */}
-      <Navigation currentExercise={currentExercise} activeMenu="ics" />
-      
-      <div className="flex">
+    <div className="flex h-screen">
         {/* ICS Sidebar */}
         <div className={`w-64 ${theme.colors.secondary} border-r ${theme.colors.border} h-screen sticky top-0`}>
           <div className="p-4">

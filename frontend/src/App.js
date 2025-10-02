@@ -564,6 +564,7 @@ const ICSDashboard = ({ currentExercise }) => {
   const { theme } = useTheme();
   const [activeICSMenu, setActiveICSMenu] = useState('dashboard');
   const [operationsExpanded, setOperationsExpanded] = useState(true);
+  const [finAdminExpanded, setFinAdminExpanded] = useState(true);
 
   const icsMenuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },

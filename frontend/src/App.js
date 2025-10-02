@@ -1289,6 +1289,37 @@ const LeafletMapping = ({ exerciseId }) => {
 
           map.addControl(drawControl);
 
+          // Apply enhanced styling to make drawing controls more prominent
+          setTimeout(() => {
+            const drawControlContainer = document.querySelector('.leaflet-draw');
+            if (drawControlContainer) {
+              drawControlContainer.style.zIndex = '1000';
+              drawControlContainer.style.position = 'relative';
+              
+              // Style the toolbar buttons for better visibility
+              const toolbarButtons = drawControlContainer.querySelectorAll('.leaflet-draw-toolbar a');
+              toolbarButtons.forEach(button => {
+                button.style.backgroundColor = '#ffffff';
+                button.style.border = '2px solid #3388ff';
+                button.style.borderRadius = '4px';
+                button.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+                button.style.margin = '2px';
+                button.style.transition = 'all 0.2s ease';
+                
+                // Add hover effects
+                button.addEventListener('mouseenter', () => {
+                  button.style.backgroundColor = '#3388ff';
+                  button.style.transform = 'scale(1.05)';
+                });
+                
+                button.addEventListener('mouseleave', () => {
+                  button.style.backgroundColor = '#ffffff';
+                  button.style.transform = 'scale(1)';
+                });
+              });
+            }
+          }, 100);
+
           // Handle draw events
           map.on(L.Draw.Event.CREATED, function (e) {
             const layer = e.layer;

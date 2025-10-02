@@ -1295,32 +1295,52 @@ const LeafletMapping = ({ exerciseId }) => {
           setTimeout(() => {
             const drawControlContainer = document.querySelector('.leaflet-draw');
             if (drawControlContainer) {
-              drawControlContainer.style.zIndex = '1000';
+              console.log('Applying enhanced styling to draw controls');
+              drawControlContainer.style.zIndex = '2000';
               drawControlContainer.style.position = 'relative';
+              
+              // Style the toolbar container
+              const toolbar = drawControlContainer.querySelector('.leaflet-draw-toolbar');
+              if (toolbar) {
+                toolbar.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+                toolbar.style.padding = '8px';
+                toolbar.style.borderRadius = '8px';
+                toolbar.style.border = '3px solid #2563eb';
+                toolbar.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+              }
               
               // Style the toolbar buttons for better visibility
               const toolbarButtons = drawControlContainer.querySelectorAll('.leaflet-draw-toolbar a');
-              toolbarButtons.forEach(button => {
+              console.log('Found', toolbarButtons.length, 'toolbar buttons');
+              toolbarButtons.forEach((button, index) => {
                 button.style.backgroundColor = '#ffffff';
-                button.style.border = '2px solid #3388ff';
-                button.style.borderRadius = '4px';
-                button.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
-                button.style.margin = '2px';
-                button.style.transition = 'all 0.2s ease';
+                button.style.border = '3px solid #2563eb';
+                button.style.borderRadius = '6px';
+                button.style.boxShadow = '0 4px 8px rgba(0,0,0,0.25)';
+                button.style.margin = '4px';
+                button.style.padding = '8px';
+                button.style.transition = 'all 0.3s ease';
+                button.style.minWidth = '40px';
+                button.style.minHeight = '40px';
+                button.style.display = 'inline-block';
                 
                 // Add hover effects
                 button.addEventListener('mouseenter', () => {
-                  button.style.backgroundColor = '#3388ff';
-                  button.style.transform = 'scale(1.05)';
+                  button.style.backgroundColor = '#2563eb';
+                  button.style.transform = 'scale(1.1)';
+                  button.style.boxShadow = '0 6px 12px rgba(0,0,0,0.4)';
                 });
                 
                 button.addEventListener('mouseleave', () => {
                   button.style.backgroundColor = '#ffffff';
                   button.style.transform = 'scale(1)';
+                  button.style.boxShadow = '0 4px 8px rgba(0,0,0,0.25)';
                 });
               });
+            } else {
+              console.log('Draw control container not found');
             }
-          }, 100);
+          }, 500);
 
           // Handle draw events
           map.on(L.Draw.Event.CREATED, function (e) {

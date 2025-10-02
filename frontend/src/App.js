@@ -2098,7 +2098,7 @@ const LeafletMapping = ({ exerciseId }) => {
                       console.error('Error saving object:', error);
                       alert('Error saving object. Please check console for details.');
                     }
-                  }}}
+                  }}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105"
                 >
                   {editingObject ? 'Update Object' : (clickedCoordinates ? `Create ${formData.type?.toUpperCase() || 'Object'} at (${clickedCoordinates.lat.toFixed(4)}, ${clickedCoordinates.lng.toFixed(4)})` : 'Save Object')}

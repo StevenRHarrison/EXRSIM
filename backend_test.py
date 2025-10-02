@@ -2274,6 +2274,10 @@ if __name__ == "__main__":
     print("\n🚀 STARTING COMPREHENSIVE BACKEND API TESTING")
     print("=" * 60)
     
+    # Test 0: ICS Dashboard Overview APIs (HIGH PRIORITY - REVIEW REQUEST)
+    print("\n🎯 Testing ICS Dashboard Overview APIs...")
+    test_results.append(("ICS Dashboard Overview API", test_ics_dashboard_overview_api()))
+    
     # Test 1: Exercise Builder APIs
     print("\n📋 Testing Exercise Builder APIs...")
     test_results.append(("Exercise Builder API", test_exercise_builder_api()))

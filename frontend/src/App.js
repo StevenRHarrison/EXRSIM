@@ -559,6 +559,213 @@ const PoliciesProceduresManager = ({ onClose }) => {
   );
 };
 
+// ICS Dashboard Component
+const ICSDashboard = ({ currentExercise }) => {
+  const { theme } = useTheme();
+  const [activeICSMenu, setActiveICSMenu] = useState('operations');
+  const [operationsExpanded, setOperationsExpanded] = useState(true);
+
+  const icsMenuItems = [
+    {
+      id: 'operations',
+      label: 'Operations',
+      icon: Users,
+      hasSubmenu: true,
+      submenuItems: [
+        { id: 'scenario', label: 'Scenario', icon: FileText },
+        { id: 'incident-status', label: 'Incident Status', icon: AlertCircle },
+        { id: 'objectives', label: 'Objectives', icon: Target },
+        { id: 'safety', label: 'Safety', icon: Shield }
+      ]
+    },
+    { id: 'planning', label: 'Planning', icon: Calendar },
+    { id: 'logistics', label: 'Logistics', icon: Package },
+    { id: 'fin-admin', label: 'Fin / Admin', icon: DollarSign }
+  ];
+
+  const renderICSContent = () => {
+    switch (activeICSMenu) {
+      case 'operations':
+      case 'scenario':
+      case 'incident-status':
+      case 'objectives':
+      case 'safety':
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <Users className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>
+                {icsMenuItems.find(item => item.id === activeICSMenu)?.label || 
+                 icsMenuItems[0].submenuItems?.find(item => item.id === activeICSMenu)?.label}
+              </h2>
+              <p className={`${theme.colors.textMuted} mb-6`}>
+                ICS module content will be implemented here.
+              </p>
+            </div>
+          </div>
+        );
+      case 'planning':
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <Calendar className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>Planning</h2>
+              <p className={`${theme.colors.textMuted} mb-6`}>
+                Planning module content will be implemented here.
+              </p>
+            </div>
+          </div>
+        );
+      case 'logistics':
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <Package className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>Logistics</h2>
+              <p className={`${theme.colors.textMuted} mb-6`}>
+                Logistics module content will be implemented here.
+              </p>
+            </div>
+          </div>
+        );
+      case 'fin-admin':
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <DollarSign className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>Fin / Admin</h2>
+              <p className={`${theme.colors.textMuted} mb-6`}>
+                Finance and Administration module content will be implemented here.
+              </p>
+            </div>
+          </div>
+        );
+      default:
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <Shield className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>ICS Dashboard</h2>
+              <p className={`${theme.colors.textMuted} mb-6`}>
+                Select a module from the sidebar to get started.
+              </p>
+            </div>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className={`min-h-screen ${theme.colors.primary} ${theme.colors.textPrimary}`}>
+      {/* Navigation */}
+      <Navigation currentExercise={currentExercise} activeMenu="ics" />
+      
+      <div className="flex">
+        {/* ICS Sidebar */}
+        <div className={`w-64 ${theme.colors.secondary} border-r ${theme.colors.border} h-screen sticky top-0`}>
+          <div className="p-4">
+            <h2 className={`text-lg font-semibold ${theme.colors.textPrimary} mb-4`}>
+              Incident Command System
+            </h2>
+            <nav className="space-y-1">
+              {icsMenuItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = activeICSMenu === item.id;
+                
+                return (
+                  <div key={item.id}>
+                    <Button
+                      variant={isActive ? "secondary" : "ghost"}
+                      className={`w-full justify-start text-left ${
+                        item.id === 'operations' 
+                          ? 'bg-orange-500 text-white hover:bg-orange-600' 
+                          : isActive
+                            ? `${theme.colors.accent} ${theme.colors.textPrimary}`
+                            : `${theme.colors.textSecondary} ${theme.colors.hover}`
+                      }`}
+                      onClick={() => {
+                        setActiveICSMenu(item.id);
+                        if (item.id === 'operations') {
+                          setOperationsExpanded(!operationsExpanded);
+                        }
+                      }}
+                    >
+                      <Icon className="h-4 w-4 mr-3" />
+                      <span className={item.id === 'operations' ? 'text-white' : ''}>{item.label}</span>
+                      {item.hasSubmenu && (
+                        operationsExpanded ? (
+                          <ChevronDown className="h-4 w-4 ml-auto" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4 ml-auto" />
+                        )
+                      )}
+                    </Button>
+                    
+                    {/* Operations Submenu */}
+                    {item.hasSubmenu && operationsExpanded && (
+                      <div className="ml-4 mt-1 space-y-1">
+                        {item.submenuItems?.map((subItem) => {
+                          const SubIcon = subItem.icon;
+                          const isSubActive = activeICSMenu === subItem.id;
+                          
+                          return (
+                            <Button
+                              key={subItem.id}
+                              variant="ghost"
+                              className={`w-full justify-start text-left text-sm ${
+                                isSubActive
+                                  ? `${theme.colors.accent} ${theme.colors.textPrimary}`
+                                  : `${theme.colors.textMuted} ${theme.colors.hover}`
+                              }`}
+                              onClick={() => setActiveICSMenu(subItem.id)}
+                            >
+                              <SubIcon className="h-4 w-4 mr-3" />
+                              <span className="text-white">{subItem.label}</span>
+                            </Button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </nav>
+          </div>
+        </div>
+
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col min-h-screen">
+          {/* Main Content */}
+          <main className="flex-1 overflow-auto">
+            {renderICSContent()}
+          </main>
+
+          {/* Quick Actions Bar */}
+          <div className={`${theme.colors.secondary} border-t ${theme.colors.border} p-4`}>
+            <div className="flex items-center justify-between">
+              <h3 className={`text-sm font-semibold ${theme.colors.textPrimary}`}>Quick Actions</h3>
+              <div className="flex items-center space-x-3">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="border-teal-500/50 text-teal-400 hover:bg-teal-500/10"
+                  onClick={() => {
+                    // Implement scribe functionality
+                    console.log('Scribe clicked from ICS');
+                  }}
+                >
+                  <PenTool className="h-4 w-4 mr-2" />
+                  Scribe
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Navigation = ({ currentExercise = null, activeMenu = 'dashboard' }) => {
   const { theme } = useTheme();
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);

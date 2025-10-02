@@ -1245,26 +1245,10 @@ const LeafletMapping = ({ exerciseId }) => {
     // Convert layer to GeoJSON
     const geoJson = layer.toGeoJSON();
     
-    // Create object data based on layer type
-    const objectData = {
-      exercise_id: exerciseId,
-      type: layerType === 'polyline' ? 'line' : layerType,
-      name: `New ${layerType}`,
-      description: 'Created via drawing tools',
-      color: '#3388ff',
-      geometry: geoJson.geometry
-    };
+    console.log('💾 Saving drawn object to backend via handleObjectCreate');
     
-    console.log('💾 Saving drawn object to backend:', objectData);
-    
-    // Save to backend using existing handler
+    // Save to backend using existing handler (which will add to mapObjects state)
     handleObjectCreate(geoJson, layerType === 'polyline' ? 'line' : layerType);
-    
-    // Add to map objects list for immediate UI update
-    setMapObjects(prev => [...prev, {
-      id: Date.now().toString(), // Temporary ID until backend response
-      ...objectData
-    }]);
   };
 
   const handleDrawEdited = async (e) => {

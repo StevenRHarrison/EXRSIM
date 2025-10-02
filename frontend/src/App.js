@@ -589,7 +589,7 @@ const Navigation = () => {
               to="/builder" 
               className="text-orange-500 hover:text-orange-400 transition-colors font-medium"
             >
-              Exercise Builder
+              Exercise
             </Link>
           </div>
         </div>

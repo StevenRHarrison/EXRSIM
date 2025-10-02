@@ -69,8 +69,7 @@ import {
   BookText,
   ExternalLink,
   UserCog,
-  FileCheck,
-  ChevronDown
+  FileCheck
 } from 'lucide-react';
 
 const API = process.env.REACT_APP_BACKEND_URL + '/api';

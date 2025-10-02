@@ -1963,8 +1963,13 @@ const LeafletMapping = ({ exerciseId }) => {
                         setIsPlacingObject(true);
                         setShowObjectForm(false); // Close modal
                         
-                        // Show instruction
-                        alert('Click on the map where you want to place the object!');
+                        // Show instruction with more details
+                        console.log('🎯 Placement mode enabled with data:', {
+                          name: formData.name || 'New Object',
+                          type: formData.type,
+                          color: formData.color
+                        });
+                        alert(`Ready to place ${formData.type.toUpperCase()}!\n\nObject: "${formData.name || 'New Object'}"\nColor: ${formData.color}\n\nClick anywhere on the map to place it.`);
                       }
                     } catch (error) {
                       console.error('Error saving object:', error);

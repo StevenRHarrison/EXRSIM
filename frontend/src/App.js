@@ -705,10 +705,14 @@ const ICSDashboard = ({ currentExercise }) => {
         );
       // Planning submenu items
       case 'mapping':
-        console.log('Mapping case triggered - rendering LeafletMapping');
+        console.log('Mapping case triggered - rendering simple test');
         return (
-          <div className="h-full w-full">
-            <LeafletMapping exerciseId={currentExercise?.id} />
+          <div className="h-full w-full bg-green-500 flex items-center justify-center">
+            <div className="text-center text-white">
+              <h1 className="text-4xl font-bold mb-4">🗺️ MAPPING INTERFACE LOADED!</h1>
+              <p className="text-xl">Exercise ID: {currentExercise?.id}</p>
+              <p className="text-lg mt-2">Satellite view and drawing tools will appear here</p>
+            </div>
           </div>
         );
       case 'situation-unit':

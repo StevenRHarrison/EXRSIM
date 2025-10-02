@@ -12,7 +12,7 @@ import sys
 import os
 
 # Get backend URL from frontend .env
-BACKEND_URL = "https://leaflet-ics.preview.emergentagent.com/api"
+BACKEND_URL = "https://draw-command.preview.emergentagent.com/api"
 
 def create_comprehensive_test_data():
     """Create comprehensive test data covering ALL 17 steps as specified in review request"""

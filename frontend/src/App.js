@@ -705,7 +705,12 @@ const ICSDashboard = ({ currentExercise }) => {
         );
       // Planning submenu items
       case 'mapping':
-        return <LeafletMapping exerciseId={currentExercise?.id} />;
+        console.log('Mapping case triggered - rendering LeafletMapping');
+        return (
+          <div className="h-full w-full">
+            <LeafletMapping exerciseId={currentExercise?.id} />
+          </div>
+        );
       case 'situation-unit':
         return (
           <div className="p-6">

@@ -8,9 +8,32 @@ import { MapContainer as LeafletMapContainer, TileLayer, LayersControl, FeatureG
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-// Import leaflet-draw
+// Import leaflet-draw plugin and styles
 import 'leaflet-draw';
 import 'leaflet-draw/dist/leaflet.draw.css';
+
+// Fix leaflet-draw types and ensure proper initialization
+declare global {
+  namespace L {
+    namespace Draw {
+      class Control extends L.Control {
+        constructor(options?: any);
+      }
+      const Event: {
+        CREATED: string;
+        EDITED: string;
+        DELETED: string;
+        DRAWSTART: string;
+        DRAWSTOP: string;
+        DRAWVERTEX: string;
+        EDITSTART: string;
+        EDITSTOP: string;
+        DELETESTART: string;
+        DELETESTOP: string;
+      };
+    }
+  }
+}
 
 // Import shadcn components
 import { Button } from './components/ui/button';

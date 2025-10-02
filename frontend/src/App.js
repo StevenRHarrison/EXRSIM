@@ -1357,6 +1357,107 @@ const LeafletMapping = ({ exerciseId }) => {
     setClickedCoordinates(null);
   };
 
+  const resetModalForm = () => {
+    setModalFormData({
+      name: '',
+      description: '',
+      color: '#3388ff',
+      image: ''
+    });
+  };
+
+  const getObjectCoordinates = (obj) => {
+    if (!obj.geometry?.coordinates) return [];
+    
+    switch (obj.type) {
+      case 'marker':
+        const [lng, lat] = obj.geometry.coordinates;
+        return [{ lat: lat.toFixed(6), lng: lng.toFixed(6) }];
+      case 'line':
+        return obj.geometry.coordinates.map(coord => ({
+          lat: coord[1].toFixed(6),
+          lng: coord[0].toFixed(6)
+        }));
+      case 'polygon':
+        return obj.geometry.coordinates[0].map(coord => ({
+          lat: coord[1].toFixed(6),
+          lng: coord[0].toFixed(6)
+        }));
+      case 'rectangle':
+        return obj.geometry.coordinates[0].map(coord => ({
+          lat: coord[1].toFixed(6),
+          lng: coord[0].toFixed(6)
+        }));
+      default:
+        return [];
+    }
+  };
+
+  const handleObjectMouseEnter = (obj, event) => {
+    if (editingInModal) return; // Don't show hover modal while editing
+    
+    setHoveredObject(obj);
+    setModalFormData({
+      name: obj.name || '',
+      description: obj.description || '',
+      color: obj.color || '#3388ff',
+      image: obj.image || ''
+    });
+    
+    // Position modal near mouse cursor
+    const rect = event.target.getBoundingClientRect();
+    setHoverModalPosition({
+      x: rect.left + window.scrollX + 20,
+      y: rect.top + window.scrollY
+    });
+    
+    setShowHoverModal(true);
+  };
+
+  const handleObjectMouseLeave = () => {
+    if (!editingInModal) {
+      setShowHoverModal(false);
+      setHoveredObject(null);
+    }
+  };
+
+  const startEditingInModal = () => {
+    setEditingInModal(true);
+  };
+
+  const cancelEditingInModal = () => {
+    setEditingInModal(false);
+    if (hoveredObject) {
+      setModalFormData({
+        name: hoveredObject.name || '',
+        description: hoveredObject.description || '',
+        color: hoveredObject.color || '#3388ff',
+        image: hoveredObject.image || ''
+      });
+    }
+  };
+
+  const saveModalChanges = async () => {
+    if (hoveredObject) {
+      await handleObjectUpdate(hoveredObject.id, modalFormData);
+    }
+  };
+
+  const handleImageUpload = (event, isModal = false) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (isModal) {
+          setModalFormData(prev => ({ ...prev, image: e.target.result }));
+        } else {
+          setFormData(prev => ({ ...prev, image: e.target.result }));
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const getObjectsByCategory = (category) => {
     if (category === 'all') return mapObjects;
     return mapObjects.filter(obj => obj.type === category);

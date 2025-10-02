@@ -1626,15 +1626,21 @@ const LeafletMapping = ({ exerciseId }) => {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              console.log('Add Map Object clicked');
+              console.log('🎯 Add Map Object button clicked - showObjectForm:', showObjectForm);
               resetForm();
               setShowObjectForm(true);
+              console.log('🎯 setShowObjectForm(true) called');
             }}
             className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 flex items-center justify-center"
           >
             <Plus className="h-4 w-4 mr-2" />
             Add Map Object
           </button>
+        </div>
+        
+        {/* Debug: Show current showObjectForm state */}
+        <div className="p-2 text-xs text-gray-500">
+          Modal State: {showObjectForm ? 'VISIBLE' : 'HIDDEN'}
         </div>
       </div>
 

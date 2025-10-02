@@ -1929,9 +1929,7 @@ const LeafletMapping = ({ exerciseId }) => {
                           description: formData.description,
                           color: formData.color,
                           image: formData.image,
-                          type: selectedCategory === 'polygons' ? 'polygon' : 
-                                selectedCategory === 'lines' ? 'line' :
-                                selectedCategory === 'rectangles' ? 'rectangle' : 'marker'
+                          type: formData.type // Use the form data type directly
                         });
                         setIsPlacingObject(true);
                         setShowObjectForm(false); // Close modal

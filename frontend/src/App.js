@@ -1442,53 +1442,108 @@ const LeafletMapping = ({ exerciseId }) => {
           map.addControl(drawControl);
           console.log('🎉 Leaflet.Draw control successfully added!');
 
-          // Force immediate styling
+          // Force immediate styling and visibility fixes
           setTimeout(() => {
-            const drawContainer = document.querySelector('.leaflet-draw');
+            // First, try multiple selectors to find the draw container
+            let drawContainer = document.querySelector('.leaflet-draw');
+            if (!drawContainer) {
+              drawContainer = document.querySelector('.leaflet-draw-toolbar');
+            }
+            if (!drawContainer) {
+              drawContainer = document.querySelector('.leaflet-control-draw');
+            }
+            
             if (drawContainer) {
               console.log('🎨 Applying enhanced styling to draw toolbar...');
+              console.log('📍 Draw toolbar found:', drawContainer);
               
-              // Apply comprehensive styling
+              // Apply comprehensive styling for visibility
               const styles = `
                 .leaflet-draw {
                   z-index: 1000 !important;
                   margin-top: 10px !important;
+                  display: block !important;
+                  visibility: visible !important;
                 }
                 .leaflet-draw-toolbar {
                   display: flex !important;
                   flex-direction: column !important;
-                  background: rgba(255,255,255,0.9) !important;
-                  border-radius: 6px !important;
-                  padding: 4px !important;
-                  box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+                  background: rgba(255,255,255,0.95) !important;
+                  border-radius: 8px !important;
+                  padding: 6px !important;
+                  box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
+                  border: 2px solid #3388ff !important;
+                  visibility: visible !important;
+                  opacity: 1 !important;
                 }
                 .leaflet-draw-toolbar a {
                   display: block !important;
-                  width: 36px !important;
-                  height: 36px !important;
-                  margin: 2px !important;
+                  width: 40px !important;
+                  height: 40px !important;
+                  margin: 3px !important;
                   background-color: white !important;
-                  border: 2px solid #3388ff !important;
-                  border-radius: 4px !important;
-                  text-decoration: none !important;
-                  line-height: 32px !important;
+                  border: 2px solid #ddd !important;
+                  border-radius: 6px !important;
+                  cursor: pointer !important;
+                  line-height: 36px !important;
                   text-align: center !important;
-                  box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
-                  transition: all 0.2s ease !important;
+                  box-shadow: 0 3px 6px rgba(0,0,0,0.3) !important;
+                  transition: all 0.3s ease !important;
+                  visibility: visible !important;
+                  opacity: 1 !important;
+                  position: relative !important;
+                  z-index: 1001 !important;
                 }
                 .leaflet-draw-toolbar a:hover {
                   background-color: #3388ff !important;
-                  transform: scale(1.05) !important;
-                  box-shadow: 0 4px 8px rgba(0,0,0,0.4) !important;
+                  transform: scale(1.1) !important;
+                  box-shadow: 0 6px 12px rgba(0,0,0,0.5) !important;
+                  border-color: #2266dd !important;
                 }
                 .leaflet-draw-toolbar a.leaflet-draw-draw-polygon {
-                  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><polygon points="2,2 18,2 18,18 2,18" fill="none" stroke="%23333" stroke-width="2"/></svg>') !important;
+                  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="2"><polygon points="12,2 22,20 2,20"/></svg>') !important;
                   background-repeat: no-repeat !important;
                   background-position: center !important;
+                  background-size: 20px !important;
+                }
+                .leaflet-draw-toolbar a.leaflet-draw-draw-polyline {
+                  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="2"><path d="M3 12h18m-9-9l9 9-9 9"/></svg>') !important;
+                  background-repeat: no-repeat !important;
+                  background-position: center !important;
+                  background-size: 20px !important;
+                }
+                .leaflet-draw-toolbar a.leaflet-draw-draw-rectangle {
+                  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2" ry="2"/></svg>') !important;
+                  background-repeat: no-repeat !important;
+                  background-position: center !important;
+                  background-size: 20px !important;
+                }
+                .leaflet-draw-toolbar a.leaflet-draw-draw-circle {
+                  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>') !important;
+                  background-repeat: no-repeat !important;
+                  background-position: center !important;
+                  background-size: 20px !important;
+                }
+                .leaflet-draw-toolbar a.leaflet-draw-draw-marker {
+                  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>') !important;
+                  background-repeat: no-repeat !important;
+                  background-position: center !important;
+                  background-size: 20px !important;
+                }
+                .leaflet-draw-edit-toolbar {
+                  background: rgba(255,255,255,0.95) !important;
+                  border-radius: 8px !important;
+                  border: 2px solid #ff8800 !important;
+                  box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
+                }
+                .leaflet-control {
+                  visibility: visible !important;
+                  opacity: 1 !important;
+                  display: block !important;
                 }
               `;
               
-              // Inject styles
+              // Inject styles with force
               const existingStyle = document.getElementById('leaflet-draw-custom-styles');
               if (existingStyle) {
                 existingStyle.remove();
@@ -1499,11 +1554,32 @@ const LeafletMapping = ({ exerciseId }) => {
               styleElement.textContent = styles;
               document.head.appendChild(styleElement);
               
-              console.log('✨ Enhanced styling applied successfully!');
+              // Force visibility
+              drawContainer.style.display = 'block';
+              drawContainer.style.visibility = 'visible';
+              drawContainer.style.opacity = '1';
+              drawContainer.style.zIndex = '1000';
+              
+              console.log('✨ Enhanced styling and visibility fixes applied successfully!');
+              console.log('📊 Draw container dimensions:', drawContainer.getBoundingClientRect());
             } else {
-              console.log('❌ Draw container not found for styling');
+              console.log('❌ Draw container not found for styling - searching for alternatives...');
+              
+              // Search for any leaflet controls
+              const allControls = document.querySelectorAll('.leaflet-control');
+              console.log('📋 Found leaflet controls:', allControls.length);
+              allControls.forEach((control, index) => {
+                console.log(`🔍 Control ${index}:`, control.className, control.getBoundingClientRect());
+              });
+              
+              // Try to find by child elements
+              const drawButtons = document.querySelectorAll('[class*="draw"]');
+              console.log('🔍 Found elements with "draw" in class:', drawButtons.length);
+              drawButtons.forEach((btn, index) => {
+                console.log(`🎯 Draw element ${index}:`, btn.className);
+              });
             }
-          }, 100);
+          }, 500); // Increased timeout for better initialization
 
           // Map click handler for placing objects (updated for new workflow)
           map.on('click', function(e) {

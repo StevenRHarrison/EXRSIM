@@ -1533,7 +1533,30 @@ const LeafletMapping = ({ exerciseId }) => {
   return (
     <div className="flex h-screen">
       {/* Sidebar for object management */}
-      <div className={`w-80 ${theme.colors.secondary} border-r ${theme.colors.border} flex flex-col`}>
+      <div className={`w-80 ${theme.colors.secondary} border-r ${theme.colors.border} flex flex-col h-full`}>
+        {/* Add button at top for visibility */}
+        <div className="p-4 border-b border-gray-700 bg-blue-900">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('🎯 Add Map Object button clicked - showObjectForm:', showObjectForm);
+              resetForm();
+              setShowObjectForm(true);
+              console.log('🎯 setShowObjectForm(true) called');
+            }}
+            className="w-full bg-blue-600 text-white py-3 px-4 rounded hover:bg-blue-700 flex items-center justify-center font-semibold shadow-lg"
+          >
+            <Plus className="h-5 w-5 mr-2" />
+            Add Map Object
+          </button>
+          
+          {/* Debug state */}
+          <div className="mt-2 text-xs text-blue-200 text-center">
+            Modal: {showObjectForm ? 'VISIBLE' : 'HIDDEN'}
+          </div>
+        </div>
+
         <div className="p-4 border-b border-gray-700">
           <h2 className={`text-lg font-semibold ${theme.colors.textPrimary} mb-4`}>Map Objects</h2>
           
@@ -1545,7 +1568,6 @@ const LeafletMapping = ({ exerciseId }) => {
                 onClick={() => {
                   console.log('Category clicked:', category.id);
                   setSelectedCategory(category.id);
-                  // Don't interfere with draw controls
                 }}
                 className={`w-full text-left px-3 py-2 rounded text-sm ${
                   selectedCategory === category.id
@@ -1564,83 +1586,71 @@ const LeafletMapping = ({ exerciseId }) => {
 
         {/* Objects list */}
         <div className="flex-1 overflow-y-auto p-4">
-          <div className="space-y-2">
-            {getObjectsByCategory(selectedCategory).map(obj => (
-              <div
-                key={obj.id}
-                className={`p-3 rounded border ${theme.colors.border} cursor-pointer hover:bg-gray-700`}
-                onClick={() => setSelectedObject(obj)}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div
-                      className="w-4 h-4 rounded mr-2"
-                      style={{ backgroundColor: obj.color }}
-                    ></div>
-                    <div>
-                      <p className={`font-medium ${theme.colors.textPrimary} text-sm`}>{obj.name}</p>
-                      <p className={`text-xs ${theme.colors.textMuted} capitalize`}>{obj.type}</p>
+          {getObjectsByCategory(selectedCategory).length === 0 ? (
+            <div className="text-center py-8">
+              <p className={`${theme.colors.textMuted} text-sm`}>
+                No {selectedCategory === 'all' ? 'objects' : selectedCategory} found
+              </p>
+              <p className={`${theme.colors.textMuted} text-xs mt-2`}>
+                Click "Add Map Object" above to create one
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {getObjectsByCategory(selectedCategory).map(obj => (
+                <div
+                  key={obj.id}
+                  className={`p-3 rounded border ${theme.colors.border} cursor-pointer hover:bg-gray-700`}
+                  onClick={() => setSelectedObject(obj)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div
+                        className="w-4 h-4 rounded mr-2"
+                        style={{ backgroundColor: obj.color }}
+                      ></div>
+                      <div>
+                        <p className={`font-medium ${theme.colors.textPrimary} text-sm`}>{obj.name}</p>
+                        <p className={`text-xs ${theme.colors.textMuted} capitalize`}>{obj.type}</p>
+                      </div>
+                    </div>
+                    <div className="flex space-x-1">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingObject(obj);
+                          setFormData({
+                            name: obj.name,
+                            description: obj.description,
+                            color: obj.color,
+                            image: obj.image || ''
+                          });
+                          setShowObjectForm(true);
+                        }}
+                        className="p-1 text-blue-400 hover:text-blue-300"
+                      >
+                        <Edit className="h-3 w-3" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleObjectDelete(obj.id);
+                        }}
+                        className="p-1 text-red-400 hover:text-red-300"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </button>
                     </div>
                   </div>
-                  <div className="flex space-x-1">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setEditingObject(obj);
-                        setFormData({
-                          name: obj.name,
-                          description: obj.description,
-                          color: obj.color,
-                          image: obj.image || ''
-                        });
-                        setShowObjectForm(true);
-                      }}
-                      className="p-1 text-blue-400 hover:text-blue-300"
-                    >
-                      <Edit className="h-3 w-3" />
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleObjectDelete(obj.id);
-                      }}
-                      className="p-1 text-red-400 hover:text-red-300"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </button>
-                  </div>
+                  {obj.description && (
+                    <p className={`text-xs ${theme.colors.textMuted} mt-1 line-clamp-2`}>
+                      {obj.description}
+                    </p>
+                  )}
                 </div>
-                {obj.description && (
-                  <p className={`text-xs ${theme.colors.textMuted} mt-1 line-clamp-2`}>
-                    {obj.description}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Add new object button */}
-        <div className="p-4 border-t border-gray-700">
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              console.log('🎯 Add Map Object button clicked - showObjectForm:', showObjectForm);
-              resetForm();
-              setShowObjectForm(true);
-              console.log('🎯 setShowObjectForm(true) called');
-            }}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 flex items-center justify-center"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Map Object
-          </button>
-        </div>
-        
-        {/* Debug: Show current showObjectForm state */}
-        <div className="p-2 text-xs text-gray-500">
-          Modal State: {showObjectForm ? 'VISIBLE' : 'HIDDEN'}
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

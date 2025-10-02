@@ -1240,10 +1240,12 @@ const LeafletMapping = ({ exerciseId }) => {
         try {
           // Ensure map is fully initialized
           if (!map.getContainer() || !map._size) {
-            console.log('Map not fully ready, retrying...');
+            console.log('Map not fully ready, retrying...', { container: !!map.getContainer(), size: !!map._size });
             setTimeout(initDrawControls, 500);
             return;
           }
+          
+          console.log('Map is ready, initializing draw controls...');
           
           // Create a FeatureGroup for drawn items
           const drawnFeatureGroup = new L.FeatureGroup();

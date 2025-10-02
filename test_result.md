@@ -1024,3 +1024,30 @@
     -message: "🚨 CRITICAL FRONTEND DATA PERSISTENCE ISSUES IDENTIFIED! Conducted comprehensive investigation of data flow between Exercise Builder and Exercise Management Dashboard as requested. ✅ EXERCISE MANAGEMENT DASHBOARD WORKING: Successfully tested 'Dynamic Data Test Exercise' - navigation works perfectly, Goals section displays 2 goals ('Test Emergency Response', 'Communication Systems'), Objectives section displays 1 objective ('Activate EOC within 30 minutes'), all with proper achievement status badges and CRUD interfaces. ❌ EXERCISE BUILDER DATA COLLECTION BROKEN: Major form field issues identified - Exercise name/description fields not found (missing placeholders), Scope fields (description, hazards, geographic area) not found, Goals/Objectives name/description fields not found, Add Goal/Add Objective buttons not found, Dynamic 'Added Goals/Objectives' sections not visible. ❌ DATA PERSISTENCE FAILURES: Backend API calls successful (POST/PUT to /api/exercise-builder) but data not properly captured from forms. 4/7 exercises on dashboard have empty names (API shows 'NO NAME'). Only 1/7 exercises has goals/objectives data. Root cause: Exercise Builder form selectors not matching actual form fields, preventing data collection during save operations. 🎯 CRITICAL FINDINGS: Backend API working perfectly (confirmed via direct API testing), Exercise Management Dashboard displays data correctly when it exists, Exercise Builder form fields exist but data collection is broken due to selector mismatches, Data persistence issue is in frontend form data collection, not backend storage or dashboard display. IMMEDIATE ACTION REQUIRED: Fix Exercise Builder form field selectors to properly capture user input during exercise creation/editing."
     -agent: "testing"
     -message: "🎉 FIXED ADD BUTTON FUNCTIONALITY TESTING COMPLETED - EXCELLENT RESULTS! ✅ STEP 7 (EVENTS): Form fields perfectly connected to state (Event Name: 'Test Event', Description: 'Test event description', Start/End Date/Time all working correctly), Add Event button successfully adds items to 'Added Events (1)' section, Event card displays correctly with proper data and description, Form fields clear after successful addition (Event Name field empty after add), Remove button (trash icon) visible and functional on event cards. ✅ STEP 8 (FUNCTIONS): Successfully navigated to Step 8 (Functions), Function Name and Description fields working perfectly ('Test Function', 'Test function description'), Achievement status radio buttons (Yes/Partial/No) visible and functional, Add Function button present and ready for testing. ✅ STEP 10 (ORGANIZATIONS): All organization form fields working correctly (Name, Description, Home Base, Contact details), comprehensive form structure with all required fields (Organization Name, Description, Home Base, Contact First/Last Name, Phone, Email), Add Organization button present and functional. ✅ CRITICAL FINDINGS: The fixed add button functionality is working correctly - form fields are properly connected to state using currentEvent, currentFunction, currentOrganization state objects, add buttons (addEvent, addFunction, addOrganization) successfully add items to their respective collections, 'Added [Items]' sections appear with correct counts and display data properly, form clearing after addition is working (verified Event Name field clears), remove functionality is available with trash icons. ✅ VERIFICATION COMPLETE: The user's reported issues with Steps 7, 8, and 10 add buttons have been successfully resolved. All form field connections, add button functionality, display sections, and form clearing are working as expected. The Exercise Builder dynamic functionality is production-ready for these three critical steps."
+    -agent: "testing"
+    -message: "❌ CRITICAL ISSUE IDENTIFIED: Leaflet Mapping Coordinate Capture and Modal Opening Testing Results
+
+NAVIGATION ISSUES FOUND:
+- Successfully navigated to Exercise Dashboard
+- Successfully clicked on exercise card (Exercise Claybelt with ID: 4bb39755-0b97-4ded-902d-7f9325f3d9a9)
+- URL changes to #manage?exercise=4bb39755-0b97-4ded-902d-7f9325f3d9a9 but then redirects back to main dashboard
+- ICS breadcrumb navigation not accessible due to routing issues
+- Cannot reach the Leaflet mapping interface to test coordinate capture and modal opening
+
+BACKEND STATUS:
+- Backend API is working correctly (confirmed via logs)
+- Exercise data is being fetched successfully
+- Map objects API endpoint is functional
+
+FRONTEND ROUTING ISSUE:
+- Application appears to have a client-side routing problem
+- URLs with hash fragments (#ics, #manage) are not being handled properly
+- This prevents access to the ICS → Planning → Mapping workflow
+
+TESTING STATUS:
+❌ UNABLE TO COMPLETE COORDINATE CAPTURE AND MODAL OPENING TEST
+❌ Cannot verify if the reported fixes are working
+❌ Leaflet mapping interface is inaccessible due to routing issues
+
+RECOMMENDATION:
+Main agent should investigate and fix the frontend routing issue before the coordinate capture and modal opening functionality can be properly tested. The routing system needs to properly handle hash-based navigation to ICS sections."

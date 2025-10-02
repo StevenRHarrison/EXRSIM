@@ -581,8 +581,30 @@ const ICSDashboard = ({ currentExercise }) => {
         { id: 'safety', label: 'Safety', icon: Shield }
       ]
     },
-    { id: 'planning', label: 'Planning', icon: Calendar, backgroundColor: 'bg-blue-500' },
-    { id: 'logistics', label: 'Logistics', icon: Package, backgroundColor: 'bg-yellow-500' },
+    { 
+      id: 'planning', 
+      label: 'Planning', 
+      icon: Calendar, 
+      backgroundColor: 'bg-blue-500',
+      hasSubmenu: true,
+      submenuItems: [
+        { id: 'mapping', label: 'Mapping', icon: Map, backgroundColor: 'bg-blue-500' },
+        { id: 'situation-unit', label: 'Situation Unit', icon: Info, backgroundColor: 'bg-blue-500' },
+        { id: 'documentation-unit', label: 'Documentation Unit', icon: FileText, backgroundColor: 'bg-blue-500' },
+        { id: 'demobilization-unit', label: 'Demobilization Unit', icon: ArrowLeft, backgroundColor: 'bg-blue-500' }
+      ]
+    },
+    { 
+      id: 'logistics', 
+      label: 'Logistics', 
+      icon: Package, 
+      backgroundColor: 'bg-yellow-500',
+      hasSubmenu: true,
+      submenuItems: [
+        { id: 'services', label: 'Services', icon: Settings, backgroundColor: 'bg-yellow-500' },
+        { id: 'support', label: 'Support', icon: Headphones, backgroundColor: 'bg-yellow-500' }
+      ]
+    },
     { 
       id: 'fin-admin', 
       label: 'Fin / Admin', 
@@ -590,7 +612,11 @@ const ICSDashboard = ({ currentExercise }) => {
       backgroundColor: 'bg-gray-500',
       hasSubmenu: true,
       submenuItems: [
-        { id: 'ics-2xx-forms', label: 'ICS 2XX Form Series', icon: FileCheck }
+        { id: 'ics-2xx-forms', label: 'ICS 2XX Form Series', icon: FileCheck },
+        { id: 'time-unit', label: 'Time Unit', icon: Clock, backgroundColor: 'bg-gray-500' },
+        { id: 'procurement-unit', label: 'Procurement Unit', icon: Package, backgroundColor: 'bg-gray-500' },
+        { id: 'comp-claims-unit', label: 'Comp and Claims Unit', icon: FileCheck, backgroundColor: 'bg-gray-500' },
+        { id: 'cost-unit', label: 'Cost Unit', icon: DollarSign, backgroundColor: 'bg-gray-500' }
       ]
     }
   ];

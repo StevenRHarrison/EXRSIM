@@ -1222,7 +1222,8 @@ const LeafletMapping = ({ exerciseId }) => {
       name: '',
       description: '',
       color: '#3388ff',
-      image: ''
+      image: '',
+      type: 'marker' // Reset type to default
     });
     setShowObjectForm(false);
     setEditingObject(null);

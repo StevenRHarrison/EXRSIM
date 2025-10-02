@@ -568,7 +568,7 @@ const ICSDashboard = ({ currentExercise }) => {
 
   const icsMenuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
-    { id: 'command-staff', label: 'Command Staff', icon: UserCog },
+    { id: 'command-staff', label: 'Command Staff', icon: UserCog, backgroundColor: 'bg-red-900' },
     {
       id: 'operations',
       label: 'Operations',

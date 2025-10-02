@@ -14252,6 +14252,28 @@ function AppContent() {
   const [managingExerciseId, setManagingExerciseId] = useState(null);
   const [currentExercise, setCurrentExercise] = useState(null);
   
+  // Fetch current exercise data when managingExerciseId changes
+  useEffect(() => {
+    const fetchCurrentExercise = async () => {
+      if (managingExerciseId) {
+        try {
+          const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/exercises/${managingExerciseId}`);
+          if (response.ok) {
+            const exerciseData = await response.json();
+            setCurrentExercise(exerciseData);
+          }
+        } catch (error) {
+          console.error('Error fetching current exercise:', error);
+          setCurrentExercise(null);
+        }
+      } else {
+        setCurrentExercise(null);
+      }
+    };
+
+    fetchCurrentExercise();
+  }, [managingExerciseId]);
+  
   // Scribe form state
   const [scribeTemplates, setScribeTemplates] = useState([]);
   const [currentTemplate, setCurrentTemplate] = useState(null);

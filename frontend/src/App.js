@@ -1507,45 +1507,11 @@ const LeafletMapping = ({ exerciseId }) => {
       <div className="flex-1 relative">
         <MapContainerComponent />
         
-        {/* Manual Drawing Tools Overlay */}
-        <div className="absolute top-16 left-4 bg-white rounded shadow-lg p-2 border-2 border-blue-500">
-          <div className="flex flex-col space-y-2">
-            <button 
-              className="p-3 bg-white border-2 border-blue-500 rounded hover:bg-blue-500 hover:text-white transition-all text-blue-700 font-bold"
-              onClick={() => console.log('Marker tool clicked')}
-              title="Add Marker"
-            >
-              📍
-            </button>
-            <button 
-              className="p-3 bg-white border-2 border-blue-500 rounded hover:bg-blue-500 hover:text-white transition-all text-blue-700 font-bold"
-              onClick={() => console.log('Line tool clicked')}
-              title="Draw Line"
-            >
-              📏
-            </button>
-            <button 
-              className="p-3 bg-white border-2 border-blue-500 rounded hover:bg-blue-500 hover:text-white transition-all text-blue-700 font-bold"
-              onClick={() => console.log('Polygon tool clicked')}
-              title="Draw Polygon"
-            >
-              ⬟
-            </button>
-            <button 
-              className="p-3 bg-white border-2 border-blue-500 rounded hover:bg-blue-500 hover:text-white transition-all text-blue-700 font-bold"
-              onClick={() => console.log('Rectangle tool clicked')}
-              title="Draw Rectangle"
-            >
-              ⬜
-            </button>
-          </div>
-        </div>
-
-        {/* Map info overlay */}
+        {/* Drawing Tools Status */}
         <div className="absolute top-4 right-4 bg-white rounded shadow-lg p-3">
           <div className="text-center">
-            <p className="text-sm font-semibold text-gray-700">Drawing Tools Active</p>
-            <p className="text-xs text-gray-500 mt-1">Use the tools on the left<br/>to draw on the satellite map</p>
+            <p className="text-sm font-semibold text-gray-700">Leaflet Draw Tools</p>
+            <p className="text-xs text-gray-500 mt-1">Tools should appear<br/>below zoom controls (+/-)</p>
           </div>
         </div>
       </div>

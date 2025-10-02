@@ -562,7 +562,7 @@ const PoliciesProceduresManager = ({ onClose }) => {
 // ICS Dashboard Component
 const ICSDashboard = ({ currentExercise }) => {
   const { theme } = useTheme();
-  const [activeICSMenu, setActiveICSMenu] = useState('operations');
+  const [activeICSMenu, setActiveICSMenu] = useState('dashboard');
   const [operationsExpanded, setOperationsExpanded] = useState(true);
 
   const icsMenuItems = [

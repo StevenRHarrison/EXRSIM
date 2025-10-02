@@ -1425,9 +1425,9 @@ const LeafletMapping = ({ exerciseId }) => {
           center={[39.8283, -98.5795]} // Center of USA
           zoom={4}
           style={{ height: '100%', width: '100%' }}
-          ref={(mapInstance) => {
-            if (mapInstance && !mapReady) {
-              mapRef.current = mapInstance;
+          whenReady={(mapInstance) => {
+            if (mapInstance && mapInstance.target && !mapReady) {
+              mapRef.current = mapInstance.target;
               setMapReady(true);
             }
           }}

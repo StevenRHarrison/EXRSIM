@@ -1075,28 +1075,42 @@ const ScenarioForm = ({ exerciseId, editingScenario, onBack, onSave }) => {
     }
   };
 
-  const handleImageUpload = async (file) => {
-    if (!file) return;
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageData = e.target.result;
+        setImagePreview(imageData);
+        setFormData(prev => ({ ...prev, scenario_image: imageData }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-    setUploading(true);
-    const formDataImage = new FormData();
-    formDataImage.append('file', file);
-
+  const handleCameraCapture = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/upload`, {
-        method: 'POST',
-        body: formDataImage
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.play();
+      
+      video.addEventListener('loadedmetadata', () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0);
+        
+        const imageData = canvas.toDataURL('image/jpeg');
+        setImagePreview(imageData);
+        setFormData(prev => ({ ...prev, scenario_image: imageData }));
+        
+        stream.getTracks().forEach(track => track.stop());
       });
-
-      if (response.ok) {
-        const result = await response.json();
-        setFormData(prev => ({ ...prev, scenario_image: result.file_path }));
-        setImagePreview(result.file_path);
-      }
     } catch (error) {
-      console.error('Error uploading image:', error);
-    } finally {
-      setUploading(false);
+      console.error('Error accessing camera:', error);
+      alert('Unable to access camera. Please use file upload instead.');
     }
   };
 

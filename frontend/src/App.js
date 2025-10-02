@@ -592,15 +592,13 @@ const Navigation = ({ currentExercise = null }) => {
               Exercise
             </Link>
             {currentExercise && (
-              <Button 
-                variant="outline"
-                size="sm"
-                className={`${theme.colors.textSecondary} border-gray-500/50 hover:border-orange-500/50 hover:text-orange-400 transition-colors`}
+              <button
+                className="text-orange-500 hover:text-orange-400 transition-colors font-medium cursor-pointer"
                 onClick={() => window.location.href = `#manage?exercise=${currentExercise.id}`}
                 title={currentExercise.exercise_name}
               >
                 ICS
-              </Button>
+              </button>
             )}
           </div>
         </div>

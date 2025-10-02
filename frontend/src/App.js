@@ -1982,32 +1982,113 @@ const LeafletMapping = ({ exerciseId }) => {
                       if (editingObject) {
                         console.log('Updating existing object:', editingObject.id);
                         handleObjectUpdate(editingObject.id, formData);
-                      } else {
-                        // Enable map clicking mode for placing new object
-                        console.log('🎯 Enabling map click mode for object placement');
-                        setPendingObjectData({
-                          name: formData.name || 'New Object',
-                          description: formData.description,
-                          color: formData.color,
-                          image: formData.image,
-                          type: formData.type // Use the form data type directly
-                        });
-                        setIsPlacingObject(true);
-                        setShowObjectForm(false); // Close modal
+                      } else if (clickedCoordinates) {
+                        // New workflow: Use clicked coordinates to create object
+                        console.log('🎯 Creating object at clicked coordinates:', clickedCoordinates);
                         
-                        // Show instruction with more details
-                        console.log('🎯 Placement mode enabled with data:', {
-                          name: formData.name || 'New Object',
-                          type: formData.type,
-                          color: formData.color
-                        });
-                        alert(`Ready to place ${formData.type.toUpperCase()}!\n\nObject: "${formData.name || 'New Object'}"\nColor: ${formData.color}\n\nClick anywhere on the map to place it.`);
+                        const { lat, lng } = clickedCoordinates;
+                        let geoJSON;
+                        
+                        if (formData.type === 'marker') {
+                          geoJSON = {
+                            type: 'Feature',
+                            geometry: {
+                              type: 'Point',
+                              coordinates: [lng, lat]
+                            }
+                          };
+                        } else if (formData.type === 'polygon') {
+                          const offset = 0.01;
+                          geoJSON = {
+                            type: 'Feature',
+                            geometry: {
+                              type: 'Polygon',
+                              coordinates: [[
+                                [lng - offset, lat - offset],
+                                [lng + offset, lat - offset], 
+                                [lng + offset, lat + offset],
+                                [lng - offset, lat + offset],
+                                [lng - offset, lat - offset]
+                              ]]
+                            }
+                          };
+                        } else if (formData.type === 'line') {
+                          const offset = 0.005;
+                          geoJSON = {
+                            type: 'Feature',
+                            geometry: {
+                              type: 'LineString',
+                              coordinates: [
+                                [lng - offset, lat],
+                                [lng + offset, lat]
+                              ]
+                            }
+                          };
+                        } else if (formData.type === 'rectangle') {
+                          const offset = 0.008;
+                          geoJSON = {
+                            type: 'Feature',
+                            geometry: {
+                              type: 'Polygon',
+                              coordinates: [[
+                                [lng - offset, lat - offset],
+                                [lng + offset, lat - offset],
+                                [lng + offset, lat + offset], 
+                                [lng - offset, lat + offset],
+                                [lng - offset, lat - offset]
+                              ]]
+                            }
+                          };
+                        }
+                        
+                        // Create object and add to map
+                        handleObjectCreate(geoJSON, formData.type);
+                        
+                        // Add visual feedback on map
+                        if (mapRef.current && drawnItemsRef.current) {
+                          const map = mapRef.current;
+                          const editableLayers = drawnItemsRef.current;
+                          
+                          let layer;
+                          if (formData.type === 'marker') {
+                            layer = L.marker([lat, lng]);
+                          } else if (formData.type === 'polygon' || formData.type === 'rectangle') {
+                            const coords = geoJSON.geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
+                            layer = L.polygon(coords, { 
+                              color: formData.color, 
+                              fillColor: formData.color, 
+                              fillOpacity: 0.3 
+                            });
+                          } else if (formData.type === 'line') {
+                            const coords = geoJSON.geometry.coordinates.map(coord => [coord[1], coord[0]]);
+                            layer = L.polyline(coords, { 
+                              color: formData.color, 
+                              weight: 4 
+                            });
+                          }
+                          
+                          if (layer) {
+                            editableLayers.addLayer(layer);
+                            layer.bindPopup(`<strong>${formData.name}</strong><br><small>${formData.description || 'No description'}</small>`).openPopup();
+                          }
+                        }
+                        
+                        // Reset states
+                        setIsPlacingObject(false);
+                        setCurrentObjectType(null);
+                        setClickedCoordinates(null);
+                        setShowObjectForm(false);
+                        resetForm();
+                        
+                      } else {
+                        // Manual entry fallback (no coordinates captured)
+                        alert('Please select an object type and click on the map first, or use the drawing tools.');
                       }
                     } catch (error) {
                       console.error('Error saving object:', error);
                       alert('Error saving object. Please check console for details.');
                     }
-                  }}
+                  }}}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105"
                 >
                   {editingObject ? 'Update Object' : `Save & Click Map to Place ${formData.type.charAt(0).toUpperCase() + formData.type.slice(1)}`}

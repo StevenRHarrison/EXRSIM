@@ -1945,7 +1945,7 @@ const LeafletMapping = ({ exerciseId }) => {
                   }}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105"
                 >
-                  {editingObject ? 'Update Object' : 'Click Map to Place'}
+                  {editingObject ? 'Update Object' : `Save & Click Map to Place ${formData.type.charAt(0).toUpperCase() + formData.type.slice(1)}`}
                 </button>
                 <button
                   type="button"

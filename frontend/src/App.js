@@ -1057,6 +1057,364 @@ const ICSDashboard = ({ currentExercise }) => {
   );
 };
 
+// Leaflet Mapping Component
+const LeafletMapping = ({ exerciseId }) => {
+  const { theme } = useTheme();
+  const [mapObjects, setMapObjects] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedObject, setSelectedObject] = useState(null);
+  const [showObjectForm, setShowObjectForm] = useState(false);
+  const [editingObject, setEditingObject] = useState(null);
+  const [mapInstance, setMapInstance] = useState(null);
+  const [drawingLayer, setDrawingLayer] = useState(null);
+  
+  // Form data for creating/editing map objects
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    color: '#3388ff',
+    image: ''
+  });
+
+  useEffect(() => {
+    if (exerciseId) {
+      fetchMapObjects();
+    }
+  }, [exerciseId]);
+
+  const fetchMapObjects = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/map-objects?exercise_id=${exerciseId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setMapObjects(data);
+      }
+    } catch (error) {
+      console.error('Error fetching map objects:', error);
+    }
+  };
+
+  const handleObjectCreate = async (geoJsonData, objectType) => {
+    const objectData = {
+      exercise_id: exerciseId,
+      type: objectType,
+      name: formData.name || `New ${objectType}`,
+      description: formData.description,
+      color: formData.color,
+      geometry: geoJsonData.geometry,
+      image: formData.image
+    };
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/map-objects`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(objectData),
+      });
+
+      if (response.ok) {
+        const newObject = await response.json();
+        setMapObjects(prev => [...prev, newObject]);
+        resetForm();
+      }
+    } catch (error) {
+      console.error('Error creating map object:', error);
+    }
+  };
+
+  const handleObjectUpdate = async (objectId, updates) => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/map-objects/${objectId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+      });
+
+      if (response.ok) {
+        const updatedObject = await response.json();
+        setMapObjects(prev => prev.map(obj => obj.id === objectId ? updatedObject : obj));
+        setEditingObject(null);
+        setShowObjectForm(false);
+        resetForm();
+      }
+    } catch (error) {
+      console.error('Error updating map object:', error);
+    }
+  };
+
+  const handleObjectDelete = async (objectId) => {
+    if (window.confirm('Are you sure you want to delete this map object?')) {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/map-objects/${objectId}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          setMapObjects(prev => prev.filter(obj => obj.id !== objectId));
+        }
+      } catch (error) {
+        console.error('Error deleting map object:', error);
+      }
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      description: '',
+      color: '#3388ff',
+      image: ''
+    });
+    setShowObjectForm(false);
+    setEditingObject(null);
+  };
+
+  const getObjectsByCategory = (category) => {
+    if (category === 'all') return mapObjects;
+    return mapObjects.filter(obj => obj.type === category);
+  };
+
+  const categories = [
+    { id: 'all', label: 'All Objects', count: mapObjects.length },
+    { id: 'marker', label: 'Markers', count: mapObjects.filter(obj => obj.type === 'marker').length },
+    { id: 'line', label: 'Lines', count: mapObjects.filter(obj => obj.type === 'line').length },
+    { id: 'polygon', label: 'Polygons', count: mapObjects.filter(obj => obj.type === 'polygon').length },
+    { id: 'rectangle', label: 'Rectangles', count: mapObjects.filter(obj => obj.type === 'rectangle').length }
+  ];
+
+  // This will be the actual Leaflet map implementation
+  const MapContainer = () => {
+    return (
+      <div className="h-full w-full bg-gray-200 flex items-center justify-center">
+        <div className="text-center">
+          <Map className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+          <p className="text-gray-600">Interactive Leaflet Map</p>
+          <p className="text-sm text-gray-500 mt-2">
+            Map will render here with:<br/>
+            • Multiple tile layers<br/>
+            • Drawing tools<br/>
+            • Object management
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex h-screen">
+      {/* Sidebar for object management */}
+      <div className={`w-80 ${theme.colors.secondary} border-r ${theme.colors.border} flex flex-col`}>
+        <div className="p-4 border-b border-gray-700">
+          <h2 className={`text-lg font-semibold ${theme.colors.textPrimary} mb-4`}>Map Objects</h2>
+          
+          {/* Category filters */}
+          <div className="space-y-2">
+            {categories.map(category => (
+              <button
+                key={category.id}
+                onClick={() => setSelectedCategory(category.id)}
+                className={`w-full text-left px-3 py-2 rounded text-sm ${
+                  selectedCategory === category.id
+                    ? 'bg-blue-600 text-white'
+                    : `${theme.colors.textMuted} hover:bg-gray-700`
+                }`}
+              >
+                <span>{category.label}</span>
+                <span className="float-right bg-gray-600 text-white px-2 py-0.5 rounded-full text-xs">
+                  {category.count}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Objects list */}
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="space-y-2">
+            {getObjectsByCategory(selectedCategory).map(obj => (
+              <div
+                key={obj.id}
+                className={`p-3 rounded border ${theme.colors.border} cursor-pointer hover:bg-gray-700`}
+                onClick={() => setSelectedObject(obj)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div
+                      className="w-4 h-4 rounded mr-2"
+                      style={{ backgroundColor: obj.color }}
+                    ></div>
+                    <div>
+                      <p className={`font-medium ${theme.colors.textPrimary} text-sm`}>{obj.name}</p>
+                      <p className={`text-xs ${theme.colors.textMuted} capitalize`}>{obj.type}</p>
+                    </div>
+                  </div>
+                  <div className="flex space-x-1">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingObject(obj);
+                        setFormData({
+                          name: obj.name,
+                          description: obj.description,
+                          color: obj.color,
+                          image: obj.image || ''
+                        });
+                        setShowObjectForm(true);
+                      }}
+                      className="p-1 text-blue-400 hover:text-blue-300"
+                    >
+                      <Edit className="h-3 w-3" />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleObjectDelete(obj.id);
+                      }}
+                      className="p-1 text-red-400 hover:text-red-300"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </button>
+                  </div>
+                </div>
+                {obj.description && (
+                  <p className={`text-xs ${theme.colors.textMuted} mt-1 line-clamp-2`}>
+                    {obj.description}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Add new object button */}
+        <div className="p-4 border-t border-gray-700">
+          <button
+            onClick={() => {
+              resetForm();
+              setShowObjectForm(true);
+            }}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 flex items-center justify-center"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Map Object
+          </button>
+        </div>
+      </div>
+
+      {/* Main map area */}
+      <div className="flex-1 relative">
+        <MapContainer />
+        
+        {/* Map controls overlay */}
+        <div className="absolute top-4 right-4 bg-white rounded shadow-lg p-2">
+          <div className="flex flex-col space-y-2">
+            <button className="p-2 hover:bg-gray-100 rounded" title="Draw Marker">
+              <MapPin className="h-5 w-5" />
+            </button>
+            <button className="p-2 hover:bg-gray-100 rounded" title="Draw Line">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </button>
+            <button className="p-2 hover:bg-gray-100 rounded" title="Draw Polygon">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+            </button>
+            <button className="p-2 hover:bg-gray-100 rounded" title="Draw Rectangle">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Object form modal */}
+      {showObjectForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className={`${theme.colors.secondary} rounded-lg p-6 w-96 max-h-96 overflow-y-auto`}>
+            <h3 className={`text-lg font-semibold ${theme.colors.textPrimary} mb-4`}>
+              {editingObject ? 'Edit Map Object' : 'Add Map Object'}
+            </h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className={`block text-sm ${theme.colors.textMuted} mb-1`}>Name</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                  className={`w-full p-2 rounded border ${theme.colors.border} ${theme.colors.tertiary} ${theme.colors.textPrimary}`}
+                  placeholder="Enter object name"
+                />
+              </div>
+
+              <div>
+                <label className={`block text-sm ${theme.colors.textMuted} mb-1`}>Description</label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                  className={`w-full p-2 rounded border ${theme.colors.border} ${theme.colors.tertiary} ${theme.colors.textPrimary}`}
+                  rows={3}
+                  placeholder="Enter description"
+                />
+              </div>
+
+              <div>
+                <label className={`block text-sm ${theme.colors.textMuted} mb-1`}>Color</label>
+                <input
+                  type="color"
+                  value={formData.color}
+                  onChange={(e) => setFormData(prev => ({ ...prev, color: e.target.value }))}
+                  className="w-full h-10 rounded border border-gray-300"
+                />
+              </div>
+
+              <div>
+                <label className={`block text-sm ${theme.colors.textMuted} mb-1`}>Image (Base64)</label>
+                <textarea
+                  value={formData.image}
+                  onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
+                  className={`w-full p-2 rounded border ${theme.colors.border} ${theme.colors.tertiary} ${theme.colors.textPrimary}`}
+                  rows={2}
+                  placeholder="Paste base64 image data"
+                />
+              </div>
+
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => {
+                    if (editingObject) {
+                      handleObjectUpdate(editingObject.id, formData);
+                    } else {
+                      // For new objects, we'd integrate with the drawing tool
+                      console.log('Save new object:', formData);
+                    }
+                  }}
+                  className="flex-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+                >
+                  {editingObject ? 'Update' : 'Save'}
+                </button>
+                <button
+                  onClick={resetForm}
+                  className="flex-1 bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // ICS Dashboard Overview Component
 const ICSDashboardOverview = ({ exerciseId }) => {
   const { theme } = useTheme();

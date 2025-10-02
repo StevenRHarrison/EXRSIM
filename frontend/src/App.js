@@ -587,19 +587,24 @@ const Navigation = ({ currentExercise = null, activeMenu = 'dashboard' }) => {
             </div>
           </Link>
           <div className="flex items-center space-x-4">
-            <div className="relative">
-              <Link 
-                to="/builder" 
-                className={`text-orange-500 hover:text-orange-400 transition-colors ${activeMenu === 'builder' ? 'font-bold' : 'font-medium'}`}
-              >
-                Exercise
-              </Link>
-              {activeMenu === 'builder' && (
-                <ChevronDown className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 h-4 w-4 text-white" />
-              )}
-            </div>
+            <Link 
+              to="/builder" 
+              className={`text-orange-500 hover:text-orange-400 transition-colors ${activeMenu === 'builder' ? 'font-bold' : 'font-medium'}`}
+            >
+              Exercise
+            </Link>
             {currentExercise && (
-              <div className="relative">
+              <>
+                {/* Arrow between buttons pointing to non-active button */}
+                <div className="flex items-center">
+                  {activeMenu === 'builder' ? (
+                    <ChevronRight className="h-4 w-4 text-white" />
+                  ) : activeMenu === 'manage' ? (
+                    <ChevronLeft className="h-4 w-4 text-white" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4 text-white" />
+                  )}
+                </div>
                 <button
                   className={`text-orange-500 hover:text-orange-400 transition-colors cursor-pointer ${activeMenu === 'manage' ? 'font-bold' : 'font-medium'}`}
                   onClick={() => window.location.href = `#manage?exercise=${currentExercise.id}`}
@@ -607,10 +612,7 @@ const Navigation = ({ currentExercise = null, activeMenu = 'dashboard' }) => {
                 >
                   ICS
                 </button>
-                {activeMenu === 'manage' && (
-                  <ChevronDown className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 h-4 w-4 text-white" />
-                )}
-              </div>
+              </>
             )}
           </div>
         </div>

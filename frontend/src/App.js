@@ -1221,121 +1221,121 @@ const LeafletMapping = ({ exerciseId }) => {
 
   // Initialize drawing controls when map is ready
   useEffect(() => {
-    if (mapReady && mapRef.current && mapRef.current._container) {
+    if (mapReady && mapRef.current) {
       const map = mapRef.current;
       
-      // Ensure map is fully initialized
-      if (!map.getContainer()) {
-        console.log('Map container not ready, waiting...');
-        return;
-      }
-      
-      // Create a FeatureGroup for drawn items
-      const drawnFeatureGroup = new L.FeatureGroup();
-      map.addLayer(drawnFeatureGroup);
-      setDrawnItems(drawnFeatureGroup);
+      // Add a small delay to ensure map is fully initialized
+      const initDrawControls = () => {
+        try {
+          // Ensure map is fully initialized
+          if (!map.getContainer() || !map._size) {
+            console.log('Map not fully ready, retrying...');
+            setTimeout(initDrawControls, 500);
+            return;
+          }
+          
+          // Create a FeatureGroup for drawn items
+          const drawnFeatureGroup = new L.FeatureGroup();
+          map.addLayer(drawnFeatureGroup);
+          setDrawnItems(drawnFeatureGroup);
 
-      // Initialize the draw control
-      const drawControl = new L.Control.Draw({
-        position: 'topleft',
-        draw: {
-          polygon: {
-            shapeOptions: {
-              color: formData.color,
-              fillColor: formData.color,
-              fillOpacity: 0.3
+          // Initialize the draw control
+          const drawControl = new L.Control.Draw({
+            position: 'topleft',
+            draw: {
+              polygon: {
+                shapeOptions: {
+                  color: formData.color,
+                  fillColor: formData.color,
+                  fillOpacity: 0.3
+                },
+                allowIntersection: false,
+                drawError: {
+                  color: '#e1e100',
+                  message: '<strong>Oh snap!</strong> you can\'t draw that!'
+                }
+              },
+              polyline: {
+                shapeOptions: {
+                  color: formData.color,
+                  weight: 4
+                }
+              },
+              rectangle: {
+                shapeOptions: {
+                  color: formData.color,
+                  fillColor: formData.color,
+                  fillOpacity: 0.3
+                }
+              },
+              circle: false, // Disable circle drawing
+              circlemarker: false, // Disable circle marker
+              marker: {
+                icon: L.icon({
+                  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+                  iconSize: [25, 41],
+                  iconAnchor: [12, 41],
+                  popupAnchor: [1, -34],
+                  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+                  shadowSize: [41, 41]
+                })
+              }
             },
-            allowIntersection: false,
-            drawError: {
-              color: '#e1e100',
-              message: '<strong>Oh snap!</strong> you can\'t draw that!'
+            edit: {
+              featureGroup: drawnFeatureGroup,
+              remove: true
             }
-          },
-          polyline: {
-            shapeOptions: {
-              color: formData.color,
-              weight: 4
-            }
-          },
-          rectangle: {
-            shapeOptions: {
-              color: formData.color,
-              fillColor: formData.color,
-              fillOpacity: 0.3
-            }
-          },
-          circle: false, // Disable circle drawing
-          circlemarker: false, // Disable circle marker
-          marker: {
-            icon: L.icon({
-              iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-              iconSize: [25, 41],
-              iconAnchor: [12, 41],
-              popupAnchor: [1, -34],
-              shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-              shadowSize: [41, 41]
-            })
-          }
-        },
-        edit: {
-          featureGroup: drawnFeatureGroup,
-          remove: true
-        }
-      });
+          });
 
-      map.addControl(drawControl);
+          map.addControl(drawControl);
 
-      // Handle draw events
-      map.on(L.Draw.Event.CREATED, function (e) {
-        const layer = e.layer;
-        const type = e.layerType;
-        
-        // Add the layer to the drawn items group
-        drawnFeatureGroup.addLayer(layer);
-        
-        // Convert to GeoJSON and save to backend
-        const geoJSON = layer.toGeoJSON();
-        handleObjectCreate(geoJSON, type);
-        
-        // Add popup to the layer
-        const popupContent = `
-          <div>
-            <h3 class="font-semibold">${formData.name || `New ${type}`}</h3>
-            <p class="text-sm text-gray-600">${formData.description || 'No description'}</p>
-            <button onclick="editMapObject('${Date.now()}')" class="text-blue-500 text-xs">Edit</button>
-          </div>
-        `;
-        layer.bindPopup(popupContent);
-      });
+          // Handle draw events
+          map.on(L.Draw.Event.CREATED, function (e) {
+            const layer = e.layer;
+            const type = e.layerType;
+            
+            // Add the layer to the drawn items group
+            drawnFeatureGroup.addLayer(layer);
+            
+            // Convert to GeoJSON and save to backend
+            const geoJSON = layer.toGeoJSON();
+            handleObjectCreate(geoJSON, type);
+            
+            // Add popup to the layer
+            const popupContent = `
+              <div>
+                <h3 class="font-semibold">${formData.name || `New ${type}`}</h3>
+                <p class="text-sm text-gray-600">${formData.description || 'No description'}</p>
+                <button onclick="editMapObject('${Date.now()}')" class="text-blue-500 text-xs">Edit</button>
+              </div>
+            `;
+            layer.bindPopup(popupContent);
+          });
 
-      map.on(L.Draw.Event.EDITED, function (e) {
-        const layers = e.layers;
-        layers.eachLayer(function (layer) {
-          // Handle layer editing - update in backend
-          const geoJSON = layer.toGeoJSON();
-          console.log('Layer edited:', geoJSON);
-        });
-      });
+          map.on(L.Draw.Event.EDITED, function (e) {
+            const layers = e.layers;
+            layers.eachLayer(function (layer) {
+              // Handle layer editing - update in backend
+              const geoJSON = layer.toGeoJSON();
+              console.log('Layer edited:', geoJSON);
+            });
+          });
 
-      map.on(L.Draw.Event.DELETED, function (e) {
-        const layers = e.layers;
-        layers.eachLayer(function (layer) {
-          // Handle layer deletion - remove from backend
-          console.log('Layer deleted:', layer);
-        });
-      });
+          map.on(L.Draw.Event.DELETED, function (e) {
+            const layers = e.layers;
+            layers.eachLayer(function (layer) {
+              // Handle layer deletion - remove from backend
+              console.log('Layer deleted:', layer);
+            });
+          });
 
-      // Cleanup function
-      return () => {
-        if (map && drawControl) {
-          try {
-            map.removeControl(drawControl);
-            map.removeLayer(drawnFeatureGroup);
-          } catch (error) {
-            console.log('Cleanup error:', error);
-          }
+        } catch (error) {
+          console.error('Error initializing draw controls:', error);
         }
       };
+
+      // Start initialization with a small delay
+      setTimeout(initDrawControls, 100);
     }
   }, [mapReady, formData.color]);
 

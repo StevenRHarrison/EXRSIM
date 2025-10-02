@@ -757,8 +757,7 @@ const ICSDashboard = ({ currentExercise }) => {
             </div>
           </div>
         </div>
-      </div>
-    </React.Fragment>
+    </div>
   );
 };
 
@@ -14652,8 +14651,7 @@ function AppContent() {
             </main>
           </div>
         </div>
-      </div>
-    </React.Fragment>
+    </div>
   );
 }
 

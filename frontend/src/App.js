@@ -1233,268 +1233,86 @@ const LeafletMapping = ({ exerciseId }) => {
     });
   }, []);
 
-  // Initialize drawing controls when map is ready
+  // Initialize drawing functionality when map is ready
   useEffect(() => {
     if (mapReady && mapRef.current) {
       const map = mapRef.current;
       
-      // Add a small delay to ensure map is fully initialized
-      const initDrawControls = () => {
-        try {
-          // Ensure map is fully initialized
-          if (!map.getContainer() || !map._size) {
-            console.log('Map not fully ready, retrying...', { container: !!map.getContainer(), size: !!map._size });
-            setTimeout(initDrawControls, 500);
-            return;
-          }
-          
-          console.log('Map is ready, initializing draw controls...');
-          
-          // Create a FeatureGroup for drawn items
-          const drawnFeatureGroup = new L.FeatureGroup();
-          map.addLayer(drawnFeatureGroup);
-          setDrawnItems(drawnFeatureGroup);
-
-          // Add persistent CSS for draw controls
-          const style = document.createElement('style');
-          style.textContent = `
-            .leaflet-draw {
-              display: block !important;
-              visibility: visible !important;
-              opacity: 1 !important;
-              z-index: 2000 !important;
-            }
-            .leaflet-draw-toolbar {
-              display: block !important;
-              visibility: visible !important;
-            }
-            .leaflet-draw-toolbar a {
-              display: inline-block !important;
-              visibility: visible !important;
-              opacity: 1 !important;
-              background-color: white !important;
-              border: 3px solid #2563eb !important;
-              border-radius: 6px !important;
-              box-shadow: 0 4px 8px rgba(0,0,0,0.25) !important;
-              margin: 4px !important;
-              padding: 8px !important;
-              min-width: 40px !important;
-              min-height: 40px !important;
-            }
-            .leaflet-draw-toolbar a:hover {
-              background-color: #2563eb !important;
-              transform: scale(1.1) !important;
-            }
-          `;
-          document.head.appendChild(style);
-
-          // Initialize the draw control with enhanced visibility
-          const drawControl = new L.Control.Draw({
-            position: 'topleft',
-            draw: {
-              polygon: {
-                shapeOptions: {
-                  color: formData.color,
-                  fillColor: formData.color,
-                  fillOpacity: 0.3
-                },
-                allowIntersection: false,
-                drawError: {
-                  color: '#e1e100',
-                  message: '<strong>Oh snap!</strong> you can\'t draw that!'
-                }
-              },
-              polyline: {
-                shapeOptions: {
-                  color: formData.color,
-                  weight: 4
-                }
-              },
-              rectangle: {
-                shapeOptions: {
-                  color: formData.color,
-                  fillColor: formData.color,
-                  fillOpacity: 0.3
-                }
-              },
-              circle: false, // Disable circle drawing
-              circlemarker: false, // Disable circle marker
-              marker: {
-                icon: L.icon({
-                  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-                  iconSize: [25, 41],
-                  iconAnchor: [12, 41],
-                  popupAnchor: [1, -34],
-                  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-                  shadowSize: [41, 41]
-                })
-              }
-            },
-            edit: {
-              featureGroup: drawnFeatureGroup,
-              remove: true
-            }
-          });
-
-          try {
-            map.addControl(drawControl);
-            console.log('Draw control successfully added to map');
-          } catch (error) {
-            console.error('Error adding draw control:', error);
-          }
-
-          // Apply enhanced styling to make drawing controls more prominent
-          setTimeout(() => {
-            console.log('Looking for draw controls...');
-            const drawControlContainer = document.querySelector('.leaflet-draw');
-            const allControls = document.querySelectorAll('.leaflet-control');
-            console.log('All leaflet controls found:', allControls.length);
-            console.log('Draw control containers found:', drawControlContainer ? 1 : 0);
-            
-            if (drawControlContainer) {
-              console.log('Applying enhanced styling to draw controls');
-              drawControlContainer.style.zIndex = '2000';
-              drawControlContainer.style.position = 'relative';
-              
-              // Style the toolbar container
-              const toolbar = drawControlContainer.querySelector('.leaflet-draw-toolbar');
-              if (toolbar) {
-                toolbar.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-                toolbar.style.padding = '8px';
-                toolbar.style.borderRadius = '8px';
-                toolbar.style.border = '3px solid #2563eb';
-                toolbar.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
-              }
-              
-              // Style the toolbar buttons for better visibility
-              const toolbarButtons = drawControlContainer.querySelectorAll('.leaflet-draw-toolbar a');
-              console.log('Found', toolbarButtons.length, 'toolbar buttons');
-              toolbarButtons.forEach((button, index) => {
-                button.style.backgroundColor = '#ffffff';
-                button.style.border = '3px solid #2563eb';
-                button.style.borderRadius = '6px';
-                button.style.boxShadow = '0 4px 8px rgba(0,0,0,0.25)';
-                button.style.margin = '4px';
-                button.style.padding = '8px';
-                button.style.transition = 'all 0.3s ease';
-                button.style.minWidth = '40px';
-                button.style.minHeight = '40px';
-                button.style.display = 'inline-block';
-                
-                // Add hover effects
-                button.addEventListener('mouseenter', () => {
-                  button.style.backgroundColor = '#2563eb';
-                  button.style.transform = 'scale(1.1)';
-                  button.style.boxShadow = '0 6px 12px rgba(0,0,0,0.4)';
-                });
-                
-                button.addEventListener('mouseleave', () => {
-                  button.style.backgroundColor = '#ffffff';
-                  button.style.transform = 'scale(1)';
-                  button.style.boxShadow = '0 4px 8px rgba(0,0,0,0.25)';
-                });
-              });
-            } else {
-              console.log('Draw control container not found, retrying...');
-              // Keep trying to find and style the draw controls
-              setTimeout(() => {
-                const retryDrawControl = document.querySelector('.leaflet-draw');
-                if (retryDrawControl) {
-                  console.log('Found draw control on retry, applying styling');
-                  retryDrawControl.style.zIndex = '2000';
-                  retryDrawControl.style.position = 'relative';
-                  
-                  const retryButtons = retryDrawControl.querySelectorAll('.leaflet-draw-toolbar a');
-                  retryButtons.forEach((button) => {
-                    button.style.backgroundColor = '#ffffff';
-                    button.style.border = '3px solid #2563eb';
-                    button.style.borderRadius = '6px';
-                    button.style.boxShadow = '0 4px 8px rgba(0,0,0,0.25)';
-                    button.style.margin = '4px';
-                    button.style.padding = '8px';
-                    button.style.minWidth = '40px';
-                    button.style.minHeight = '40px';
-                    button.style.display = 'inline-block !important';
-                    button.style.visibility = 'visible !important';
-                  });
-                }
-              }, 1000);
-            }
-          }, 500);
-
-          // Handle draw events
-          map.on(L.Draw.Event.CREATED, function (e) {
-            const layer = e.layer;
-            const type = e.layerType;
-            
-            // Add the layer to the drawn items group
-            drawnFeatureGroup.addLayer(layer);
-            
-            // Convert to GeoJSON and save to backend
-            const geoJSON = layer.toGeoJSON();
-            handleObjectCreate(geoJSON, type);
-            
-            // Add popup to the layer
-            const popupContent = `
-              <div>
-                <h3 class="font-semibold">${formData.name || `New ${type}`}</h3>
-                <p class="text-sm text-gray-600">${formData.description || 'No description'}</p>
-                <button onclick="editMapObject('${Date.now()}')" class="text-blue-500 text-xs">Edit</button>
-              </div>
-            `;
-            layer.bindPopup(popupContent);
-          });
-
-          map.on(L.Draw.Event.EDITED, function (e) {
-            const layers = e.layers;
-            layers.eachLayer(function (layer) {
-              // Handle layer editing - update in backend
-              const geoJSON = layer.toGeoJSON();
-              console.log('Layer edited:', geoJSON);
-            });
-          });
-
-          map.on(L.Draw.Event.DELETED, function (e) {
-            const layers = e.layers;
-            layers.eachLayer(function (layer) {
-              // Handle layer deletion - remove from backend
-              console.log('Layer deleted:', layer);
-            });
-          });
-
-        } catch (error) {
-          console.error('Error initializing draw controls:', error);
-        }
-      };
-
-      // Function to keep draw controls visible
-      const ensureDrawControlsVisible = () => {
-        const drawControl = document.querySelector('.leaflet-draw');
-        if (drawControl) {
-          drawControl.style.display = 'block !important';
-          drawControl.style.visibility = 'visible !important';
-          drawControl.style.opacity = '1 !important';
-          drawControl.style.zIndex = '2000 !important';
-          
-          const buttons = drawControl.querySelectorAll('.leaflet-draw-toolbar a');
-          buttons.forEach(button => {
-            button.style.display = 'inline-block !important';
-            button.style.visibility = 'visible !important';
-            button.style.opacity = '1 !important';
-          });
-        }
-        
-        // Keep checking every second to ensure controls stay visible
-        setTimeout(ensureDrawControlsVisible, 1000);
-      };
-
-      // Start initialization with a small delay
-      setTimeout(initDrawControls, 100);
+      console.log('Initializing drawing functionality...');
       
-      // Start the visibility monitor after initialization
-      setTimeout(ensureDrawControlsVisible, 2000);
+      // Create FeatureGroup for drawn items
+      const drawnItems = new L.FeatureGroup();
+      map.addLayer(drawnItems);
+      drawnItemsRef.current = drawnItems;
+
+      // Create and add drawing control
+      try {
+        const drawControl = new L.Control.Draw({
+          position: 'topleft',
+          draw: {
+            polygon: true,
+            polyline: true,
+            rectangle: true,
+            circle: false,
+            circlemarker: false,
+            marker: true
+          },
+          edit: {
+            featureGroup: drawnItems,
+            remove: true
+          }
+        });
+
+        map.addControl(drawControl);
+        console.log('✅ Draw control added successfully');
+
+        // Style the draw controls with CSS
+        setTimeout(() => {
+          const drawElement = document.querySelector('.leaflet-draw');
+          if (drawElement) {
+            drawElement.style.zIndex = '1000';
+            const buttons = drawElement.querySelectorAll('a');
+            buttons.forEach(button => {
+              button.style.backgroundColor = 'white';
+              button.style.border = '2px solid #007cff';
+              button.style.borderRadius = '4px';
+              button.style.margin = '2px';
+              button.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+            });
+            console.log('✅ Draw control styling applied');
+          } else {
+            console.log('❌ Draw control element not found');
+          }
+        }, 100);
+
+        // Handle drawing events
+        map.on(L.Draw.Event.CREATED, function (e) {
+          const layer = e.layer;
+          const type = e.layerType;
+          
+          console.log('Shape created:', type);
+          drawnItems.addLayer(layer);
+          
+          // Convert to GeoJSON and save
+          const geoJSON = layer.toGeoJSON();
+          handleObjectCreate(geoJSON, type === 'polyline' ? 'line' : type);
+        });
+
+        map.on(L.Draw.Event.EDITED, function (e) {
+          console.log('Shapes edited');
+          // Handle editing
+        });
+
+        map.on(L.Draw.Event.DELETED, function (e) {
+          console.log('Shapes deleted');
+          // Handle deletion
+        });
+
+      } catch (error) {
+        console.error('❌ Error setting up draw control:', error);
+      }
     }
-  }, [mapReady, formData.color]);
+  }, [mapReady]);
 
   // Add global functions for popup buttons
   useEffect(() => {

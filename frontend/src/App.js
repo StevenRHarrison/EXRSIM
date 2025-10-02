@@ -1221,7 +1221,9 @@ const LeafletMapping = ({ exerciseId }) => {
 
   // Initialize drawing controls when map is ready
   useEffect(() => {
-    if (map) {
+    if (mapReady && mapRef.current) {
+      const map = mapRef.current;
+      
       // Create a FeatureGroup for drawn items
       const drawnFeatureGroup = new L.FeatureGroup();
       map.addLayer(drawnFeatureGroup);
@@ -1319,13 +1321,17 @@ const LeafletMapping = ({ exerciseId }) => {
 
       // Cleanup function
       return () => {
-        if (map) {
-          map.removeControl(drawControl);
-          map.removeLayer(drawnFeatureGroup);
+        if (map && drawControl) {
+          try {
+            map.removeControl(drawControl);
+            map.removeLayer(drawnFeatureGroup);
+          } catch (error) {
+            console.log('Cleanup error:', error);
+          }
         }
       };
     }
-  }, [map, formData.color]);
+  }, [mapReady, formData.color]);
 
   // Add global functions for popup buttons
   useEffect(() => {

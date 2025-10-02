@@ -586,6 +586,8 @@ const ICSDashboard = ({ currentExercise }) => {
 
   const renderICSContent = () => {
     switch (activeICSMenu) {
+      case 'dashboard':
+        return <ICSDashboardOverview exerciseId={currentExercise?.id} />;
       case 'scenario':
         return <ScenarioManagement exerciseId={currentExercise?.id} />;
       case 'operations':

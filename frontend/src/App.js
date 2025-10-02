@@ -1219,8 +1219,9 @@ const LeafletMapping = ({ exerciseId }) => {
 
   // Drawing state and map reference
   const mapRef = useRef(null);
-  const [drawnItems, setDrawnItems] = useState(null);
+  const drawnItemsRef = useRef(null);
   const [mapReady, setMapReady] = useState(false);
+  const [drawingMode, setDrawingMode] = useState(null);
 
   // Fix default marker icons for Leaflet
   useEffect(() => {

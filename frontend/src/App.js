@@ -14621,6 +14621,8 @@ function AppContent() {
           setScribeTimeErrors={setScribeTimeErrors}
           loadScribeTemplates={loadScribeTemplates}
         />;
+      case 'ics':
+        return <ICSDashboard currentExercise={currentExercise} />;
       default:
         return <Dashboard />;
     }

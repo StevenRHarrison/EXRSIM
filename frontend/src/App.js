@@ -940,7 +940,18 @@ const ScenarioManagement = ({ exerciseId }) => {
                       {scenario.scenario_name}
                     </CardTitle>
                     <CardDescription className={theme.colors.textMuted}>
-                      {scenario.scenario_type} • {scenario.severity_level}
+                      {scenario.scenario_type} • 
+                      <span 
+                        className="ml-2 px-2 py-1 text-xs font-semibold rounded text-white"
+                        style={{
+                          backgroundColor: scenario.severity_level === 'Low' ? '#16a34a' :
+                                         scenario.severity_level === 'Medium' ? '#eab308' :
+                                         scenario.severity_level === 'High' ? '#ea580c' :
+                                         scenario.severity_level === 'Critical' ? '#dc2626' : '#6b7280'
+                        }}
+                      >
+                        {scenario.severity_level}
+                      </span>
                     </CardDescription>
                   </div>
                   <div className="flex items-center space-x-2">

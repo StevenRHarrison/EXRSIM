@@ -614,13 +614,13 @@ const ICSDashboard = ({ currentExercise }) => {
       backgroundColor: 'bg-gray-500',
       hasSubmenu: true,
       submenuItems: [
-        { id: 'ics-2xx-forms', label: 'ICS 2XX Form Series', icon: FileCheck },
         { id: 'time-unit', label: 'Time Unit', icon: Clock, backgroundColor: 'bg-gray-500' },
         { id: 'procurement-unit', label: 'Procurement Unit', icon: Package, backgroundColor: 'bg-gray-500' },
         { id: 'comp-claims-unit', label: 'Comp and Claims Unit', icon: FileCheck, backgroundColor: 'bg-gray-500' },
         { id: 'cost-unit', label: 'Cost Unit', icon: DollarSign, backgroundColor: 'bg-gray-500' }
       ]
-    }
+    },
+    { id: 'ics-2xx-forms', label: 'ICS 2XX Form Series', icon: FileCheck }
   ];
 
   const renderICSContent = () => {

@@ -1720,8 +1720,7 @@ const LeafletMapping = ({ exerciseId }) => {
                   key={obj.id}
                   position={[lat, lng]}
                   eventHandlers={{
-                    mouseover: (e) => handleObjectMouseEnter(obj, e.originalEvent),
-                    mouseout: handleObjectMouseLeave,
+                    click: (e) => handleObjectMouseEnter(obj, e.originalEvent)
                   }}
                 />
               );

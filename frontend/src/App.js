@@ -585,34 +585,32 @@ const Navigation = ({ currentExercise = null, activeMenu = 'dashboard' }) => {
               />
             </div>
           </Link>
-          <div className="flex flex-col items-start">
-            <div className="flex items-center space-x-4 relative">
+          <div className="flex items-center space-x-4">
+            <div className="relative">
+              <Link 
+                to="/builder" 
+                className={`text-orange-500 hover:text-orange-400 transition-colors ${activeMenu === 'builder' ? 'font-bold' : 'font-medium'}`}
+              >
+                Exercise
+              </Link>
+              {activeMenu === 'builder' && (
+                <ChevronDown className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 h-4 w-4 text-white" />
+              )}
+            </div>
+            {currentExercise && (
               <div className="relative">
-                <Link 
-                  to="/builder" 
-                  className={`text-orange-500 hover:text-orange-400 transition-colors ${activeMenu === 'builder' ? 'font-bold' : 'font-medium'}`}
+                <button
+                  className={`text-orange-500 hover:text-orange-400 transition-colors cursor-pointer ${activeMenu === 'manage' ? 'font-bold' : 'font-medium'}`}
+                  onClick={() => window.location.href = `#manage?exercise=${currentExercise.id}`}
+                  title={currentExercise.exercise_name}
                 >
-                  Exercise
-                </Link>
-                {activeMenu === 'builder' && (
+                  ICS
+                </button>
+                {activeMenu === 'manage' && (
                   <ChevronDown className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 h-4 w-4 text-white" />
                 )}
               </div>
-              {currentExercise && (
-                <div className="relative">
-                  <button
-                    className={`text-orange-500 hover:text-orange-400 transition-colors cursor-pointer ${activeMenu === 'manage' ? 'font-bold' : 'font-medium'}`}
-                    onClick={() => window.location.href = `#manage?exercise=${currentExercise.id}`}
-                    title={currentExercise.exercise_name}
-                  >
-                    ICS
-                  </button>
-                  {activeMenu === 'manage' && (
-                    <ChevronDown className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 h-4 w-4 text-white" />
-                  )}
-                </div>
-              )}
-            </div>
+            )}
           </div>
         </div>
         

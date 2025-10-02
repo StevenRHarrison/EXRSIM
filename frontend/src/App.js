@@ -1705,22 +1705,7 @@ const LeafletMapping = ({ exerciseId }) => {
           )}
         </div>
 
-        {/* Original Add Button - Now Secondary */}
-        <div className="p-4 border-b border-gray-700">
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              console.log('🎯 Manual Add Map Object button clicked');
-              resetForm();
-              setShowObjectForm(true);
-            }}
-            className="w-full bg-gray-600 hover:bg-gray-700 text-white py-2 px-3 rounded text-sm font-medium flex items-center justify-center"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Manual Entry (No Map Click)
-          </button>
-        </div>
+        {/* Manual Entry Button Removed - Use draw tools only */}
 
         <div className="p-4 border-b border-gray-700">
           <h2 className={`text-lg font-semibold ${theme.colors.textPrimary} mb-4`}>Map Objects</h2>

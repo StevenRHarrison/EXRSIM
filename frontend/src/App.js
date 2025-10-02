@@ -1771,10 +1771,32 @@ const LeafletMapping = ({ exerciseId }) => {
         {/* Drawing Tools Status */}
         <div className="absolute top-4 right-4 bg-white rounded shadow-lg p-3 border border-blue-300">
           <div className="text-center">
-            <p className="text-sm font-bold text-blue-700">🎯 Leaflet Draw Active</p>
-            <p className="text-xs text-gray-600 mt-1">Drawing toolbar loading...<br/>Should appear below zoom (+/-)</p>
-            {mapReady && (
-              <p className="text-xs text-green-600 mt-1">✅ Map Ready</p>
+            {isPlacingObject ? (
+              <>
+                <p className="text-sm font-bold text-orange-600">📍 Click Map to Place Object</p>
+                <p className="text-xs text-gray-600 mt-1">
+                  Placing: {pendingObjectData?.name}<br/>
+                  Type: {pendingObjectData?.type}
+                </p>
+                <button 
+                  onClick={() => {
+                    setIsPlacingObject(false);
+                    setPendingObjectData(null);
+                    setShowObjectForm(true);
+                  }}
+                  className="text-xs text-red-600 mt-1 underline"
+                >
+                  Cancel Placement
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="text-sm font-bold text-blue-700">🎯 Leaflet Draw Active</p>
+                <p className="text-xs text-gray-600 mt-1">Drawing toolbar loading...<br/>Should appear below zoom (+/-)</p>
+                {mapReady && (
+                  <p className="text-xs text-green-600 mt-1">✅ Map Ready</p>
+                )}
+              </>
             )}
           </div>
         </div>

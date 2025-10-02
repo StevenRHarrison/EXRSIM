@@ -1358,7 +1358,21 @@ const LeafletMapping = ({ exerciseId }) => {
           
           console.log('✅ FeatureGroup added for drawn items');
 
-          // Create Leaflet.Draw control
+          // Verify leaflet-draw is available
+          if (!L.Control.Draw) {
+            console.error('❌ Leaflet.Draw is not available! Check installation.');
+            return;
+          }
+
+          if (!L.Draw || !L.Draw.Event) {
+            console.error('❌ Leaflet.Draw.Event is not available! Check installation.');
+            return;
+          }
+
+          console.log('✅ Leaflet.Draw plugin verified and available');
+          console.log('✅ Available draw events:', Object.keys(L.Draw.Event));
+
+          // Create Leaflet.Draw control with enhanced options
           const drawPluginOptions = {
             position: 'topleft',
             draw: {

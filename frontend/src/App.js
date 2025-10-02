@@ -12,28 +12,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw';
 import 'leaflet-draw/dist/leaflet.draw.css';
 
-// Fix leaflet-draw types and ensure proper initialization
-declare global {
-  namespace L {
-    namespace Draw {
-      class Control extends L.Control {
-        constructor(options?: any);
-      }
-      const Event: {
-        CREATED: string;
-        EDITED: string;
-        DELETED: string;
-        DRAWSTART: string;
-        DRAWSTOP: string;
-        DRAWVERTEX: string;
-        EDITSTART: string;
-        EDITSTOP: string;
-        DELETESTART: string;
-        DELETESTOP: string;
-      };
-    }
-  }
-}
+// Leaflet-draw plugin will be initialized when map is ready
 
 // Import shadcn components
 import { Button } from './components/ui/button';

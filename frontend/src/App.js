@@ -1816,52 +1816,189 @@ const LeafletMapping = ({ exerciseId }) => {
             width: '100%', 
             cursor: isPlacingObject ? 'crosshair' : 'grab'
           }}
-          whenReady={(mapInstance) => {
-            console.log('Map ready event fired');
-            if (mapInstance && mapInstance.target && !mapReady) {
+          ref={mapRef}
+          whenCreated={(mapInstance) => {
+            console.log('🗺️ Map instance created:', !!mapInstance);
+            if (mapInstance && mapInstance.target) {
               mapRef.current = mapInstance.target;
               setMapReady(true);
-              console.log('✅ Map initialized successfully');
             }
           }}
         >
+          {/* Satellite layer as default */}
+          <TileLayer
+            attribution='© ESRI'
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+          />
+          
+          {/* Layer control for different map types */}
           <LayersControl position="topright">
-            {/* Base layers */}
-            <LayersControl.BaseLayer name="OpenStreetMap">
+            <LayersControl.BaseLayer checked name="🛰️ Satellite">
               <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                attribution='© ESRI'
+                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+              />
+            </LayersControl.BaseLayer>
+            
+            <LayersControl.BaseLayer name="🗺️ Streets">
+              <TileLayer
+                attribution='© OpenStreetMap contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
             </LayersControl.BaseLayer>
             
-            <LayersControl.BaseLayer name="Streets">
+            <LayersControl.BaseLayer name="⛰️ Topographical">
               <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
-              />
-            </LayersControl.BaseLayer>
-
-            <LayersControl.BaseLayer checked name="Satellite">
-              <TileLayer
-                attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-              />
-            </LayersControl.BaseLayer>
-
-            <LayersControl.BaseLayer name="Topographic">
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                attribution='Map data: © OpenStreetMap contributors, SRTM | Map style: © OpenTopoMap (CC-BY-SA)'
                 url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
               />
             </LayersControl.BaseLayer>
-
-            <LayersControl.BaseLayer name="Grayscale">
+            
+            <LayersControl.BaseLayer name="🏙️ Greyscale">
               <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                attribution='© CartoDB'
                 url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
               />
             </LayersControl.BaseLayer>
           </LayersControl>
+
+          {/* React Leaflet Draw Integration */}
+          <FeatureGroup>
+            <EditControl
+              position="topleft"
+              onCreated={handleDrawCreated}
+              onEdited={handleDrawEdited}
+              onDeleted={handleDrawDeleted}
+              draw={{
+                polygon: {
+                  allowIntersection: false,
+                  drawError: {
+                    color: '#e1e100',
+                    message: '<strong>Drawing error:</strong> Shape edges cannot cross!'
+                  },
+                  shapeOptions: {
+                    color: '#3388ff',
+                    weight: 3,
+                    fillOpacity: 0.3
+                  },
+                  showArea: true,
+                  showLength: true,
+                  metric: true,
+                  imperial: false
+                },
+                polyline: {
+                  shapeOptions: {
+                    color: '#3388ff',
+                    weight: 4,
+                    opacity: 0.8
+                  },
+                  showLength: true,
+                  metric: true,
+                  imperial: false,
+                  feet: false
+                },
+                rectangle: {
+                  shapeOptions: {
+                    color: '#3388ff',
+                    weight: 3,
+                    fillOpacity: 0.3
+                  },
+                  showArea: true,
+                  metric: true,
+                  imperial: false
+                },
+                circle: {
+                  shapeOptions: {
+                    color: '#3388ff',
+                    weight: 3,
+                    fillOpacity: 0.3
+                  },
+                  showRadius: true,
+                  metric: true,
+                  imperial: false,
+                  feet: false
+                },
+                marker: {
+                  icon: new L.Icon({
+                    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+                    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41]
+                  }),
+                  repeatMode: false,
+                  zIndexOffset: 2000
+                },
+                circlemarker: false // Disable circle marker to avoid confusion
+              }}
+              edit={{
+                remove: {
+                  title: 'Delete layers'
+                },
+                edit: {
+                  selectedPathOptions: {
+                    maintainColor: true,
+                    opacity: 0.8,
+                    dashArray: '10, 10',
+                    fill: true,
+                    fillColor: '#fe57a1',
+                    fillOpacity: 0.1
+                  }
+                }
+              }}
+            />
+          </FeatureGroup>
+
+          {/* Existing map objects from backend */}
+          {mapObjects.map((obj) => {
+            if (obj.type === 'marker' && obj.geometry?.coordinates) {
+              return (
+                <Marker
+                  key={obj.id}
+                  position={[obj.geometry.coordinates[1], obj.geometry.coordinates[0]]}
+                >
+                  <Popup>
+                    <strong>{obj.name}</strong><br />
+                    <small>{obj.description || 'No description'}</small>
+                  </Popup>
+                </Marker>
+              );
+            } else if (obj.type === 'polygon' && obj.geometry?.coordinates) {
+              const coords = obj.geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
+              return (
+                <Polygon
+                  key={obj.id}
+                  positions={coords}
+                  color={obj.color || '#3388ff'}
+                  fillColor={obj.color || '#3388ff'}
+                  fillOpacity={0.3}
+                >
+                  <Popup>
+                    <strong>{obj.name}</strong><br />
+                    <small>{obj.description || 'No description'}</small>
+                  </Popup>
+                </Polygon>
+              );
+            } else if (obj.type === 'line' && obj.geometry?.coordinates) {
+              const coords = obj.geometry.coordinates.map(coord => [coord[1], coord[0]]);
+              return (
+                <Polyline
+                  key={obj.id}
+                  positions={coords}
+                  color={obj.color || '#3388ff'}
+                  weight={4}
+                >
+                  <Popup>
+                    <strong>{obj.name}</strong><br />
+                    <small>{obj.description || 'No description'}</small>
+                  </Popup>
+                </Polyline>
+              );
+            }
+            return null;
+          })}
         </LeafletMapContainer>
       </div>
     );

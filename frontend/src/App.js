@@ -1554,13 +1554,31 @@ const LeafletMapping = ({ exerciseId }) => {
 
       {/* Object form modal */}
       {showObjectForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className={`${theme.colors.secondary} rounded-lg p-6 w-96 max-h-96 overflow-y-auto`}>
-            <h3 className={`text-lg font-semibold ${theme.colors.textPrimary} mb-4`}>
-              {editingObject ? 'Edit Map Object' : 'Add Map Object'}
-            </h3>
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              resetForm();
+            }
+          }}
+        >
+          <div 
+            className={`${theme.colors.secondary} rounded-lg p-6 w-96 max-h-96 overflow-y-auto border ${theme.colors.border}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h3 className={`text-lg font-semibold ${theme.colors.textPrimary}`}>
+                {editingObject ? 'Edit Map Object' : 'Add Map Object'}
+              </h3>
+              <button
+                onClick={resetForm}
+                className={`text-2xl ${theme.colors.textMuted} hover:${theme.colors.textPrimary}`}
+              >
+                ×
+              </button>
+            </div>
             
-            <div className="space-y-4">
+            <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
               <div>
                 <label className={`block text-sm ${theme.colors.textMuted} mb-1`}>Name</label>
                 <input
@@ -1569,6 +1587,7 @@ const LeafletMapping = ({ exerciseId }) => {
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                   className={`w-full p-2 rounded border ${theme.colors.border} ${theme.colors.tertiary} ${theme.colors.textPrimary}`}
                   placeholder="Enter object name"
+                  autoFocus
                 />
               </div>
 
@@ -1604,14 +1623,27 @@ const LeafletMapping = ({ exerciseId }) => {
                 />
               </div>
 
-              <div className="flex space-x-3">
+              <div className="flex space-x-3 pt-4">
                 <button
-                  onClick={() => {
-                    if (editingObject) {
-                      handleObjectUpdate(editingObject.id, formData);
-                    } else {
-                      // For new objects, we'd integrate with the drawing tool
-                      console.log('Save new object:', formData);
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    try {
+                      if (editingObject) {
+                        handleObjectUpdate(editingObject.id, formData);
+                      } else {
+                        // Create a simple marker object for testing
+                        const testGeoJSON = {
+                          type: 'Feature',
+                          geometry: {
+                            type: 'Point',
+                            coordinates: [-98.5795, 39.8283] // Center of USA
+                          }
+                        };
+                        handleObjectCreate(testGeoJSON, 'marker');
+                      }
+                    } catch (error) {
+                      console.error('Error saving object:', error);
                     }
                   }}
                   className="flex-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
@@ -1619,13 +1651,14 @@ const LeafletMapping = ({ exerciseId }) => {
                   {editingObject ? 'Update' : 'Save'}
                 </button>
                 <button
+                  type="button"
                   onClick={resetForm}
                   className="flex-1 bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700"
                 >
                   Cancel
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       )}

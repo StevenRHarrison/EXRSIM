@@ -812,8 +812,8 @@ const Navigation = ({ currentExercise = null, activeMenu = 'dashboard' }) => {
                   )}
                 </div>
                 <button
-                  className={`text-orange-500 hover:text-orange-400 transition-colors cursor-pointer ${activeMenu === 'manage' ? 'font-bold' : 'font-medium'}`}
-                  onClick={() => window.location.href = `#manage?exercise=${currentExercise.id}`}
+                  className={`text-orange-500 hover:text-orange-400 transition-colors cursor-pointer ${activeMenu === 'ics' ? 'font-bold' : 'font-medium'}`}
+                  onClick={() => window.location.href = `#ics?exercise=${currentExercise.id}`}
                   title={currentExercise.exercise_name}
                 >
                   ICS

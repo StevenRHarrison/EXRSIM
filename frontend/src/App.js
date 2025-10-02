@@ -1660,13 +1660,25 @@ const LeafletMapping = ({ exerciseId }) => {
         </div>
       </div>
 
-      {/* Object form modal */}
+      {/* Object form modal - Always rendered for debugging */}
       {showObjectForm && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center"
-          style={{ zIndex: 9999 }}
+          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center modal-overlay"
+          style={{ 
+            zIndex: 9999,
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
           onClick={(e) => {
+            console.log('🎯 Modal overlay clicked');
             if (e.target === e.currentTarget) {
+              console.log('🎯 Closing modal via overlay click');
               resetForm();
             }
           }}

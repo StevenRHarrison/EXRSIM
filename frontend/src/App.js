@@ -1513,8 +1513,7 @@ const LeafletMapping = ({ exerciseId }) => {
           zoom={4}
           style={{ 
             height: '100%', 
-            width: '100%', 
-            cursor: isPlacingObject ? 'crosshair' : 'grab'
+            width: '100%'
           }}
           ref={mapRef}
           whenCreated={(mapInstance) => {

@@ -1227,13 +1227,20 @@ const LeafletMapping = ({ exerciseId }) => {
       });
 
       if (response.ok) {
+        // Remove from local state and refresh from backend to ensure synchronization
         setMapObjects(prev => prev.filter(obj => obj.id !== objectId));
+        // Refresh objects from backend to ensure UI is in sync
+        await fetchMapObjects();
         setShowHoverModal(false);
         setEditingInModal(false);
         console.log('✅ Object deleted successfully');
+      } else {
+        console.error('Failed to delete object. Status:', response.status);
+        alert('Failed to delete object. Please try again.');
       }
     } catch (error) {
       console.error('Error deleting map object:', error);
+      alert('Error deleting object. Please check console for details.');
     }
   };
 

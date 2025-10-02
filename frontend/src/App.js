@@ -1108,6 +1108,18 @@ const LeafletMapping = ({ exerciseId }) => {
     type: 'marker' // Add object type to form data
   });
 
+  // Hover modal state
+  const [hoveredObject, setHoveredObject] = useState(null);
+  const [showHoverModal, setShowHoverModal] = useState(false);
+  const [hoverModalPosition, setHoverModalPosition] = useState({ x: 0, y: 0 });
+  const [editingInModal, setEditingInModal] = useState(false);
+  const [modalFormData, setModalFormData] = useState({
+    name: '',
+    description: '',
+    color: '#3388ff',
+    image: ''
+  });
+
   useEffect(() => {
     if (exerciseId) {
       fetchMapObjects();

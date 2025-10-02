@@ -1501,12 +1501,70 @@ const LeafletMapping = ({ exerciseId }) => {
           </FeatureGroup>
 
           {/* Existing map objects from backend */}
-          {mapObjects.map((obj) => {
+          {mapObjects
+            .filter((obj) => {
+              // Filter out objects with invalid coordinates
+              if (!obj.geometry || !obj.geometry.coordinates) {
+                console.warn('Object missing geometry or coordinates:', obj);
+                return false;
+              }
+              
+              if (obj.type === 'marker') {
+                const [lng, lat] = obj.geometry.coordinates;
+                if (typeof lat !== 'number' || typeof lng !== 'number' || 
+                    isNaN(lat) || isNaN(lng) || 
+                    lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+                  console.warn('Invalid marker coordinates:', obj);
+                  return false;
+                }
+              } else if (obj.type === 'polygon') {
+                if (!Array.isArray(obj.geometry.coordinates) || 
+                    !Array.isArray(obj.geometry.coordinates[0])) {
+                  console.warn('Invalid polygon coordinates:', obj);
+                  return false;
+                }
+                // Check each coordinate pair
+                for (const coord of obj.geometry.coordinates[0]) {
+                  if (!Array.isArray(coord) || coord.length !== 2) {
+                    console.warn('Invalid polygon coordinate pair:', coord);
+                    return false;
+                  }
+                  const [lng, lat] = coord;
+                  if (typeof lat !== 'number' || typeof lng !== 'number' || 
+                      isNaN(lat) || isNaN(lng)) {
+                    console.warn('Invalid polygon coordinate values:', coord);
+                    return false;
+                  }
+                }
+              } else if (obj.type === 'line') {
+                if (!Array.isArray(obj.geometry.coordinates)) {
+                  console.warn('Invalid line coordinates:', obj);
+                  return false;
+                }
+                // Check each coordinate pair
+                for (const coord of obj.geometry.coordinates) {
+                  if (!Array.isArray(coord) || coord.length !== 2) {
+                    console.warn('Invalid line coordinate pair:', coord);
+                    return false;
+                  }
+                  const [lng, lat] = coord;
+                  if (typeof lat !== 'number' || typeof lng !== 'number' || 
+                      isNaN(lat) || isNaN(lng)) {
+                    console.warn('Invalid line coordinate values:', coord);
+                    return false;
+                  }
+                }
+              }
+              
+              return true;
+            })
+            .map((obj) => {
             if (obj.type === 'marker' && obj.geometry?.coordinates) {
+              const [lng, lat] = obj.geometry.coordinates;
               return (
                 <Marker
                   key={obj.id}
-                  position={[obj.geometry.coordinates[1], obj.geometry.coordinates[0]]}
+                  position={[lat, lng]}
                 >
                   <Popup>
                     <strong>{obj.name}</strong><br />
@@ -1515,39 +1573,49 @@ const LeafletMapping = ({ exerciseId }) => {
                 </Marker>
               );
             } else if (obj.type === 'polygon' && obj.geometry?.coordinates) {
-              const coords = obj.geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
-              return (
-                <Polygon
-                  key={obj.id}
-                  positions={coords}
-                  color={obj.color || '#3388ff'}
-                  fillColor={obj.color || '#3388ff'}
-                  fillOpacity={0.3}
-                >
-                  <Popup>
-                    <strong>{obj.name}</strong><br />
-                    <small>{obj.description || 'No description'}</small>
-                  </Popup>
-                </Polygon>
-              );
+              try {
+                const coords = obj.geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
+                return (
+                  <Polygon
+                    key={obj.id}
+                    positions={coords}
+                    color={obj.color || '#3388ff'}
+                    fillColor={obj.color || '#3388ff'}
+                    fillOpacity={0.3}
+                  >
+                    <Popup>
+                      <strong>{obj.name}</strong><br />
+                      <small>{obj.description || 'No description'}</small>
+                    </Popup>
+                  </Polygon>
+                );
+              } catch (error) {
+                console.warn('Error rendering polygon:', obj, error);
+                return null;
+              }
             } else if (obj.type === 'line' && obj.geometry?.coordinates) {
-              const coords = obj.geometry.coordinates.map(coord => [coord[1], coord[0]]);
-              return (
-                <Polyline
-                  key={obj.id}
-                  positions={coords}
-                  color={obj.color || '#3388ff'}
-                  weight={4}
-                >
-                  <Popup>
-                    <strong>{obj.name}</strong><br />
-                    <small>{obj.description || 'No description'}</small>
-                  </Popup>
-                </Polyline>
-              );
+              try {
+                const coords = obj.geometry.coordinates.map(coord => [coord[1], coord[0]]);
+                return (
+                  <Polyline
+                    key={obj.id}
+                    positions={coords}
+                    color={obj.color || '#3388ff'}
+                    weight={4}
+                  >
+                    <Popup>
+                      <strong>{obj.name}</strong><br />
+                      <small>{obj.description || 'No description'}</small>
+                    </Popup>
+                  </Polyline>
+                );
+              } catch (error) {
+                console.warn('Error rendering polyline:', obj, error);
+                return null;
+              }
             }
             return null;
-          })}
+          }).filter(Boolean)} {/* Filter out null values */}
         </LeafletMapContainer>
       </div>
     );

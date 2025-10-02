@@ -14653,7 +14653,8 @@ function AppContent() {
             </main>
           </div>
         </div>
-    </div>
+      </div>
+    </React.Fragment>
   );
 }
 

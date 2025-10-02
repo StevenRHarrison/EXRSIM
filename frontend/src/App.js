@@ -1451,78 +1451,32 @@ const LeafletMapping = ({ exerciseId }) => {
             }
           }, 100);
 
-          // Map click handler for placing objects (using higher-level event)
+          // Map click handler for placing objects (new workflow)
           map.on('click', function(e) {
             console.log('🖱️ Map clicked at:', e.latlng);
-            console.log('🔍 Debug - isPlacingObject:', window.mapDebug?.isPlacingObject);
-            console.log('🔍 Debug - pendingObjectData:', window.mapDebug?.pendingObjectData);
+            console.log('🔍 Debug - isPlacingObject:', isPlacingObject, 'currentObjectType:', currentObjectType);
             
-            if (window.mapDebug?.isPlacingObject && window.mapDebug?.pendingObjectData) {
-              console.log('🎯 Placing object:', window.mapDebug.pendingObjectData);
+            if (isPlacingObject && currentObjectType) {
+              console.log('🎯 Coordinates captured for', currentObjectType, ':', e.latlng);
               
               const { lat, lng } = e.latlng;
               
-              // Create GeoJSON based on object type
-              let geoJSON;
-              if (window.mapDebug.pendingObjectData.type === 'marker') {
-                geoJSON = {
-                  type: 'Feature',
-                  geometry: {
-                    type: 'Point',
-                    coordinates: [lng, lat]
-                  }
-                };
-              } else if (window.mapDebug.pendingObjectData.type === 'polygon') {
-                // Create a small square polygon around the clicked point
-                const offset = 0.01; // Small offset for polygon
-                geoJSON = {
-                  type: 'Feature',
-                  geometry: {
-                    type: 'Polygon',
-                    coordinates: [[
-                      [lng - offset, lat - offset],
-                      [lng + offset, lat - offset], 
-                      [lng + offset, lat + offset],
-                      [lng - offset, lat + offset],
-                      [lng - offset, lat - offset]
-                    ]]
-                  }
-                };
-              } else if (window.mapDebug.pendingObjectData.type === 'line') {
-                // Create a small line from the clicked point
-                const offset = 0.005;
-                geoJSON = {
-                  type: 'Feature',
-                  geometry: {
-                    type: 'LineString',
-                    coordinates: [
-                      [lng - offset, lat],
-                      [lng + offset, lat]
-                    ]
-                  }
-                };
-              } else if (window.mapDebug.pendingObjectData.type === 'rectangle') {
-                // Create a rectangle around the clicked point
-                const offset = 0.008;
-                geoJSON = {
-                  type: 'Feature',
-                  geometry: {
-                    type: 'Polygon',
-                    coordinates: [[
-                      [lng - offset, lat - offset],
-                      [lng + offset, lat - offset],
-                      [lng + offset, lat + offset], 
-                      [lng - offset, lat + offset],
-                      [lng - offset, lat - offset]
-                    ]]
-                  }
-                };
-              }
+              // Store clicked coordinates
+              setClickedCoordinates({ lat, lng });
               
-              // Trigger object creation
-              window.mapDebug.createObject(geoJSON, window.mapDebug.pendingObjectData);
+              // Pre-fill form data with object type and default name
+              setFormData({
+                name: `New ${currentObjectType.charAt(0).toUpperCase() + currentObjectType.slice(1)}`,
+                description: '',
+                color: getDefaultColorForType(currentObjectType),
+                image: '',
+                type: currentObjectType
+              });
               
-              console.log('✅ Object placed successfully!');
+              // Open modal for user to enter details
+              setShowObjectForm(true);
+              
+              console.log('✅ Coordinates captured, opening form modal');
             }
           }, this);
 

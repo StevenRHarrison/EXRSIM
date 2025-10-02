@@ -1340,65 +1340,6 @@ const LeafletMapping = ({ exerciseId }) => {
     };
   }, [mapObjects]);
 
-  // Load existing map objects onto the map
-  useEffect(() => {
-    if (mapReady && mapRef.current && drawnItems && mapObjects.length > 0) {
-      // Clear existing layers
-      drawnItems.clearLayers();
-      
-      // Add existing objects to the map
-      mapObjects.forEach(obj => {
-        let layer;
-        const { geometry, color, name, description } = obj;
-        
-        switch (obj.type) {
-          case 'marker':
-            if (geometry.type === 'Point') {
-              const [lng, lat] = geometry.coordinates;
-              layer = L.marker([lat, lng]);
-            }
-            break;
-          case 'polygon':
-            if (geometry.type === 'Polygon') {
-              const positions = geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
-              layer = L.polygon(positions, { color: color, fillColor: color, fillOpacity: 0.3 });
-            }
-            break;
-          case 'polyline':
-          case 'line':
-            if (geometry.type === 'LineString') {
-              const positions = geometry.coordinates.map(coord => [coord[1], coord[0]]);
-              layer = L.polyline(positions, { color: color, weight: 4 });
-            }
-            break;
-          case 'rectangle':
-            if (geometry.type === 'Polygon') {
-              const positions = geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
-              const bounds = L.latLngBounds(positions);
-              layer = L.rectangle(bounds, { color: color, fillColor: color, fillOpacity: 0.3 });
-            }
-            break;
-        }
-        
-        if (layer) {
-          // Add popup
-          const popupContent = `
-            <div>
-              <h3 class="font-semibold">${name}</h3>
-              <p class="text-sm text-gray-600">${description}</p>
-              <div class="mt-2">
-                <button onclick="editObject('${obj.id}')" class="text-blue-500 text-xs mr-2">Edit</button>
-                <button onclick="deleteObject('${obj.id}')" class="text-red-500 text-xs">Delete</button>
-              </div>
-            </div>
-          `;
-          layer.bindPopup(popupContent);
-          drawnItems.addLayer(layer);
-        }
-      });
-    }
-  }, [mapReady, drawnItems, mapObjects]);
-
   const MapContainerComponent = () => {
     return (
       <div className="h-full w-full">

@@ -292,7 +292,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-## user_problem_statement: Test the new Exercise Management Dashboard functionality in the EXRSIM application. This is a major new feature that should provide comprehensive exercise management capabilities.
+## user_problem_statement: Complete the map object creation workflow in the EXRSIM application. The "Add Map Object" modal and form fields are functional, but users cannot click on the map to create objects at specific locations. Need to implement click-to-place functionality and ensure map object persistence through the existing API.
 
 ## backend:
   - task: "Scribe Template API Endpoints - CRUD Operations"

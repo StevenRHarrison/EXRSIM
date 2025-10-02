@@ -2606,7 +2606,11 @@ if __name__ == "__main__":
     print("\n🚀 STARTING COMPREHENSIVE BACKEND API TESTING")
     print("=" * 60)
     
-    # Test 0: ICS Dashboard Overview APIs (HIGH PRIORITY - REVIEW REQUEST)
+    # Test 0: Map Object APIs (HIGH PRIORITY - LEAFLET MAPPING REVIEW REQUEST)
+    print("\n🗺️ Testing Map Object APIs for Leaflet Mapping...")
+    test_results.append(("Map Object API (Leaflet Mapping)", test_map_object_api()))
+    
+    # Test 1: ICS Dashboard Overview APIs (HIGH PRIORITY - REVIEW REQUEST)
     print("\n🎯 Testing ICS Dashboard Overview APIs...")
     test_results.append(("ICS Dashboard Overview API", test_ics_dashboard_overview_api()))
     

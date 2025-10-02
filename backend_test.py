@@ -2264,8 +2264,8 @@ def test_map_objects_crud_api():
     print("TESTING MAP OBJECTS CRUD API ENDPOINTS - COMPREHENSIVE REVIEW REQUEST")
     print("=" * 60)
     
-    # Use the confirmed working exercise ID from test results
-    exercise_id = "4bb39755-0b97-4ded-902d-7f9325f3d9a9"
+    # Exercise ID from review request - Exercise Claybelt
+    exercise_id = "9204c218-cb55-44e8-812e-3a643aef023c"
     
     # Test data for different object types with proper GeoJSON geometry
     test_map_objects = {

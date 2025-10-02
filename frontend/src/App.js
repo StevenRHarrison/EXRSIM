@@ -14652,7 +14652,6 @@ function AppContent() {
             </main>
           </div>
         </div>
-      </BrowserRouter>
     </div>
   );
 }

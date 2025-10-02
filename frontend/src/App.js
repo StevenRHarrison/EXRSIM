@@ -1249,6 +1249,8 @@ const LeafletMapping = ({ exerciseId }) => {
   const [drawingMode, setDrawingMode] = useState(null);
   const [isPlacingObject, setIsPlacingObject] = useState(false);
   const [pendingObjectData, setPendingObjectData] = useState(null);
+  const [currentObjectType, setCurrentObjectType] = useState(null);
+  const [clickedCoordinates, setClickedCoordinates] = useState(null);
 
   // Debug state exposure for map click handler
   useEffect(() => {

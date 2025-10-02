@@ -53,6 +53,7 @@ import {
   Clock,
   X,
   ChevronDown,
+  ChevronLeft,
   ChevronRight,
   TrendingUp,
   Star,

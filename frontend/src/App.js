@@ -1542,51 +1542,87 @@ const LeafletMapping = ({ exerciseId }) => {
             }
           });
 
-          // Set up Leaflet.draw event handlers
+          // Set up comprehensive Leaflet.draw event handlers
+          console.log('🔗 Setting up Leaflet.Draw event handlers...');
+          
+          // Handle shape creation
           map.on(L.Draw.Event.CREATED, function (e) {
             const type = e.layerType;
             const layer = e.layer;
             
             console.log('🎯 New shape created via drawing tool:', type);
+            console.log('📊 Layer data:', layer.toGeoJSON());
             
             // Add layer to the FeatureGroup
             editableLayers.addLayer(layer);
             
             // Convert to GeoJSON and save to backend
             const geoJSON = layer.toGeoJSON();
-            const objectType = type === 'polyline' ? 'line' : type;
+            const objectType = type === 'polyline' ? 'line' : 
+                             type === 'circle' ? 'polygon' : type; // Convert circle to polygon for backend
             
             console.log('💾 Saving drawn object to backend:', objectType);
             handleObjectCreate(geoJSON, objectType);
             
-            // Add popup to layer
+            // Add popup to layer with enhanced content
             const popupContent = `
-              <div>
-                <strong>${formData.name || `New ${objectType}`}</strong><br>
-                <small>${formData.description || 'No description'}</small>
+              <div style="font-family: Arial, sans-serif;">
+                <strong style="color: #333; font-size: 14px;">New ${objectType.charAt(0).toUpperCase() + objectType.slice(1)}</strong><br>
+                <small style="color: #666;">Created via drawing tool</small><br>
+                <em style="color: #888; font-size: 11px;">Type: ${type}</em>
               </div>
             `;
             layer.bindPopup(popupContent);
           });
 
+          // Handle shape editing
           map.on(L.Draw.Event.EDITED, function (e) {
             const layers = e.layers;
             console.log('📝 Shapes edited:', layers.getLayers().length);
             
             layers.eachLayer(function (layer) {
               const geoJSON = layer.toGeoJSON();
-              console.log('Updated layer:', geoJSON);
+              console.log('🔄 Updated layer:', geoJSON);
+              
+              // Here you could update the backend with edited shapes
+              // For now, just log the updated geometry
             });
           });
 
+          // Handle shape deletion
           map.on(L.Draw.Event.DELETED, function (e) {
             const layers = e.layers;
             console.log('🗑️ Shapes deleted:', layers.getLayers().length);
             
             layers.eachLayer(function (layer) {
-              console.log('Deleted layer:', layer);
+              console.log('❌ Deleted layer:', layer);
+              
+              // Here you could call backend to delete the object
+              // For now, just log the deletion
             });
           });
+
+          // Handle drawing start/stop events for better user feedback
+          map.on(L.Draw.Event.DRAWSTART, function (e) {
+            console.log('🎨 Drawing started:', e.layerType);
+            setDrawingMode(e.layerType);
+          });
+
+          map.on(L.Draw.Event.DRAWSTOP, function (e) {
+            console.log('🏁 Drawing stopped:', e.layerType);
+            setDrawingMode(null);
+          });
+
+          // Handle edit start/stop events
+          map.on(L.Draw.Event.EDITSTART, function (e) {
+            console.log('✏️ Editing mode started');
+          });
+
+          map.on(L.Draw.Event.EDITSTOP, function (e) {
+            console.log('🔒 Editing mode stopped');
+          });
+
+          console.log('✅ All Leaflet.Draw event handlers configured successfully!');
 
           console.log('🎊 All draw event handlers registered successfully!');
 

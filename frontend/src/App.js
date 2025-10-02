@@ -14539,6 +14539,9 @@ function AppContent() {
       if (hashBase === 'manage' && exerciseId) {
         setActiveMenu('manage');
         setManagingExerciseId(exerciseId);
+      } else if (hashBase === 'ics' && exerciseId) {
+        setActiveMenu('ics');
+        setManagingExerciseId(exerciseId);
       } else if (hashBase === 'builder') {
         setActiveMenu('builder');
         setManagingExerciseId(null);

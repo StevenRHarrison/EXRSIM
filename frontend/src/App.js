@@ -1241,7 +1241,7 @@ const LeafletMapping = ({ exerciseId }) => {
 
           // Initialize the draw control
           const drawControl = new L.Control.Draw({
-            position: 'bottomleft',
+            position: 'topleft',
             draw: {
               polygon: {
                 shapeOptions: {

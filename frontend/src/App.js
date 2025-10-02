@@ -14403,12 +14403,17 @@ function AppContent() {
     }
   };
 
-  // Don't show the main navigation and sidebar for the exercise management dashboard
+  // Exercise management dashboard with navigation
   if (activeMenu === 'manage') {
     return (
       <div className={`min-h-screen ${theme.colors.primary} ${theme.colors.textPrimary}`}>
         <BrowserRouter>
-          {renderContent()}
+          <div className="flex flex-col h-screen">
+            <Navigation currentExercise={currentExercise} />
+            <main className="flex-1 overflow-auto">
+              {renderContent()}
+            </main>
+          </div>
         </BrowserRouter>
       </div>
     );

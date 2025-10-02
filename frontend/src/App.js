@@ -1233,116 +1233,195 @@ const LeafletMapping = ({ exerciseId }) => {
     });
   }, []);
 
-  // Initialize drawing functionality when map is ready
+  // Initialize native Leaflet.draw when map is ready
   useEffect(() => {
     if (mapReady && mapRef.current) {
       const map = mapRef.current;
       
-      console.log('Setting up Leaflet Draw controls...');
+      console.log('🎯 Initializing native Leaflet.draw plugin...');
       
-      // Wait for map to be fully rendered
-      setTimeout(() => {
+      // Ensure map is completely ready before adding draw controls
+      const initializeDrawing = () => {
         try {
-          // Create FeatureGroup for drawn items
-          const drawnItems = new L.FeatureGroup();
-          map.addLayer(drawnItems);
-          drawnItemsRef.current = drawnItems;
+          console.log('📍 Map container check:', !!map.getContainer());
+          console.log('📍 Map size check:', !!map._size);
+          
+          if (!map.getContainer() || !map._size) {
+            console.log('⏳ Map not ready, retrying in 500ms...');
+            setTimeout(initializeDrawing, 500);
+            return;
+          }
 
-          // Create draw control with explicit configuration
-          const drawControl = new L.Control.Draw({
+          // Create FeatureGroup to store drawn items
+          const editableLayers = new L.FeatureGroup();
+          map.addLayer(editableLayers);
+          drawnItemsRef.current = editableLayers;
+          
+          console.log('✅ FeatureGroup added for drawn items');
+
+          // Create Leaflet.Draw control
+          const drawPluginOptions = {
             position: 'topleft',
             draw: {
-              polyline: {
-                shapeOptions: {
-                  color: '#f357a1',
-                  weight: 10
-                }
-              },
               polygon: {
                 allowIntersection: false,
                 drawError: {
                   color: '#e1e100',
-                  message: '<strong>Oh snap!</strong> you can\'t draw that!'
+                  message: '<strong>Drawing error:</strong> Shape edges cannot cross!'
                 },
                 shapeOptions: {
-                  color: '#bada55'
+                  color: formData.color || '#3388ff'
                 }
               },
-              circle: false,
+              polyline: {
+                shapeOptions: {
+                  color: formData.color || '#3388ff',
+                  weight: 4
+                }
+              },
               rectangle: {
                 shapeOptions: {
-                  clickable: false
+                  color: formData.color || '#3388ff'
                 }
               },
-              marker: true,
-              circlemarker: false
+              circle: false, // Disable circle
+              circlemarker: false, // Disable circle marker
+              marker: true
             },
             edit: {
-              featureGroup: drawnItems,
+              featureGroup: editableLayers,
               remove: true
             }
-          });
+          };
 
-          // Add control to map
-          map.addControl(drawControl);
-          console.log('✅ Draw control added to map');
-
-          // Add CSS to ensure visibility
-          const css = `
-            .leaflet-draw {
-              z-index: 1000 !important;
-            }
-            .leaflet-draw-toolbar {
-              margin-top: 10px !important;
-            }
-            .leaflet-draw-toolbar a {
-              background-color: white !important;
-              border: 2px solid #007cff !important;
-              border-radius: 4px !important;
-              box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
-              margin: 2px !important;
-            }
-            .leaflet-draw-toolbar a:hover {
-              background-color: #007cff !important;
-              color: white !important;
-            }
-          `;
+          const drawControl = new L.Control.Draw(drawPluginOptions);
           
-          // Inject CSS
-          const styleSheet = document.createElement("style");
-          styleSheet.innerText = css;
-          document.head.appendChild(styleSheet);
-          console.log('✅ Draw control CSS injected');
+          // Add the control to the map
+          map.addControl(drawControl);
+          console.log('🎉 Leaflet.Draw control successfully added!');
 
-          // Event handlers
+          // Force immediate styling
+          setTimeout(() => {
+            const drawContainer = document.querySelector('.leaflet-draw');
+            if (drawContainer) {
+              console.log('🎨 Applying enhanced styling to draw toolbar...');
+              
+              // Apply comprehensive styling
+              const styles = `
+                .leaflet-draw {
+                  z-index: 1000 !important;
+                  margin-top: 10px !important;
+                }
+                .leaflet-draw-toolbar {
+                  display: flex !important;
+                  flex-direction: column !important;
+                  background: rgba(255,255,255,0.9) !important;
+                  border-radius: 6px !important;
+                  padding: 4px !important;
+                  box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+                }
+                .leaflet-draw-toolbar a {
+                  display: block !important;
+                  width: 36px !important;
+                  height: 36px !important;
+                  margin: 2px !important;
+                  background-color: white !important;
+                  border: 2px solid #3388ff !important;
+                  border-radius: 4px !important;
+                  text-decoration: none !important;
+                  line-height: 32px !important;
+                  text-align: center !important;
+                  box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+                  transition: all 0.2s ease !important;
+                }
+                .leaflet-draw-toolbar a:hover {
+                  background-color: #3388ff !important;
+                  transform: scale(1.05) !important;
+                  box-shadow: 0 4px 8px rgba(0,0,0,0.4) !important;
+                }
+                .leaflet-draw-toolbar a.leaflet-draw-draw-polygon {
+                  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><polygon points="2,2 18,2 18,18 2,18" fill="none" stroke="%23333" stroke-width="2"/></svg>') !important;
+                  background-repeat: no-repeat !important;
+                  background-position: center !important;
+                }
+              `;
+              
+              // Inject styles
+              const existingStyle = document.getElementById('leaflet-draw-custom-styles');
+              if (existingStyle) {
+                existingStyle.remove();
+              }
+              
+              const styleElement = document.createElement('style');
+              styleElement.id = 'leaflet-draw-custom-styles';
+              styleElement.textContent = styles;
+              document.head.appendChild(styleElement);
+              
+              console.log('✨ Enhanced styling applied successfully!');
+            } else {
+              console.log('❌ Draw container not found for styling');
+            }
+          }, 100);
+
+          // Set up event handlers
           map.on(L.Draw.Event.CREATED, function (e) {
             const type = e.layerType;
             const layer = e.layer;
             
-            console.log('✅ Shape created:', type);
-            drawnItems.addLayer(layer);
+            console.log('🎯 New shape created:', type);
             
-            // Convert to GeoJSON and save
+            // Add layer to the FeatureGroup
+            editableLayers.addLayer(layer);
+            
+            // Convert to GeoJSON and save to backend
             const geoJSON = layer.toGeoJSON();
-            handleObjectCreate(geoJSON, type === 'polyline' ? 'line' : type);
+            const objectType = type === 'polyline' ? 'line' : type;
+            
+            console.log('💾 Saving to backend:', objectType);
+            handleObjectCreate(geoJSON, objectType);
+            
+            // Add popup to layer
+            const popupContent = `
+              <div>
+                <strong>${formData.name || `New ${objectType}`}</strong><br>
+                <small>${formData.description || 'No description'}</small>
+              </div>
+            `;
+            layer.bindPopup(popupContent);
           });
 
           map.on(L.Draw.Event.EDITED, function (e) {
             const layers = e.layers;
-            console.log('✅ Shapes edited:', layers.getLayers().length);
+            console.log('📝 Shapes edited:', layers.getLayers().length);
+            
+            layers.eachLayer(function (layer) {
+              const geoJSON = layer.toGeoJSON();
+              console.log('Updated layer:', geoJSON);
+              // Handle updates here if needed
+            });
           });
 
           map.on(L.Draw.Event.DELETED, function (e) {
             const layers = e.layers;
-            console.log('✅ Shapes deleted:', layers.getLayers().length);
+            console.log('🗑️ Shapes deleted:', layers.getLayers().length);
+            
+            layers.eachLayer(function (layer) {
+              console.log('Deleted layer:', layer);
+              // Handle deletion from backend here if needed
+            });
           });
 
+          console.log('🎊 All draw event handlers registered successfully!');
+
         } catch (error) {
-          console.error('❌ Failed to setup draw controls:', error);
+          console.error('💥 Error setting up Leaflet.draw:', error);
         }
-      }, 1500); // Wait longer for map to be fully ready
+      };
+
+      // Start initialization after a short delay
+      setTimeout(initializeDrawing, 200);
     }
-  }, [mapReady]);
+  }, [mapReady, formData.color]);
 
   // Add global functions for popup buttons
   useEffect(() => {

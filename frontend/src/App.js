@@ -71,7 +71,6 @@ import {
   ExternalLink,
   UserCog,
   FileCheck,
-  Camera,
   Trash2
 } from 'lucide-react';
 

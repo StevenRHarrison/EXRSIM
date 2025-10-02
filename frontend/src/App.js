@@ -601,6 +601,18 @@ const ICSDashboard = ({ currentExercise }) => {
         return <ICSDashboardOverview exerciseId={currentExercise?.id} />;
       case 'scenario':
         return <ScenarioManagement exerciseId={currentExercise?.id} />;
+      case 'command-staff':
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <UserCog className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>Command Staff</h2>
+              <p className={`${theme.colors.textMuted} mb-6`}>
+                Command Staff module content will be implemented here.
+              </p>
+            </div>
+          </div>
+        );
       case 'operations':
       case 'incident-status':
       case 'objectives':
@@ -611,7 +623,7 @@ const ICSDashboard = ({ currentExercise }) => {
               <Users className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
               <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>
                 {icsMenuItems.find(item => item.id === activeICSMenu)?.label || 
-                 icsMenuItems[0].submenuItems?.find(item => item.id === activeICSMenu)?.label}
+                 icsMenuItems.find(item => item.submenuItems)?.submenuItems?.find(subItem => subItem.id === activeICSMenu)?.label}
               </h2>
               <p className={`${theme.colors.textMuted} mb-6`}>
                 ICS module content will be implemented here.
@@ -651,6 +663,18 @@ const ICSDashboard = ({ currentExercise }) => {
               <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>Fin / Admin</h2>
               <p className={`${theme.colors.textMuted} mb-6`}>
                 Finance and Administration module content will be implemented here.
+              </p>
+            </div>
+          </div>
+        );
+      case 'ics-2xx-forms':
+        return (
+          <div className="p-6">
+            <div className="text-center py-12">
+              <FileCheck className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
+              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>ICS 2XX Form Series</h2>
+              <p className={`${theme.colors.textMuted} mb-6`}>
+                ICS 2XX Form Series module content will be implemented here.
               </p>
             </div>
           </div>

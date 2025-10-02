@@ -1238,79 +1238,109 @@ const LeafletMapping = ({ exerciseId }) => {
     if (mapReady && mapRef.current) {
       const map = mapRef.current;
       
-      console.log('Initializing drawing functionality...');
+      console.log('Setting up Leaflet Draw controls...');
       
-      // Create FeatureGroup for drawn items
-      const drawnItems = new L.FeatureGroup();
-      map.addLayer(drawnItems);
-      drawnItemsRef.current = drawnItems;
+      // Wait for map to be fully rendered
+      setTimeout(() => {
+        try {
+          // Create FeatureGroup for drawn items
+          const drawnItems = new L.FeatureGroup();
+          map.addLayer(drawnItems);
+          drawnItemsRef.current = drawnItems;
 
-      // Create and add drawing control
-      try {
-        const drawControl = new L.Control.Draw({
-          position: 'topleft',
-          draw: {
-            polygon: true,
-            polyline: true,
-            rectangle: true,
-            circle: false,
-            circlemarker: false,
-            marker: true
-          },
-          edit: {
-            featureGroup: drawnItems,
-            remove: true
-          }
-        });
+          // Create draw control with explicit configuration
+          const drawControl = new L.Control.Draw({
+            position: 'topleft',
+            draw: {
+              polyline: {
+                shapeOptions: {
+                  color: '#f357a1',
+                  weight: 10
+                }
+              },
+              polygon: {
+                allowIntersection: false,
+                drawError: {
+                  color: '#e1e100',
+                  message: '<strong>Oh snap!</strong> you can\'t draw that!'
+                },
+                shapeOptions: {
+                  color: '#bada55'
+                }
+              },
+              circle: false,
+              rectangle: {
+                shapeOptions: {
+                  clickable: false
+                }
+              },
+              marker: true,
+              circlemarker: false
+            },
+            edit: {
+              featureGroup: drawnItems,
+              remove: true
+            }
+          });
 
-        map.addControl(drawControl);
-        console.log('✅ Draw control added successfully');
+          // Add control to map
+          map.addControl(drawControl);
+          console.log('✅ Draw control added to map');
 
-        // Style the draw controls with CSS
-        setTimeout(() => {
-          const drawElement = document.querySelector('.leaflet-draw');
-          if (drawElement) {
-            drawElement.style.zIndex = '1000';
-            const buttons = drawElement.querySelectorAll('a');
-            buttons.forEach(button => {
-              button.style.backgroundColor = 'white';
-              button.style.border = '2px solid #007cff';
-              button.style.borderRadius = '4px';
-              button.style.margin = '2px';
-              button.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
-            });
-            console.log('✅ Draw control styling applied');
-          } else {
-            console.log('❌ Draw control element not found');
-          }
-        }, 100);
-
-        // Handle drawing events
-        map.on(L.Draw.Event.CREATED, function (e) {
-          const layer = e.layer;
-          const type = e.layerType;
+          // Add CSS to ensure visibility
+          const css = `
+            .leaflet-draw {
+              z-index: 1000 !important;
+            }
+            .leaflet-draw-toolbar {
+              margin-top: 10px !important;
+            }
+            .leaflet-draw-toolbar a {
+              background-color: white !important;
+              border: 2px solid #007cff !important;
+              border-radius: 4px !important;
+              box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+              margin: 2px !important;
+            }
+            .leaflet-draw-toolbar a:hover {
+              background-color: #007cff !important;
+              color: white !important;
+            }
+          `;
           
-          console.log('Shape created:', type);
-          drawnItems.addLayer(layer);
-          
-          // Convert to GeoJSON and save
-          const geoJSON = layer.toGeoJSON();
-          handleObjectCreate(geoJSON, type === 'polyline' ? 'line' : type);
-        });
+          // Inject CSS
+          const styleSheet = document.createElement("style");
+          styleSheet.innerText = css;
+          document.head.appendChild(styleSheet);
+          console.log('✅ Draw control CSS injected');
 
-        map.on(L.Draw.Event.EDITED, function (e) {
-          console.log('Shapes edited');
-          // Handle editing
-        });
+          // Event handlers
+          map.on(L.Draw.Event.CREATED, function (e) {
+            const type = e.layerType;
+            const layer = e.layer;
+            
+            console.log('✅ Shape created:', type);
+            drawnItems.addLayer(layer);
+            
+            // Convert to GeoJSON and save
+            const geoJSON = layer.toGeoJSON();
+            handleObjectCreate(geoJSON, type === 'polyline' ? 'line' : type);
+          });
 
-        map.on(L.Draw.Event.DELETED, function (e) {
-          console.log('Shapes deleted');
-          // Handle deletion
-        });
+          map.on(L.Draw.Event.EDITED, function (e) {
+            const layers = e.layers;
+            console.log('✅ Shapes edited:', layers.getLayers().length);
+          });
 
-      } catch (error) {
-        console.error('❌ Error setting up draw control:', error);
-      }
+          map.on(L.Draw.Event.DELETED, function (e) {
+            const layers = e.layers;
+            console.log('✅ Shapes deleted:', layers.getLayers().length);
+          });
+
+        } catch (error) {
+          console.error('❌ Failed to setup draw controls:', error);
+        }
+      }, 1500); // Wait longer for map to be fully ready
     }
   }, [mapReady]);
 

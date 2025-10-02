@@ -1674,27 +1674,93 @@ const LeafletMapping = ({ exerciseId }) => {
     <div className="flex h-screen">
       {/* Sidebar for object management */}
       <div className={`w-80 ${theme.colors.secondary} border-r ${theme.colors.border} flex flex-col h-full`}>
-        {/* Add button at top for visibility */}
+        {/* Object Type Selection Buttons - New Primary Interface */}
         <div className="p-4 border-b border-gray-700 bg-blue-900">
+          <h3 className="text-lg font-semibold text-white mb-3">Create Object</h3>
+          <p className="text-xs text-blue-200 mb-3">1. Select object type → 2. Click map → 3. Enter details</p>
+          
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => {
+                console.log('🎯 Marker creation mode activated');
+                setCurrentObjectType('marker');
+                setIsPlacingObject(true);
+                alert('MARKER MODE: Click anywhere on the map to place a marker, then fill in the details.');
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white py-2 px-3 rounded text-sm font-semibold flex items-center justify-center"
+            >
+              📍 Marker
+            </button>
+            
+            <button
+              onClick={() => {
+                console.log('🎯 Line creation mode activated');
+                setCurrentObjectType('line');
+                setIsPlacingObject(true);
+                alert('LINE MODE: Click on the map to place a line, then fill in the details.');
+              }}
+              className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm font-semibold flex items-center justify-center"
+            >
+              📏 Line
+            </button>
+            
+            <button
+              onClick={() => {
+                console.log('🎯 Polygon creation mode activated');
+                setCurrentObjectType('polygon');
+                setIsPlacingObject(true);
+                alert('POLYGON MODE: Click on the map to place a polygon, then fill in the details.');
+              }}
+              className="bg-orange-600 hover:bg-orange-700 text-white py-2 px-3 rounded text-sm font-semibold flex items-center justify-center"
+            >
+              🔶 Polygon
+            </button>
+            
+            <button
+              onClick={() => {
+                console.log('🎯 Rectangle creation mode activated');
+                setCurrentObjectType('rectangle');
+                setIsPlacingObject(true);
+                alert('RECTANGLE MODE: Click on the map to place a rectangle, then fill in the details.');
+              }}
+              className="bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded text-sm font-semibold flex items-center justify-center"
+            >
+              ⬜ Rectangle
+            </button>
+          </div>
+          
+          {isPlacingObject && (
+            <div className="mt-3 p-2 bg-yellow-600 rounded text-xs">
+              <strong>Active:</strong> {currentObjectType?.toUpperCase()} mode
+              <button 
+                onClick={() => {
+                  setIsPlacingObject(false);
+                  setCurrentObjectType(null);
+                  setClickedCoordinates(null);
+                }}
+                className="ml-2 text-yellow-200 underline"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Original Add Button - Now Secondary */}
+        <div className="p-4 border-b border-gray-700">
           <button
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              console.log('🎯 Add Map Object button clicked - showObjectForm:', showObjectForm);
+              console.log('🎯 Manual Add Map Object button clicked');
               resetForm();
               setShowObjectForm(true);
-              console.log('🎯 setShowObjectForm(true) called');
             }}
-            className="w-full bg-blue-600 text-white py-3 px-4 rounded hover:bg-blue-700 flex items-center justify-center font-semibold shadow-lg"
+            className="w-full bg-gray-600 hover:bg-gray-700 text-white py-2 px-3 rounded text-sm font-medium flex items-center justify-center"
           >
-            <Plus className="h-5 w-5 mr-2" />
-            Add Map Object
+            <Plus className="h-4 w-4 mr-2" />
+            Manual Entry (No Map Click)
           </button>
-          
-          {/* Debug state */}
-          <div className="mt-2 text-xs text-blue-200 text-center">
-            Modal: {showObjectForm ? 'VISIBLE' : 'HIDDEN'}
-          </div>
         </div>
 
         <div className="p-4 border-b border-gray-700">

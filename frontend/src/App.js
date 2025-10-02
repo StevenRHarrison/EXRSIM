@@ -1390,18 +1390,20 @@ const LeafletMapping = ({ exerciseId }) => {
             }
           }, 100);
 
-          // Map click handler for placing objects
+          // Map click handler for placing objects (using higher-level event)
           map.on('click', function(e) {
             console.log('🖱️ Map clicked at:', e.latlng);
+            console.log('🔍 Debug - isPlacingObject:', window.mapDebug?.isPlacingObject);
+            console.log('🔍 Debug - pendingObjectData:', window.mapDebug?.pendingObjectData);
             
-            if (isPlacingObject && pendingObjectData) {
-              console.log('🎯 Placing object:', pendingObjectData);
+            if (window.mapDebug?.isPlacingObject && window.mapDebug?.pendingObjectData) {
+              console.log('🎯 Placing object:', window.mapDebug.pendingObjectData);
               
               const { lat, lng } = e.latlng;
               
               // Create GeoJSON based on object type
               let geoJSON;
-              if (pendingObjectData.type === 'marker') {
+              if (window.mapDebug.pendingObjectData.type === 'marker') {
                 geoJSON = {
                   type: 'Feature',
                   geometry: {
@@ -1409,7 +1411,7 @@ const LeafletMapping = ({ exerciseId }) => {
                     coordinates: [lng, lat]
                   }
                 };
-              } else if (pendingObjectData.type === 'polygon') {
+              } else if (window.mapDebug.pendingObjectData.type === 'polygon') {
                 // Create a small square polygon around the clicked point
                 const offset = 0.01; // Small offset for polygon
                 geoJSON = {
@@ -1425,7 +1427,7 @@ const LeafletMapping = ({ exerciseId }) => {
                     ]]
                   }
                 };
-              } else if (pendingObjectData.type === 'line') {
+              } else if (window.mapDebug.pendingObjectData.type === 'line') {
                 // Create a small line from the clicked point
                 const offset = 0.005;
                 geoJSON = {
@@ -1438,7 +1440,7 @@ const LeafletMapping = ({ exerciseId }) => {
                     ]
                   }
                 };
-              } else if (pendingObjectData.type === 'rectangle') {
+              } else if (window.mapDebug.pendingObjectData.type === 'rectangle') {
                 // Create a rectangle around the clicked point
                 const offset = 0.008;
                 geoJSON = {
@@ -1456,49 +1458,12 @@ const LeafletMapping = ({ exerciseId }) => {
                 };
               }
               
-              // Create the object with the form data
-              handleObjectCreate(geoJSON, pendingObjectData.type);
-              
-              // Create and add layer to map immediately for visual feedback
-              let layer;
-              if (pendingObjectData.type === 'marker') {
-                layer = L.marker([lat, lng]);
-              } else if (pendingObjectData.type === 'polygon' || pendingObjectData.type === 'rectangle') {
-                const coords = geoJSON.geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
-                layer = L.polygon(coords, { 
-                  color: pendingObjectData.color, 
-                  fillColor: pendingObjectData.color, 
-                  fillOpacity: 0.3 
-                });
-              } else if (pendingObjectData.type === 'line') {
-                const coords = geoJSON.geometry.coordinates.map(coord => [coord[1], coord[0]]);
-                layer = L.polyline(coords, { 
-                  color: pendingObjectData.color, 
-                  weight: 4 
-                });
-              }
-              
-              if (layer) {
-                editableLayers.addLayer(layer);
-                
-                // Add popup with object info
-                const popupContent = `
-                  <div>
-                    <strong>${pendingObjectData.name}</strong><br>
-                    <small>${pendingObjectData.description || 'No description'}</small><br>
-                    <em>Type: ${pendingObjectData.type}</em>
-                  </div>
-                `;
-                layer.bindPopup(popupContent).openPopup();
-              }
-              
-              // Reset placement mode
-              setIsPlacingObject(false);
-              setPendingObjectData(null);
+              // Trigger object creation
+              window.mapDebug.createObject(geoJSON, window.mapDebug.pendingObjectData);
               
               console.log('✅ Object placed successfully!');
             }
-          });
+          }, this);
 
           // Set up Leaflet.draw event handlers
           map.on(L.Draw.Event.CREATED, function (e) {

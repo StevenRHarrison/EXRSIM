@@ -1311,7 +1311,7 @@ const LeafletMapping = ({ exerciseId }) => {
     });
   }, []);
 
-  // Initialize native Leaflet.draw when map is ready
+  // Initialize native Leaflet.draw when map is ready (with better timing)
   useEffect(() => {
     if (mapReady && mapRef.current && !window.leafletDrawInitialized) {
       const map = mapRef.current;

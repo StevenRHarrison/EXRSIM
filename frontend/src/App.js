@@ -1446,11 +1446,42 @@ const LeafletMapping = ({ exerciseId }) => {
             }
           };
 
-          const drawControl = new L.Control.Draw(drawPluginOptions);
-          
-          // Add the control to the map
-          map.addControl(drawControl);
-          console.log('🎉 Leaflet.Draw control successfully added!');
+          // Add control to map with error handling
+          try {
+            const drawControl = new L.Control.Draw(drawPluginOptions);
+            map.addControl(drawControl);
+            
+            // Set initialization flag
+            window.leafletDrawInitialized = true;
+            
+            console.log('🎉 Leaflet.Draw control successfully added to map!');
+            console.log('📍 Control position:', drawControl.getPosition());
+            
+            // Force immediate DOM update and styling check
+            requestAnimationFrame(() => {
+              const controlElement = map.getContainer().querySelector('.leaflet-draw');
+              if (controlElement) {
+                console.log('✅ Draw control DOM element found:', controlElement);
+                console.log('📊 Control element visibility:', getComputedStyle(controlElement).visibility);
+                console.log('📊 Control element display:', getComputedStyle(controlElement).display);
+                console.log('📊 Control element position:', controlElement.getBoundingClientRect());
+              } else {
+                console.log('❌ Draw control DOM element not found in map container');
+                
+                // Search for it in the entire document
+                const globalControlElement = document.querySelector('.leaflet-draw');
+                if (globalControlElement) {
+                  console.log('🔍 Found draw control elsewhere:', globalControlElement);
+                } else {
+                  console.log('🔍 No draw control found anywhere in DOM');
+                }
+              }
+            });
+            
+          } catch (controlError) {
+            console.error('❌ Error adding draw control:', controlError);
+            return;
+          }
 
           // Force immediate styling and visibility fixes
           setTimeout(() => {

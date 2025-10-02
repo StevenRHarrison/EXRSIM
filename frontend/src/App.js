@@ -14261,7 +14261,7 @@ function AppContent() {
       if (managingExerciseId) {
         console.log('Fetching exercise with ID:', managingExerciseId);
         try {
-          const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/exercises/${managingExerciseId}`);
+          const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/exercise-builder/${managingExerciseId}`);
           console.log('Response status:', response.status);
           if (response.ok) {
             const exerciseData = await response.json();

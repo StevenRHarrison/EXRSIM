@@ -1838,16 +1838,16 @@ const LeafletMapping = ({ exerciseId }) => {
           <div className="text-center">
             {isPlacingObject ? (
               <>
-                <p className="text-sm font-bold text-orange-600">📍 Click Map to Place Object</p>
+                <p className="text-sm font-bold text-orange-600">📍 Click Map to Place {currentObjectType?.toUpperCase()}</p>
                 <p className="text-xs text-gray-600 mt-1">
-                  Placing: {pendingObjectData?.name}<br/>
-                  Type: {pendingObjectData?.type}
+                  Mode: {currentObjectType} creation<br/>
+                  Step 2 of 3: Click anywhere on the map
                 </p>
                 <button 
                   onClick={() => {
                     setIsPlacingObject(false);
-                    setPendingObjectData(null);
-                    setShowObjectForm(true);
+                    setCurrentObjectType(null);
+                    setClickedCoordinates(null);
                   }}
                   className="text-xs text-red-600 mt-1 underline"
                 >

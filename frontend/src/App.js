@@ -567,6 +567,7 @@ const ICSDashboard = ({ currentExercise }) => {
 
   const icsMenuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
+    { id: 'command-staff', label: 'Command Staff', icon: UserCog },
     {
       id: 'operations',
       label: 'Operations',
@@ -579,9 +580,18 @@ const ICSDashboard = ({ currentExercise }) => {
         { id: 'safety', label: 'Safety', icon: Shield }
       ]
     },
-    { id: 'planning', label: 'Planning', icon: Calendar },
-    { id: 'logistics', label: 'Logistics', icon: Package },
-    { id: 'fin-admin', label: 'Fin / Admin', icon: DollarSign }
+    { id: 'planning', label: 'Planning', icon: Calendar, backgroundColor: 'bg-blue-500' },
+    { id: 'logistics', label: 'Logistics', icon: Package, backgroundColor: 'bg-yellow-500' },
+    { 
+      id: 'fin-admin', 
+      label: 'Fin / Admin', 
+      icon: DollarSign, 
+      backgroundColor: 'bg-gray-500',
+      hasSubmenu: true,
+      submenuItems: [
+        { id: 'ics-2xx-forms', label: 'ICS 2XX Form Series', icon: FileCheck }
+      ]
+    }
   ];
 
   const renderICSContent = () => {

@@ -1331,13 +1331,6 @@ const LeafletMapping = ({ exerciseId }) => {
             return;
           }
 
-          // Create FeatureGroup to store drawn items
-          const editableLayers = new L.FeatureGroup();
-          map.addLayer(editableLayers);
-          drawnItemsRef.current = editableLayers;
-          
-          console.log('✅ FeatureGroup added for drawn items');
-
           // Verify leaflet-draw is available
           if (!L.Control.Draw) {
             console.error('❌ Leaflet.Draw is not available! Check installation.');

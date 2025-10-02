@@ -14652,8 +14652,8 @@ function AppContent() {
               {renderContent()}
             </main>
         </div>
-      </BrowserRouter>
-    </div>
+      </div>
+    </>
   );
 }
 

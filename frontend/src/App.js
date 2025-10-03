@@ -2061,6 +2061,7 @@ const LeafletMapping = ({ exerciseId }) => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Description:</label>
                   {editingInModal ? (
                     <textarea
+                      key="modal-description-input"
                       value={modalFormData.description || ''}
                       onChange={handleDescriptionChange}
                       className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 resize-none"

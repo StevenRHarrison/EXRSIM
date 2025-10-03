@@ -1145,6 +1145,24 @@ const LeafletMapping = ({ exerciseId }) => {
       .leaflet-container {
         z-index: 1 !important;
       }
+      .modal-content input[type="text"],
+      .modal-content textarea {
+        color: #1f2937 !important;
+        background-color: #ffffff !important;
+        border: 2px solid #d1d5db !important;
+        font-size: 14px !important;
+        line-height: 1.5 !important;
+      }
+      .modal-content input[type="text"]:focus,
+      .modal-content textarea:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+      }
+      .modal-content input[type="text"]::placeholder,
+      .modal-content textarea::placeholder {
+        color: #6b7280 !important;
+        opacity: 1 !important;
+      }
     `;
     
     const styleSheet = document.createElement('style');

@@ -2036,6 +2036,7 @@ const LeafletMapping = ({ exerciseId }) => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Name:</label>
                   {editingInModal ? (
                     <input
+                      key="modal-name-input"
                       type="text"
                       value={modalFormData.name || ''}
                       onChange={handleNameChange}

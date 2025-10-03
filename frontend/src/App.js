@@ -1465,6 +1465,17 @@ const LeafletMapping = ({ exerciseId }) => {
     }
   };
 
+  // Optimized onChange handlers using useCallback to prevent re-renders
+  const handleNameChange = useCallback((e) => {
+    const newValue = e.target.value;
+    setModalFormData(prev => ({ ...prev, name: newValue }));
+  }, []);
+
+  const handleDescriptionChange = useCallback((e) => {
+    const newValue = e.target.value;
+    setModalFormData(prev => ({ ...prev, description: newValue }));
+  }, []);
+
   const saveModalChanges = async () => {
     if (hoveredObject) {
       console.log('💾 Saving modal changes:', modalFormData);

@@ -1426,17 +1426,50 @@ const LeafletMapping = ({ exerciseId }) => {
   };
 
   const handleImageUpload = (event, isModal = false) => {
+    console.log('📁 handleImageUpload called, isModal:', isModal);
     const file = event.target.files[0];
+    
     if (file) {
+      console.log('📁 File details:', file.name, file.type, file.size);
+      
+      // Check if it's a valid image
+      if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file.');
+        return;
+      }
+      
+      // Check file size (limit to 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image file is too large. Please select a file smaller than 5MB.');
+        return;
+      }
+      
       const reader = new FileReader();
       reader.onload = (e) => {
+        console.log('📁 Image loaded, data URL length:', e.target.result.length);
         if (isModal) {
-          setModalFormData(prev => ({ ...prev, image: e.target.result }));
+          console.log('📁 Updating modal form data with image');
+          setModalFormData(prev => ({ 
+            ...prev, 
+            image: e.target.result 
+          }));
         } else {
-          setFormData(prev => ({ ...prev, image: e.target.result }));
+          console.log('📁 Updating regular form data with image');
+          setFormData(prev => ({ 
+            ...prev, 
+            image: e.target.result 
+          }));
         }
       };
+      
+      reader.onerror = (error) => {
+        console.error('📁 Error reading file:', error);
+        alert('Error reading the image file. Please try again.');
+      };
+      
       reader.readAsDataURL(file);
+    } else {
+      console.log('📁 No file selected');
     }
   };
 

@@ -1173,7 +1173,8 @@ const LeafletMapping = ({ exerciseId }) => {
   // Debug modal state changes
   useEffect(() => {
     console.log('🔍 Modal state changed - showHoverModal:', showHoverModal, 'editingInModal:', editingInModal);
-  }, [showHoverModal, editingInModal]);
+    console.log('🔍 modalFormData:', modalFormData);
+  }, [showHoverModal, editingInModal, modalFormData]);
 
   const fetchMapObjects = async () => {
     try {

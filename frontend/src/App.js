@@ -1120,6 +1120,10 @@ const LeafletMapping = ({ exerciseId }) => {
     image: ''
   });
 
+  // Add refs for input fields to debug
+  const nameInputRef = useRef(null);
+  const descriptionInputRef = useRef(null);
+
   useEffect(() => {
     if (exerciseId) {
       fetchMapObjects();

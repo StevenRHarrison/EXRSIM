@@ -108,6 +108,8 @@ class ExerciseBuilder(BaseModel):
     exercise_type: str  # Table Top, Drill, Functional, Full Scale Exercise, No-Notice Exercise, Real World Event
     exercise_description: str
     location: str
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     start_date: datetime
     start_time: str
     end_date: datetime

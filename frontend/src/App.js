@@ -1445,12 +1445,24 @@ const LeafletMapping = ({ exerciseId }) => {
     
     // Ensure form data is populated BEFORE setting edit mode
     if (hoveredObject) {
-      setModalFormData({
+      const formData = {
         name: hoveredObject.name || '',
         description: hoveredObject.description || '',
         color: hoveredObject.color || '#3388ff',
         image: hoveredObject.image || ''
-      });
+      };
+      
+      setModalFormData(formData);
+      
+      // Set input values directly to avoid controlled component issues
+      setTimeout(() => {
+        if (nameInputRef.current) {
+          nameInputRef.current.value = formData.name;
+        }
+        if (descriptionInputRef.current) {
+          descriptionInputRef.current.value = formData.description;
+        }
+      }, 100);
     }
     
     // Set edit mode after form data is prepared

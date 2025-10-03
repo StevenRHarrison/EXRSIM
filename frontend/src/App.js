@@ -2054,8 +2054,8 @@ const LeafletMapping = ({ exerciseId }) => {
                     <textarea
                       value={modalFormData.description}
                       onChange={(e) => {
-                        console.log('📝 Description input changed:', e.target.value);
-                        setModalFormData(prev => ({ ...prev, description: e.target.value }));
+                        const newValue = e.target.value;
+                        setModalFormData(prev => ({ ...prev, description: newValue }));
                       }}
                       className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 resize-none"
                       style={{

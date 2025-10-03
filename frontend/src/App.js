@@ -2028,8 +2028,8 @@ const LeafletMapping = ({ exerciseId }) => {
                       type="text"
                       value={modalFormData.name}
                       onChange={(e) => {
-                        console.log('📝 Name input changed:', e.target.value);
-                        setModalFormData(prev => ({ ...prev, name: e.target.value }));
+                        const newValue = e.target.value;
+                        setModalFormData(prev => ({ ...prev, name: newValue }));
                       }}
                       className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500"
                       style={{

@@ -1370,6 +1370,8 @@ const LeafletMapping = ({ exerciseId }) => {
   };
 
   const handleObjectMouseEnter = (obj, event) => {
+    console.log('🔍 Object clicked:', obj);
+    
     if (editingInModal || showHoverModal) return; // Prevent re-triggering
     
     setHoveredObject(obj);
@@ -1380,16 +1382,9 @@ const LeafletMapping = ({ exerciseId }) => {
       image: obj.image || ''
     });
     
-    // Position modal near mouse cursor
-    if (event?.target?.getBoundingClientRect) {
-      const rect = event.target.getBoundingClientRect();
-      setHoverModalPosition({
-        x: rect.left + window.scrollX + 20,
-        y: rect.top + window.scrollY
-      });
-    }
-    
+    // No positioning needed for full-screen modal
     setShowHoverModal(true);
+    console.log('✅ Modal should now be visible');
   };
 
   const handleObjectMouseLeave = () => {

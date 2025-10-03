@@ -1956,8 +1956,7 @@ const LeafletMapping = ({ exerciseId }) => {
         {/* Enhanced CRUD Modal with Image Upload */}
         {showHoverModal && hoveredObject && (
           <div 
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-            style={{ zIndex: 10000 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center modal-overlay"
             onClick={(e) => {
               console.log('🔍 Modal overlay clicked, editingInModal:', editingInModal);
               if (!editingInModal && e.target === e.currentTarget) {

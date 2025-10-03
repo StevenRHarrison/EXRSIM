@@ -1133,14 +1133,17 @@ const LeafletMapping = ({ exerciseId }) => {
         left: 0 !important;
         right: 0 !important;
         bottom: 0 !important;
-        z-index: 9999 !important;
+        z-index: 10000 !important;
         pointer-events: auto !important;
       }
       .modal-content {
         position: relative !important;
-        z-index: 10000 !important;
+        z-index: 10001 !important;
         pointer-events: auto !important;
         transform: translateZ(0) !important;
+      }
+      .leaflet-container {
+        z-index: 1 !important;
       }
     `;
     
@@ -1148,6 +1151,11 @@ const LeafletMapping = ({ exerciseId }) => {
     styleSheet.textContent = modalCSS;
     document.head.appendChild(styleSheet);
   }, [exerciseId]);
+
+  // Debug modal state changes
+  useEffect(() => {
+    console.log('🔍 Modal state changed - showHoverModal:', showHoverModal, 'editingInModal:', editingInModal);
+  }, [showHoverModal, editingInModal]);
 
   const fetchMapObjects = async () => {
     try {

@@ -1412,12 +1412,9 @@ const LeafletMapping = ({ exerciseId }) => {
   };
 
   const handleObjectMouseLeave = () => {
-    if (!editingInModal) {
-      setTimeout(() => {
-        setShowHoverModal(false);
-        setHoveredObject(null);
-      }, 100); // Small delay to prevent flicker
-    }
+    // Removed auto-close on mouse leave since we're using click-to-open modal
+    // Modal should only close when user explicitly closes it or clicks outside
+    console.log('🔍 Mouse left object, but modal should stay open');
   };
 
   const startEditingInModal = () => {

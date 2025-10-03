@@ -2088,15 +2088,11 @@ const LeafletMapping = ({ exerciseId }) => {
                   {editingInModal ? (
                     <textarea
                       ref={descriptionInputRef}
-                      key={`modal-description-input-${hoveredObject?.id || 'new'}`}
                       defaultValue={modalFormData.description || ''}
-                      onInput={(e) => {
-                        setModalFormData(prev => ({ ...prev, description: e.target.value }));
-                      }}
                       className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 resize-none"
                       style={{
-                        color: '#1f2937',
-                        backgroundColor: '#ffffff',
+                        color: '#1f2937 !important',
+                        backgroundColor: '#ffffff !important',
                         fontSize: '14px',
                         minHeight: '80px'
                       }}

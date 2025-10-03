@@ -221,6 +221,8 @@ class ExerciseBuilderUpdate(BaseModel):
     exercise_type: Optional[str] = None
     exercise_description: Optional[str] = None
     location: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     start_date: Optional[datetime] = None
     start_time: Optional[str] = None
     end_date: Optional[datetime] = None

@@ -1968,8 +1968,11 @@ const LeafletMapping = ({ exerciseId }) => {
             }}
           >
             <div 
-              className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto modal-content"
+              onClick={(e) => {
+                console.log('🔍 Modal content clicked');
+                e.stopPropagation();
+              }}
             >
               <div className="space-y-4">
                 {/* Header */}

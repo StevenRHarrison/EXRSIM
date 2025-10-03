@@ -1437,10 +1437,8 @@ const LeafletMapping = ({ exerciseId }) => {
 
   const startEditingInModal = () => {
     console.log('📝 Starting edit mode for object:', hoveredObject?.name);
-    console.log('📝 Current modalFormData:', modalFormData);
-    setEditingInModal(true);
     
-    // Ensure form data is populated
+    // Ensure form data is populated BEFORE setting edit mode
     if (hoveredObject) {
       setModalFormData({
         name: hoveredObject.name || '',
@@ -1449,6 +1447,9 @@ const LeafletMapping = ({ exerciseId }) => {
         image: hoveredObject.image || ''
       });
     }
+    
+    // Set edit mode after form data is prepared
+    setEditingInModal(true);
     console.log('📝 Edit mode activated');
   };
 

@@ -1182,6 +1182,14 @@ const LeafletMapping = ({ exerciseId }) => {
     document.head.appendChild(styleSheet);
   }, [exerciseId]);
 
+  // Update map view when exercise data is loaded
+  useEffect(() => {
+    if (exerciseData?.latitude && exerciseData?.longitude && mapRef.current) {
+      console.log(`🗺️ Updating map view to exercise coordinates: ${exerciseData.latitude}, ${exerciseData.longitude} with zoom 8`);
+      mapRef.current.setView([exerciseData.latitude, exerciseData.longitude], 8);
+    }
+  }, [exerciseData]);
+
   // Debug modal state changes
   useEffect(() => {
     console.log('🔍 Modal state changed - showHoverModal:', showHoverModal, 'editingInModal:', editingInModal);

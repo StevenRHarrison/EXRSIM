@@ -1495,13 +1495,23 @@ const LeafletMapping = ({ exerciseId }) => {
 
   const saveModalChanges = async () => {
     if (hoveredObject) {
-      console.log('💾 Saving modal changes:', modalFormData);
-      await handleObjectUpdate(hoveredObject.id, modalFormData);
+      // Get current values from input refs
+      const currentName = nameInputRef.current?.value || modalFormData.name;
+      const currentDescription = descriptionInputRef.current?.value || modalFormData.description;
+      
+      const updatedData = {
+        ...modalFormData,
+        name: currentName,
+        description: currentDescription
+      };
+      
+      console.log('💾 Saving modal changes:', updatedData);
+      await handleObjectUpdate(hoveredObject.id, updatedData);
       
       // Update the local hoveredObject to reflect changes immediately
       setHoveredObject(prev => ({
         ...prev,
-        ...modalFormData
+        ...updatedData
       }));
     }
   };

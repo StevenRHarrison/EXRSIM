@@ -9270,6 +9270,46 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
                   />
                 </div>
 
+                {/* Latitude and Longitude Fields */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-300">
+                      Latitude 
+                      <span className="text-xs text-gray-400 ml-1">(Decimal format: -90.0000 to 90.0000)</span>
+                    </Label>
+                    <Input
+                      type="text"
+                      placeholder="45.0000"
+                      value={exerciseData.latitude}
+                      onChange={(e) => handleLatitudeChange(e.target.value, 'exercise')}
+                      className={`bg-gray-700 border-gray-600 text-white ${
+                        exerciseValidationErrors.latitude ? 'border-red-500' : ''
+                      }`}
+                    />
+                    {exerciseValidationErrors.latitude && (
+                      <p className="text-red-400 text-xs mt-1">{exerciseValidationErrors.latitude}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="text-gray-300">
+                      Longitude 
+                      <span className="text-xs text-gray-400 ml-1">(Decimal format: -180.0000 to 180.0000)</span>
+                    </Label>
+                    <Input
+                      type="text"
+                      placeholder="97.0000"
+                      value={exerciseData.longitude}
+                      onChange={(e) => handleLongitudeChange(e.target.value, 'exercise')}
+                      className={`bg-gray-700 border-gray-600 text-white ${
+                        exerciseValidationErrors.longitude ? 'border-red-500' : ''
+                      }`}
+                    />
+                    {exerciseValidationErrors.longitude && (
+                      <p className="text-red-400 text-xs mt-1">{exerciseValidationErrors.longitude}</p>
+                    )}
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label className="text-gray-300">Start Date *</Label>

@@ -1128,6 +1128,7 @@ const LeafletMapping = ({ exerciseId }) => {
   useEffect(() => {
     if (exerciseId) {
       fetchMapObjects();
+      fetchExerciseData();
     }
     
     // Add CSS to ensure modals always stay on top

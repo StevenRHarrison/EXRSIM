@@ -1370,10 +1370,27 @@ const LeafletMapping = ({ exerciseId }) => {
   };
 
   const handleObjectMouseEnter = (obj, event) => {
-    console.log('🔍 Object clicked:', obj);
+    console.log('🔍 Object clicked:', obj.name, 'Modal currently showing:', showHoverModal);
     
-    if (editingInModal || showHoverModal) return; // Prevent re-triggering
+    // Prevent event bubbling that might interfere
+    if (event && event.originalEvent) {
+      event.originalEvent.stopPropagation();
+    }
+    if (event && event.stopPropagation) {
+      event.stopPropagation();
+    }
     
+    if (editingInModal) {
+      console.log('🔍 Already editing in modal, ignoring click');
+      return;
+    }
+    
+    if (showHoverModal) {
+      console.log('🔍 Modal already showing, ignoring click');
+      return;
+    }
+    
+    console.log('🔍 Setting up modal data for object:', obj.name);
     setHoveredObject(obj);
     setModalFormData({
       name: obj.name || '',
@@ -1382,9 +1399,8 @@ const LeafletMapping = ({ exerciseId }) => {
       image: obj.image || ''
     });
     
-    // No positioning needed for full-screen modal
     setShowHoverModal(true);
-    console.log('✅ Modal should now be visible');
+    console.log('✅ Modal state set to visible');
   };
 
   const handleObjectMouseLeave = () => {

@@ -8417,6 +8417,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
     exercise_type: '',
     exercise_description: '',
     location: '',
+    latitude: '',
+    longitude: '',
     start_date: '',
     start_time: '',
     end_date: '',

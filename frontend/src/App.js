@@ -9523,29 +9523,39 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-gray-300">Latitude</Label>
+                    <Label className="text-gray-300">
+                      Scenario Latitude 
+                      <span className="text-xs text-gray-400 ml-1">(Decimal format: -90.0000 to 90.0000)</span>
+                    </Label>
                     <Input
                       type="text"
                       value={exerciseData.scenario_latitude}
                       onChange={handleScenarioLatitudeChange}
-                      className="bg-gray-700 border-gray-600 text-white"
-                      placeholder="45.1234"
+                      className={`bg-gray-700 border-gray-600 text-white ${
+                        scenarioValidationErrors.latitude ? 'border-red-500' : ''
+                      }`}
+                      placeholder="45.0000"
                     />
                     {scenarioValidationErrors.latitude && (
-                      <p className="text-red-500 text-sm mt-1">{scenarioValidationErrors.latitude}</p>
+                      <p className="text-red-400 text-xs mt-1">{scenarioValidationErrors.latitude}</p>
                     )}
                   </div>
                   <div>
-                    <Label className="text-gray-300">Longitude</Label>
+                    <Label className="text-gray-300">
+                      Scenario Longitude 
+                      <span className="text-xs text-gray-400 ml-1">(Decimal format: -180.0000 to 180.0000)</span>
+                    </Label>
                     <Input
                       type="text"
                       value={exerciseData.scenario_longitude}
                       onChange={handleScenarioLongitudeChange}
-                      className="bg-gray-700 border-gray-600 text-white"
+                      className={`bg-gray-700 border-gray-600 text-white ${
+                        scenarioValidationErrors.longitude ? 'border-red-500' : ''
+                      }`}
                       placeholder="97.0000"
                     />
                     {scenarioValidationErrors.longitude && (
-                      <p className="text-red-500 text-sm mt-1">{scenarioValidationErrors.longitude}</p>
+                      <p className="text-red-400 text-xs mt-1">{scenarioValidationErrors.longitude}</p>
                     )}
                   </div>
                 </div>

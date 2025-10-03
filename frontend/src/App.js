@@ -1167,6 +1167,12 @@ const LeafletMapping = ({ exerciseId }) => {
         color: #6b7280 !important;
         opacity: 1 !important;
       }
+      .modal-content input[type="text"],
+      .modal-content textarea {
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+      }
     `;
     
     const styleSheet = document.createElement('style');

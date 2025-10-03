@@ -182,6 +182,8 @@ class ExerciseBuilderCreate(BaseModel):
     exercise_type: str
     exercise_description: str
     location: str
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     start_date: datetime
     start_time: str
     end_date: datetime

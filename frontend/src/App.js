@@ -8457,6 +8457,73 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
     latitude: '',
     longitude: ''
   });
+
+  // Validation functions for latitude and longitude
+  const validateLatitude = (value) => {
+    if (value === '') return ''; // Allow empty for optional fields
+    
+    const num = parseFloat(value);
+    if (isNaN(num)) {
+      return 'Latitude must be a valid decimal number';
+    }
+    
+    if (num < -90 || num > 90) {
+      return 'Latitude must be between -90.0000 and 90.0000';
+    }
+    
+    // Check decimal format (should have at least 4 decimal places)
+    const decimalParts = value.toString().split('.');
+    if (decimalParts.length === 1 || decimalParts[1].length < 4) {
+      return 'Latitude should be in decimal format with 4 decimal places (e.g., 45.0000)';
+    }
+    
+    return '';
+  };
+
+  const validateLongitude = (value) => {
+    if (value === '') return ''; // Allow empty for optional fields
+    
+    const num = parseFloat(value);
+    if (isNaN(num)) {
+      return 'Longitude must be a valid decimal number';
+    }
+    
+    if (num < -180 || num > 180) {
+      return 'Longitude must be between -180.0000 and 180.0000';
+    }
+    
+    // Check decimal format (should have at least 4 decimal places)
+    const decimalParts = value.toString().split('.');
+    if (decimalParts.length === 1 || decimalParts[1].length < 4) {
+      return 'Longitude should be in decimal format with 4 decimal places (e.g., 97.0000)';
+    }
+    
+    return '';
+  };
+
+  const handleLatitudeChange = (value, type = 'exercise') => {
+    const error = validateLatitude(value);
+    
+    if (type === 'exercise') {
+      setExerciseData(prev => ({ ...prev, latitude: value }));
+      setExerciseValidationErrors(prev => ({ ...prev, latitude: error }));
+    } else if (type === 'scenario') {
+      setExerciseData(prev => ({ ...prev, scenario_latitude: value }));
+      setScenarioValidationErrors(prev => ({ ...prev, latitude: error }));
+    }
+  };
+
+  const handleLongitudeChange = (value, type = 'exercise') => {
+    const error = validateLongitude(value);
+    
+    if (type === 'exercise') {
+      setExerciseData(prev => ({ ...prev, longitude: value }));
+      setExerciseValidationErrors(prev => ({ ...prev, longitude: error }));
+    } else if (type === 'scenario') {
+      setExerciseData(prev => ({ ...prev, scenario_longitude: value }));
+      setScenarioValidationErrors(prev => ({ ...prev, longitude: error }));
+    }
+  };
   const [organizationValidationErrors, setOrganizationValidationErrors] = useState({
     latitude: '',
     longitude: ''

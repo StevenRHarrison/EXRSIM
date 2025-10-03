@@ -1780,41 +1780,210 @@ const LeafletMapping = ({ exerciseId }) => {
           }).filter(Boolean)} {/* Filter out null values */}
         </LeafletMapContainer>
         
-        {/* Hover Modal - Temporarily Simplified */}
+        {/* Enhanced CRUD Modal with Image Upload */}
         {showHoverModal && hoveredObject && (
           <div 
-            className="fixed bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-50 max-w-sm"
-            style={{
-              left: hoverModalPosition.x,
-              top: hoverModalPosition.y,
-              zIndex: 10000
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            onClick={() => {
+              if (!editingInModal) {
+                setShowHoverModal(false);
+                setHoveredObject(null);
+              }
             }}
           >
-            <div className="space-y-2">
-              <h3 className="text-lg font-semibold text-gray-900">
-                {hoveredObject.name || 'Unnamed Object'}
-              </h3>
-              <p className="text-sm text-gray-600">
-                {hoveredObject.description || 'No description'}
-              </p>
-              <div className="flex items-center">
-                <div 
-                  className="w-4 h-4 rounded mr-2" 
-                  style={{ backgroundColor: hoveredObject.color || '#3388ff' }}
-                />
-                <span className="text-xs text-gray-600">
-                  {hoveredObject.color || '#3388ff'}
-                </span>
+            <div 
+              className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="space-y-4">
+                {/* Header */}
+                <div className="flex justify-between items-start">
+                  <h3 className="text-xl font-semibold text-gray-900">
+                    {editingInModal ? 'Edit Map Object' : 'Map Object Details'}
+                  </h3>
+                  <button
+                    onClick={() => {
+                      setShowHoverModal(false);
+                      setHoveredObject(null);
+                      setEditingInModal(false);
+                    }}
+                    className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+                  >
+                    ×
+                  </button>
+                </div>
+
+                {/* Object Name */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Name:</label>
+                  {editingInModal ? (
+                    <input
+                      type="text"
+                      value={modalFormData.name}
+                      onChange={(e) => setModalFormData(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                      placeholder="Object name"
+                    />
+                  ) : (
+                    <p className="text-gray-900 bg-gray-50 p-2 rounded">
+                      {hoveredObject.name || 'Unnamed Object'}
+                    </p>
+                  )}
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Description:</label>
+                  {editingInModal ? (
+                    <textarea
+                      value={modalFormData.description}
+                      onChange={(e) => setModalFormData(prev => ({ ...prev, description: e.target.value }))}
+                      className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                      rows="2"
+                      placeholder="Object description"
+                    />
+                  ) : (
+                    <p className="text-gray-700 bg-gray-50 p-2 rounded">
+                      {hoveredObject.description || 'No description'}
+                    </p>
+                  )}
+                </div>
+
+                {/* Color */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Color:</label>
+                  {editingInModal ? (
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="color"
+                        value={modalFormData.color}
+                        onChange={(e) => setModalFormData(prev => ({ ...prev, color: e.target.value }))}
+                        className="h-10 w-20 rounded border border-gray-300"
+                      />
+                      <span className="text-sm text-gray-600">{modalFormData.color}</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center bg-gray-50 p-2 rounded">
+                      <div 
+                        className="w-6 h-6 rounded mr-3" 
+                        style={{ backgroundColor: hoveredObject.color || '#3388ff' }}
+                      />
+                      <span className="text-gray-700">
+                        {hoveredObject.color || '#3388ff'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Image Upload Section */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Image:</label>
+                  {editingInModal ? (
+                    <div className="space-y-3">
+                      {/* File Upload */}
+                      <div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleImageUpload(e, true)}
+                          className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                        />
+                      </div>
+                      
+                      {/* Camera Button */}
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => handleCameraCapture(true)}
+                          className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded text-sm font-medium flex items-center justify-center"
+                        >
+                          📷 Use Camera
+                        </button>
+                      </div>
+                      
+                      {/* Image Preview */}
+                      {modalFormData.image && (
+                        <div className="relative">
+                          <img 
+                            src={modalFormData.image} 
+                            alt="Object" 
+                            className="w-full h-32 object-cover rounded border"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setModalFormData(prev => ({ ...prev, image: '' }))}
+                            className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 text-xs flex items-center justify-center"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="bg-gray-50 p-2 rounded">
+                      {hoveredObject.image ? (
+                        <img 
+                          src={hoveredObject.image} 
+                          alt="Object" 
+                          className="w-full h-32 object-cover rounded"
+                        />
+                      ) : (
+                        <p className="text-gray-500 text-center py-4">No image</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Coordinates Display */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Coordinates:</label>
+                  <div className="bg-gray-50 p-2 rounded max-h-24 overflow-y-auto">
+                    {getObjectCoordinates(hoveredObject).map((coord, index) => (
+                      <div key={index} className="text-xs text-gray-600 font-mono">
+                        Point {index + 1}: {coord.lat}°N, {coord.lng}°E
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex space-x-2 pt-4 border-t border-gray-200">
+                  {editingInModal ? (
+                    <>
+                      <button
+                        onClick={saveModalChanges}
+                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded font-medium"
+                      >
+                        Save Changes
+                      </button>
+                      <button
+                        onClick={cancelEditingInModal}
+                        className="flex-1 bg-gray-400 hover:bg-gray-500 text-white py-2 px-4 rounded font-medium"
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={startEditingInModal}
+                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded font-medium"
+                      >
+                        Edit Object
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowHoverModal(false);
+                          handleObjectDelete(hoveredObject.id);
+                        }}
+                        className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded font-medium"
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
-              <button
-                onClick={() => {
-                  setShowHoverModal(false);
-                  handleObjectDelete(hoveredObject.id);
-                }}
-                className="bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded text-sm font-medium"
-              >
-                Delete Object
-              </button>
             </div>
           </div>
         )}

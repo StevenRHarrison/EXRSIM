@@ -2021,10 +2021,20 @@ const LeafletMapping = ({ exerciseId }) => {
                   {editingInModal ? (
                     <textarea
                       value={modalFormData.description}
-                      onChange={(e) => setModalFormData(prev => ({ ...prev, description: e.target.value }))}
-                      className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                      rows="2"
-                      placeholder="Object description"
+                      onChange={(e) => {
+                        console.log('📝 Description input changed:', e.target.value);
+                        setModalFormData(prev => ({ ...prev, description: e.target.value }));
+                      }}
+                      className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 resize-none"
+                      style={{
+                        color: '#1f2937',
+                        backgroundColor: '#ffffff',
+                        fontSize: '14px',
+                        minHeight: '80px'
+                      }}
+                      rows="3"
+                      placeholder="Enter object description"
+                      autoComplete="off"
                     />
                   ) : (
                     <p className="text-gray-700 bg-gray-50 p-2 rounded">

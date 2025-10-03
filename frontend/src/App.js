@@ -8578,20 +8578,12 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
 
   const handleScenarioLatitudeChange = (e) => {
     const lat = e.target.value;
-    setExerciseData(prev => ({ ...prev, scenario_latitude: lat }));
-    
-    // Real-time validation
-    const error = validateScenarioLatitudeField(lat);
-    setScenarioValidationErrors(prev => ({ ...prev, latitude: error }));
+    handleLatitudeChange(lat, 'scenario');
   };
 
   const handleScenarioLongitudeChange = (e) => {
     const lng = e.target.value;
-    setExerciseData(prev => ({ ...prev, scenario_longitude: lng }));
-    
-    // Real-time validation
-    const error = validateScenarioLongitudeField(lng);
-    setScenarioValidationErrors(prev => ({ ...prev, longitude: error }));
+    handleLongitudeChange(lng, 'scenario');
   };
 
   // Validation helper functions for event section

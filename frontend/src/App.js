@@ -2064,16 +2064,12 @@ const LeafletMapping = ({ exerciseId }) => {
                   {editingInModal ? (
                     <input
                       ref={nameInputRef}
-                      key={`modal-name-input-${hoveredObject?.id || 'new'}`}
                       type="text"
                       defaultValue={modalFormData.name || ''}
-                      onInput={(e) => {
-                        setModalFormData(prev => ({ ...prev, name: e.target.value }));
-                      }}
                       className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500"
                       style={{
-                        color: '#1f2937',
-                        backgroundColor: '#ffffff',
+                        color: '#1f2937 !important',
+                        backgroundColor: '#ffffff !important',
                         fontSize: '14px'
                       }}
                       placeholder="Enter object name"

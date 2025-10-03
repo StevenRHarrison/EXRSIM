@@ -1838,7 +1838,7 @@ const LeafletMapping = ({ exerciseId }) => {
                     fillColor={obj.color || '#3388ff'}
                     fillOpacity={0.3}
                     eventHandlers={{
-                      click: (e) => handleObjectMouseEnter(obj, e.originalEvent)
+                      click: (e) => handleObjectMouseEnter(obj, e)
                     }}
                   />
                 );
@@ -1856,7 +1856,7 @@ const LeafletMapping = ({ exerciseId }) => {
                     color={obj.color || '#3388ff'}
                     weight={4}
                     eventHandlers={{
-                      click: (e) => handleObjectMouseEnter(obj, e.originalEvent)
+                      click: (e) => handleObjectMouseEnter(obj, e)
                     }}
                   />
                 );
@@ -1883,7 +1883,7 @@ const LeafletMapping = ({ exerciseId }) => {
                     fillColor={obj.color || '#3388ff'}
                     fillOpacity={0.3}
                     eventHandlers={{
-                      click: (e) => handleObjectMouseEnter(obj, e.originalEvent)
+                      click: (e) => handleObjectMouseEnter(obj, e)
                     }}
                   />
                 );

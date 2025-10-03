@@ -1438,6 +1438,120 @@ const LeafletMapping = ({ exerciseId }) => {
     }
   };
 
+  const handleCameraCapture = async (isModal = false) => {
+    try {
+      // Check if browser supports camera access
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert('Camera access is not supported in this browser.');
+        return;
+      }
+
+      // Request camera access
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } // Use back camera if available
+      });
+
+      // Create video element for camera feed
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.autoplay = true;
+      video.playsInline = true;
+
+      // Create modal for camera interface
+      const cameraModal = document.createElement('div');
+      cameraModal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.9);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10001;
+      `;
+
+      const videoContainer = document.createElement('div');
+      videoContainer.style.cssText = `
+        position: relative;
+        max-width: 90vw;
+        max-height: 70vh;
+      `;
+
+      const canvas = document.createElement('canvas');
+      const captureBtn = document.createElement('button');
+      captureBtn.textContent = 'Capture Photo';
+      captureBtn.style.cssText = `
+        margin-top: 20px;
+        padding: 12px 24px;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+      `;
+
+      const cancelBtn = document.createElement('button');
+      cancelBtn.textContent = 'Cancel';
+      cancelBtn.style.cssText = `
+        margin: 20px 0 0 10px;
+        padding: 12px 24px;
+        background: #6b7280;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+      `;
+
+      video.style.cssText = `
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+      `;
+
+      videoContainer.appendChild(video);
+      cameraModal.appendChild(videoContainer);
+      cameraModal.appendChild(captureBtn);
+      cameraModal.appendChild(cancelBtn);
+      document.body.appendChild(cameraModal);
+
+      // Handle photo capture
+      captureBtn.onclick = () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0);
+        
+        const imageDataURL = canvas.toDataURL('image/jpeg', 0.8);
+        
+        if (isModal) {
+          setModalFormData(prev => ({ ...prev, image: imageDataURL }));
+        } else {
+          setFormData(prev => ({ ...prev, image: imageDataURL }));
+        }
+
+        // Cleanup
+        stream.getTracks().forEach(track => track.stop());
+        document.body.removeChild(cameraModal);
+      };
+
+      // Handle cancel
+      cancelBtn.onclick = () => {
+        stream.getTracks().forEach(track => track.stop());
+        document.body.removeChild(cameraModal);
+      };
+
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      alert('Failed to access camera. Please check permissions or try uploading a file instead.');
+    }
+  };
+
   const getObjectsByCategory = (category) => {
     if (category === 'all') return mapObjects;
     return mapObjects.filter(obj => obj.type === category);

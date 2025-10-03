@@ -1757,11 +1757,17 @@ const LeafletMapping = ({ exerciseId }) => {
   }, [mapObjects]);
 
   const MapContainerComponent = () => {
+    // Use exercise coordinates if available, otherwise default to center of USA
+    const initialCenter = (exerciseData?.latitude && exerciseData?.longitude) 
+      ? [exerciseData.latitude, exerciseData.longitude] 
+      : [39.8283, -98.5795];
+    const initialZoom = (exerciseData?.latitude && exerciseData?.longitude) ? 8 : 4;
+
     return (
       <div className="h-full w-full">
         <LeafletMapContainer
-          center={[39.8283, -98.5795]} // Center of USA
-          zoom={4}
+          center={initialCenter}
+          zoom={initialZoom}
           style={{ 
             height: '100%', 
             width: '100%'

@@ -8445,6 +8445,10 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   // Validation error states
+  const [exerciseValidationErrors, setExerciseValidationErrors] = useState({
+    latitude: '',
+    longitude: ''
+  });
   const [scenarioValidationErrors, setScenarioValidationErrors] = useState({
     latitude: '',
     longitude: ''

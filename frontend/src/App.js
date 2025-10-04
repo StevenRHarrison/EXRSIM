@@ -1099,6 +1099,7 @@ const LeafletMapping = ({ exerciseId }) => {
   const [mapInstance, setMapInstance] = useState(null);
   const [drawingLayer, setDrawingLayer] = useState(null);
   const [exerciseData, setExerciseData] = useState(null);
+  const [mapReady, setMapReady] = useState(false);
   
   // Form data for creating/editing map objects
   const [formData, setFormData] = useState({

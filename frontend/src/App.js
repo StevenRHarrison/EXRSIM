@@ -1229,9 +1229,18 @@ const LeafletMapping = ({ exerciseId }) => {
         setExerciseData(data);
         
         // Set map view to exercise coordinates if available
-        if (data.latitude && data.longitude && mapRef.current) {
-          console.log(`🗺️ Setting map view to exercise coordinates: ${data.latitude}, ${data.longitude}`);
-          mapRef.current.setView([data.latitude, data.longitude], 8);
+        if (data.latitude && data.longitude && mapRef.current && mapReady) {
+          try {
+            console.log(`🗺️ Setting map view to exercise coordinates: ${data.latitude}, ${data.longitude}`);
+            // Add small delay to ensure DOM elements are ready
+            setTimeout(() => {
+              if (mapRef.current && typeof mapRef.current.setView === 'function') {
+                mapRef.current.setView([data.latitude, data.longitude], 8);
+              }
+            }, 100);
+          } catch (error) {
+            console.error('Error setting map view in fetchExerciseData:', error);
+          }
         }
       } else {
         console.error('Failed to fetch exercise data. Status:', response.status);

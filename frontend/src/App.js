@@ -18040,6 +18040,13 @@ function AppContent() {
       } else if (hashBase === 'ics' && exerciseId) {
         setActiveMenu('ics');
         setManagingExerciseId(exerciseId);
+        
+        // Handle ICS submenu parameter
+        const icsMenu = urlParams.get('menu');
+        if (icsMenu) {
+          // We need to pass this to the ICS component somehow
+          window.icsMenuSelection = icsMenu;
+        }
       } else if (hashBase === 'builder') {
         setActiveMenu('builder');
         setManagingExerciseId(null);

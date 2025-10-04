@@ -18132,7 +18132,7 @@ function AppContent() {
       window.removeEventListener('hashchange', handleHashChange);
       window.removeEventListener('popstate', handleHashChange);
     };
-  }, [location]);
+  }, []);
   
   // Load current exercise when managingExerciseId changes
   useEffect(() => {

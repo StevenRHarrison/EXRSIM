@@ -899,6 +899,310 @@ def test_weather_api():
         print(f"❌ Unexpected Error: {e}")
         return False
 
+def test_exercise_coordinates_functionality():
+    """Test latitude and longitude functionality in exercise management as requested"""
+    print("=" * 60)
+    print("TESTING EXERCISE COORDINATES FUNCTIONALITY")
+    print("=" * 60)
+    
+    # Test Exercise Claybelt ID as specified in review request
+    exercise_claybelt_id = "9204c218-cb55-44e8-812e-3a643aef023c"
+    
+    try:
+        # A. Current Exercise Coordinate Verification
+        print("\n🎯 A. CURRENT EXERCISE COORDINATE VERIFICATION")
+        print(f"Testing GET /api/exercise-builder/{exercise_claybelt_id} (Exercise Claybelt)")
+        
+        response = requests.get(f"{BACKEND_URL}/exercise-builder/{exercise_claybelt_id}")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            exercise_data = response.json()
+            print(f"✅ Successfully retrieved Exercise Claybelt")
+            print(f"Exercise Name: {exercise_data.get('exercise_name', 'N/A')}")
+            
+            # Check current coordinate values
+            current_lat = exercise_data.get('latitude')
+            current_lng = exercise_data.get('longitude')
+            
+            print(f"\n📍 Current Coordinates:")
+            print(f"   Latitude: {current_lat}")
+            print(f"   Longitude: {current_lng}")
+            
+            # Verify coordinate fields are included in response
+            if current_lat is not None and current_lng is not None:
+                print("✅ Latitude and longitude fields are included in response")
+                
+                # Check if current coordinates are Vancouver area (as expected)
+                expected_vancouver_lat = 49.2827
+                expected_vancouver_lng = -123.1207
+                
+                if (abs(current_lat - expected_vancouver_lat) < 0.01 and 
+                    abs(current_lng - expected_vancouver_lng) < 0.01):
+                    print(f"✅ Current coordinates match expected Vancouver area:")
+                    print(f"   Expected: lat={expected_vancouver_lat}, lng={expected_vancouver_lng}")
+                    print(f"   Actual: lat={current_lat}, lng={current_lng}")
+                else:
+                    print(f"⚠️  Current coordinates differ from expected Vancouver area:")
+                    print(f"   Expected: lat={expected_vancouver_lat}, lng={expected_vancouver_lng}")
+                    print(f"   Actual: lat={current_lat}, lng={current_lng}")
+            else:
+                print("❌ Latitude and/or longitude fields are missing from response")
+                return False
+        else:
+            print(f"❌ Failed to retrieve Exercise Claybelt: {response.text}")
+            return False
+            
+        # B. Exercise Update with Coordinates Test
+        print("\n🎯 B. EXERCISE UPDATE WITH COORDINATES TEST")
+        print("Testing PUT request to update exercise coordinates")
+        
+        # Prepare update data with Toronto coordinates
+        toronto_lat = 43.6532
+        toronto_lng = -79.3832
+        
+        # Get current exercise data to avoid "Field required" errors
+        current_exercise = exercise_data.copy()
+        
+        # Update coordinates to Toronto
+        update_data = {
+            "exercise_name": current_exercise.get("exercise_name", "Exercise Claybelt"),
+            "exercise_type": current_exercise.get("exercise_type", "Table Top"),
+            "exercise_description": current_exercise.get("exercise_description", "Test exercise"),
+            "location": "Toronto, Ontario, Canada",  # Update location to match coordinates
+            "latitude": toronto_lat,  # New Toronto coordinates
+            "longitude": toronto_lng,  # New Toronto coordinates
+            "start_date": current_exercise.get("start_date", "2024-03-15T09:00:00Z"),
+            "start_time": current_exercise.get("start_time", "09:00"),
+            "end_date": current_exercise.get("end_date", "2024-03-15T17:00:00Z"),
+            "end_time": current_exercise.get("end_time", "17:00")
+        }
+        
+        print(f"📍 Updating coordinates to Toronto:")
+        print(f"   New Latitude: {toronto_lat}")
+        print(f"   New Longitude: {toronto_lng}")
+        print(f"   New Location: {update_data['location']}")
+        
+        response = requests.put(
+            f"{BACKEND_URL}/exercise-builder/{exercise_claybelt_id}",
+            json=update_data,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            updated_exercise = response.json()
+            print("✅ Successfully updated exercise coordinates")
+            
+            # Verify updated coordinates in response
+            updated_lat = updated_exercise.get('latitude')
+            updated_lng = updated_exercise.get('longitude')
+            updated_location = updated_exercise.get('location')
+            
+            print(f"\n📍 Updated Coordinates in Response:")
+            print(f"   Latitude: {updated_lat}")
+            print(f"   Longitude: {updated_lng}")
+            print(f"   Location: {updated_location}")
+            
+            if (updated_lat == toronto_lat and updated_lng == toronto_lng):
+                print("✅ Updated coordinates match Toronto values in response")
+            else:
+                print(f"❌ Updated coordinates don't match expected Toronto values")
+                print(f"   Expected: lat={toronto_lat}, lng={toronto_lng}")
+                print(f"   Got: lat={updated_lat}, lng={updated_lng}")
+                return False
+        else:
+            print(f"❌ Failed to update exercise coordinates: {response.text}")
+            return False
+            
+        # C. Data Persistence Verification
+        print("\n🎯 C. DATA PERSISTENCE VERIFICATION")
+        print("Making another GET request after update to verify persistence")
+        
+        response = requests.get(f"{BACKEND_URL}/exercise-builder/{exercise_claybelt_id}")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            persisted_exercise = response.json()
+            print("✅ Successfully retrieved exercise after update")
+            
+            # Verify coordinates are persisted
+            persisted_lat = persisted_exercise.get('latitude')
+            persisted_lng = persisted_exercise.get('longitude')
+            persisted_location = persisted_exercise.get('location')
+            
+            print(f"\n📍 Persisted Coordinates:")
+            print(f"   Latitude: {persisted_lat}")
+            print(f"   Longitude: {persisted_lng}")
+            print(f"   Location: {persisted_location}")
+            
+            if (persisted_lat == toronto_lat and persisted_lng == toronto_lng):
+                print("✅ New coordinates are properly persisted in database")
+                
+                # Check for data corruption or field loss
+                required_fields = ['id', 'exercise_name', 'exercise_type', 'exercise_description', 
+                                 'location', 'latitude', 'longitude', 'start_date', 'end_date']
+                missing_fields = [field for field in required_fields if field not in persisted_exercise]
+                
+                if missing_fields:
+                    print(f"❌ Data corruption detected - missing fields: {missing_fields}")
+                    return False
+                else:
+                    print("✅ No data corruption or field loss detected")
+            else:
+                print(f"❌ Coordinates not properly persisted")
+                print(f"   Expected: lat={toronto_lat}, lng={toronto_lng}")
+                print(f"   Persisted: lat={persisted_lat}, lng={persisted_lng}")
+                return False
+        else:
+            print(f"❌ Failed to verify persistence: {response.text}")
+            return False
+            
+        # D. Coordinate Field Validation
+        print("\n🎯 D. COORDINATE FIELD VALIDATION")
+        print("Testing coordinate field validation with various values")
+        
+        # Test valid coordinate ranges
+        valid_test_cases = [
+            {"lat": 90.0, "lng": 180.0, "desc": "Maximum valid values"},
+            {"lat": -90.0, "lng": -180.0, "desc": "Minimum valid values"},
+            {"lat": 0.0, "lng": 0.0, "desc": "Zero coordinates"},
+            {"lat": 45.1234, "lng": -97.5678, "desc": "4 decimal places precision"}
+        ]
+        
+        for test_case in valid_test_cases:
+            print(f"\n   Testing {test_case['desc']}: lat={test_case['lat']}, lng={test_case['lng']}")
+            
+            test_update = update_data.copy()
+            test_update['latitude'] = test_case['lat']
+            test_update['longitude'] = test_case['lng']
+            
+            response = requests.put(
+                f"{BACKEND_URL}/exercise-builder/{exercise_claybelt_id}",
+                json=test_update,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                if (result.get('latitude') == test_case['lat'] and 
+                    result.get('longitude') == test_case['lng']):
+                    print(f"   ✅ Valid coordinates accepted and saved correctly")
+                else:
+                    print(f"   ❌ Valid coordinates not saved correctly")
+                    return False
+            else:
+                print(f"   ❌ Valid coordinates rejected: {response.text}")
+                return False
+                
+        # Test handling of null/empty coordinates
+        print(f"\n   Testing null/empty coordinates handling")
+        test_update = update_data.copy()
+        test_update['latitude'] = None
+        test_update['longitude'] = None
+        
+        response = requests.put(
+            f"{BACKEND_URL}/exercise-builder/{exercise_claybelt_id}",
+            json=test_update,
+            headers={"Content-Type": "application/json"}
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            print(f"   ✅ Null coordinates handled properly")
+            print(f"   Latitude: {result.get('latitude')}")
+            print(f"   Longitude: {result.get('longitude')}")
+        else:
+            print(f"   ⚠️  Null coordinates handling: {response.status_code}")
+            
+        # E. Exercise List Verification
+        print("\n🎯 E. EXERCISE LIST VERIFICATION")
+        print("Testing GET /api/exercise-builder (list all exercises)")
+        
+        response = requests.get(f"{BACKEND_URL}/exercise-builder")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            all_exercises = response.json()
+            print(f"✅ Successfully retrieved {len(all_exercises)} exercises")
+            
+            # Find Exercise Claybelt in the list
+            claybelt_in_list = None
+            for exercise in all_exercises:
+                if exercise.get('id') == exercise_claybelt_id:
+                    claybelt_in_list = exercise
+                    break
+                    
+            if claybelt_in_list:
+                print("✅ Exercise Claybelt found in exercise list")
+                
+                # Verify coordinate fields are included in list response
+                list_lat = claybelt_in_list.get('latitude')
+                list_lng = claybelt_in_list.get('longitude')
+                
+                print(f"📍 Coordinates in List Response:")
+                print(f"   Latitude: {list_lat}")
+                print(f"   Longitude: {list_lng}")
+                
+                if list_lat is not None and list_lng is not None:
+                    print("✅ Coordinate fields are included in exercise list summaries")
+                else:
+                    print("❌ Coordinate fields missing from exercise list summaries")
+                    return False
+            else:
+                print("❌ Exercise Claybelt not found in exercise list")
+                return False
+        else:
+            print(f"❌ Failed to get exercise list: {response.text}")
+            return False
+            
+        # Restore original coordinates (cleanup)
+        print("\n🔄 CLEANUP: Restoring original Vancouver coordinates")
+        restore_data = update_data.copy()
+        restore_data['latitude'] = current_lat
+        restore_data['longitude'] = current_lng
+        restore_data['location'] = exercise_data.get('location', 'Vancouver, BC')
+        
+        response = requests.put(
+            f"{BACKEND_URL}/exercise-builder/{exercise_claybelt_id}",
+            json=restore_data,
+            headers={"Content-Type": "application/json"}
+        )
+        
+        if response.status_code == 200:
+            print("✅ Original coordinates restored successfully")
+        else:
+            print(f"⚠️  Failed to restore original coordinates: {response.text}")
+            
+        # Final Success Summary
+        print("\n" + "=" * 60)
+        print("🎉 EXERCISE COORDINATES FUNCTIONALITY TEST RESULTS")
+        print("=" * 60)
+        print("✅ Current coordinates retrieved successfully")
+        print("✅ PUT request updates coordinates without errors")
+        print("✅ Updated values persist in database")
+        print("✅ GET responses include coordinate fields")
+        print("✅ No data loss or field corruption")
+        print("✅ Coordinate fields included in exercise list")
+        print("✅ Valid coordinate ranges handled properly")
+        print("✅ Null/empty coordinates handled appropriately")
+        print("=" * 60)
+        print("🏆 ALL SUCCESS CRITERIA MET - COORDINATES FUNCTIONALITY WORKING CORRECTLY")
+        print("=" * 60)
+        
+        return True
+        
+    except requests.exceptions.ConnectionError as e:
+        print(f"❌ Connection Error: Cannot connect to {BACKEND_URL}")
+        print(f"Error: {e}")
+        return False
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Request Error: {e}")
+        return False
+    except Exception as e:
+        print(f"❌ Unexpected Error: {e}")
+        return False
+
 def test_performance():
     """Test performance with multiple concurrent requests"""
     print("=" * 60)

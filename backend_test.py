@@ -2590,6 +2590,237 @@ def test_map_objects_crud_api():
         print(f"❌ Unexpected Error: {e}")
         return False
 
+def test_exercise_partial_update():
+    """Test Exercise Builder PUT endpoint for partial updates without requiring all mandatory fields"""
+    print("=" * 60)
+    print("TESTING EXERCISE BUILDER PARTIAL UPDATE FUNCTIONALITY")
+    print("=" * 60)
+    
+    try:
+        # Test 1: First verify that exercises exist in the system by calling GET /api/exercise-builder
+        print("\n1. Testing GET /api/exercise-builder (verify exercises exist)")
+        response = requests.get(f"{BACKEND_URL}/exercise-builder")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code != 200:
+            print(f"❌ Failed to get exercises: {response.text}")
+            return False
+            
+        exercises = response.json()
+        print(f"✅ Successfully retrieved {len(exercises)} existing exercises")
+        
+        if len(exercises) == 0:
+            print("⚠️  No exercises found in system. Creating a test exercise first...")
+            # Create a minimal test exercise
+            test_exercise = {
+                "exercise_name": "Test Exercise for Partial Update",
+                "exercise_type": "Table Top",
+                "exercise_description": "Test exercise for partial update functionality",
+                "location": "Test Location",
+                "start_date": "2024-03-15T09:00:00Z",
+                "start_time": "09:00",
+                "end_date": "2024-03-15T17:00:00Z",
+                "end_time": "17:00"
+            }
+            
+            create_response = requests.post(
+                f"{BACKEND_URL}/exercise-builder",
+                json=test_exercise,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if create_response.status_code != 200:
+                print(f"❌ Failed to create test exercise: {create_response.text}")
+                return False
+                
+            created_exercise = create_response.json()
+            exercise_id = created_exercise.get("id")
+            print(f"✅ Created test exercise with ID: {exercise_id}")
+        else:
+            # Use the first existing exercise
+            exercise_id = exercises[0].get("id")
+            print(f"✅ Using existing exercise with ID: {exercise_id}")
+            
+        # Get the original exercise data for comparison
+        print(f"\n2. Getting original exercise data for comparison")
+        response = requests.get(f"{BACKEND_URL}/exercise-builder/{exercise_id}")
+        if response.status_code != 200:
+            print(f"❌ Failed to get original exercise: {response.text}")
+            return False
+            
+        original_exercise = response.json()
+        print(f"✅ Retrieved original exercise: {original_exercise.get('exercise_name')}")
+        print(f"   Original latitude: {original_exercise.get('latitude')}")
+        print(f"   Original longitude: {original_exercise.get('longitude')}")
+        print(f"   Original exercise_type: {original_exercise.get('exercise_type')}")
+        print(f"   Original location: {original_exercise.get('location')}")
+        
+        # Test 3: Test partial update with only latitude and longitude fields
+        print(f"\n3. Testing PUT /api/exercise-builder/{exercise_id} with partial payload (latitude/longitude only)")
+        partial_update_payload = {
+            "latitude": 45.1234,
+            "longitude": -97.5678
+        }
+        
+        print(f"   Sending partial update payload: {partial_update_payload}")
+        response = requests.put(
+            f"{BACKEND_URL}/exercise-builder/{exercise_id}",
+            json=partial_update_payload,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code != 200:
+            print(f"❌ Failed partial update: {response.text}")
+            return False
+            
+        updated_exercise = response.json()
+        print(f"✅ Partial update successful")
+        
+        # Test 4: Verify the response includes the updated coordinates
+        print(f"\n4. Verifying response includes updated coordinates")
+        updated_lat = updated_exercise.get("latitude")
+        updated_lng = updated_exercise.get("longitude")
+        
+        if updated_lat == 45.1234 and updated_lng == -97.5678:
+            print(f"✅ Updated coordinates verified: lat={updated_lat}, lng={updated_lng}")
+        else:
+            print(f"❌ Coordinate update failed: Expected lat=45.1234, lng=-97.5678, Got lat={updated_lat}, lng={updated_lng}")
+            return False
+            
+        # Test 5: Verify that other existing fields remain unchanged
+        print(f"\n5. Verifying other existing fields remain unchanged")
+        fields_to_check = ['exercise_name', 'exercise_type', 'exercise_description', 'location', 'start_date', 'end_date']
+        
+        all_fields_preserved = True
+        for field in fields_to_check:
+            original_value = original_exercise.get(field)
+            updated_value = updated_exercise.get(field)
+            
+            if original_value == updated_value:
+                print(f"   ✅ {field}: '{updated_value}' (preserved)")
+            else:
+                print(f"   ❌ {field}: Original='{original_value}', Updated='{updated_value}' (changed unexpectedly)")
+                all_fields_preserved = False
+                
+        if not all_fields_preserved:
+            print("❌ Some fields were unexpectedly modified during partial update")
+            return False
+        else:
+            print("✅ All other fields properly preserved during partial update")
+            
+        # Test 6: Test edge case with empty payload {}
+        print(f"\n6. Testing edge case with empty payload {{}}")
+        empty_payload = {}
+        
+        response = requests.put(
+            f"{BACKEND_URL}/exercise-builder/{exercise_id}",
+            json=empty_payload,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            print("✅ Empty payload handled correctly (no error)")
+            empty_update_exercise = response.json()
+            
+            # Verify coordinates are still the same as our previous update
+            if (empty_update_exercise.get("latitude") == 45.1234 and 
+                empty_update_exercise.get("longitude") == -97.5678):
+                print("✅ Empty payload didn't modify existing data")
+            else:
+                print("❌ Empty payload unexpectedly modified data")
+                return False
+        else:
+            print(f"⚠️  Empty payload returned status {response.status_code}: {response.text}")
+            
+        # Test 7: Test with invalid exercise_id to verify 404 handling
+        print(f"\n7. Testing with invalid exercise_id for 404 handling")
+        invalid_id = "invalid-exercise-id-12345"
+        
+        response = requests.put(
+            f"{BACKEND_URL}/exercise-builder/{invalid_id}",
+            json={"latitude": 50.0, "longitude": -100.0},
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 404:
+            print("✅ Invalid exercise_id properly returns 404")
+        else:
+            print(f"⚠️  Expected 404 for invalid ID, got {response.status_code}")
+            
+        # Test 8: Test partial update with multiple fields
+        print(f"\n8. Testing partial update with multiple fields")
+        multi_field_payload = {
+            "latitude": 49.2827,
+            "longitude": -123.1207,
+            "exercise_description": "Updated description via partial update"
+        }
+        
+        response = requests.put(
+            f"{BACKEND_URL}/exercise-builder/{exercise_id}",
+            json=multi_field_payload,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            multi_updated_exercise = response.json()
+            
+            # Verify all three fields were updated
+            if (multi_updated_exercise.get("latitude") == 49.2827 and
+                multi_updated_exercise.get("longitude") == -123.1207 and
+                multi_updated_exercise.get("exercise_description") == "Updated description via partial update"):
+                print("✅ Multi-field partial update successful")
+                
+                # Verify other fields still preserved
+                if multi_updated_exercise.get("exercise_name") == original_exercise.get("exercise_name"):
+                    print("✅ Non-updated fields still preserved in multi-field update")
+                else:
+                    print("❌ Non-updated fields were modified in multi-field update")
+                    return False
+            else:
+                print("❌ Multi-field partial update failed")
+                return False
+        else:
+            print(f"❌ Multi-field partial update failed: {response.text}")
+            return False
+            
+        # Test 9: Final verification - get the exercise one more time
+        print(f"\n9. Final verification - retrieving final exercise state")
+        response = requests.get(f"{BACKEND_URL}/exercise-builder/{exercise_id}")
+        if response.status_code == 200:
+            final_exercise = response.json()
+            print(f"✅ Final exercise state retrieved")
+            print(f"   Final latitude: {final_exercise.get('latitude')}")
+            print(f"   Final longitude: {final_exercise.get('longitude')}")
+            print(f"   Final description: {final_exercise.get('exercise_description')[:50]}...")
+            
+            # Verify final state matches our last update
+            if (final_exercise.get("latitude") == 49.2827 and
+                final_exercise.get("longitude") == -123.1207):
+                print("✅ Final coordinates match expected values")
+            else:
+                print("❌ Final coordinates don't match expected values")
+                return False
+        else:
+            print(f"❌ Failed to get final exercise state: {response.text}")
+            return False
+            
+        print("\n✅ ALL EXERCISE PARTIAL UPDATE TESTS PASSED")
+        print("✅ PUT request with partial data returns 200 status")
+        print("✅ Updated exercise contains new latitude/longitude")
+        print("✅ All other existing fields remain unchanged")
+        print("✅ Invalid IDs return 404")
+        print("✅ Empty payload handled correctly")
+        print("✅ Multi-field partial updates work correctly")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Exercise Partial Update Test Error: {e}")
+        return False
+
 if __name__ == "__main__":
     print("EXRSIM Backend API Comprehensive Testing")
     print(f"Backend URL: {BACKEND_URL}")

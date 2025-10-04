@@ -1783,8 +1783,8 @@ const LeafletMapping = ({ exerciseId }) => {
           ref={mapRef}
           whenCreated={(mapInstance) => {
             console.log('🗺️ Map instance created:', !!mapInstance);
-            if (mapInstance && mapInstance.target) {
-              mapRef.current = mapInstance.target;
+            if (mapInstance) {
+              mapRef.current = mapInstance;
               setMapReady(true);
             }
           }}

@@ -2837,9 +2837,13 @@ if __name__ == "__main__":
     print("\n🚀 STARTING COMPREHENSIVE BACKEND API TESTING")
     print("=" * 60)
     
-    # Test 0: Map Object APIs (HIGH PRIORITY - LEAFLET MAPPING REVIEW REQUEST)
+    # Test 0: Exercise Partial Update (HIGHEST PRIORITY - CURRENT REVIEW REQUEST)
+    print("\n🎯 Testing Exercise Partial Update API (PRIORITY TEST)...")
+    test_results.append(("Exercise Partial Update API", test_exercise_partial_update()))
+    
+    # Test 1: Map Object APIs (HIGH PRIORITY - LEAFLET MAPPING REVIEW REQUEST)
     print("\n🗺️ Testing Map Object APIs for Leaflet Mapping...")
-    test_results.append(("Map Object API (Leaflet Mapping)", test_map_object_api()))
+    test_results.append(("Map Object API (Leaflet Mapping)", test_map_objects_crud_api()))
     
     # Test 1: ICS Dashboard Overview APIs (HIGH PRIORITY - REVIEW REQUEST)
     print("\n🎯 Testing ICS Dashboard Overview APIs...")

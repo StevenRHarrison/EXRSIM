@@ -18080,11 +18080,12 @@ function AppContent() {
       const queryStart = hash.indexOf('?');
       let hashBase = hash;
       let exerciseId = null;
+      let urlParams = null;
       
       if (queryStart !== -1) {
         hashBase = hash.substring(0, queryStart);
         const queryString = hash.substring(queryStart + 1);
-        const urlParams = new URLSearchParams(queryString);
+        urlParams = new URLSearchParams(queryString);
         exerciseId = urlParams.get('exercise');
       }
       
@@ -18096,10 +18097,12 @@ function AppContent() {
         setManagingExerciseId(exerciseId);
         
         // Handle ICS submenu parameter
-        const icsMenu = urlParams.get('menu');
-        if (icsMenu) {
-          // We need to pass this to the ICS component somehow
-          window.icsMenuSelection = icsMenu;
+        if (urlParams) {
+          const icsMenu = urlParams.get('menu');
+          if (icsMenu) {
+            // We need to pass this to the ICS component somehow
+            window.icsMenuSelection = icsMenu;
+          }
         }
       } else if (hashBase === 'builder') {
         setActiveMenu('builder');

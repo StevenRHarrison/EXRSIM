@@ -1487,7 +1487,15 @@ const WeatherModule = ({ theme }) => {
                                     ? `${theme.colors.accent} ${theme.colors.textPrimary}`
                                     : `${theme.colors.textMuted} ${theme.colors.hover}`
                               }`}
-                              onClick={() => setActiveICSMenu(subItem.id)}
+                              onClick={() => {
+                                setActiveICSMenu(subItem.id);
+                                // Update URL to persist submenu selection
+                                const hash = window.location.hash;
+                                const newHash = hash.includes('?') 
+                                  ? hash.replace(/(&menu=[^&]*|menu=[^&]*&?)/g, '').replace(/\?$/, '') + (hash.includes('&') || hash.endsWith('?') ? '' : '&') + `menu=${subItem.id}`
+                                  : hash + `&menu=${subItem.id}`;
+                                window.location.hash = newHash;
+                              }}
                             >
                               <SubIcon className="h-4 w-4 mr-3" />
                               <span className="text-white">{subItem.label}</span>
@@ -1515,7 +1523,15 @@ const WeatherModule = ({ theme }) => {
                                     ? `${theme.colors.accent} ${theme.colors.textPrimary}`
                                     : `${theme.colors.textMuted} ${theme.colors.hover}`
                               }`}
-                              onClick={() => setActiveICSMenu(subItem.id)}
+                              onClick={() => {
+                                setActiveICSMenu(subItem.id);
+                                // Update URL to persist submenu selection
+                                const hash = window.location.hash;
+                                const newHash = hash.includes('?') 
+                                  ? hash.replace(/(&menu=[^&]*|menu=[^&]*&?)/g, '').replace(/\?$/, '') + (hash.includes('&') || hash.endsWith('?') ? '' : '&') + `menu=${subItem.id}`
+                                  : hash + `&menu=${subItem.id}`;
+                                window.location.hash = newHash;
+                              }}
                             >
                               <SubIcon className="h-4 w-4 mr-3" />
                               <span className="text-white">{subItem.label}</span>
@@ -1543,7 +1559,15 @@ const WeatherModule = ({ theme }) => {
                                     ? `${theme.colors.accent} ${theme.colors.textPrimary}`
                                     : `${theme.colors.textMuted} ${theme.colors.hover}`
                               }`}
-                              onClick={() => setActiveICSMenu(subItem.id)}
+                              onClick={() => {
+                                setActiveICSMenu(subItem.id);
+                                // Update URL to persist submenu selection
+                                const hash = window.location.hash;
+                                const newHash = hash.includes('?') 
+                                  ? hash.replace(/(&menu=[^&]*|menu=[^&]*&?)/g, '').replace(/\?$/, '') + (hash.includes('&') || hash.endsWith('?') ? '' : '&') + `menu=${subItem.id}`
+                                  : hash + `&menu=${subItem.id}`;
+                                window.location.hash = newHash;
+                              }}
                             >
                               <SubIcon className="h-4 w-4 mr-3" />
                               <span className="text-white">{subItem.label}</span>
@@ -1571,7 +1595,15 @@ const WeatherModule = ({ theme }) => {
                                     ? `${theme.colors.accent} ${theme.colors.textPrimary}`
                                     : `${theme.colors.textMuted} ${theme.colors.hover}`
                               }`}
-                              onClick={() => setActiveICSMenu(subItem.id)}
+                              onClick={() => {
+                                setActiveICSMenu(subItem.id);
+                                // Update URL to persist submenu selection
+                                const hash = window.location.hash;
+                                const newHash = hash.includes('?') 
+                                  ? hash.replace(/(&menu=[^&]*|menu=[^&]*&?)/g, '').replace(/\?$/, '') + (hash.includes('&') || hash.endsWith('?') ? '' : '&') + `menu=${subItem.id}`
+                                  : hash + `&menu=${subItem.id}`;
+                                window.location.hash = newHash;
+                              }}
                             >
                               <SubIcon className="h-4 w-4 mr-3" />
                               <span className="text-white">{subItem.label}</span>

@@ -16605,6 +16605,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
               <p><strong>Exercise Type:</strong> ${exercise.exercise_type || 'N/A'}</p>
               <p><strong>Date:</strong> ${exercise.start_date || 'N/A'} - ${exercise.end_date || 'N/A'}</p>
               <p><strong>Location:</strong> ${exercise.location || 'N/A'}</p>
+              ${exercise.latitude && exercise.longitude ? `<p><strong>Coordinates:</strong> ${exercise.latitude}°N, ${exercise.longitude}°W</p>` : ''}
               <p><strong>Scribe:</strong> ________________________________</p>
             </div>
 

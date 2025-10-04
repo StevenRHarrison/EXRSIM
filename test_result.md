@@ -277,6 +277,14 @@
     stuck_count: 1
     priority: "high"
     needs_retesting: false
+
+  - task: "Weather Module CRUD Functionality and React Router Navigation Fix"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
     status_history:
         -working: false
         -agent: "testing"

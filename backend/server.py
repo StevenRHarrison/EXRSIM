@@ -825,7 +825,7 @@ async def create_exercise(exercise_data: ExerciseBuilderCreate):
     return exercise
 
 @api_router.put("/exercise-builder/{exercise_id}", response_model=ExerciseBuilder)
-async def update_exercise(exercise_id: str, exercise_data: ExerciseBuilderCreate):
+async def update_exercise(exercise_id: str, exercise_data: ExerciseBuilderUpdate):
     update_dict = exercise_data.dict()
     update_dict["updated_at"] = datetime.now(timezone.utc)
     # Auto-copy exercise type to scope if provided

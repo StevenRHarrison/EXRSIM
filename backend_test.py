@@ -3042,11 +3042,15 @@ if __name__ == "__main__":
     print("\n🗺️ Testing Map Object APIs for Leaflet Mapping...")
     test_results.append(("Map Object API (Leaflet Mapping)", test_map_objects_crud_api()))
     
-    # Test 1: ICS Dashboard Overview APIs (HIGH PRIORITY - REVIEW REQUEST)
+    # Test 1: Weather API (HIGH PRIORITY - NEW FEATURE TESTING)
+    print("\n🌤️  Testing Weather API...")
+    test_results.append(("Weather API", test_weather_api()))
+    
+    # Test 2: ICS Dashboard Overview APIs (HIGH PRIORITY - REVIEW REQUEST)
     print("\n🎯 Testing ICS Dashboard Overview APIs...")
     test_results.append(("ICS Dashboard Overview API", test_ics_dashboard_overview_api()))
     
-    # Test 1: Exercise Builder APIs
+    # Test 3: Exercise Builder APIs
     print("\n📋 Testing Exercise Builder APIs...")
     test_results.append(("Exercise Builder API", test_exercise_builder_api()))
     

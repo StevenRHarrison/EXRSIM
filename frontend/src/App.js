@@ -9252,6 +9252,8 @@ const ExerciseBuilderWizard = ({ onBack, editingExercise = null }) => {
         exercise_type: editingExercise.exercise_type || '',
         exercise_description: editingExercise.exercise_description || '',
         location: editingExercise.location || '',
+        latitude: editingExercise.latitude || '',
+        longitude: editingExercise.longitude || '',
         start_date: startDate ? startDate.toISOString().split('T')[0] : '',
         start_time: startDate ? startDate.toTimeString().slice(0, 5) : '',
         end_date: endDate ? endDate.toISOString().split('T')[0] : '',

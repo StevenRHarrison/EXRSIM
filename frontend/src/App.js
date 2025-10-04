@@ -17334,6 +17334,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
               <p><strong>Exercise Type:</strong> ${exercise.exercise_type || 'N/A'}</p>
               <p><strong>Date:</strong> ${exercise.start_date || 'N/A'} - ${exercise.end_date || 'N/A'}</p>
               <p><strong>Location:</strong> ${exercise.location || 'N/A'}</p>
+              ${exercise.latitude && exercise.longitude ? `<p><strong>Coordinates:</strong> ${exercise.latitude}°N, ${exercise.longitude}°W</p>` : ''}
               <p><strong>Scribe:</strong> ${scribeFormData.scribe_name || 'Not specified'}</p>
               <p><strong>Exercise Start:</strong> ${scribeFormData.exercise_start_time || 'Not specified'}</p>
               <p><strong>Exercise End:</strong> ${scribeFormData.exercise_end_time || 'Not specified'}</p>

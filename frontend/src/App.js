@@ -18074,11 +18074,8 @@ function AppContent() {
   // Handle URL-based navigation for editing exercises
   useEffect(() => {
     const handleHashChange = () => {
-      // Parse both the URL path and hash for navigation state
-      const fullPath = location.pathname + location.search + location.hash;
-      const hash = location.hash.substring(1); // Remove the '#'
+      const hash = window.location.hash.substring(1); // Remove the '#'
       
-      // Also check for hash-based navigation (for backward compatibility)
       if (hash) {
         // Check for parameters in hash format: #builder?exercise=<id> or #manage?exercise=<id>
         const queryStart = hash.indexOf('?');

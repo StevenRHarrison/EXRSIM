@@ -18018,6 +18018,7 @@ function App() {
 
 function AppContent() {
   const { theme } = useTheme();
+  const location = useLocation();
   const [activeMenu, setActiveMenu] = useState('dashboard');
   const [managingExerciseId, setManagingExerciseId] = useState(null);
   const [currentExercise, setCurrentExercise] = useState(null);

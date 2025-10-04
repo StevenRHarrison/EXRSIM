@@ -18075,43 +18075,51 @@ function AppContent() {
   // Handle URL-based navigation for editing exercises
   useEffect(() => {
     const handleHashChange = () => {
-      const hash = window.location.hash.substring(1); // Remove the #
+      // Parse both the URL path and hash for navigation state
+      const fullPath = location.pathname + location.search + location.hash;
+      const hash = location.hash.substring(1); // Remove the '#'
       
-      // Check for parameters in hash format: #builder?exercise=<id> or #manage?exercise=<id>
-      const queryStart = hash.indexOf('?');
-      let hashBase = hash;
-      let exerciseId = null;
-      let urlParams = null;
-      
-      if (queryStart !== -1) {
-        hashBase = hash.substring(0, queryStart);
-        const queryString = hash.substring(queryStart + 1);
-        urlParams = new URLSearchParams(queryString);
-        exerciseId = urlParams.get('exercise');
-      }
-      
-      if (hashBase === 'manage' && exerciseId) {
-        setActiveMenu('manage');
-        setManagingExerciseId(exerciseId);
-      } else if (hashBase === 'ics' && exerciseId) {
-        setActiveMenu('ics');
-        setManagingExerciseId(exerciseId);
+      // Also check for hash-based navigation (for backward compatibility)
+      if (hash) {
+        // Check for parameters in hash format: #builder?exercise=<id> or #manage?exercise=<id>
+        const queryStart = hash.indexOf('?');
+        let hashBase = hash;
+        let exerciseId = null;
+        let urlParams = null;
         
-        // Handle ICS submenu parameter
-        if (urlParams) {
-          const icsMenu = urlParams.get('menu');
-          if (icsMenu) {
-            // We need to pass this to the ICS component somehow
-            window.icsMenuSelection = icsMenu;
-          }
+        if (queryStart !== -1) {
+          hashBase = hash.substring(0, queryStart);
+          const queryString = hash.substring(queryStart + 1);
+          urlParams = new URLSearchParams(queryString);
+          exerciseId = urlParams.get('exercise');
         }
-      } else if (hashBase === 'builder') {
-        setActiveMenu('builder');
-        setManagingExerciseId(null);
-      } else if (hashBase && ['dashboard', 'exercises', 'msel', 'hira', 'participants', 'resources'].includes(hashBase)) {
-        setActiveMenu(hashBase);
-        setManagingExerciseId(null);
-      } else if (!hashBase) {
+        
+        if (hashBase === 'manage' && exerciseId) {
+          setActiveMenu('manage');
+          setManagingExerciseId(exerciseId);
+        } else if (hashBase === 'ics' && exerciseId) {
+          setActiveMenu('ics');
+          setManagingExerciseId(exerciseId);
+          
+          // Handle ICS submenu parameter
+          if (urlParams) {
+            const icsMenu = urlParams.get('menu');
+            if (icsMenu) {
+              // Store for ICS component to use
+              window.icsMenuSelection = icsMenu;
+            }
+          }
+        } else if (hashBase === 'builder') {
+          setActiveMenu('builder');
+          setManagingExerciseId(null);
+        } else if (hashBase && ['dashboard', 'exercises', 'msel', 'hira', 'participants', 'resources'].includes(hashBase)) {
+          setActiveMenu(hashBase);
+          setManagingExerciseId(null);
+        } else if (!hashBase) {
+          setActiveMenu('dashboard');
+          setManagingExerciseId(null);
+        }
+      } else {
         setActiveMenu('dashboard');
         setManagingExerciseId(null);
       }

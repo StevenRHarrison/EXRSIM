@@ -1507,7 +1507,7 @@ const WeatherModule = ({ theme }) => {
                                     ? `${theme.colors.accent} ${theme.colors.textPrimary}`
                                     : `${theme.colors.textMuted} ${theme.colors.hover}`
                               }`}
-                              onClick={() => setActiveICSMenu(subItem.id)}
+                              onClick={() => updateICSMenu(subItem.id)}
                             >
                               <SubIcon className="h-4 w-4 mr-3" />
                               <span className="text-white">{subItem.label}</span>
@@ -1535,7 +1535,7 @@ const WeatherModule = ({ theme }) => {
                                     ? `${theme.colors.accent} ${theme.colors.textPrimary}`
                                     : `${theme.colors.textMuted} ${theme.colors.hover}`
                               }`}
-                              onClick={() => setActiveICSMenu(subItem.id)}
+                              onClick={() => updateICSMenu(subItem.id)}
                             >
                               <SubIcon className="h-4 w-4 mr-3" />
                               <span className="text-white">{subItem.label}</span>
@@ -1563,7 +1563,7 @@ const WeatherModule = ({ theme }) => {
                                     ? `${theme.colors.accent} ${theme.colors.textPrimary}`
                                     : `${theme.colors.textMuted} ${theme.colors.hover}`
                               }`}
-                              onClick={() => setActiveICSMenu(subItem.id)}
+                              onClick={() => updateICSMenu(subItem.id)}
                             >
                               <SubIcon className="h-4 w-4 mr-3" />
                               <span className="text-white">{subItem.label}</span>
@@ -1591,7 +1591,7 @@ const WeatherModule = ({ theme }) => {
                                     ? `${theme.colors.accent} ${theme.colors.textPrimary}`
                                     : `${theme.colors.textMuted} ${theme.colors.hover}`
                               }`}
-                              onClick={() => setActiveICSMenu(subItem.id)}
+                              onClick={() => updateICSMenu(subItem.id)}
                             >
                               <SubIcon className="h-4 w-4 mr-3" />
                               <span className="text-white">{subItem.label}</span>

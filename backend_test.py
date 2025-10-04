@@ -702,6 +702,203 @@ def test_edge_cases():
         print(f"❌ Edge Case Test Error: {e}")
         return False
 
+def test_weather_api():
+    """Test Weather API endpoints comprehensively as requested"""
+    print("=" * 60)
+    print("TESTING WEATHER API ENDPOINTS")
+    print("=" * 60)
+    
+    try:
+        # Test 1: POST /api/weather-locations/import-excel (Import sample weather data)
+        print("\n1. Testing POST /api/weather-locations/import-excel (import sample data)")
+        response = requests.post(f"{BACKEND_URL}/weather-locations/import-excel")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            import_result = response.json()
+            print(f"✅ Successfully imported weather data: {import_result.get('message')}")
+            
+            # Extract number of imported locations
+            message = import_result.get('message', '')
+            if 'Imported' in message and 'weather locations' in message:
+                print("✅ Import message format correct")
+            else:
+                print("❌ Import message format unexpected")
+                return False
+        else:
+            print(f"❌ Failed to import weather data: {response.text}")
+            return False
+            
+        # Test 2: GET /api/weather-locations (Get all weather locations)
+        print("\n2. Testing GET /api/weather-locations (verify import)")
+        response = requests.get(f"{BACKEND_URL}/weather-locations")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            locations = response.json()
+            print(f"✅ Successfully retrieved {len(locations)} weather locations")
+            
+            if len(locations) > 0:
+                # Verify data structure of first location
+                first_location = locations[0]
+                required_fields = ['id', 'city', 'state_province', 'rss_feed', 'created_at', 'updated_at']
+                missing_fields = [field for field in required_fields if field not in first_location]
+                
+                if missing_fields:
+                    print(f"❌ Missing required fields in location data: {missing_fields}")
+                    return False
+                else:
+                    print("✅ Weather location data structure verified")
+                    print(f"   Sample location: {first_location.get('city')}, {first_location.get('state_province')}")
+            else:
+                print("❌ No weather locations found after import")
+                return False
+        else:
+            print(f"❌ Failed to get weather locations: {response.text}")
+            return False
+            
+        # Test 3: GET /api/weather-locations/provinces (Get list of provinces)
+        print("\n3. Testing GET /api/weather-locations/provinces")
+        response = requests.get(f"{BACKEND_URL}/weather-locations/provinces")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            provinces = response.json()
+            print(f"✅ Successfully retrieved {len(provinces)} provinces")
+            
+            # Verify expected Canadian provinces are present
+            expected_provinces = ["Alberta", "British Columbia", "Ontario", "Quebec"]
+            found_provinces = [p for p in expected_provinces if p in provinces]
+            
+            if len(found_provinces) >= 3:  # At least 3 of the major provinces
+                print(f"✅ Major Canadian provinces found: {found_provinces}")
+            else:
+                print(f"❌ Expected major provinces not found. Got: {provinces}")
+                return False
+                
+            # Store a province for next test
+            test_province = provinces[0] if provinces else None
+            if not test_province:
+                print("❌ No provinces available for city testing")
+                return False
+        else:
+            print(f"❌ Failed to get provinces: {response.text}")
+            return False
+            
+        # Test 4: GET /api/weather-locations/cities/{province} (Get cities for a province)
+        print(f"\n4. Testing GET /api/weather-locations/cities/{test_province}")
+        response = requests.get(f"{BACKEND_URL}/weather-locations/cities/{test_province}")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            cities = response.json()
+            print(f"✅ Successfully retrieved {len(cities)} cities for {test_province}")
+            
+            if len(cities) > 0:
+                print(f"   Cities in {test_province}: {cities}")
+                test_city = cities[0]  # Store for RSS test
+            else:
+                print(f"❌ No cities found for province {test_province}")
+                return False
+        else:
+            print(f"❌ Failed to get cities for {test_province}: {response.text}")
+            return False
+            
+        # Test 5: GET /api/weather-locations/rss/{province}/{city} (Get RSS feed for city/province)
+        print(f"\n5. Testing GET /api/weather-locations/rss/{test_province}/{test_city}")
+        response = requests.get(f"{BACKEND_URL}/weather-locations/rss/{test_province}/{test_city}")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            rss_data = response.json()
+            print(f"✅ Successfully retrieved RSS data for {test_city}, {test_province}")
+            
+            # Verify RSS response structure
+            required_rss_fields = ['rss_feed', 'city', 'province']
+            missing_rss_fields = [field for field in required_rss_fields if field not in rss_data]
+            
+            if missing_rss_fields:
+                print(f"❌ Missing required RSS fields: {missing_rss_fields}")
+                return False
+            else:
+                print("✅ RSS response structure verified")
+                print(f"   RSS Feed URL: {rss_data.get('rss_feed')}")
+                print(f"   City: {rss_data.get('city')}")
+                print(f"   Province: {rss_data.get('province')}")
+                
+                # Verify RSS feed URL format
+                rss_url = rss_data.get('rss_feed', '')
+                if rss_url.startswith('https://weather.gc.ca/'):
+                    print("✅ RSS feed URL format verified (weather.gc.ca)")
+                else:
+                    print(f"⚠️  Unexpected RSS feed URL format: {rss_url}")
+        else:
+            print(f"❌ Failed to get RSS data for {test_city}, {test_province}: {response.text}")
+            return False
+            
+        # Test 6: Test error handling - Non-existent city/province combination
+        print(f"\n6. Testing error handling - GET RSS for non-existent city/province")
+        response = requests.get(f"{BACKEND_URL}/weather-locations/rss/NonExistentProvince/NonExistentCity")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 404:
+            print("✅ Proper 404 error for non-existent city/province combination")
+        else:
+            print(f"⚠️  Expected 404, got {response.status_code}")
+            
+        # Test 7: Test specific province/city combinations from sample data
+        print(f"\n7. Testing specific province/city combinations")
+        test_combinations = [
+            ("Alberta", "Calgary"),
+            ("Ontario", "Toronto"),
+            ("British Columbia", "Vancouver"),
+            ("Quebec", "Montreal")
+        ]
+        
+        for province, city in test_combinations:
+            print(f"   Testing {city}, {province}")
+            
+            # Check if cities endpoint returns the expected city
+            cities_response = requests.get(f"{BACKEND_URL}/weather-locations/cities/{province}")
+            if cities_response.status_code == 200:
+                cities = cities_response.json()
+                if city in cities:
+                    print(f"   ✅ {city} found in {province}")
+                    
+                    # Test RSS endpoint for this combination
+                    rss_response = requests.get(f"{BACKEND_URL}/weather-locations/rss/{province}/{city}")
+                    if rss_response.status_code == 200:
+                        rss_data = rss_response.json()
+                        if (rss_data.get('city') == city and 
+                            rss_data.get('province') == province and
+                            rss_data.get('rss_feed')):
+                            print(f"   ✅ RSS data verified for {city}, {province}")
+                        else:
+                            print(f"   ❌ RSS data verification failed for {city}, {province}")
+                            return False
+                    else:
+                        print(f"   ❌ RSS endpoint failed for {city}, {province}")
+                        return False
+                else:
+                    print(f"   ⚠️  {city} not found in {province} (may not be in sample data)")
+            else:
+                print(f"   ❌ Failed to get cities for {province}")
+                return False
+                
+        print("\n✅ ALL WEATHER API TESTS PASSED")
+        return True
+        
+    except requests.exceptions.ConnectionError as e:
+        print(f"❌ Connection Error: Cannot connect to {BACKEND_URL}")
+        print(f"Error: {e}")
+        return False
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Request Error: {e}")
+        return False
+    except Exception as e:
+        print(f"❌ Unexpected Error: {e}")
+        return False
+
 def test_performance():
     """Test performance with multiple concurrent requests"""
     print("=" * 60)

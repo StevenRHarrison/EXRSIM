@@ -755,17 +755,7 @@ const ICSDashboard = ({ currentExercise }) => {
           </div>
         );
       case 'weather':
-        return (
-          <div className="p-6">
-            <div className="text-center py-12">
-              <Cloud className={`h-16 w-16 ${theme.colors.textMuted} mx-auto mb-4`} />
-              <h2 className={`text-2xl font-bold ${theme.colors.textPrimary} mb-4`}>Weather</h2>
-              <p className={`${theme.colors.textMuted} mb-6`}>
-                Weather monitoring and forecasting module content will be implemented here.
-              </p>
-            </div>
-          </div>
-        );
+        return <WeatherModule theme={theme} />;
       // Logistics submenu items
       case 'services':
         return (

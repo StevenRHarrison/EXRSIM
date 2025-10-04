@@ -586,10 +586,10 @@ const ICSDashboard = ({ currentExercise }) => {
       icon: Users,
       hasSubmenu: true,
       submenuItems: [
-        { id: 'scenario', label: 'Scenario', icon: FileText },
-        { id: 'incident-status', label: 'Incident Status', icon: AlertCircle },
-        { id: 'objectives', label: 'Objectives', icon: Target },
-        { id: 'safety', label: 'Safety', icon: Shield }
+        { id: 'scenario', label: 'Scenario', icon: FileText, backgroundColor: 'bg-orange-500' },
+        { id: 'incident-status', label: 'Incident Status', icon: AlertCircle, backgroundColor: 'bg-orange-500' },
+        { id: 'objectives', label: 'Objectives', icon: Target, backgroundColor: 'bg-orange-500' },
+        { id: 'safety', label: 'Safety', icon: Shield, backgroundColor: 'bg-orange-500' }
       ]
     },
     { 

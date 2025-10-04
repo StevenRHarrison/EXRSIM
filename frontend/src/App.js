@@ -575,25 +575,30 @@ const ICSDashboard = ({ currentExercise }) => {
   
   // Check for URL parameter to set initial menu
   const getInitialMenu = () => {
-    if (window.icsMenuSelection) {
-      const menu = window.icsMenuSelection;
-      window.icsMenuSelection = null; // Clear after use
-      return menu;
-    }
-    
-    // Also check current URL for menu parameter
-    const hash = window.location.hash.substring(1);
-    const queryStart = hash.indexOf('?');
-    if (queryStart !== -1) {
-      const queryString = hash.substring(queryStart + 1);
-      const urlParams = new URLSearchParams(queryString);
-      const menuParam = urlParams.get('menu');
-      if (menuParam) {
-        return menuParam;
+    try {
+      if (window.icsMenuSelection) {
+        const menu = window.icsMenuSelection;
+        window.icsMenuSelection = null; // Clear after use
+        return menu;
       }
+      
+      // Also check current URL for menu parameter
+      const hash = window.location.hash.substring(1);
+      const queryStart = hash.indexOf('?');
+      if (queryStart !== -1) {
+        const queryString = hash.substring(queryStart + 1);
+        const urlParams = new URLSearchParams(queryString);
+        const menuParam = urlParams.get('menu');
+        if (menuParam) {
+          return menuParam;
+        }
+      }
+      
+      return 'mapping'; // default
+    } catch (error) {
+      console.error('Error in getInitialMenu:', error);
+      return 'mapping';
     }
-    
-    return 'mapping'; // default
   };
   
   const [activeICSMenu, setActiveICSMenu] = useState(getInitialMenu());

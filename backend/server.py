@@ -784,6 +784,25 @@ class LessonsLearned(LessonsLearnedBase):
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
 
+# Weather Data Models
+class WeatherLocationBase(BaseModel):
+    city: str
+    state_province: str
+    rss_feed: str
+
+class WeatherLocationCreate(WeatherLocationBase):
+    pass
+
+class WeatherLocationUpdate(WeatherLocationBase):
+    city: Optional[str] = None
+    state_province: Optional[str] = None
+    rss_feed: Optional[str] = None
+
+class WeatherLocation(WeatherLocationBase):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 # Helper functions
 def prepare_for_mongo(data):
     if isinstance(data, dict):

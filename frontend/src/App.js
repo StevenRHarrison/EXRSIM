@@ -16763,6 +16763,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
                 <div><strong>Exercise Type:</strong> ${exercise.exercise_type || 'N/A'}</div>
                 <div><strong>Date:</strong> ${exercise.start_date || 'N/A'}</div>
                 <div><strong>Location:</strong> ${exercise.location || 'N/A'}</div>
+                ${exercise.latitude && exercise.longitude ? `<div><strong>Coordinates:</strong> ${exercise.latitude}°, ${exercise.longitude}°</div>` : ''}
               </div>
               <div style="margin-top: 10px;">
                 <strong>Scribe:</strong> ________________________________ 
@@ -16934,6 +16935,7 @@ const LessonsLearnedForm = ({ exerciseId, editingLesson, onBack, onSave, dotmplf
                 <div><strong>Exercise Type:</strong> ${exercise.exercise_type || 'N/A'}</div>
                 <div><strong>Date:</strong> ${exercise.start_date || 'N/A'}</div>
                 <div><strong>Location:</strong> ${exercise.location || 'N/A'}</div>
+                ${exercise.latitude && exercise.longitude ? `<div><strong>Coordinates:</strong> ${exercise.latitude}°, ${exercise.longitude}°</div>` : ''}
               </div>
               <div style="margin-top: 10px;">
                 <strong>Scribe Name:</strong> ________________________________ 

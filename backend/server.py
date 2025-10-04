@@ -1723,6 +1723,118 @@ async def delete_map_object(object_id: str):
         raise HTTPException(status_code=404, detail="Map object not found")
     return {"message": "Map object deleted successfully"}
 
+# Weather Data API Endpoints
+@api_router.get("/weather-locations", response_model=List[WeatherLocation])
+async def get_weather_locations():
+    locations = await db.weather_locations.find().to_list(1000)
+    return [WeatherLocation(**location) for location in locations]
+
+@api_router.get("/weather-locations/provinces", response_model=List[str])
+async def get_provinces():
+    """Get unique list of provinces/states"""
+    pipeline = [
+        {"$group": {"_id": "$state_province"}},
+        {"$sort": {"_id": 1}}
+    ]
+    provinces = await db.weather_locations.aggregate(pipeline).to_list(1000)
+    return [province["_id"] for province in provinces if province["_id"]]
+
+@api_router.get("/weather-locations/cities/{province}", response_model=List[str])
+async def get_cities_by_province(province: str):
+    """Get cities for a specific province/state"""
+    pipeline = [
+        {"$match": {"state_province": province}},
+        {"$group": {"_id": "$city"}},
+        {"$sort": {"_id": 1}}
+    ]
+    cities = await db.weather_locations.aggregate(pipeline).to_list(1000)
+    return [city["_id"] for city in cities if city["_id"]]
+
+@api_router.get("/weather-locations/rss/{province}/{city}")
+async def get_weather_rss(province: str, city: str):
+    """Get RSS feed URL for a specific city and province"""
+    location = await db.weather_locations.find_one({
+        "state_province": province,
+        "city": city
+    })
+    if not location:
+        raise HTTPException(status_code=404, detail="Weather location not found")
+    return {"rss_feed": location["rss_feed"], "city": city, "province": province}
+
+@api_router.post("/weather-locations", response_model=WeatherLocation)
+async def create_weather_location(location_data: WeatherLocationCreate):
+    location = WeatherLocation(**location_data.dict())
+    location_mongo = prepare_for_mongo(location.dict())
+    await db.weather_locations.insert_one(location_mongo)
+    return location
+
+@api_router.put("/weather-locations/{location_id}", response_model=WeatherLocation)
+async def update_weather_location(location_id: str, location_data: WeatherLocationUpdate):
+    update_dict = location_data.dict(exclude_unset=True)
+    update_dict["updated_at"] = datetime.now(timezone.utc)
+    update_mongo = prepare_for_mongo(update_dict)
+    
+    result = await db.weather_locations.update_one(
+        {"id": location_id},
+        {"$set": update_mongo}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Weather location not found")
+    
+    location = await db.weather_locations.find_one({"id": location_id})
+    return WeatherLocation(**location)
+
+@api_router.delete("/weather-locations/{location_id}")
+async def delete_weather_location(location_id: str):
+    result = await db.weather_locations.delete_one({"id": location_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Weather location not found")
+    return {"message": "Weather location deleted successfully"}
+
+@api_router.post("/weather-locations/import-excel")
+async def import_weather_data():
+    """Import weather data from the Excel file structure"""
+    # Sample Canadian weather data based on the Excel file
+    sample_data = [
+        {"city": "Athabasca", "state_province": "Alberta", "rss_feed": "https://weather.gc.ca/data/satellite/goes_wcan_visible_100.jpg"},
+        {"city": "Banff", "state_province": "Alberta", "rss_feed": "https://weather.gc.ca/data/satellite/goes_wcan_visible_100.jpg"},
+        {"city": "Calgary", "state_province": "Alberta", "rss_feed": "https://weather.gc.ca/data/satellite/goes_wcan_visible_100.jpg"},
+        {"city": "Edmonton", "state_province": "Alberta", "rss_feed": "https://weather.gc.ca/data/satellite/goes_wcan_visible_100.jpg"},
+        {"city": "Abbotsford", "state_province": "British Columbia", "rss_feed": "https://weather.gc.ca/data/satellite/goes_wcan_visible_100.jpg"},
+        {"city": "Bella Bella", "state_province": "British Columbia", "rss_feed": "https://weather.gc.ca/data/satellite/goes_wcan_visible_100.jpg"},
+        {"city": "Vancouver", "state_province": "British Columbia", "rss_feed": "https://weather.gc.ca/data/satellite/goes_wcan_visible_100.jpg"},
+        {"city": "Victoria", "state_province": "British Columbia", "rss_feed": "https://weather.gc.ca/data/satellite/goes_wcan_visible_100.jpg"},
+        {"city": "Winnipeg", "state_province": "Manitoba", "rss_feed": "https://weather.gc.ca/data/satellite/goes_wcan_visible_100.jpg"},
+        {"city": "Brandon", "state_province": "Manitoba", "rss_feed": "https://weather.gc.ca/data/satellite/goes_wcan_visible_100.jpg"},
+        {"city": "Fredericton", "state_province": "New Brunswick", "rss_feed": "https://weather.gc.ca/data/satellite/hrpt_emar_vis_100.jpg"},
+        {"city": "Saint John", "state_province": "New Brunswick", "rss_feed": "https://weather.gc.ca/data/satellite/hrpt_emar_vis_100.jpg"},
+        {"city": "Bonavista", "state_province": "Newfoundland and Labrador", "rss_feed": "https://weather.gc.ca/data/satellite/hrpt_emar_vis_100.jpg"},
+        {"city": "St. John's", "state_province": "Newfoundland and Labrador", "rss_feed": "https://weather.gc.ca/data/satellite/hrpt_emar_vis_100.jpg"},
+        {"city": "Halifax", "state_province": "Nova Scotia", "rss_feed": "https://weather.gc.ca/data/satellite/hrpt_emar_vis_100.jpg"},
+        {"city": "Sydney", "state_province": "Nova Scotia", "rss_feed": "https://weather.gc.ca/data/satellite/hrpt_emar_vis_100.jpg"},
+        {"city": "Toronto", "state_province": "Ontario", "rss_feed": "https://weather.gc.ca/data/satellite/goes_ecan_1070_100.jpg"},
+        {"city": "Ottawa", "state_province": "Ontario", "rss_feed": "https://weather.gc.ca/data/satellite/goes_ecan_1070_100.jpg"},
+        {"city": "Thunder Bay", "state_province": "Ontario", "rss_feed": "https://weather.gc.ca/data/satellite/goes_ecan_1070_100.jpg"},
+        {"city": "Charlottetown", "state_province": "Prince Edward Island", "rss_feed": "https://weather.gc.ca/data/satellite/hrpt_emar_vis_100.jpg"},
+        {"city": "Montreal", "state_province": "Quebec", "rss_feed": "https://weather.gc.ca/data/satellite/hrpt_emar_vis_100.jpg"},
+        {"city": "Quebec City", "state_province": "Quebec", "rss_feed": "https://weather.gc.ca/data/satellite/hrpt_emar_vis_100.jpg"},
+        {"city": "Regina", "state_province": "Saskatchewan", "rss_feed": "https://weather.gc.ca/data/satellite/goes_wcan_visible_100.jpg"},
+        {"city": "Saskatoon", "state_province": "Saskatchewan", "rss_feed": "https://weather.gc.ca/data/satellite/goes_wcan_visible_100.jpg"}
+    ]
+    
+    # Clear existing data
+    await db.weather_locations.delete_many({})
+    
+    # Insert sample data
+    locations = []
+    for data in sample_data:
+        location = WeatherLocation(**data)
+        location_mongo = prepare_for_mongo(location.dict())
+        await db.weather_locations.insert_one(location_mongo)
+        locations.append(location)
+    
+    return {"message": f"Imported {len(locations)} weather locations successfully"}
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()

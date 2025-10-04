@@ -9,7 +9,7 @@ All CRUD operations for map objects in the EXRSIM mapping functionality have bee
 
 ✅ **ALL CRUD OPERATIONS WORKING PERFECTLY:**
 - POST /api/map-objects (Status 200) - Created all 4 object types successfully
-- GET /api/map-objects?exercise_id=9204c218-cb55-44e8-812e-3a643aef023c (Status 200) - Retrieved existing objects correctly, confirmed 'Polygons: 3' from frontend matches backend data
+- GET /api/map-objects?exercise_id=leafdraw-ems (Status 200) - Retrieved existing objects correctly, confirmed 'Polygons: 3' from frontend matches backend data
 - GET /api/map-objects/{id} (Status 200) - Individual object retrieval working perfectly
 - PUT /api/map-objects/{id} (Status 200) - Object updates with property and geometry modifications successful
 - DELETE /api/map-objects/{id} (Status 200) - Object deletion and verification working correctly

@@ -634,6 +634,520 @@ const ICSDashboard = ({ currentExercise }) => {
     { id: 'ics-2xx-forms', label: 'ICS 2XX Form Series', icon: FileCheck, backgroundColor: 'bg-green-500' }
   ];
 
+  // Weather Module Component
+const WeatherModule = ({ theme }) => {
+  const [provinces, setProvinces] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
+  const [rssData, setRssData] = useState(null);
+  const [view, setView] = useState('dropdown'); // 'dropdown', 'rss', 'manage'
+  const [weatherLocations, setWeatherLocations] = useState([]);
+  const [editingLocation, setEditingLocation] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  // Form data for CRUD operations
+  const [formData, setFormData] = useState({
+    city: '',
+    state_province: '',
+    rss_feed: ''
+  });
+
+  // Fetch provinces on component mount
+  useEffect(() => {
+    fetchProvinces();
+    fetchAllLocations();
+  }, []);
+
+  const fetchProvinces = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/weather-locations/provinces`);
+      if (response.ok) {
+        const data = await response.json();
+        setProvinces(data);
+      } else {
+        setError('Failed to fetch provinces');
+      }
+    } catch (error) {
+      console.error('Error fetching provinces:', error);
+      setError('Error fetching provinces');
+    }
+  };
+
+  const fetchCitiesByProvince = async (province) => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/weather-locations/cities/${encodeURIComponent(province)}`);
+      if (response.ok) {
+        const data = await response.json();
+        setCities(data);
+      } else {
+        setError('Failed to fetch cities');
+      }
+    } catch (error) {
+      console.error('Error fetching cities:', error);
+      setError('Error fetching cities');
+    }
+  };
+
+  const fetchRSSFeed = async (province, city) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/weather-locations/rss/${encodeURIComponent(province)}/${encodeURIComponent(city)}`);
+      if (response.ok) {
+        const data = await response.json();
+        setRssData(data);
+        setView('rss');
+      } else {
+        setError('Weather data not found for this location');
+      }
+    } catch (error) {
+      console.error('Error fetching RSS feed:', error);
+      setError('Error fetching weather data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchAllLocations = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/weather-locations`);
+      if (response.ok) {
+        const data = await response.json();
+        setWeatherLocations(data);
+      }
+    } catch (error) {
+      console.error('Error fetching all locations:', error);
+    }
+  };
+
+  const handleProvinceChange = (province) => {
+    setSelectedProvince(province);
+    setSelectedCity('');
+    setCities([]);
+    if (province) {
+      fetchCitiesByProvince(province);
+    }
+  };
+
+  const handleCityChange = (city) => {
+    setSelectedCity(city);
+  };
+
+  const handleGetWeather = () => {
+    if (selectedProvince && selectedCity) {
+      fetchRSSFeed(selectedProvince, selectedCity);
+    }
+  };
+
+  const handleBackToDropdown = () => {
+    setView('dropdown');
+    setRssData(null);
+    setError('');
+  };
+
+  const handleManageData = () => {
+    setView('manage');
+    fetchAllLocations();
+  };
+
+  const handleAddLocation = () => {
+    setFormData({ city: '', state_province: '', rss_feed: '' });
+    setEditingLocation(null);
+    setShowForm(true);
+  };
+
+  const handleEditLocation = (location) => {
+    setFormData({
+      city: location.city,
+      state_province: location.state_province,
+      rss_feed: location.rss_feed
+    });
+    setEditingLocation(location);
+    setShowForm(true);
+  };
+
+  const handleSaveLocation = async () => {
+    try {
+      setLoading(true);
+      const url = editingLocation 
+        ? `${process.env.REACT_APP_BACKEND_URL}/api/weather-locations/${editingLocation.id}`
+        : `${process.env.REACT_APP_BACKEND_URL}/api/weather-locations`;
+      
+      const method = editingLocation ? 'PUT' : 'POST';
+      
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        setShowForm(false);
+        fetchAllLocations();
+        fetchProvinces();
+        alert(editingLocation ? 'Location updated successfully!' : 'Location added successfully!');
+      } else {
+        setError('Failed to save location');
+      }
+    } catch (error) {
+      console.error('Error saving location:', error);
+      setError('Error saving location');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteLocation = async (locationId) => {
+    if (window.confirm('Are you sure you want to delete this location?')) {
+      try {
+        setLoading(true);
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/weather-locations/${locationId}`, {
+          method: 'DELETE'
+        });
+
+        if (response.ok) {
+          fetchAllLocations();
+          fetchProvinces();
+          alert('Location deleted successfully!');
+        } else {
+          setError('Failed to delete location');
+        }
+      } catch (error) {
+        console.error('Error deleting location:', error);
+        setError('Error deleting location');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const importSampleData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/weather-locations/import-excel`, {
+        method: 'POST'
+      });
+
+      if (response.ok) {
+        fetchAllLocations();
+        fetchProvinces();
+        alert('Sample weather data imported successfully!');
+      } else {
+        setError('Failed to import sample data');
+      }
+    } catch (error) {
+      console.error('Error importing sample data:', error);
+      setError('Error importing sample data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="p-6">
+      {error && (
+        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error}
+          <button 
+            onClick={() => setError('')}
+            className="ml-2 text-red-900 hover:text-red-700"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
+      {/* Dropdown Selection View */}
+      {view === 'dropdown' && (
+        <div className="max-w-4xl mx-auto">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className={`text-3xl font-bold ${theme.colors.textPrimary} flex items-center`}>
+              <Cloud className="h-8 w-8 mr-3 text-blue-500" />
+              Weather Information
+            </h2>
+            <div className="space-x-2">
+              <button
+                onClick={handleManageData}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Manage Data
+              </button>
+              <button
+                onClick={importSampleData}
+                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              >
+                Import Sample Data
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Province Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Select Province/State:
+                </label>
+                <select
+                  value={selectedProvince}
+                  onChange={(e) => handleProvinceChange(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">-- Select Province/State --</option>
+                  {provinces.map(province => (
+                    <option key={province} value={province}>{province}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* City Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Select City:
+                </label>
+                <select
+                  value={selectedCity}
+                  onChange={(e) => handleCityChange(e.target.value)}
+                  disabled={!selectedProvince}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                >
+                  <option value="">-- Select City --</option>
+                  {cities.map(city => (
+                    <option key={city} value={city}>{city}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-6 text-center">
+              <button
+                onClick={handleGetWeather}
+                disabled={!selectedProvince || !selectedCity || loading}
+                className="px-8 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Loading...' : 'Get Weather Information'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* RSS Display View */}
+      {view === 'rss' && rssData && (
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-6">
+            <button
+              onClick={handleBackToDropdown}
+              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 mr-4"
+            >
+              ← Back to Selection
+            </button>
+            <button
+              onClick={handleManageData}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Manage Data
+            </button>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">
+              Weather Information for {rssData.city}, {rssData.province}
+            </h3>
+            
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                RSS Feed URL:
+              </label>
+              <div className="flex">
+                <input
+                  type="text"
+                  value={rssData.rss_feed}
+                  readOnly
+                  className="flex-1 p-3 border border-gray-300 rounded-l-lg bg-gray-50"
+                />
+                <button
+                  onClick={() => navigator.clipboard.writeText(rssData.rss_feed)}
+                  className="px-4 py-3 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600"
+                >
+                  Copy
+                </button>
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Weather Satellite Image:
+              </label>
+              <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
+                <img
+                  src={rssData.rss_feed}
+                  alt={`Weather satellite image for ${rssData.city}, ${rssData.province}`}
+                  className="max-w-full h-auto mx-auto"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'block';
+                  }}
+                />
+                <div className="text-center text-gray-500 py-8" style={{display: 'none'}}>
+                  <Cloud className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+                  <p>Weather image unavailable</p>
+                  <p className="text-sm">The RSS feed may not be accessible or the image format may not be supported.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Data Management View */}
+      {view === 'manage' && (
+        <div className="max-w-6xl mx-auto">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-2xl font-bold text-gray-800">Manage Weather Locations</h3>
+            <div className="space-x-2">
+              <button
+                onClick={handleBackToDropdown}
+                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+              >
+                ← Back to Weather
+              </button>
+              <button
+                onClick={handleAddLocation}
+                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              >
+                Add Location
+              </button>
+            </div>
+          </div>
+
+          {showForm && (
+            <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
+              <h4 className="text-lg font-bold mb-4">
+                {editingLocation ? 'Edit Location' : 'Add New Location'}
+              </h4>
+              <div className="grid md:grid-cols-3 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">City:</label>
+                  <input
+                    type="text"
+                    value={formData.city}
+                    onChange={(e) => setFormData({...formData, city: e.target.value})}
+                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Province/State:</label>
+                  <input
+                    type="text"
+                    value={formData.state_province}
+                    onChange={(e) => setFormData({...formData, state_province: e.target.value})}
+                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">RSS Feed URL:</label>
+                  <input
+                    type="url"
+                    value={formData.rss_feed}
+                    onChange={(e) => setFormData({...formData, rss_feed: e.target.value})}
+                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end space-x-2">
+                <button
+                  onClick={() => setShowForm(false)}
+                  className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveLocation}
+                  disabled={loading}
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-300"
+                >
+                  {loading ? 'Saving...' : 'Save'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      City
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Province/State
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      RSS Feed URL
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {weatherLocations.map((location) => (
+                    <tr key={location.id}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {location.city}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {location.state_province}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500">
+                        <a 
+                          href={location.rss_feed} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 truncate block max-w-xs"
+                        >
+                          {location.rss_feed}
+                        </a>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button
+                          onClick={() => handleEditLocation(location)}
+                          className="text-indigo-600 hover:text-indigo-900 mr-3"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteLocation(location.id)}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {weatherLocations.length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                <Cloud className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+                <p>No weather locations found</p>
+                <p className="text-sm">Add some locations or import sample data to get started</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
   const renderICSContent = () => {
     console.log('renderICSContent called with activeICSMenu:', activeICSMenu);
     console.log('Available cases: dashboard, scenario, command-staff, operations, mapping, etc.');

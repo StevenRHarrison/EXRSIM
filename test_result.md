@@ -364,6 +364,21 @@
 ## user_problem_statement: Complete the map object creation workflow in the EXRSIM application. The "Add Map Object" modal and form fields are functional, but users cannot click on the map to create objects at specific locations. Need to implement click-to-place functionality and ensure map object persistence through the existing API.
 
 ## backend:
+  - task: "Exercise Claybelt Coordinate Verification and Update"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "unknown"
+        -agent: "main"
+        -comment: "USER REQUEST: Check current latitude and longitude coordinates for Exercise Claybelt with ID 9204c218-cb55-44e8-812e-3a643aef023c. Testing steps required: 1) GET request to fetch current exercise data, 2) Check if exercise has latitude/longitude fields set, 3) Display current coordinate values if they exist, 4) If no coordinates exist, test updating with sample coordinates (49.2827, -123.1207 for Vancouver area) using PUT endpoint, 5) Verify coordinates were updated successfully, 6) Make final GET request to confirm coordinates persist. This will verify that exercise data includes coordinate fields, PUT endpoint works correctly for coordinate updates, and frontend can fetch and use these coordinates for map centering."
+        -working: true
+        -agent: "testing"
+        -comment: "🎯 EXERCISE CLAYBELT COORDINATE VERIFICATION COMPLETED - OUTSTANDING SUCCESS! ✅ COMPREHENSIVE TESTING RESULTS: Successfully tested the specific Exercise Claybelt (ID: 9204c218-cb55-44e8-812e-3a643aef023c) coordinate verification as requested. All testing steps completed successfully with excellent results. ✅ EXERCISE ACCESSIBILITY CONFIRMED: GET /api/exercise-builder/9204c218-cb55-44e8-812e-3a643aef023c returned Status 200 with exercise name 'Exercise Claybelt'. Exercise found and accessible in the database. ✅ COORDINATE FIELD VERIFICATION: Initial state showed latitude: None, longitude: None - exercise did not have coordinates set initially. Coordinate fields exist in the data structure and are ready for updates. ✅ PUT ENDPOINT FUNCTIONALITY VERIFIED: Successfully updated exercise with Vancouver coordinates (latitude: 49.2827, longitude: -123.1207) using PUT /api/exercise-builder/{id} endpoint. Status 200 response confirmed successful update. Updated coordinates returned correctly in response. ✅ COORDINATE PERSISTENCE CONFIRMED: Final GET request verified coordinates properly persisted in database. Final coordinates: latitude: 49.2827, longitude: -123.1207 (Vancouver area). No data loss or corruption detected. ✅ FRONTEND INTEGRATION READY: Coordinates are now available for frontend map centering. Exercise ID and coordinates can be used by frontend to center map on Vancouver area. All requirements from review request successfully met. ✅ COMPREHENSIVE SUCCESS CRITERIA MET: Exercise Claybelt found and accessible ✓, Coordinate fields exist and are updateable ✓, PUT endpoint works correctly for coordinate updates ✓, Coordinates persist properly in database ✓, Frontend can fetch coordinates for map centering ✓, Final coordinates: 49.2827, -123.1207 (Vancouver area) ✓. 🚀 CONCLUSION: The Exercise Claybelt coordinate verification is COMPLETE and SUCCESSFUL. The backend API fully supports coordinate updates and persistence. The frontend can now fetch these coordinates to center the map appropriately for Exercise Claybelt."
+
   - task: "Map Object API Endpoints - CRUD Operations for Leaflet Mapping"
     implemented: true
     working: true

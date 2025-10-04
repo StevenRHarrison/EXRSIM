@@ -303,9 +303,9 @@
 
 ## test_plan:
   current_focus:
-    - "Comprehensive Leaflet Draw Tools Integration Testing"
+    - "Exercise Coordinate Display and Edit Functionality"
   stuck_tasks:
-    - "Comprehensive Leaflet Draw Tools Integration"
+    - "Exercise Coordinate Display and Edit Functionality"
   test_all: false
   test_priority: "high_first"
 

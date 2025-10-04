@@ -606,21 +606,26 @@ const ICSDashboard = ({ currentExercise }) => {
   
   // Helper function to update ICS submenu and URL
   const updateICSMenu = (menuId) => {
-    setActiveICSMenu(menuId);
-    
-    // Update URL to persist submenu selection
-    const hash = window.location.hash.substring(1);
-    const queryStart = hash.indexOf('?');
-    
-    if (queryStart !== -1) {
-      const hashBase = hash.substring(0, queryStart);
-      const queryString = hash.substring(queryStart + 1);
-      const urlParams = new URLSearchParams(queryString);
-      urlParams.set('menu', menuId);
-      window.location.hash = `#${hashBase}?${urlParams.toString()}`;
-    } else {
-      // No existing parameters, add menu parameter
-      window.location.hash = `${window.location.hash}&menu=${menuId}`;
+    try {
+      setActiveICSMenu(menuId);
+      
+      // Update URL to persist submenu selection
+      const hash = window.location.hash.substring(1);
+      const queryStart = hash.indexOf('?');
+      
+      if (queryStart !== -1) {
+        const hashBase = hash.substring(0, queryStart);
+        const queryString = hash.substring(queryStart + 1);
+        const urlParams = new URLSearchParams(queryString);
+        urlParams.set('menu', menuId);
+        window.location.hash = `#${hashBase}?${urlParams.toString()}`;
+      } else {
+        // No existing parameters, add menu parameter
+        window.location.hash = `${window.location.hash}&menu=${menuId}`;
+      }
+    } catch (error) {
+      console.error('Error in updateICSMenu:', error);
+      setActiveICSMenu(menuId);
     }
   };
   const [planningExpanded, setPlanningExpanded] = useState(true);

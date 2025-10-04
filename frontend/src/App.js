@@ -1741,7 +1741,6 @@ const LeafletMapping = ({ exerciseId }) => {
   // Drawing state and map reference
   const mapRef = useRef(null);
   const drawnItemsRef = useRef(null);
-  const [mapReady, setMapReady] = useState(false);
   const [drawingMode, setDrawingMode] = useState(null);
   const [pendingObjectData, setPendingObjectData] = useState(null);
 

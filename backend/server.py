@@ -862,6 +862,13 @@ async def update_exercise(exercise_id: str, exercise_data: ExerciseBuilderUpdate
     
     return await get_exercise(exercise_id)
 
+@api_router.get("/exercise-builder/{exercise_id}", response_model=ExerciseBuilder)
+async def get_exercise(exercise_id: str):
+    exercise = await db.exercise_builder.find_one({"id": exercise_id})
+    if not exercise:
+        raise HTTPException(status_code=404, detail="Exercise not found")
+    return ExerciseBuilder(**parse_from_mongo(exercise))
+
 @api_router.delete("/exercise-builder/{exercise_id}")
 async def delete_exercise(exercise_id: str):
     result = await db.exercise_builder.delete_one({"id": exercise_id})

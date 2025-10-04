@@ -953,9 +953,11 @@ const ICSDashboard = ({ currentExercise }) => {
                               key={subItem.id}
                               variant="ghost"
                               className={`w-full justify-start text-left text-sm ${
-                                isSubActive
-                                  ? `${theme.colors.accent} ${theme.colors.textPrimary}`
-                                  : `${theme.colors.textMuted} ${theme.colors.hover}`
+                                subItem.backgroundColor 
+                                  ? `${subItem.backgroundColor} text-white hover:opacity-80`
+                                  : isSubActive
+                                    ? `${theme.colors.accent} ${theme.colors.textPrimary}`
+                                    : `${theme.colors.textMuted} ${theme.colors.hover}`
                               }`}
                               onClick={() => setActiveICSMenu(subItem.id)}
                             >

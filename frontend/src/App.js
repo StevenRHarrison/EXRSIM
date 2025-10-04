@@ -1184,11 +1184,20 @@ const LeafletMapping = ({ exerciseId }) => {
 
   // Update map view when exercise data is loaded
   useEffect(() => {
-    if (exerciseData?.latitude && exerciseData?.longitude && mapRef.current) {
-      console.log(`🗺️ Updating map view to exercise coordinates: ${exerciseData.latitude}, ${exerciseData.longitude} with zoom 8`);
-      mapRef.current.setView([exerciseData.latitude, exerciseData.longitude], 8);
+    if (exerciseData?.latitude && exerciseData?.longitude && mapRef.current && mapReady) {
+      try {
+        console.log(`🗺️ Updating map view to exercise coordinates: ${exerciseData.latitude}, ${exerciseData.longitude} with zoom 8`);
+        // Add small delay to ensure DOM elements are ready
+        setTimeout(() => {
+          if (mapRef.current && typeof mapRef.current.setView === 'function') {
+            mapRef.current.setView([exerciseData.latitude, exerciseData.longitude], 8);
+          }
+        }, 100);
+      } catch (error) {
+        console.error('Error setting map view:', error);
+      }
     }
-  }, [exerciseData]);
+  }, [exerciseData, mapReady]);
 
   // Debug modal state changes
   useEffect(() => {

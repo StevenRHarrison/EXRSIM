@@ -5000,6 +5000,11 @@ const Dashboard = () => {
                     <strong>End Date:</strong> ${exercise.end_date || 'Not set'} | 
                     <strong>Location:</strong> ${exercise.location || 'Not specified'}
                   </div>
+                  ${exercise.latitude && exercise.longitude ? `
+                    <div class="exercise-details">
+                      <strong>Coordinates:</strong> Latitude ${exercise.latitude}°, Longitude ${exercise.longitude}°
+                    </div>
+                  ` : ''}
                   <div class="exercise-details">
                     <strong>Goals:</strong> ${exercise.goals?.length || 0} | 
                     <strong>Objectives:</strong> ${exercise.objectives?.length || 0} | 

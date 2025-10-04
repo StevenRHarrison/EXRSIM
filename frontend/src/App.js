@@ -603,7 +603,8 @@ const ICSDashboard = ({ currentExercise }) => {
         { id: 'mapping', label: 'Mapping', icon: Map, backgroundColor: 'bg-blue-500' },
         { id: 'situation-unit', label: 'Situation Unit', icon: Info, backgroundColor: 'bg-blue-500' },
         { id: 'documentation-unit', label: 'Documentation Unit', icon: FileText, backgroundColor: 'bg-blue-500' },
-        { id: 'demobilization-unit', label: 'Demobilization Unit', icon: ArrowLeft, backgroundColor: 'bg-blue-500' }
+        { id: 'demobilization-unit', label: 'Demobilization Unit', icon: ArrowLeft, backgroundColor: 'bg-blue-500' },
+        { id: 'weather', label: 'Weather', icon: Cloud, backgroundColor: 'bg-blue-500' }
       ]
     },
     { 

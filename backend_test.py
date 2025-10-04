@@ -3338,8 +3338,12 @@ if __name__ == "__main__":
     print("\n🚀 STARTING COMPREHENSIVE BACKEND API TESTING")
     print("=" * 60)
     
-    # Test 0: Exercise Partial Update (HIGHEST PRIORITY - CURRENT REVIEW REQUEST)
-    print("\n🎯 Testing Exercise Partial Update API (PRIORITY TEST)...")
+    # Test 0: Exercise Coordinates Functionality (HIGHEST PRIORITY - CURRENT REVIEW REQUEST)
+    print("\n🎯 Testing Exercise Coordinates Functionality (PRIORITY TEST)...")
+    test_results.append(("Exercise Coordinates Functionality", test_exercise_coordinates_functionality()))
+    
+    # Test 0.1: Exercise Partial Update (HIGH PRIORITY)
+    print("\n🎯 Testing Exercise Partial Update API...")
     test_results.append(("Exercise Partial Update API", test_exercise_partial_update()))
     
     # Test 1: Map Object APIs (HIGH PRIORITY - LEAFLET MAPPING REVIEW REQUEST)

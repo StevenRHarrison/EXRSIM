@@ -12358,6 +12358,11 @@ const ExerciseManagementDashboard = ({
                 <span className={`text-sm font-medium ${theme.colors.textSecondary}`}>Location</span>
               </div>
               <p className={theme.colors.textPrimary}>{exercise.location || 'Not specified'}</p>
+              {exercise.latitude && exercise.longitude && (
+                <p className={`${theme.colors.textSecondary} text-sm mt-2`}>
+                  📍 {exercise.latitude}°, {exercise.longitude}°
+                </p>
+              )}
             </div>
             
             <div className={`${theme.colors.quaternary}/50 p-4 rounded-lg`}>
